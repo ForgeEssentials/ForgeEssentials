@@ -1,8 +1,7 @@
 package com.forgeessentials.core.mixin.item.crafting;
 
 //@Mixin(CraftingManager.class)
-public abstract class MixinCraftingManager
-{
+public abstract class MixinCraftingManager {
 //    /**
 //     * Try to find a crafting result that the player is able to craft.
 //     *

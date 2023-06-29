@@ -1,5 +1,10 @@
 package com.forgeessentials.commons.selections;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.gson.annotations.Expose;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -10,326 +15,268 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+public class WarpPoint {
 
-import com.google.gson.annotations.Expose;
+	protected String dim;
 
-public class WarpPoint
-{
+	protected float pitch;
 
-    protected String dim;
+	protected float yaw;
 
-    protected float pitch;
+	protected double xd;
 
-    protected float yaw;
+	protected double yd;
 
-    protected double xd;
+	protected double zd;
 
-    protected double yd;
+	@Expose(serialize = false)
+	protected ServerWorld world;
 
-    protected double zd;
+	// ------------------------------------------------------------
 
-    @Expose(serialize = false)
-    protected ServerWorld world;
+	public WarpPoint(String dimension, double x, double y, double z, float playerPitch, float playerYaw) {
+		this.dim = dimension;
+		this.xd = x;
+		this.yd = y;
+		this.zd = z;
+		this.pitch = playerPitch;
+		this.yaw = playerYaw;
+	}
 
-    // ------------------------------------------------------------
+	public WarpPoint(ServerWorld world, double x, double y, double z, float playerPitch, float playerYaw) {
+		this.world = world;
+		this.dim = world.dimension().location().toString();
+		this.xd = x;
+		this.yd = y;
+		this.zd = z;
+		this.pitch = playerPitch;
+		this.yaw = playerYaw;
+	}
 
-    public WarpPoint(String dimension, double x, double y, double z, float playerPitch, float playerYaw)
-    {
-        this.dim = dimension;
-        this.xd = x;
-        this.yd = y;
-        this.zd = z;
-        this.pitch = playerPitch;
-        this.yaw = playerYaw;
-    }
+	public WarpPoint(ServerWorld world, BlockPos pos, float playerPitch, float playerYaw) {
+		this.world = world;
+		this.dim = world.dimension().location().toString();
+		this.xd = pos.getX();
+		this.yd = pos.getY();
+		this.zd = pos.getZ();
+		this.pitch = playerPitch;
+		this.yaw = playerYaw;
+	}
 
-    public WarpPoint(ServerWorld world, double x, double y, double z, float playerPitch, float playerYaw)
-    {
-        this.world = world;
-        this.dim = world.dimension().location().toString();
-        this.xd = x;
-        this.yd = y;
-        this.zd = z;
-        this.pitch = playerPitch;
-        this.yaw = playerYaw;
-    }
+	public WarpPoint(String dimension, BlockPos location, float pitch, float yaw) {
+		this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
+	}
 
-    public WarpPoint(ServerWorld world, BlockPos pos, float playerPitch, float playerYaw)
-    {
-        this.world = world;
-        this.dim = world.dimension().location().toString();
-        this.xd = pos.getX();
-        this.yd = pos.getY();
-        this.zd = pos.getZ();
-        this.pitch = playerPitch;
-        this.yaw = playerYaw;
-    }
+	public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw) {
+		this(dimension.location().toString(), location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch,
+				yaw);
+	}
 
-    public WarpPoint(String dimension, BlockPos location, float pitch, float yaw)
-    {
-        this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
-    }
+	public WarpPoint(Point point, String dimension, float pitch, float yaw) {
+		this(dimension, point.getX(), point.getY(), point.getZ(), pitch, yaw);
+	}
 
-    public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw)
-    {
-        this(dimension.location().toString(), location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
-    }
+	public WarpPoint(WorldPoint point, float pitch, float yaw) {
+		this(point.getDimension(), point.getX() + 0.5, point.getY(), point.getZ() + 0.5, pitch, yaw);
+	}
 
-    public WarpPoint(Point point, String dimension, float pitch, float yaw)
-    {
-        this(dimension, point.getX(), point.getY(), point.getZ(), pitch, yaw);
-    }
+	public WarpPoint(WorldPoint point) {
+		this(point, 0, 0);
+	}
 
-    public WarpPoint(WorldPoint point, float pitch, float yaw)
-    {
-        this(point.getDimension(), point.getX() + 0.5, point.getY(), point.getZ() + 0.5, pitch, yaw);
-    }
+	public WarpPoint(Entity entity) {
+		this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x,
+				entity.position().y, entity.position().z, entity.xRot, entity.yRot);
+	}
 
-    public WarpPoint(WorldPoint point)
-    {
-        this(point, 0, 0);
-    }
+	public WarpPoint(WarpPoint point) {
+		this(point.dim, point.xd, point.yd, point.zd, point.pitch, point.yaw);
+	}
 
-    public WarpPoint(Entity entity)
-    {
-        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.xRot, entity.yRot);
-    }
+	// ------------------------------------------------------------
 
-    public WarpPoint(WarpPoint point)
-    {
-        this(point.dim, point.xd, point.yd, point.zd, point.pitch, point.yaw);
-    }
+	public String getDimension() {
+		return dim;
+	}
 
-    // ------------------------------------------------------------
+	public double getX() {
+		return xd;
+	}
 
-    public String getDimension()
-    {
-        return dim;
-    }
+	public double getY() {
+		return yd;
+	}
 
-    public double getX()
-    {
-        return xd;
-    }
+	public double getZ() {
+		return zd;
+	}
 
-    public double getY()
-    {
-        return yd;
-    }
+	public BlockPos getBlockPos() {
+		return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
+	}
 
-    public double getZ()
-    {
-        return zd;
-    }
+	public int getBlockX() {
+		return (int) Math.floor(xd);
+	}
 
-    public BlockPos getBlockPos()
-    {
-        return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
-    }
+	public int getBlockY() {
+		return (int) Math.floor(yd);
+	}
 
-    public int getBlockX()
-    {
-        return (int) Math.floor(xd);
-    }
+	public int getBlockZ() {
+		return (int) Math.floor(zd);
+	}
 
-    public int getBlockY()
-    {
-        return (int) Math.floor(yd);
-    }
+	public float getPitch() {
+		return pitch;
+	}
 
-    public int getBlockZ()
-    {
-        return (int) Math.floor(zd);
-    }
+	public float getYaw() {
+		return yaw;
+	}
 
-    public float getPitch()
-    {
-        return pitch;
-    }
+	public void set(String dim, double xd, double yd, double zd, float pitch, float yaw) {
+		this.dim = dim;
+		this.xd = xd;
+		this.yd = yd;
+		this.zd = zd;
+		this.pitch = pitch;
+		this.yaw = yaw;
+	}
 
-    public float getYaw()
-    {
-        return yaw;
-    }
+	public void setDimension(String dim) {
+		this.dim = dim;
+	}
 
-    public void set(String dim, double xd, double yd, double zd, float pitch, float yaw)
-    {
-        this.dim = dim;
-        this.xd = xd;
-        this.yd = yd;
-        this.zd = zd;
-        this.pitch = pitch;
-        this.yaw = yaw;
-    }
+	public ServerWorld getWorld() {
+		if (world != null && world.dimension().location().toString().equals(dim))
+			return world.getLevel();
+		world = ServerLifecycleHooks.getCurrentServer()
+				.getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+		if (world == null) {
+			System.out.println("argument.dimension.invalid" + dim);
+			return null;
+		} else {
+			return world.getLevel();
+		}
 
-    public void setDimension(String dim)
-    {
-        this.dim = dim;
-    }
+	}
 
-    public ServerWorld getWorld()
-    {
-        if (world != null && world.dimension().location().toString().equals(dim))
-            return world.getLevel();
-        world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
-        if (world == null)
-        {
-            System.out.println("argument.dimension.invalid"+ dim);
-            return null;
-        }
-        else
-        {
-            return world.getLevel();
-        }
+	public void setX(double value) {
+		xd = value;
+	}
 
-    }
+	public void setY(double value) {
+		yd = value;
+	}
 
-    public void setX(double value)
-    {
-        xd = value;
-    }
+	public void setZ(double value) {
+		zd = value;
+	}
 
-    public void setY(double value)
-    {
-        yd = value;
-    }
+	public void setPitch(float value) {
+		pitch = value;
+	}
 
-    public void setZ(double value)
-    {
-        zd = value;
-    }
+	public void setYaw(float value) {
+		yaw = value;
+	}
 
-    public void setPitch(float value)
-    {
-        pitch = value;
-    }
+	// ------------------------------------------------------------
 
-    public void setYaw(float value)
-    {
-        yaw = value;
-    }
+	/**
+	 * Returns the length of this vector
+	 */
+	public double length() {
+		return Math.sqrt(xd * xd + yd * yd + zd * zd);
+	}
 
-    // ------------------------------------------------------------
+	/**
+	 * Returns the distance to another point
+	 */
+	public double distance(WarpPoint v) {
+		return Math.sqrt((xd - v.xd) * (xd - v.xd) + (yd - v.yd) * (yd - v.yd) + (zd - v.zd) * (zd - v.zd));
+	}
 
-    /**
-     * Returns the length of this vector
-     */
-    public double length()
-    {
-        return Math.sqrt(xd * xd + yd * yd + zd * zd);
-    }
+	/**
+	 * Returns the distance to another entity
+	 */
+	public double distance(Entity e) {
+		return Math.sqrt((xd - e.position().x) * (xd - e.position().x) + (yd - e.position().y) * (yd - e.position().y)
+				+ (zd - e.position().z) * (zd - e.position().z));
+	}
 
-    /**
-     * Returns the distance to another point
-     */
-    public double distance(WarpPoint v)
-    {
-        return Math.sqrt((xd - v.xd) * (xd - v.xd) + (yd - v.yd) * (yd - v.yd) + (zd - v.zd) * (zd - v.zd));
-    }
+	public void validatePositiveY() {
+		if (yd < 0)
+			yd = 0;
+	}
 
-    /**
-     * Returns the distance to another entity
-     */
-    public double distance(Entity e)
-    {
-        return Math.sqrt((xd - e.position().x) * (xd - e.position().x) + (yd - e.position().y) * (yd - e.position().y) + (zd - e.position().z) * (zd - e.position().z));
-    }
+	public Vector3d toVec3() {
+		return new Vector3d(xd, yd, zd);
+	}
 
-    public void validatePositiveY()
-    {
-        if (yd < 0)
-            yd = 0;
-    }
+	public WorldPoint toWorldPoint() {
+		return new WorldPoint(this);
+	}
 
-    public Vector3d toVec3()
-    {
-        return new Vector3d(xd, yd, zd);
-    }
+	// ------------------------------------------------------------
 
-    public WorldPoint toWorldPoint()
-    {
-        return new WorldPoint(this);
-    }
+	@Override
+	public String toString() {
+		return "[" + xd + "," + yd + "," + zd + ",dim=" + dim + ",pitch=" + pitch + ",yaw=" + yaw + "]";
+	}
 
-    // ------------------------------------------------------------
+	public String toReadableString() {
+		return String.format("%.0f %.0f %.0f dim=%s", xd, yd, zd, dim);
+	}
 
-    @Override
-    public String toString()
-    {
-        return "[" + xd + "," + yd + "," + zd + ",dim=" + dim + ",pitch=" + pitch + ",yaw=" + yaw + "]";
-    }
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof WarpPoint) {
+			WarpPoint p = (WarpPoint) object;
+			return xd == p.xd && yd == p.yd && zd == p.zd;
+		}
+		if (object instanceof Point) {
+			Point p = (Point) object;
+			return (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
+		}
+		if (object instanceof WorldPoint) {
+			WorldPoint p = (WorldPoint) object;
+			return dim.equals(p.getDimension()) && (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
+		}
+		return false;
+	}
 
-    public String toReadableString()
-    {
-        return String.format("%.0f %.0f %.0f dim=%s", xd, yd, zd, dim);
-    }
+	@Override
+	public int hashCode() {
+		int h = 1 + Double.valueOf(xd).hashCode();
+		h = h * 31 + Double.valueOf(yd).hashCode();
+		h = h * 31 + Double.valueOf(zd).hashCode();
+		h = h * 31 + Double.valueOf(pitch).hashCode();
+		h = h * 31 + Double.valueOf(yaw).hashCode();
+		h = h * 31 + dim.hashCode();
+		return h;
+	}
 
-    @Override
-    public boolean equals(Object object)
-    {
-        if (object instanceof WarpPoint)
-        {
-            WarpPoint p = (WarpPoint) object;
-            return xd == p.xd && yd == p.yd && zd == p.zd;
-        }
-        if (object instanceof Point)
-        {
-            Point p = (Point) object;
-            return (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
-        }
-        if (object instanceof WorldPoint)
-        {
-            WorldPoint p = (WorldPoint) object;
-            return dim.equals(p.getDimension()) && (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
-        }
-        return false;
-    }
+	private static final Pattern fromStringPattern = Pattern
+			.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=([A-Za-z0-9:]+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
 
-    @Override
-    public int hashCode()
-    {
-        int h = 1 + Double.valueOf(xd).hashCode();
-        h = h * 31 + Double.valueOf(yd).hashCode();
-        h = h * 31 + Double.valueOf(zd).hashCode();
-        h = h * 31 + Double.valueOf(pitch).hashCode();
-        h = h * 31 + Double.valueOf(yaw).hashCode();
-        h = h * 31 + dim.hashCode();
-        return h;
-    }
-
-    private static final Pattern fromStringPattern = Pattern.compile(
-            "\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=([A-Za-z0-9:]+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
-
-    public static WarpPoint fromString(String value)
-    {
-        value = value.replaceAll("\\s ", "");
-        Matcher m = fromStringPattern.matcher(value);
-        if (m.matches())
-        {
-            try
-            {
-                return new WarpPoint(
-                        m.group(4),
-                        Double.parseDouble(m.group(1)),
-                        Double.parseDouble(m.group(2)),
-                        Double.parseDouble(m.group(3)),
-                        Float.parseFloat(m.group(5)),
-                        Float.parseFloat(m.group(6)));
-            }
-            catch (NumberFormatException e)
-            {
-                return null;
-            }
-        }
-        else
-        {
-            WorldPoint worldPoint = WorldPoint.fromString(value);
-            if (worldPoint == null)
-                return null;
-            return new WarpPoint(worldPoint);
-        }
-    }
+	public static WarpPoint fromString(String value) {
+		value = value.replaceAll("\\s ", "");
+		Matcher m = fromStringPattern.matcher(value);
+		if (m.matches()) {
+			try {
+				return new WarpPoint(m.group(4), Double.parseDouble(m.group(1)), Double.parseDouble(m.group(2)),
+						Double.parseDouble(m.group(3)), Float.parseFloat(m.group(5)), Float.parseFloat(m.group(6)));
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		} else {
+			WorldPoint worldPoint = WorldPoint.fromString(value);
+			if (worldPoint == null)
+				return null;
+			return new WarpPoint(worldPoint);
+		}
+	}
 
 }

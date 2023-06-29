@@ -5,46 +5,44 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
 
-public class FECommandData
-{
-    public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandData, CommandDispatcher<CommandSource> dispatcher)
-    {
-        name = mainName;
-        registered= false;
-        data =commandData;
-        disp = dispatcher;
-    }
-    public FECommandData(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
-    {
-        name = commandBuilder.getName();
-        registered= false;
-        data = commandBuilder;
-        disp = dispatcher;
-    }
+public class FECommandData {
+	public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandData,
+			CommandDispatcher<CommandSource> dispatcher) {
+		name = mainName;
+		registered = false;
+		data = commandData;
+		disp = dispatcher;
+	}
 
-    private String name;
-    private boolean registered;
-    private ForgeEssentialsCommandBuilder data;
-    private CommandDispatcher<CommandSource> disp;
+	public FECommandData(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher) {
+		name = commandBuilder.getName();
+		registered = false;
+		data = commandBuilder;
+		disp = dispatcher;
+	}
 
-    public String getName()
-    {
-        return name;
-    }
-    public ForgeEssentialsCommandBuilder getData()
-    {
-        return data;
-    }
-    public CommandDispatcher<CommandSource> getDisp()
-    {
-        return disp;
-    }
-    public void setRegistered(boolean registered)
-    {
-        this.registered = registered;
-    }
-    public boolean isRegistered()
-    {
-        return registered;
-    }
+	private String name;
+	private boolean registered;
+	private ForgeEssentialsCommandBuilder data;
+	private CommandDispatcher<CommandSource> disp;
+
+	public String getName() {
+		return name;
+	}
+
+	public ForgeEssentialsCommandBuilder getData() {
+		return data;
+	}
+
+	public CommandDispatcher<CommandSource> getDisp() {
+		return disp;
+	}
+
+	public void setRegistered(boolean registered) {
+		this.registered = registered;
+	}
+
+	public boolean isRegistered() {
+		return registered;
+	}
 }

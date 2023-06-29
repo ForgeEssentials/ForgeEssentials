@@ -10,7 +10,7 @@ import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 
-public class FEModConfig extends ModConfig{
+public class FEModConfig extends ModConfig {
 	private static final FEConfigFileTypeHandler FE_TOML = new FEConfigFileTypeHandler();
 
 	private final IFEConfig feConfig;
@@ -32,7 +32,8 @@ public class FEModConfig extends ModConfig{
 	private static class FEConfigFileTypeHandler extends ConfigFileTypeHandler {
 
 		private static Path getPath(Path configBasePath) {
-			//Intercept server config path reading for FE configs and reroute it to the normal config directory
+			// Intercept server config path reading for FE configs and reroute it to the
+			// normal config directory
 			if (configBasePath.endsWith("serverconfig")) {
 				return FMLPaths.CONFIGDIR.get();
 			}

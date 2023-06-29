@@ -1,13 +1,11 @@
 package com.forgeessentials.remote.network;
 
-public class EnableRequest
-{
+public class EnableRequest {
 
-    public boolean enable;
+	public boolean enable;
 
-    public EnableRequest(boolean enable)
-    {
-        this.enable = enable;
-    }
+	public EnableRequest(boolean enable) {
+		this.enable = enable;
+	}
 
 }

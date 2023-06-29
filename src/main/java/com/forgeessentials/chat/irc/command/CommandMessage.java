@@ -3,61 +3,53 @@ package com.forgeessentials.chat.irc.command;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.TextComponent;
-
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandMessage implements IrcCommand
-{
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.util.text.TextComponent;
 
-    @Override
-    public Collection<String> getCommandNames()
-    {
-        return Arrays.asList("msg", "m");
-    }
+public class CommandMessage implements IrcCommand {
 
-    @Override
-    public String getUsage()
-    {
-        return "<player> <message...>";
-    }
+	@Override
+	public Collection<String> getCommandNames() {
+		return Arrays.asList("msg", "m");
+	}
 
-    @Override
-    public String getCommandHelp()
-    {
-        return "Send a private message to a player";
-    }
+	@Override
+	public String getUsage() {
+		return "<player> <message...>";
+	}
 
-    @Override
-    public boolean isAdminCommand()
-    {
-        return false;
-    }
+	@Override
+	public String getCommandHelp() {
+		return "Send a private message to a player";
+	}
 
-    @Override
-    public void processCommand(CommandSource sender, String[] args) throws CommandException
-    {
-        if (args.length == 0)
-        {
-            ChatOutputHandler.chatError(sender,"No player specified!");
-            return;
-        }
+	@Override
+	public boolean isAdminCommand() {
+		return false;
+	}
 
-        UserIdent player = UserIdent.get(args[0], true);
-        if (args.length < 2)
-        {
-            ChatOutputHandler.chatError(sender,"No message specified");
-            return;
-        }
+	@Override
+	public void processCommand(CommandSource sender, String[] args) throws CommandException {
+		if (args.length == 0) {
+			ChatOutputHandler.chatError(sender, "No player specified!");
+			return;
+		}
 
-        TextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
-        ModuleChat.tell(sender, msg, player.getPlayer().createCommandSourceStack());
-    }
+		UserIdent player = UserIdent.get(args[0], true);
+		if (args.length < 2) {
+			ChatOutputHandler.chatError(sender, "No message specified");
+			return;
+		}
+
+		TextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
+		ModuleChat.tell(sender, msg, player.getPlayer().createCommandSourceStack());
+	}
 
 }

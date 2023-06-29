@@ -4,37 +4,34 @@ import java.sql.Blob;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.world.server.ServerWorld;
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import com.forgeessentials.util.events.world.FireEvent;
 
-public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
-{
+import net.minecraft.world.server.ServerWorld;
 
-    public Blob tileEntityBlob;
+public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy> {
 
-    public LogEventBurn(FireEvent.Destroy event)
-    {
-        super(event);
-        tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
-    }
+	public Blob tileEntityBlob;
 
-    @Override
-    public void process(EntityManager em)
-    {
-        Action01Block action = new Action01Block();
-        action.time = date;
-        action.world = ((ServerWorld)event.getWorld()).getLevel().dimension().location().toString();
-        action.block = getBlock(event.getState().getBlock());
-        action.entity = tileEntityBlob;
-        action.type = ActionBlockType.BURN;
-        action.x = event.getPos().getX();
-        action.y = event.getPos().getY();
-        action.z = event.getPos().getZ();
-        em.persist(action);
-    }
+	public LogEventBurn(FireEvent.Destroy event) {
+		super(event);
+		tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
+	}
+
+	@Override
+	public void process(EntityManager em) {
+		Action01Block action = new Action01Block();
+		action.time = date;
+		action.world = ((ServerWorld) event.getWorld()).getLevel().dimension().location().toString();
+		action.block = getBlock(event.getState().getBlock());
+		action.entity = tileEntityBlob;
+		action.type = ActionBlockType.BURN;
+		action.x = event.getPos().getX();
+		action.y = event.getPos().getY();
+		action.z = event.getPos().getZ();
+		em.persist(action);
+	}
 
 }

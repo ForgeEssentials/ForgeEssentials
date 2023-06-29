@@ -1,14 +1,5 @@
 package com.forgeessentials.util.selections;
 
-//Depreciated
-
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -19,102 +10,94 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandWand extends ForgeEssentialsCommandBuilder
-{
+//Depreciated
 
-    public CommandWand(boolean enabled)
-    {
-        super(enabled);
-    }
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "SELwand";
-    }
+public class CommandWand extends ForgeEssentialsCommandBuilder {
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.literal("unbind")
-                        .executes(CommandContext -> execute(CommandContext, "unbind")
-                                )
-                        )
-                .then(Commands.literal("rebind")
-                        .executes(CommandContext -> execute(CommandContext, "bind")
-                                )
-                        )
-                .executes(CommandContext -> execute(CommandContext, "bind")
-                        );
-    }
-    @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
-        {
-            ChatOutputHandler.chatNotification(ctx.getSource(), "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
-            ChatOutputHandler.chatNotification(ctx.getSource(), "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
-            return Command.SINGLE_SUCCESS;
-        }
+	public CommandWand(boolean enabled) {
+		super(enabled);
+	}
 
-        // Get the wand item (or hands)
-        Item wandItem;
-        String wandId, wandName;
-        PlayerEntity player = getServerPlayer(ctx.getSource());
-        if (getServerPlayer(ctx.getSource()).getMainHandItem() != null)
-        {
-            wandName = player.getMainHandItem().getDisplayName().getString();
-            wandItem = player.getMainHandItem().getItem();
-            wandId = wandItem.getRegistryName().getPath();
-        }
-        else
-        {
-            wandName = "your hands";
-            wandId = "hands";
-        }
+	@Override
+	public String getPrimaryAlias() {
+		return "SELwand";
+	}
 
-        PlayerInfo info = PlayerInfo.get(player.getUUID());
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder
+				.then(Commands.literal("unbind").executes(CommandContext -> execute(CommandContext, "unbind")))
+				.then(Commands.literal("rebind").executes(CommandContext -> execute(CommandContext, "bind")))
+				.executes(CommandContext -> execute(CommandContext, "bind"));
+	}
 
-        // Check for unbind
-        if ((params.equals("unbind")) && ((info.isWandEnabled() && info.getWandID().equals(wandId)) ))
-        {
-            ChatOutputHandler.sendMessage(ctx.getSource(), TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
-            info.setWandEnabled(false);
-            
-            return Command.SINGLE_SUCCESS;
-        }else 
-        {
-            // Check for permissions
-            if (!hasPermission(ctx.getSource(), getPermissionNode())){
-                ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
-                return Command.SINGLE_SUCCESS;
-            }
+	@Override
+	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		if (ModuleLauncher.getModuleList().contains("WEIntegrationTools")) {
+			ChatOutputHandler.chatNotification(ctx.getSource(),
+					"WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
+			ChatOutputHandler.chatNotification(ctx.getSource(),
+					"Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
+			return Command.SINGLE_SUCCESS;
+		}
 
-            // Bind wand
-            info.setWandEnabled(true);
-            info.setWandID(wandId);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), wandId);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Wand bound to " + wandName);
-            return Command.SINGLE_SUCCESS;
-        }
-    }
+		// Get the wand item (or hands)
+		Item wandItem;
+		String wandId, wandName;
+		PlayerEntity player = getServerPlayer(ctx.getSource());
+		if (getServerPlayer(ctx.getSource()).getMainHandItem() != null) {
+			wandName = player.getMainHandItem().getDisplayName().getString();
+			wandItem = player.getMainHandItem().getItem();
+			wandId = wandItem.getRegistryName().getPath();
+		} else {
+			wandName = "your hands";
+			wandId = "hands";
+		}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
+		PlayerInfo info = PlayerInfo.get(player.getUUID());
 
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.wand";
-    }
+		// Check for unbind
+		if ((params.equals("unbind")) && ((info.isWandEnabled() && info.getWandID().equals(wandId)))) {
+			ChatOutputHandler.sendMessage(ctx.getSource(),
+					TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+			info.setWandEnabled(false);
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.ALL;
-    }
+			return Command.SINGLE_SUCCESS;
+		} else {
+			// Check for permissions
+			if (!hasPermission(ctx.getSource(), getPermissionNode())) {
+				ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
+				return Command.SINGLE_SUCCESS;
+			}
+
+			// Bind wand
+			info.setWandEnabled(true);
+			info.setWandID(wandId);
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), wandId);
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Wand bound to " + wandName);
+			return Command.SINGLE_SUCCESS;
+		}
+	}
+
+	@Override
+	public boolean canConsoleUseCommand() {
+		return false;
+	}
+
+	@Override
+	public String getPermissionNode() {
+		return "fe.core.pos.wand";
+	}
+
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.ALL;
+	}
 }

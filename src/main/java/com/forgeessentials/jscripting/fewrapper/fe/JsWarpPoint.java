@@ -1,137 +1,111 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-import net.minecraft.entity.Entity;
-
-import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
 
-public class JsWarpPoint extends JsWrapper<WarpPoint>
-{
-    public JsWarpPoint(WarpPoint that)
-    {
-        super(that);
-    }
+import net.minecraft.entity.Entity;
 
-    public JsWorldPoint<WorldPoint> toWorldPoint()
-    {
-        return new JsWorldPoint<>(that.toWorldPoint());
-    }
+public class JsWarpPoint extends JsWrapper<WarpPoint> {
+	public JsWarpPoint(WarpPoint that) {
+		super(that);
+	}
 
-    private JsServerWorld getWorld()
-    {
-        return new JsServerWorld(that.getWorld());
-    }
+	public JsWorldPoint<WorldPoint> toWorldPoint() {
+		return new JsWorldPoint<>(that.toWorldPoint());
+	}
 
-    public int getBlockX()
-    {
-        return that.getBlockX();
-    }
+	private JsServerWorld getWorld() {
+		return new JsServerWorld(that.getWorld());
+	}
 
-    private int getBlockY()
-    {
-        return that.getBlockY();
-    }
+	public int getBlockX() {
+		return that.getBlockX();
+	}
 
-    private int getBlockZ()
-    {
-        return that.getBlockZ();
-    }
+	private int getBlockY() {
+		return that.getBlockY();
+	}
 
-    public double getX()
-    {
-        return that.getX();
-    }
+	private int getBlockZ() {
+		return that.getBlockZ();
+	}
 
-    public double getY()
-    {
-        return that.getY();
-    }
+	public double getX() {
+		return that.getX();
+	}
 
-    public double getZ()
-    {
-        return that.getZ();
-    }
+	public double getY() {
+		return that.getY();
+	}
 
-    public String getDimension()
-    {
-        return that.getDimension();
-    }
+	public double getZ() {
+		return that.getZ();
+	}
 
-    public float getPitch()
-    {
-        return that.getPitch();
-    }
+	public String getDimension() {
+		return that.getDimension();
+	}
 
-    public float getYaw()
-    {
-        return that.getYaw();
-    }
+	public float getPitch() {
+		return that.getPitch();
+	}
 
-    public void set(String dim, double xd, double yd, double zd, float pitch, float yaw)
-    {
-        that.set(dim, xd, yd, zd, pitch, yaw);
-    }
+	public float getYaw() {
+		return that.getYaw();
+	}
 
-    public void setDimension(String dim)
-    {
-        that.setDimension(dim);
-    }
+	public void set(String dim, double xd, double yd, double zd, float pitch, float yaw) {
+		that.set(dim, xd, yd, zd, pitch, yaw);
+	}
 
-    public void setX(double value)
-    {
-        that.setX(value);
-    }
+	public void setDimension(String dim) {
+		that.setDimension(dim);
+	}
 
-    public void setY(double value)
-    {
-        that.setY(value);
-    }
+	public void setX(double value) {
+		that.setX(value);
+	}
 
-    public void setZ(double value)
-    {
-        that.setZ(value);
-    }
+	public void setY(double value) {
+		that.setY(value);
+	}
 
-    public void setPitch(float value)
-    {
-        that.setPitch(value);
-    }
+	public void setZ(double value) {
+		that.setZ(value);
+	}
 
-    public void setYaw(float value)
-    {
-        that.setYaw(value);
-    }
+	public void setPitch(float value) {
+		that.setPitch(value);
+	}
 
-    public double length()
-    {
-        return that.length();
-    }
+	public void setYaw(float value) {
+		that.setYaw(value);
+	}
 
-    public double distance(JsWarpPoint v)
-    {
-        return that.distance(v.that);
-    }
+	public double length() {
+		return that.length();
+	}
 
-    public double distance(JsEntity<Entity> e)
-    {
-        return that.distance(e.getThat());
-    }
+	public double distance(JsWarpPoint v) {
+		return that.distance(v.that);
+	}
 
-    public String toString()
-    {
-        return that.toString();
-    }
+	public double distance(JsEntity<Entity> e) {
+		return that.distance(e.getThat());
+	}
 
-    public String toReadableString()
-    {
-        return that.toReadableString();
-    }
+	public String toString() {
+		return that.toString();
+	}
 
-    public static JsWarpPoint fromString(String value)
-    {
-        return new JsWarpPoint(WarpPoint.fromString(value));
-    }
+	public String toReadableString() {
+		return that.toReadableString();
+	}
+
+	public static JsWarpPoint fromString(String value) {
+		return new JsWarpPoint(WarpPoint.fromString(value));
+	}
 }

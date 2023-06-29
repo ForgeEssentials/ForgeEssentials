@@ -6,313 +6,268 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.BlockStateArgument;
-
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
 
-public class FilterConfig
-{
+import net.minecraft.block.Block;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.BlockStateArgument;
 
-    public enum ActionEnum
-    {
-        blockPlace, blockBreak, blockDetonate, blockUse_Left, blockUse_Right, blockBurn, command, playerLogin, playerLogout, playerRespawn, playerChangeDim, playerPosition, other
-    }
+public class FilterConfig {
 
-    private static HashMap<UserIdent, FilterConfig> perPlayerFilters = new HashMap<>();
+	public enum ActionEnum {
+		blockPlace, blockBreak, blockDetonate, blockUse_Left, blockUse_Right, blockBurn, command, playerLogin,
+		playerLogout, playerRespawn, playerChangeDim, playerPosition, other
+	}
 
-    public static FilterConfig globalConfig = new FilterConfig();
+	private static HashMap<UserIdent, FilterConfig> perPlayerFilters = new HashMap<>();
 
-    private HashSet<ActionEnum> actions = new HashSet<>();
+	public static FilterConfig globalConfig = new FilterConfig();
 
-    public boolean hasAction(ActionEnum a)
-    {
-        return Awhitelist == actions.contains(a);
-    }
+	private HashSet<ActionEnum> actions = new HashSet<>();
 
-    private HashSet<Block> blocks = new HashSet<>();
+	public boolean hasAction(ActionEnum a) {
+		return Awhitelist == actions.contains(a);
+	}
 
-    public boolean hasBlock(Block b)
-    {
-        return Bwhitelist == blocks.contains(b);
-    }
+	private HashSet<Block> blocks = new HashSet<>();
 
-    public static HashSet<String> keywords = new HashSet<>();
+	public boolean hasBlock(Block b) {
+		return Bwhitelist == blocks.contains(b);
+	}
 
-    public static ArrayList<String> actiontabs = new ArrayList<>();
+	public static HashSet<String> keywords = new HashSet<>();
 
-    public Boolean Awhitelist = null;
-    public Boolean Bwhitelist = null;
+	public static ArrayList<String> actiontabs = new ArrayList<>();
 
-    public int pickerRange = 0;
+	public Boolean Awhitelist = null;
+	public Boolean Bwhitelist = null;
 
-    public UserIdent player;
+	public int pickerRange = 0;
 
-    static
-    {
-        keywords.add("action");
-        keywords.add("blockid");
-        keywords.add("before");
-        keywords.add("after");
-        keywords.add("range");
-        keywords.add("whitelist");
-        keywords.add("blacklist");
-        keywords.add("player");
+	public UserIdent player;
 
-        ActionEnum[] enums = ActionEnum.values();
+	static {
+		keywords.add("action");
+		keywords.add("blockid");
+		keywords.add("before");
+		keywords.add("after");
+		keywords.add("range");
+		keywords.add("whitelist");
+		keywords.add("blacklist");
+		keywords.add("player");
 
-        for (ActionEnum ae : enums)
-        {
-            actiontabs.add(ae.name());
-        }
-        actiontabs.add("reset");
+		ActionEnum[] enums = ActionEnum.values();
 
-        try
-        {
-            globalConfig.parse(null, null);
-        }
-        catch (CommandException e)
-        {
+		for (ActionEnum ae : enums) {
+			actiontabs.add(ae.name());
+		}
+		actiontabs.add("reset");
 
-        }
-    }
+		try {
+			globalConfig.parse(null, null);
+		} catch (CommandException e) {
 
-    public static FilterConfig getDefaultPlayerConfig(UserIdent ident)
-    {
-        if (perPlayerFilters.containsKey(ident))
-            return perPlayerFilters.get(ident);
-        return null;
-    }
+		}
+	}
 
-    public final static long default_after = 365L*24*60*60*1000;
-    public long before = 0;
-    public long after = default_after;
+	public static FilterConfig getDefaultPlayerConfig(UserIdent ident) {
+		if (perPlayerFilters.containsKey(ident))
+			return perPlayerFilters.get(ident);
+		return null;
+	}
 
-    public Date After()
-    {
-        return new Date(System.currentTimeMillis() - after);
-    }
+	public final static long default_after = 365L * 24 * 60 * 60 * 1000;
+	public long before = 0;
+	public long after = default_after;
 
-    public Date Before()
-    {
-        return new Date(System.currentTimeMillis() - before);
-    }
+	public Date After() {
+		return new Date(System.currentTimeMillis() - after);
+	}
 
-    public void parse(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
-    {
-        if (args != null)
-        {
-            //while (!(args.length==0))
-            {
-                //args.tabComplete(keywords);
-                String next = args.remove(0);
-                switch (next)
-                {
-                case "action":
-                    parseActions(ctx, args);
-                    break;
-                case "blockid":
-                    parseBlock(ctx, args);
-                    break;
-                case "before":
-                    parseBefore(ctx, args);
-                    break;
-                case "after":
-                    parseAfter(ctx, args);
-                    break;
-                case "range":
-                    parseRange(ctx, args);
-                    break;
-                case "whitelist":
-                    parseWhitelist(ctx, args, true);
-                    break;
-                case "blacklist":
-                    parseWhitelist(ctx, args, false);
-                    break;
-                case "player":
-                    try {
-						player = CommandUtils.parsePlayer(args.remove(0),ctx.getSource(), true, false);
-		                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Player To: "+player.getUsername());
+	public Date Before() {
+		return new Date(System.currentTimeMillis() - before);
+	}
+
+	public void parse(CommandContext<CommandSource> ctx, List<String> args) throws CommandException {
+		if (args != null) {
+			// while (!(args.length==0))
+			{
+				// args.tabComplete(keywords);
+				String next = args.remove(0);
+				switch (next) {
+				case "action":
+					parseActions(ctx, args);
+					break;
+				case "blockid":
+					parseBlock(ctx, args);
+					break;
+				case "before":
+					parseBefore(ctx, args);
+					break;
+				case "after":
+					parseAfter(ctx, args);
+					break;
+				case "range":
+					parseRange(ctx, args);
+					break;
+				case "whitelist":
+					parseWhitelist(ctx, args, true);
+					break;
+				case "blacklist":
+					parseWhitelist(ctx, args, false);
+					break;
+				case "player":
+					try {
+						player = CommandUtils.parsePlayer(args.remove(0), ctx.getSource(), true, false);
+						ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Player To: " + player.getUsername());
 					} catch (FECommandParsingException e) {
 						ChatOutputHandler.chatError(ctx.getSource(), e.error);
 						return;
 					}
-                    break;
-                default:
-                	ChatOutputHandler.chatError(ctx.getSource(), "Expected Keyword here!");
-                	return;
+					break;
+				default:
+					ChatOutputHandler.chatError(ctx.getSource(), "Expected Keyword here!");
+					return;
 
-                }
+				}
 
-            }
-        }
-        if (Awhitelist == null)
-        {
-            Awhitelist = !actions.isEmpty();
-        }
-        if (Bwhitelist == null)
-        {
-            Bwhitelist = !blocks.isEmpty();
-        }
+			}
+		}
+		if (Awhitelist == null) {
+			Awhitelist = !actions.isEmpty();
+		}
+		if (Bwhitelist == null) {
+			Bwhitelist = !blocks.isEmpty();
+		}
 
-    }
+	}
 
-    public void parseWhitelist(CommandContext<CommandSource> ctx, List<String> args, boolean enabled)
-    {
-        //while (!args.isEmpty() && !keywords.contains(args.peek()))
-        {
-            String name = args.remove(0);
-            if (name.equalsIgnoreCase("actions"))
-            {
-                Awhitelist = enabled;
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), (enabled? "Enabled":"Disabled")+" Action Whitelist");
-            }
-            else if (name.equalsIgnoreCase("blocks"))
-            {
-                Bwhitelist = enabled;
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), (enabled? "Enabled":"Disabled")+" Block Whitelist");
-            }
-        }
-    }
+	public void parseWhitelist(CommandContext<CommandSource> ctx, List<String> args, boolean enabled) {
+		// while (!args.isEmpty() && !keywords.contains(args.peek()))
+		{
+			String name = args.remove(0);
+			if (name.equalsIgnoreCase("actions")) {
+				Awhitelist = enabled;
+				ChatOutputHandler.chatConfirmation(ctx.getSource(),
+						(enabled ? "Enabled" : "Disabled") + " Action Whitelist");
+			} else if (name.equalsIgnoreCase("blocks")) {
+				Bwhitelist = enabled;
+				ChatOutputHandler.chatConfirmation(ctx.getSource(),
+						(enabled ? "Enabled" : "Disabled") + " Block Whitelist");
+			}
+		}
+	}
 
-    public FilterConfig(FilterConfig c)
-    {
-        this();
-        actions.addAll(c.actions);
-        blocks.addAll(c.blocks);
-        before = c.before;
-        after = c.after;
-        Awhitelist = c.Awhitelist;
-        Bwhitelist = c.Bwhitelist;
-        player = c.player;
-        pickerRange = c.pickerRange;
-    }
+	public FilterConfig(FilterConfig c) {
+		this();
+		actions.addAll(c.actions);
+		blocks.addAll(c.blocks);
+		before = c.before;
+		after = c.after;
+		Awhitelist = c.Awhitelist;
+		Bwhitelist = c.Bwhitelist;
+		player = c.player;
+		pickerRange = c.pickerRange;
+	}
 
-    public FilterConfig()
-    {
-    }
+	public FilterConfig() {
+	}
 
-    public void parseActions(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
-    {
-        //while (!args.isEmpty() && !keywords.contains(args.peek()))
-        {
-            String arg = args.remove(0);
-            if (arg.equals("reset"))
-            {
-                actions.clear();
-            }
-            else
-            {
-                try
-                {
-                    actions.add(ActionEnum.valueOf(arg));
-                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Action: "+arg);
-                }
-                catch (IllegalArgumentException e)
-                {
-                	ChatOutputHandler.chatError(ctx.getSource(), "Invalid Action");
-                	return;
-                }
-            }
+	public void parseActions(CommandContext<CommandSource> ctx, List<String> args) throws CommandException {
+		// while (!args.isEmpty() && !keywords.contains(args.peek()))
+		{
+			String arg = args.remove(0);
+			if (arg.equals("reset")) {
+				actions.clear();
+			} else {
+				try {
+					actions.add(ActionEnum.valueOf(arg));
+					ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Action: " + arg);
+				} catch (IllegalArgumentException e) {
+					ChatOutputHandler.chatError(ctx.getSource(), "Invalid Action");
+					return;
+				}
+			}
 
-        }
-    }
+		}
+	}
 
-    public void parseBlock(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
-    {
-        //while (!args.isEmpty() && !keywords.contains(args.peek()))
-        {
-            if (args.get(0).equals("reset"))
-            {
-                blocks.clear();
-                args.remove(0);
-            }
-            else
-            {
-                blocks.add(BlockStateArgument.getBlock(ctx, "block").getState().getBlock());
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Block: "+BlockStateArgument.getBlock(ctx, "block").getState().getBlock().getRegistryName());
-            }
-        }
-    }
+	public void parseBlock(CommandContext<CommandSource> ctx, List<String> args) throws CommandException {
+		// while (!args.isEmpty() && !keywords.contains(args.peek()))
+		{
+			if (args.get(0).equals("reset")) {
+				blocks.clear();
+				args.remove(0);
+			} else {
+				blocks.add(BlockStateArgument.getBlock(ctx, "block").getState().getBlock());
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Block: "
+						+ BlockStateArgument.getBlock(ctx, "block").getState().getBlock().getRegistryName());
+			}
+		}
+	}
 
-    public void parseBefore(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
-    {
-        if (!args.isEmpty())
-        {
-            if (args.get(0).equals("reset"))
-            {
-                before = 0;
-            }
-            else
-            {
-                before = 0;
-                try {
+	public void parseBefore(CommandContext<CommandSource> ctx, List<String> args) throws CommandException {
+		if (!args.isEmpty()) {
+			if (args.get(0).equals("reset")) {
+				before = 0;
+			} else {
+				before = 0;
+				try {
 					before += CommandUtils.parseTimeReadable(args.remove(0));
-	                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Before To: "+before);
+					ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Before To: " + before);
 				} catch (FECommandParsingException e) {
 					ChatOutputHandler.chatError(ctx.getSource(), e.error);
 					return;
 				}
-            }
-        }
-        else {
-        	ChatOutputHandler.chatError(ctx.getSource(), "A time must be specified here!");
-        	return;
-        }
-    }
+			}
+		} else {
+			ChatOutputHandler.chatError(ctx.getSource(), "A time must be specified here!");
+			return;
+		}
+	}
 
-    public void parseAfter(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
-    {
-        if (!args.isEmpty())
-        {
-            if (args.get(0).equals("reset"))
-            {
-                after = default_after;
-            }
-            else
-            {
-                after = 0;
-                try {
+	public void parseAfter(CommandContext<CommandSource> ctx, List<String> args) throws CommandException {
+		if (!args.isEmpty()) {
+			if (args.get(0).equals("reset")) {
+				after = default_after;
+			} else {
+				after = 0;
+				try {
 					after += CommandUtils.parseTimeReadable(args.remove(0));
-	                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set After To: "+after);
+					ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set After To: " + after);
 				} catch (FECommandParsingException e) {
 					ChatOutputHandler.chatError(ctx.getSource(), e.error);
 					return;
 				}
-            }
-        }
-        else {
-        	ChatOutputHandler.chatError(ctx.getSource(), "A time must be specified here!");
-        	return;
-        }
-    }
+			}
+		} else {
+			ChatOutputHandler.chatError(ctx.getSource(), "A time must be specified here!");
+			return;
+		}
+	}
 
-    public void parseRange(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
-    {
-        if (!args.isEmpty())
-        {
-            pickerRange = CommandUtils.parseInt(args.remove(0));
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set PickerRange To: "+pickerRange);
-        }
-        else {
-        	ChatOutputHandler.chatError(ctx.getSource(), "A integer must be specified here!");
-        	return;
-        }
-    }
+	public void parseRange(CommandContext<CommandSource> ctx, List<String> args) throws CommandException {
+		if (!args.isEmpty()) {
+			pickerRange = CommandUtils.parseInt(args.remove(0));
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set PickerRange To: " + pickerRange);
+		} else {
+			ChatOutputHandler.chatError(ctx.getSource(), "A integer must be specified here!");
+			return;
+		}
+	}
 
 	public static void setPerPlayerFilters(UserIdent user, FilterConfig PlayerFilter) {
 		FilterConfig.perPlayerFilters.put(user, PlayerFilter);
 	}
 
-	public String toReadableString()
-    {
-        return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nAWhitelist: " + Awhitelist+ "\nBWhitelist: " + Bwhitelist+ "\nPickerRange: " + pickerRange;
-    }
+	public String toReadableString() {
+		return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks
+				+ "\nAWhitelist: " + Awhitelist + "\nBWhitelist: " + Bwhitelist + "\nPickerRange: " + pickerRange;
+	}
 
 }

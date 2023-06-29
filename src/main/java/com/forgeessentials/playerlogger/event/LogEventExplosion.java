@@ -5,45 +5,40 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.event.world.ExplosionEvent;
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
-public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>
-{
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.event.world.ExplosionEvent;
 
-    public List<CachedBlockData> blocks = new ArrayList<>();
+public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate> {
 
-    public LogEventExplosion(ExplosionEvent.Detonate event)
-    {
-        super(event);
-        for (BlockPos blockPos : event.getAffectedBlocks())
-            blocks.add(new CachedBlockData(event.getWorld(), blockPos));
-    }
+	public List<CachedBlockData> blocks = new ArrayList<>();
 
-    @Override
-    public void process(EntityManager em)
-    {
-        for (CachedBlockData blockData : blocks)
-        {
-            if (blockData.block.getBlock() != Blocks.AIR)
-            {
-                Action01Block action = new Action01Block();
-                action.time = date;
-                action.world = event.getWorld().dimension().location().toString();
-                action.block = getBlock(blockData.block);
-                action.entity = blockData.tileEntityBlob;
-                action.type = ActionBlockType.DETONATE;
-                action.x = blockData.pos.getX();
-                action.y = blockData.pos.getY();
-                action.z = blockData.pos.getZ();
-                em.persist(action);
-            }
-        }
-    }
+	public LogEventExplosion(ExplosionEvent.Detonate event) {
+		super(event);
+		for (BlockPos blockPos : event.getAffectedBlocks())
+			blocks.add(new CachedBlockData(event.getWorld(), blockPos));
+	}
+
+	@Override
+	public void process(EntityManager em) {
+		for (CachedBlockData blockData : blocks) {
+			if (blockData.block.getBlock() != Blocks.AIR) {
+				Action01Block action = new Action01Block();
+				action.time = date;
+				action.world = event.getWorld().dimension().location().toString();
+				action.block = getBlock(blockData.block);
+				action.entity = blockData.tileEntityBlob;
+				action.type = ActionBlockType.DETONATE;
+				action.x = blockData.pos.getX();
+				action.y = blockData.pos.getY();
+				action.z = blockData.pos.getZ();
+				em.persist(action);
+			}
+		}
+	}
 
 }

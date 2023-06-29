@@ -1,19 +1,15 @@
 //TODO: Determine How to Handle Advancements Later
 /*
-package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
-
-import net.minecraftforge.event.entity.player.AchievementEvent;
-
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-public class JsAchievementEvent extends JsPlayerEvent<AchievementEvent>
-{
-
-    @SubscribeEvent
-    public final void _handle(AchievementEvent event)
-    {
-        _callEvent(event);
-    }
-
-}
-*/
+ * package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
+ * 
+ * import net.minecraftforge.event.entity.player.AchievementEvent;
+ * 
+ * import net.minecraftforge.eventbus.api.SubscribeEvent;
+ * 
+ * public class JsAchievementEvent extends JsPlayerEvent<AchievementEvent> {
+ * 
+ * @SubscribeEvent public final void _handle(AchievementEvent event) {
+ * _callEvent(event); }
+ * 
+ * }
+ */

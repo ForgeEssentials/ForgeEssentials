@@ -6,8 +6,7 @@ import com.forgeessentials.client.config.IFEConfig;
 
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class ValueCachedBoolean extends ValueCachedPrimitive<Boolean> implements BooleanSupplier
-{
+public class ValueCachedBoolean extends ValueCachedPrimitive<Boolean> implements BooleanSupplier {
 	private boolean cachedValue;
 
 	private ValueCachedBoolean(IFEConfig config, ConfigValue<Boolean> internal) {
@@ -20,7 +19,8 @@ public class ValueCachedBoolean extends ValueCachedPrimitive<Boolean> implements
 
 	public boolean get() {
 		if (!resolved) {
-			//If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue
+			// If we don't have a cached value or need to resolve it again, get it from the
+			// actual ConfigValue
 			cachedValue = internal.get();
 			resolved = true;
 		}

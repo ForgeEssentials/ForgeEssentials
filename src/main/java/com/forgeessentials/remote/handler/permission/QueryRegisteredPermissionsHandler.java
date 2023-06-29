@@ -12,18 +12,16 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.google.gson.JsonElement;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PERMISSION_REGISTERED)
-public class QueryRegisteredPermissionsHandler extends GenericRemoteHandler<JsonElement>
-{
+public class QueryRegisteredPermissionsHandler extends GenericRemoteHandler<JsonElement> {
 
-    public QueryRegisteredPermissionsHandler()
-    {
-        super(null, JsonElement.class);
-    }
+	public QueryRegisteredPermissionsHandler() {
+		super(null, JsonElement.class);
+	}
 
-    @Override
-    protected RemoteResponse<Collection<String>> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
-    {
-        return new RemoteResponse<Collection<String>>(request, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
-    }
+	@Override
+	protected RemoteResponse<Collection<String>> handleData(RemoteSession session, RemoteRequest<JsonElement> request) {
+		return new RemoteResponse<Collection<String>>(request,
+				APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
+	}
 
 }

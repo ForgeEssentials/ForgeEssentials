@@ -2,21 +2,18 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
-import net.minecraftforge.event.world.WorldEvent;
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 
-public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
-{
+import net.minecraftforge.event.world.WorldEvent;
 
-    public LogEventWorldLoad(WorldEvent.Load event)
-    {
-        super(event);
-    }
+public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load> {
 
-    @Override
-    public void process(EntityManager em)
-    {
+	public LogEventWorldLoad(WorldEvent.Load event) {
+		super(event);
+	}
+
+	@Override
+	public void process(EntityManager em) {
 //        if (em != null && em.find(WorldData.class, event.getWorld() instanceof ServerWorld? ((ServerWorld) event.getWorld()).dimension().location().toString() : null) == null)
 //        {
 //            WorldData world = new WorldData();
@@ -24,6 +21,6 @@ public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
 //            world.name = ((ServerWorld) event.getWorld()).dimension().location().getPath();
 //            em.persist(world);
 //        }
-    }
+	}
 
 }

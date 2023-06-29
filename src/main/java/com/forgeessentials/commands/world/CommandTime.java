@@ -4,18 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -29,332 +17,263 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandTime(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand {
 
-    public static final int dayTimeStart = 1;
-    public static final int dayTimeEnd = 11;
-    public static final int nightTimeStart = 14;
-    public static final int nightTimeEnd = 22;
+	public CommandTime(boolean enabled) {
+		super(enabled);
+	}
 
-    public static class TimeData
-    {
-        Long frozenTime;
-    }
+	public static final int dayTimeStart = 1;
+	public static final int dayTimeEnd = 11;
+	public static final int nightTimeStart = 14;
+	public static final int nightTimeEnd = 22;
 
-    protected static HashMap<String, TimeData> timeData = new HashMap<>();
+	public static class TimeData {
+		Long frozenTime;
+	}
 
-    protected static TimeData getTimeData(String worldname)
-    {
-        TimeData td = timeData.get(worldname);
-        if (td == null)
-        {
-            td = new TimeData();
-            timeData.put(worldname, td);
-        }
-        return td;
-    }
+	protected static HashMap<String, TimeData> timeData = new HashMap<>();
 
-    protected static TimeData getTimeData(RegistryKey<World> dimension)
-    {
-        return getTimeData(dimension.location().toString());
-    }
-    /* ------------------------------------------------------------ */
+	protected static TimeData getTimeData(String worldname) {
+		TimeData td = timeData.get(worldname);
+		if (td == null) {
+			td = new TimeData();
+			timeData.put(worldname, td);
+		}
+		return td;
+	}
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "time";
-    }
+	protected static TimeData getTimeData(RegistryKey<World> dimension) {
+		return getTimeData(dimension.location().toString());
+	}
+	/* ------------------------------------------------------------ */
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "time";
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".time";
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.literal("set")
-                        .then(Commands.literal("day")
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "set-day-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "set-day-one")
-                                                )
-                                        )
-                                )
-                        .then(Commands.literal("midday")
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "set-midday-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "set-midday-one")
-                                                )
-                                        )
-                                )
-                        .then(Commands.literal("dusk")
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "set-dusk-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "set-dusk-one")
-                                                )
-                                        )
-                                )
-                        .then(Commands.literal("night")
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "set-night-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "set-night-one")
-                                                )
-                                        )
-                                )
-                        .then(Commands.literal("midnight")
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "set-midnight-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "set-midnight-one")
-                                                )
-                                        )
-                                )
-                        .then(Commands.argument("time", StringArgumentType.string())
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "set-time-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "set-time-one")
-                                                )
-                                        )
-                                )
-                        )
-                .then(Commands.literal("add")
-                        .then(Commands.argument("time", StringArgumentType.string())
-                                .then(Commands.literal("all")
-                                        .executes(CommandContext -> execute(CommandContext, "add-time-all")
-                                                )
-                                        )
-                                .then(Commands.argument("dim", DimensionArgument.dimension())
-                                        .executes(CommandContext -> execute(CommandContext, "add-time-one")
-                                                )
-                                        )
-                                )
-                        )
-                .then(Commands.literal("freeze")
-                        .then(Commands.literal("all")
-                                .executes(CommandContext -> execute(CommandContext, "freeze-all")
-                                        )
-                                )
-                        .then(Commands.argument("dim", DimensionArgument.dimension())
-                                .executes(CommandContext -> execute(CommandContext, "freeze-one")
-                                        )
-                                )
-                        )
-                .executes(CommandContext -> execute(CommandContext, "blank")
-                        );
-    }
+	@Override
+	public String getPermissionNode() {
+		return ModuleCommands.PERM + ".time";
+	}
 
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        if (params.equals("blank"))
-        {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time set|add <t> [dim]");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time freeze [dim]");
-            return Command.SINGLE_SUCCESS;
-        }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder
+				.then(Commands.literal("set")
+						.then(Commands.literal("day")
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "set-day-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "set-day-one"))))
+						.then(Commands.literal("midday")
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "set-midday-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "set-midday-one"))))
+						.then(Commands.literal("dusk")
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "set-dusk-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "set-dusk-one"))))
+						.then(Commands.literal("night")
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "set-night-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "set-night-one"))))
+						.then(Commands.literal("midnight")
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "set-midnight-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "set-midnight-one"))))
+						.then(Commands.argument("time", StringArgumentType.string())
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "set-time-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "set-time-one")))))
+				.then(Commands.literal("add")
+						.then(Commands.argument("time", StringArgumentType.string())
+								.then(Commands.literal("all")
+										.executes(CommandContext -> execute(CommandContext, "add-time-all")))
+								.then(Commands.argument("dim", DimensionArgument.dimension())
+										.executes(CommandContext -> execute(CommandContext, "add-time-one")))))
+				.then(Commands.literal("freeze")
+						.then(Commands.literal("all").executes(CommandContext -> execute(CommandContext, "freeze-all")))
+						.then(Commands.argument("dim", DimensionArgument.dimension())
+								.executes(CommandContext -> execute(CommandContext, "freeze-one"))))
+				.executes(CommandContext -> execute(CommandContext, "blank"));
+	}
 
-        String[] arg = params.split("-");
-        switch (arg[0])
-        {
-        case "freeze":
-            parseFreeze(ctx, arg[1]);
-            break;
-        case "set":
-            parseTime(ctx, false, arg);
-            break;
-        case "add":
-            parseTime(ctx, true, arg);
-            break;
-        default:
-        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg[0]);
-        }
-        return Command.SINGLE_SUCCESS;
-    }
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		if (params.equals("blank")) {
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time set|add <t> [dim]");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time freeze [dim]");
+			return Command.SINGLE_SUCCESS;
+		}
 
-    public static void parseFreeze(CommandContext<CommandSource> ctx, String arg) throws CommandSyntaxException
-    {
+		String[] arg = params.split("-");
+		switch (arg[0]) {
+		case "freeze":
+			parseFreeze(ctx, arg[1]);
+			break;
+		case "set":
+			parseTime(ctx, false, arg);
+			break;
+		case "add":
+			parseTime(ctx, true, arg);
+			break;
+		default:
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg[0]);
+		}
+		return Command.SINGLE_SUCCESS;
+	}
 
-        if (arg=="all")
-        {
-            boolean freeze = getTimeData(ServerWorld.OVERWORLD).frozenTime == null;
-            for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
-            {
-                TimeData td = getTimeData(w.dimension());
-                td.frozenTime = freeze ? w.getLevelData().getDayTime() : null;
-            }
-            if (freeze)
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in all worlds");
-            else
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in all worlds");
-        }
-        else
-        {
-            ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
-            TimeData td = getTimeData(world.dimension());
-            td.frozenTime = (td.frozenTime == null) ? world.getLevelData().getDayTime() : null;
-            if (td.frozenTime != null)
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in %s", world.dimension());
-            else
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in %s", world.dimension());
-        }
-        save();
-    }
+	public static void parseFreeze(CommandContext<CommandSource> ctx, String arg) throws CommandSyntaxException {
 
-    public static void parseTime(CommandContext<CommandSource> ctx, boolean addTime, String[] arg) throws CommandSyntaxException
-    {
-        long time;
-        if (arg[1]=="time")
-        {
-            try {
+		if (arg == "all") {
+			boolean freeze = getTimeData(ServerWorld.OVERWORLD).frozenTime == null;
+			for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels()) {
+				TimeData td = getTimeData(w.dimension());
+				td.frozenTime = freeze ? w.getLevelData().getDayTime() : null;
+			}
+			if (freeze)
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in all worlds");
+			else
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in all worlds");
+		} else {
+			ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
+			TimeData td = getTimeData(world.dimension());
+			td.frozenTime = (td.frozenTime == null) ? world.getLevelData().getDayTime() : null;
+			if (td.frozenTime != null)
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in %s", world.dimension());
+			else
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in %s", world.dimension());
+		}
+		save();
+	}
+
+	public static void parseTime(CommandContext<CommandSource> ctx, boolean addTime, String[] arg)
+			throws CommandSyntaxException {
+		long time;
+		if (arg[1] == "time") {
+			try {
 				time = mcParseTimeReadable(StringArgumentType.getString(ctx, "time"));
 			} catch (FECommandParsingException e) {
 				ChatOutputHandler.chatError(ctx.getSource(), e.error);
 				return;
 			}
-        }
-        else
-        {
-            if (addTime)
-            {
-            	ChatOutputHandler.chatError(ctx.getSource(), "Add time does not accept time values in the form of day, midday, etc");
-            	return;
-            }
-            switch (arg[1])
-            {
-            case "day":
-                time = 1000;
-                break;
-            case "midday":
-                time = 6 * 1000;
-                break;
-            case "dusk":
-                time = 12 * 1000;
-                break;
-            case "night":
-                time = 14 * 1000;
-                break;
-            case "midnight":
-                time = 18 * 1000;
-                break;
-            default:
-            	ChatOutputHandler.chatError(ctx.getSource(), "Invalid Time format");
-            	return;
-            }
-        }
+		} else {
+			if (addTime) {
+				ChatOutputHandler.chatError(ctx.getSource(),
+						"Add time does not accept time values in the form of day, midday, etc");
+				return;
+			}
+			switch (arg[1]) {
+			case "day":
+				time = 1000;
+				break;
+			case "midday":
+				time = 6 * 1000;
+				break;
+			case "dusk":
+				time = 12 * 1000;
+				break;
+			case "night":
+				time = 14 * 1000;
+				break;
+			case "midnight":
+				time = 18 * 1000;
+				break;
+			default:
+				ChatOutputHandler.chatError(ctx.getSource(), "Invalid Time format");
+				return;
+			}
+		}
 
+		if (arg[2] == "all") {
+			for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels()) {
+				if (addTime)
+					w.setDayTime(w.getDayTime() + time);
+				else
+					w.setDayTime(time);
+				TimeData td = getTimeData(w.dimension());
+				if (td.frozenTime != null)
+					td.frozenTime = w.getDayTime();
+			}
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set time to %s in all worlds", time);
+		} else {
+			ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
+			if (addTime)
+				world.setDayTime(world.getDayTime() + time);
+			else
+				world.setDayTime(time);
+			TimeData td = getTimeData(world.dimension());
+			if (td.frozenTime != null)
+				td.frozenTime = world.getDayTime();
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set time to %s", time);
+		}
+	}
 
-        if (arg[2]=="all")
-        {
-            for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
-            {
-                if (addTime)
-                    w.setDayTime(w.getDayTime() + time);
-                else
-                    w.setDayTime(time);
-                TimeData td = getTimeData(w.dimension());
-                if (td.frozenTime != null)
-                    td.frozenTime = w.getDayTime();
-            }
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set time to %s in all worlds", time);
-        }
-        else
-        {
-            ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
-            if (addTime)
-                world.setDayTime(world.getDayTime() + time);
-            else
-                world.setDayTime(time);
-            TimeData td = getTimeData(world.dimension());
-            if (td.frozenTime != null)
-                td.frozenTime = world.getDayTime();
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set time to %s", time);
-        }
-    }
+	/* ------------------------------------------------------------ */
 
-    /* ------------------------------------------------------------ */
+	@SubscribeEvent
+	public void doWorldTick(TickEvent.WorldTickEvent event) {
+		if (event.phase == Phase.START)
+			return;
+		ServerWorld world = (ServerWorld) event.world;
+		if (world.getGameTime() % 10 == 0)
+			updateWorld(world);
+	}
 
-    @SubscribeEvent
-    public void doWorldTick(TickEvent.WorldTickEvent event)
-    {
-        if (event.phase == Phase.START)
-            return;
-        ServerWorld world = (ServerWorld) event.world;
-        if (world.getGameTime() % 10 == 0)
-            updateWorld(world);
-    }
+	public static void updateWorld(ServerWorld world) {
+		TimeData td = getTimeData(world.dimension());
+		if (td.frozenTime != null)
+			world.setDayTime(td.frozenTime);
+	}
 
-    public static void updateWorld(ServerWorld world)
-    {
-        TimeData td = getTimeData(world.dimension());
-        if (td.frozenTime != null)
-            world.setDayTime(td.frozenTime);
-    }
+	public static void save() {
+		DataManager.getInstance().deleteAll(TimeData.class);
+		for (Entry<String, TimeData> state : timeData.entrySet()) {
+			DataManager.getInstance().save(state.getValue(), state.getKey().toString().replace(":", "-"));
+		}
+	}
 
-    public static void save()
-    {
-        DataManager.getInstance().deleteAll(TimeData.class);
-        for (Entry<String, TimeData> state : timeData.entrySet())
-        {
-            DataManager.getInstance().save(state.getValue(), state.getKey().toString().replace(":", "-"));
-        }
-    }
-
-    @Override
-    public void loadData()
-    {
-        Map<String, TimeData> states = DataManager.getInstance().loadAll(TimeData.class);
-        timeData.clear();
-        for (Entry<String, TimeData> state : states.entrySet())
-        {
-            if (state.getValue() == null)
-                continue;
-            try
-            {
-                timeData.put(state.getKey().replace("-", ":"), state.getValue());
-            }
-            catch (NumberFormatException e)
-            {
-                /* do nothing or log message */
-            }
-        }
-    }
+	@Override
+	public void loadData() {
+		Map<String, TimeData> states = DataManager.getInstance().loadAll(TimeData.class);
+		timeData.clear();
+		for (Entry<String, TimeData> state : states.entrySet()) {
+			if (state.getValue() == null)
+				continue;
+			try {
+				timeData.put(state.getKey().replace("-", ":"), state.getValue());
+			} catch (NumberFormatException e) {
+				/* do nothing or log message */
+			}
+		}
+	}
 }

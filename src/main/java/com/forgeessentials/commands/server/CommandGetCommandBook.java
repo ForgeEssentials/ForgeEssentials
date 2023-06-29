@@ -5,16 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -27,118 +17,110 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 
-public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandGetCommandBook(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder {
 
-    public static String joinAliases(Object[] par0ArrayOfObj)
-    {
-        StringBuilder var1 = new StringBuilder();
+	public CommandGetCommandBook(boolean enabled) {
+		super(enabled);
+	}
 
-        for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
-        {
-            String var3 = "/" + par0ArrayOfObj[var2].toString();
+	public static String joinAliases(Object[] par0ArrayOfObj) {
+		StringBuilder var1 = new StringBuilder();
 
-            if (var2 > 0)
-            {
-                var1.append(", ");
-            }
+		for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2) {
+			String var3 = "/" + par0ArrayOfObj[var2].toString();
 
-            var1.append(var3);
-        }
+			if (var2 > 0) {
+				var1.append(", ");
+			}
 
-        return var1.toString();
-    }
+			var1.append(var3);
+		}
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "commandbook";
-    }
+		return var1.toString();
+	}
 
-    @Override
-    public String[] getDefaultSecondaryAliases()
-    {
-        return new String[] { "cmdbook" };
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "commandbook";
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
+	@Override
+	public String[] getDefaultSecondaryAliases() {
+		return new String[] { "cmdbook" };
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.ALL;
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return false;
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".commandbook";
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.ALL;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .executes(CommandContext -> execute(CommandContext, "blank")
-                        );
-    }
+	@Override
+	public String getPermissionNode() {
+		return ModuleCommands.PERM + ".commandbook";
+	}
 
-    @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
-        if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK)))
-        {
-            for (int i = 0; i < sender.inventory.items.size(); i++)
-            {
-                ItemStack e = sender.inventory.items.get(i);
-                if (e != ItemStack.EMPTY && e.hasTag() && e.getTag().contains("title")
-                        && e.getTag().contains("author")
-                        && e.getTag().getString("title").equals("CommandBook")
-                        && e.getTag().getString("author").equals("ForgeEssentials"))
-                {
-                    sender.inventory.setItem(i, ItemStack.EMPTY);
-                }
-            }
-        }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+	}
 
-        Set<String> pages = new TreeSet<>();
-        CommandDispatcher<CommandSource> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
-        Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(),ctx.getSource());
-        for (CommandNode<CommandSource> cmdObj : map.keySet())
-        {
-            if (!hasPermission(sender, cmdObj.toString()))
-                continue;
+	@Override
+	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
+		if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK))) {
+			for (int i = 0; i < sender.inventory.items.size(); i++) {
+				ItemStack e = sender.inventory.items.get(i);
+				if (e != ItemStack.EMPTY && e.hasTag() && e.getTag().contains("title") && e.getTag().contains("author")
+						&& e.getTag().getString("title").equals("CommandBook")
+						&& e.getTag().getString("author").equals("ForgeEssentials")) {
+					sender.inventory.setItem(i, ItemStack.EMPTY);
+				}
+			}
+		}
 
-            Set<String> commands = new HashSet<>();
-            commands.add("/" + cmdObj.getName());
+		Set<String> pages = new TreeSet<>();
+		CommandDispatcher<CommandSource> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+		Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(), ctx.getSource());
+		for (CommandNode<CommandSource> cmdObj : map.keySet()) {
+			if (!hasPermission(sender, cmdObj.toString()))
+				continue;
 
-            String perm = PermissionManager.getCommandPermission(cmdObj.toString());
-            String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
-                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK + cmdObj.getUsageText();
-            pages.add(text);
-        }
+			Set<String> commands = new HashSet<>();
+			commands.add("/" + cmdObj.getName());
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+			String perm = PermissionManager.getCommandPermission(cmdObj.toString());
+			String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
+					(perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK
+					+ cmdObj.getUsageText();
+			pages.add(text);
+		}
 
-        ListNBT pagesNbt = new ListNBT();
-        for (String page : pages)
-            pagesNbt.add(StringNBT.valueOf(page));
+		ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
 
-        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
-        is.addTagElement("title", StringNBT.valueOf("CommandBook"));
+		ListNBT pagesNbt = new ListNBT();
+		for (String page : pages)
+			pagesNbt.add(StringNBT.valueOf(page));
 
-        sender.inventory.add(is);
-        return Command.SINGLE_SUCCESS;
-    }
+		is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+		is.addTagElement("title", StringNBT.valueOf("CommandBook"));
+
+		sender.inventory.add(is);
+		return Command.SINGLE_SUCCESS;
+	}
 
 }

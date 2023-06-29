@@ -15,11 +15,11 @@ public interface IFEConfig {
 	ModConfig.Type getConfigType();
 
 	void clearListenerCache();
-	
+
 	<T, R> void addCachedValue(ValueCachedResolvableConfig<T, R> configValue);
 
 	<T> void addCachedValue(ValueCachedPrimitive<T> configValue);
-	
+
 	default boolean addToContainer() {
 		return true;
 	}

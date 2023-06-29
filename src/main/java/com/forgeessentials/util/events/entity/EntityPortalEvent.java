@@ -7,23 +7,21 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 @Cancelable
-public class EntityPortalEvent extends EntityEvent
-{
+public class EntityPortalEvent extends EntityEvent {
 
-    public final World world;
+	public final World world;
 
-    public final BlockPos pos;
+	public final BlockPos pos;
 
-    public final BlockPos target;
+	public final BlockPos target;
 
-    public final World targetDimension;
+	public final World targetDimension;
 
-    public EntityPortalEvent(Entity entity, World world, BlockPos pos, World level, BlockPos target)
-    {
-        super(entity);
-        this.world = world;
-        this.pos = pos;
-        this.target = target;
-        this.targetDimension = level;
-    }
+	public EntityPortalEvent(Entity entity, World world, BlockPos pos, World level, BlockPos target) {
+		super(entity);
+		this.world = world;
+		this.pos = pos;
+		this.target = target;
+		this.targetDimension = level;
+	}
 }

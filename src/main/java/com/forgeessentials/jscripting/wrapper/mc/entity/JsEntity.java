@@ -5,203 +5,169 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
 import com.forgeessentials.util.ServerUtil;
 
-public class JsEntity<T extends Entity> extends JsWrapper<T>
-{
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.World;
 
-    private static Map<Class<?>, Constructor<?>> entityWrapperConstructors = new HashMap<>();
+public class JsEntity<T extends Entity> extends JsWrapper<T> {
 
-    /**
-     * @tsd.ignore
-     */
-    public static JsEntity<?> get(Entity entity)
-    {
-        if (entity == null)
-            return null;
-        // Fancy reflection crap to get a specific entity type if it exists
-        // TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
-        try
-        {
-            Class<?> entityClazz = entity.getClass();
-            Constructor<?> con = entityWrapperConstructors.get(entity.getClass());
-            if (con != null)
-                return (JsEntity<?>) con.newInstance(entity);
+	private static Map<Class<?>, Constructor<?>> entityWrapperConstructors = new HashMap<>();
 
-            for (; Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
-            {
-                try
-                {
-                    Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.mc.entity.Js" + entityClazz.getSimpleName());
-                    if (JsEntity.class.isAssignableFrom(clazz))
-                    {
-                        con = clazz.getDeclaredConstructor(entityClazz);
-                        con.setAccessible(true);
-                        entityWrapperConstructors.put(entity.getClass(), con);
-                        return (JsEntity<?>) con.newInstance(entity);
-                    }
-                }
-                catch (ClassNotFoundException e)
-                {
-                    /* do nothing */
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-        return new JsEntity<>(entity);
-    }
+	/**
+	 * @tsd.ignore
+	 */
+	public static JsEntity<?> get(Entity entity) {
+		if (entity == null)
+			return null;
+		// Fancy reflection crap to get a specific entity type if it exists
+		// TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
+		try {
+			Class<?> entityClazz = entity.getClass();
+			Constructor<?> con = entityWrapperConstructors.get(entity.getClass());
+			if (con != null)
+				return (JsEntity<?>) con.newInstance(entity);
 
-    private JsWorld<?> world;
+			for (; Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass()) {
+				try {
+					Class<?> clazz = Class.forName(
+							"com.forgeessentials.jscripting.wrapper.mc.entity.Js" + entityClazz.getSimpleName());
+					if (JsEntity.class.isAssignableFrom(clazz)) {
+						con = clazz.getDeclaredConstructor(entityClazz);
+						con.setAccessible(true);
+						entityWrapperConstructors.put(entity.getClass(), con);
+						return (JsEntity<?>) con.newInstance(entity);
+					}
+				} catch (ClassNotFoundException e) {
+					/* do nothing */
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return new JsEntity<>(entity);
+	}
 
-    private JsEntity<?> ridingEntity;
+	private JsWorld<?> world;
 
-    private JsEntityList riddenByEntity;
+	private JsEntity<?> ridingEntity;
 
-    protected JsEntity(T that)
-    {
-        super(that);
-    }
+	private JsEntityList riddenByEntity;
 
-    public String getName()
-    {
-        return that.getDisplayName().getString();
-    }
+	protected JsEntity(T that) {
+		super(that);
+	}
 
-    public String getId()
-    {
-        return that.getUUID().toString();
-    }
+	public String getName() {
+		return that.getDisplayName().getString();
+	}
 
-    public UUID getUuid()
-    {
-        return that.getUUID();
-    }
+	public String getId() {
+		return that.getUUID().toString();
+	}
 
-    public int getEntityId()
-    {
-        return that.getId();
-    }
+	public UUID getUuid() {
+		return that.getUUID();
+	}
 
-    public World getDimension()
-    {
-        return that.level;
-    }
+	public int getEntityId() {
+		return that.getId();
+	}
 
-    public double getX()
-    {
-        return that.position().x;
-    }
+	public World getDimension() {
+		return that.level;
+	}
 
-    public double getY()
-    {
-        return that.position().y;
-    }
+	public double getX() {
+		return that.position().x;
+	}
 
-    public double getZ()
-    {
-        return that.position().z;
-    }
+	public double getY() {
+		return that.position().y;
+	}
 
-    public double getMotionX()
-    {
-        return that.getDeltaMovement().x;
-    }
+	public double getZ() {
+		return that.position().z;
+	}
 
-    public double getMotionY()
-    {
-        return that.getDeltaMovement().y;
-    }
+	public double getMotionX() {
+		return that.getDeltaMovement().x;
+	}
 
-    public double getMotionZ()
-    {
-        return that.getDeltaMovement().z;
-    }
+	public double getMotionY() {
+		return that.getDeltaMovement().y;
+	}
 
-    public int getChunkCoordX()
-    {
-        return that.xChunk;
-    }
+	public double getMotionZ() {
+		return that.getDeltaMovement().z;
+	}
 
-    public int getChunkCoordY()
-    {
-        return that.yChunk;
-    }
+	public int getChunkCoordX() {
+		return that.xChunk;
+	}
 
-    public int getChunkCoordZ()
-    {
-        return that.zChunk;
-    }
+	public int getChunkCoordY() {
+		return that.yChunk;
+	}
 
-    public float getWidth()
-    {
-        return that.getBbWidth();
-    }
+	public int getChunkCoordZ() {
+		return that.zChunk;
+	}
 
-    public float getHeight()
-    {
-        return that.getBbHeight();
-    }
+	public float getWidth() {
+		return that.getBbWidth();
+	}
 
-    public float getStepHeight()
-    {
-        return that.maxUpStep;
-    }
+	public float getHeight() {
+		return that.getBbHeight();
+	}
 
-    public boolean isOnGround()
-    {
-        return that.isOnGround();
-    }
+	public float getStepHeight() {
+		return that.maxUpStep;
+	}
 
-    public JsEntity<?> getRidingEntity()
-    {
-        if (ridingEntity == null)
-            ridingEntity = get(that.getEntity().getVehicle());
-        return ridingEntity;
-    }
+	public boolean isOnGround() {
+		return that.isOnGround();
+	}
 
-    public JsEntityList getRiddenByEntity()
-    {
-        if (riddenByEntity == null)
-            riddenByEntity = new JsEntityList(that.getPassengers());
-        return riddenByEntity;
-    }
+	public JsEntity<?> getRidingEntity() {
+		if (ridingEntity == null)
+			ridingEntity = get(that.getEntity().getVehicle());
+		return ridingEntity;
+	}
 
-    public JsWorld<?> getWorld()
-    {
-        if (world == null)
-            world = JsWorld.get(that.level);
-        return world;
-    }
+	public JsEntityList getRiddenByEntity() {
+		if (riddenByEntity == null)
+			riddenByEntity = new JsEntityList(that.getPassengers());
+		return riddenByEntity;
+	}
 
-    /**
-     * @tsd.ignore
-     */
-    public String _getNbt()
-    {
-        return DataManager.toJson(that.getEntityData());
-    }
+	public JsWorld<?> getWorld() {
+		if (world == null)
+			world = JsWorld.get(that.level);
+		return world;
+	}
 
-    /**
-     * @tsd.ignore
-     */
-    public void _setNbt(String value)
-    {
-        ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundNBT.class));
-    }
+	/**
+	 * @tsd.ignore
+	 */
+	public String _getNbt() {
+		return DataManager.toJson(that.getEntityData());
+	}
 
-    public String getEntityType()
-    {
-        return that.getClass().getSimpleName();
-    }
+	/**
+	 * @tsd.ignore
+	 */
+	public void _setNbt(String value) {
+		ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundNBT.class));
+	}
+
+	public String getEntityType() {
+		return that.getClass().getSimpleName();
+	}
 
 }

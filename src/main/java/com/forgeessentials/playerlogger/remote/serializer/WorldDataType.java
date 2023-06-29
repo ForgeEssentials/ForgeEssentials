@@ -1,4 +1,5 @@
 package com.forgeessentials.playerlogger.remote.serializer;
+
 //
 //import java.lang.reflect.Type;
 //

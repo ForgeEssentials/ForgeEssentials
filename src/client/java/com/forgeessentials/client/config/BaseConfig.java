@@ -6,8 +6,7 @@ import java.util.List;
 import com.forgeessentials.client.config.ValuesCached.ValueCachedPrimitive;
 import com.forgeessentials.client.config.ValuesCached.ValueCachedResolvableConfig;
 
-public abstract class BaseConfig implements IFEConfig
-{
+public abstract class BaseConfig implements IFEConfig {
 	private final List<ValueCachedResolvableConfig<?, ?>> valuescachedConfig = new ArrayList<>();
 	private final List<ValueCachedPrimitive<?>> valuescachedPrimitive = new ArrayList<>();
 

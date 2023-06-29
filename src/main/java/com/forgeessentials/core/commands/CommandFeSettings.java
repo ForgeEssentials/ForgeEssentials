@@ -11,15 +11,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
-
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,221 +30,198 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-public class CommandFeSettings extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandFeSettings(boolean enabled)
-    {
-        super(enabled);
-        instance=this;
-    }
+public class CommandFeSettings extends ForgeEssentialsCommandBuilder {
 
-    public static final String CONFIG_FILE = "Settings";
+	public CommandFeSettings(boolean enabled) {
+		super(enabled);
+		instance = this;
+	}
 
-    public static Map<String, String> aliases = new HashMap<>();
+	public static final String CONFIG_FILE = "Settings";
 
-    public static Map<String, String> printMap = new TreeMap<>();
-    private Properties props = new Properties(){
+	public static Map<String, String> aliases = new HashMap<>();
 
-        private static final long serialVersionUID = 1L;
+	public static Map<String, String> printMap = new TreeMap<>();
+	private Properties props = new Properties() {
 
-        @Override
-        public synchronized Enumeration<Object> keys() {
+		private static final long serialVersionUID = 1L;
 
-            return Collections.enumeration(new TreeSet<Object>(super
-                    .keySet()));
-        }
+		@Override
+		public synchronized Enumeration<Object> keys() {
 
-    };
+			return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+		}
 
-    private static CommandFeSettings instance;
+	};
 
-    public static CommandFeSettings getInstance()
-    {
-        return instance;
-    }
+	private static CommandFeSettings instance;
 
-    public static void addSetting(String category, String alias, String permissionNode)
-    {
-        aliases.put((category + "." + alias).toLowerCase(), permissionNode);
-    }
+	public static CommandFeSettings getInstance() {
+		return instance;
+	}
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "fesettings";
-    }
+	public static void addSetting(String category, String alias, String permissionNode) {
+		aliases.put((category + "." + alias).toLowerCase(), permissionNode);
+	}
 
-    @Override
-    public String[] getDefaultSecondaryAliases()
-    {
-        return new String[] { "feconfig" };
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "fesettings";
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.settings";
-    }
+	@Override
+	public String[] getDefaultSecondaryAliases() {
+		return new String[] { "feconfig" };
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public String getPermissionNode() {
+		return "fe.settings";
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-        		.then(Commands.literal("set")
-        				.then(Commands.argument("perm", StringArgumentType.string())
-                                .suggests(SUGGEST_SETTINGS)
-                                .then(Commands.argument("type", StringArgumentType.string())
-                                        .suggests(SUGGEST_VALUE)
-                                        .executes(CommandContext -> execute(CommandContext, "settingSET")
-                                                )
-                                        )
-                                )
-        				)
-        		.then(Commands.literal("get")
-        				.then(Commands.argument("perm", StringArgumentType.string())
-                                .suggests(SUGGEST_SETTINGS)
-                                .executes(CommandContext -> execute(CommandContext, "settingGET")
-                                        )
-                                )
-        				)
-        		.then(Commands.literal("help")
-                        .executes(CommandContext -> execute(CommandContext, "help")
-                                )
-                        )
-                .executes(CommandContext -> execute(CommandContext, "help")
-                        );
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_SETTINGS = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>();
-        for (String arg : aliases.keySet())
-        {
-            listArgs.add(arg);
-        }
-        return ISuggestionProvider.suggest(listArgs, builder);
-        };
-        public static final SuggestionProvider<CommandSource> SUGGEST_VALUE = (ctx, builder) -> {
-            List<String> listArgs = new ArrayList<>();
-            listArgs.add(Zone.PERMISSION_TRUE);
-            listArgs.add(Zone.PERMISSION_FALSE);
-            return ISuggestionProvider.suggest(listArgs, builder);
-            };
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        if (params.equals("help"))
-        {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available settings: " + StringUtils.join(aliases.keySet(), ", "));
-            return Command.SINGLE_SUCCESS;
-        }
-        String key = StringArgumentType.getString(ctx, "perm");
-        String perm = aliases.get(key);
-        if (perm == null) {
-            ChatOutputHandler.chatWarning(ctx.getSource(), "Unknown FE setting %s", key);
-            return Command.SINGLE_SUCCESS;
-        }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder
+				.then(Commands.literal("set")
+						.then(Commands.argument("perm", StringArgumentType.string()).suggests(SUGGEST_SETTINGS)
+								.then(Commands.argument("type", StringArgumentType.string()).suggests(SUGGEST_VALUE)
+										.executes(CommandContext -> execute(CommandContext, "settingSET")))))
+				.then(Commands.literal("get")
+						.then(Commands.argument("perm", StringArgumentType.string()).suggests(SUGGEST_SETTINGS)
+								.executes(CommandContext -> execute(CommandContext, "settingGET"))))
+				.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
+				.executes(CommandContext -> execute(CommandContext, "help"));
+	}
 
-        if (params.equals("settingGET"))
-        {
-            String rootValue = APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(Zone.GROUP_DEFAULT, perm);
-            String globalValue = APIRegistry.perms.getServerZone().getGroupPermission(Zone.GROUP_DEFAULT, perm);
-            if (globalValue != null && !globalValue.equals(rootValue))
-                ChatOutputHandler.chatWarning(ctx.getSource(), "%s = %s, but global permission value is set to %s", key, rootValue, globalValue);
-            else
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s = %s", key, rootValue);
-            return Command.SINGLE_SUCCESS;
-        }
+	public static final SuggestionProvider<CommandSource> SUGGEST_SETTINGS = (ctx, builder) -> {
+		List<String> listArgs = new ArrayList<>();
+		for (String arg : aliases.keySet()) {
+			listArgs.add(arg);
+		}
+		return ISuggestionProvider.suggest(listArgs, builder);
+	};
+	public static final SuggestionProvider<CommandSource> SUGGEST_VALUE = (ctx, builder) -> {
+		List<String> listArgs = new ArrayList<>();
+		listArgs.add(Zone.PERMISSION_TRUE);
+		listArgs.add(Zone.PERMISSION_FALSE);
+		return ISuggestionProvider.suggest(listArgs, builder);
+	};
 
-        String value = StringArgumentType.getString(ctx, "type");
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		if (params.equals("help")) {
+			ChatOutputHandler.chatConfirmation(ctx.getSource(),
+					"Available settings: " + StringUtils.join(aliases.keySet(), ", "));
+			return Command.SINGLE_SUCCESS;
+		}
+		String key = StringArgumentType.getString(ctx, "perm");
+		String perm = aliases.get(key);
+		if (perm == null) {
+			ChatOutputHandler.chatWarning(ctx.getSource(), "Unknown FE setting %s", key);
+			return Command.SINGLE_SUCCESS;
+		}
 
+		if (params.equals("settingGET")) {
+			String rootValue = APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(Zone.GROUP_DEFAULT,
+					perm);
+			String globalValue = APIRegistry.perms.getServerZone().getGroupPermission(Zone.GROUP_DEFAULT, perm);
+			if (globalValue != null && !globalValue.equals(rootValue))
+				ChatOutputHandler.chatWarning(ctx.getSource(), "%s = %s, but global permission value is set to %s", key,
+						rootValue, globalValue);
+			else
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s = %s", key, rootValue);
+			return Command.SINGLE_SUCCESS;
+		}
 
-        //String[] aliasParts = key.split("\\.", 2);
-        //config.get(aliasParts[0], aliasParts[1], "").set(value);
-        printMap.put(key, value);
-        saveConfig();
+		String value = StringArgumentType.getString(ctx, "type");
 
-        APIRegistry.perms.registerPermissionProperty(perm, value);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Changed setting \"%s\" to \"%s\"", key, value);
-        
-        return Command.SINGLE_SUCCESS;
-    }
+		// String[] aliasParts = key.split("\\.", 2);
+		// config.get(aliasParts[0], aliasParts[1], "").set(value);
+		printMap.put(key, value);
+		saveConfig();
 
-    public void loadSettings()
-    {
-    	File configFile = new File(ForgeEssentials.getFEDirectory()+"/Settings.cfg");
-    	try {
-    		FileReader reader = new FileReader(configFile);
-    		props.load(reader);
-    		for (String key : props.stringPropertyNames()) {
-    			String value = props.getProperty(key);
-    			printMap.put(key, value);
-    		}
-    		reader.close();
-    	} catch (FileNotFoundException ex) {
-    		// file does not exist
-    	} catch (IOException ex) {
-    		// I/O error
-    	}
-        RootZone root = APIRegistry.perms.getServerZone().getRootZone();
-        for (Entry<String, String> setting : aliases.entrySet())
-        {
-            String defaultValue = root.getGroupPermission(Zone.GROUP_DEFAULT, setting.getValue());
-            if (defaultValue == null)
-                defaultValue = "";
-            String desc = APIRegistry.perms.getPermissionDescription(setting.getValue());
-            if(desc!=null) {
-                APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue, desc);
-            }
-            else {
-                APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue);
-            }
+		APIRegistry.perms.registerPermissionProperty(perm, value);
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Changed setting \"%s\" to \"%s\"", key, value);
 
-            String value ="";
-            if(printMap.containsKey(setting.getKey())) {
-            	value=printMap.get(setting.getKey());
-            }
-            else {
-            	printMap.put(setting.getKey(), defaultValue);
-            	value=defaultValue;
-            }
+		return Command.SINGLE_SUCCESS;
+	}
 
-            if (!value.isEmpty())
-                APIRegistry.perms.registerPermissionProperty(setting.getValue(), value);
-        }
-        saveConfig();
-    }
-    private void saveConfig() {
-        File configFile = new File(ForgeEssentials.getFEDirectory()+"/Settings.cfg");
-        
-        try {
-            for (Map.Entry<String, String> entry : printMap.entrySet()) {
-                props.setProperty(entry.getKey(), entry.getValue());
-                //String help = String.format("%s = %s\n%s", setting.getValue(), defaultValue, desc);
-                //String[] aliasParts = setting.getKey().split("\\.", 2);
-                //config.get(aliasParts[0], aliasParts[1], "").set(value);
-            }
-            FileWriter writer = new FileWriter(configFile);
-            props.store(writer, "Tweek default settings here.");
-            writer.close();
-        } catch (FileNotFoundException ex) {
-            // file does not exist
-        } catch (IOException ex) {
-            // I/O error
-        } catch (NullPointerException ex) {
-            // Empty settings Map
-        }
-    }
+	public void loadSettings() {
+		File configFile = new File(ForgeEssentials.getFEDirectory() + "/Settings.cfg");
+		try {
+			FileReader reader = new FileReader(configFile);
+			props.load(reader);
+			for (String key : props.stringPropertyNames()) {
+				String value = props.getProperty(key);
+				printMap.put(key, value);
+			}
+			reader.close();
+		} catch (FileNotFoundException ex) {
+			// file does not exist
+		} catch (IOException ex) {
+			// I/O error
+		}
+		RootZone root = APIRegistry.perms.getServerZone().getRootZone();
+		for (Entry<String, String> setting : aliases.entrySet()) {
+			String defaultValue = root.getGroupPermission(Zone.GROUP_DEFAULT, setting.getValue());
+			if (defaultValue == null)
+				defaultValue = "";
+			String desc = APIRegistry.perms.getPermissionDescription(setting.getValue());
+			if (desc != null) {
+				APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue, desc);
+			} else {
+				APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue);
+			}
+
+			String value = "";
+			if (printMap.containsKey(setting.getKey())) {
+				value = printMap.get(setting.getKey());
+			} else {
+				printMap.put(setting.getKey(), defaultValue);
+				value = defaultValue;
+			}
+
+			if (!value.isEmpty())
+				APIRegistry.perms.registerPermissionProperty(setting.getValue(), value);
+		}
+		saveConfig();
+	}
+
+	private void saveConfig() {
+		File configFile = new File(ForgeEssentials.getFEDirectory() + "/Settings.cfg");
+
+		try {
+			for (Map.Entry<String, String> entry : printMap.entrySet()) {
+				props.setProperty(entry.getKey(), entry.getValue());
+				// String help = String.format("%s = %s\n%s", setting.getValue(), defaultValue,
+				// desc);
+				// String[] aliasParts = setting.getKey().split("\\.", 2);
+				// config.get(aliasParts[0], aliasParts[1], "").set(value);
+			}
+			FileWriter writer = new FileWriter(configFile);
+			props.store(writer, "Tweek default settings here.");
+			writer.close();
+		} catch (FileNotFoundException ex) {
+			// file does not exist
+		} catch (IOException ex) {
+			// I/O error
+		} catch (NullPointerException ex) {
+			// Empty settings Map
+		}
+	}
 }

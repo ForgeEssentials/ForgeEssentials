@@ -6,15 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
@@ -25,66 +16,67 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.handler.chat.QueryChatHandler.Request;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
 @FERemoteHandler(id = RemoteMessageID.QUERY_CHAT)
-public class QueryChatHandler extends GenericRemoteHandler<Request>
-{
+public class QueryChatHandler extends GenericRemoteHandler<Request> {
 
-    private static final int BUFFER_SIZE = 200;
+	private static final int BUFFER_SIZE = 200;
 
-    public static final String PERM = PERM_REMOTE + ".chat.query";
+	public static final String PERM = PERM_REMOTE + ".chat.query";
 
-    private static Map<Long, TextComponent> chatLog = new TreeMap<>();
+	private static Map<Long, TextComponent> chatLog = new TreeMap<>();
 
-    public QueryChatHandler()
-    {
-        super(PERM, Request.class);
-        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows querying chat messages");
-        MinecraftForge.EVENT_BUS.register(this);
-    }
+	public QueryChatHandler() {
+		super(PERM, Request.class);
+		APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows querying chat messages");
+		MinecraftForge.EVENT_BUS.register(this);
+	}
 
-    @Override
-    public synchronized RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<Request> request)
-    {
-        ChatFormat format = request.data == null ? ChatFormat.PLAINTEXT : ChatFormat.fromString(request.data.format);
-        Map<Long, Object> messages = new HashMap<>();
-        for (Entry<Long, TextComponent> message : chatLog.entrySet())
-        {
-            if (request.data != null && message.getKey() < request.data.timestamp)
-                continue;
-            messages.put(message.getKey(), format.format(message.getValue()));
-        }
-        return new RemoteResponse<Map<?, ?>>(request, messages);
-    }
+	@Override
+	public synchronized RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<Request> request) {
+		ChatFormat format = request.data == null ? ChatFormat.PLAINTEXT : ChatFormat.fromString(request.data.format);
+		Map<Long, Object> messages = new HashMap<>();
+		for (Entry<Long, TextComponent> message : chatLog.entrySet()) {
+			if (request.data != null && message.getKey() < request.data.timestamp)
+				continue;
+			messages.put(message.getKey(), format.format(message.getValue()));
+		}
+		return new RemoteResponse<Map<?, ?>>(request, messages);
+	}
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public synchronized void chatEvent(ServerChatEvent event)
-    {
-        onMessage(event.getComponent());
-    }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public synchronized void chatEvent(ServerChatEvent event) {
+		onMessage(event.getComponent());
+	}
 
-    public static void onMessage(ITextComponent message)
-    {
-        Long key = System.currentTimeMillis();
-        while (chatLog.containsKey(key))
-            key++;
-        TextComponent me = new StringTextComponent("");
-        me.append(message);
-        chatLog.put(key, me);
-        while (chatLog.size() > BUFFER_SIZE)
-        {
-            Iterator<?> it = chatLog.entrySet().iterator();
-            it.next();
-            it.remove();
-        }
-    }
+	public static void onMessage(ITextComponent message) {
+		Long key = System.currentTimeMillis();
+		while (chatLog.containsKey(key))
+			key++;
+		TextComponent me = new StringTextComponent("");
+		me.append(message);
+		chatLog.put(key, me);
+		while (chatLog.size() > BUFFER_SIZE) {
+			Iterator<?> it = chatLog.entrySet().iterator();
+			it.next();
+			it.remove();
+		}
+	}
 
-    public static class Request
-    {
+	public static class Request {
 
-        public long timestamp;
+		public long timestamp;
 
-        public String format;
+		public String format;
 
-    }
+	}
 
 }

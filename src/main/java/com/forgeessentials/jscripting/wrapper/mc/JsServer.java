@@ -7,14 +7,6 @@ import java.util.List;
 
 import javax.script.ScriptException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
@@ -25,215 +17,195 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.ParseResults;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
 /**
  * @tsd.interface Server
  */
-public class JsServer
-{
+public class JsServer {
 
-    private ScriptInstance script;
+	private ScriptInstance script;
 
-    private JsICommandSender server;
+	private JsICommandSender server;
 
-    public JsServer(ScriptInstance script)
-    {
-        this.script = script;
-    }
+	public JsServer(ScriptInstance script) {
+		this.script = script;
+	}
 
-    public JsICommandSender getServer()
-    {
-        MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
-        if (server == null || server.getThat().getServer() != srv)
-            server = JsICommandSender.get(srv.createCommandSourceStack());
-        return server;
-    }
+	public JsICommandSender getServer() {
+		MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
+		if (server == null || server.getThat().getServer() != srv)
+			server = JsICommandSender.get(srv.createCommandSourceStack());
+		return server;
+	}
 
-    /**
-     * Runs a Minecraft command.<br>
-     * Be sure to separate each argument of the command as a single argument to this function. <br>
-     * <br>
-     * <b>Right:</b> runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);<br>
-     * <b>Wrong:</b> runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
-     */
-    public void runCommand(JsICommandSender sender, String cmd, Object... args)
-    {
-        doRunCommand(sender, false, cmd, args);
-    }
+	/**
+	 * Runs a Minecraft command.<br>
+	 * Be sure to separate each argument of the command as a single argument to this
+	 * function. <br>
+	 * <br>
+	 * <b>Right:</b> runCommand(sender, 'give', player.getName(), 'minecraft:dirt',
+	 * 1);<br>
+	 * <b>Wrong:</b> runCommand(sender, 'give ' + player.getName() + '
+	 * minecraft:dirt 1');
+	 */
+	public void runCommand(JsICommandSender sender, String cmd, Object... args) {
+		doRunCommand(sender, false, cmd, args);
+	}
 
-    /**
-     * Runs a Minecraft command and ignores any errors it might throw
-     */
-    public void tryRunCommand(JsICommandSender sender, String cmd, Object... args)
-    {
-        doRunCommand(sender, true, cmd, args);
-    }
+	/**
+	 * Runs a Minecraft command and ignores any errors it might throw
+	 */
+	public void tryRunCommand(JsICommandSender sender, String cmd, Object... args) {
+		doRunCommand(sender, true, cmd, args);
+	}
 
-    private void doRunCommand(JsICommandSender sender, boolean ignoreErrors, String cmd, Object... args)
-    {
-        if (sender == null)
-            sender = server;
+	private void doRunCommand(JsICommandSender sender, boolean ignoreErrors, String cmd, Object... args) {
+		if (sender == null)
+			sender = server;
 
-        String[] strArgs = new String[args.length];
-        for (int i = 0; i < args.length; i++)
-            strArgs[i] = args[i].toString();
+		String[] strArgs = new String[args.length];
+		for (int i = 0; i < args.length; i++)
+			strArgs[i] = args[i].toString();
 
-        // Join and split again to fix invalid arguments containing spaces
-        String cmdLine = StringUtils.join(strArgs, " ");
-        cmd = cmd + cmdLine;
-        
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher().parse(cmd, server.createCommandSourceStack());
-        if (command.getReader().canRead() != true)
-        {
-            script.chatError("Command \"" + cmd + "\" not found");
-            return;
-        }
+		// Join and split again to fix invalid arguments containing spaces
+		String cmdLine = StringUtils.join(strArgs, " ");
+		cmd = cmd + cmdLine;
 
-        try
-        {
-            server.getCommands().performCommand(sender.getThat(), cmd);
-        }
-        catch (CommandException e)
-        {
-            if (!ignoreErrors)
-                script.chatError(e.getMessage());
-        }
-    }
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
+				.parse(cmd, server.createCommandSourceStack());
+		if (command.getReader().canRead() != true) {
+			script.chatError("Command \"" + cmd + "\" not found");
+			return;
+		}
 
-    /**
-     * Registers a new event handler.
-     *
-     * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
-     */
-    public void registerEvent(String event, Object handler) throws ScriptException
-    {
-        script.registerEventHandler(event, handler);
-    }
+		try {
+			server.getCommands().performCommand(sender.getThat(), cmd);
+		} catch (CommandException e) {
+			if (!ignoreErrors)
+				script.chatError(e.getMessage());
+		}
+	}
 
-    /**
-     * Broadcast an uncolored message to all players
-     */
-    public void chat(String message)
-    {
-        ChatOutputHandler.broadcast(message);
-    }
+	/**
+	 * Registers a new event handler.
+	 *
+	 * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) =>
+	 *          void): void;
+	 */
+	public void registerEvent(String event, Object handler) throws ScriptException {
+		script.registerEventHandler(event, handler);
+	}
 
-    /**
-     * Broadcast a confirmation message to all players
-     */
-    public void chatConfirm(String message)
-    {
-        ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(message));
-    }
+	/**
+	 * Broadcast an uncolored message to all players
+	 */
+	public void chat(String message) {
+		ChatOutputHandler.broadcast(message);
+	}
 
-    /**
-     * Broadcast a notification message to all players
-     */
-    public void chatNotification(String message)
-    {
-        ChatOutputHandler.broadcast(ChatOutputHandler.notification(message));
-    }
+	/**
+	 * Broadcast a confirmation message to all players
+	 */
+	public void chatConfirm(String message) {
+		ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(message));
+	}
 
-    /**
-     * Broadcast an error message to all players
-     */
-    public void chatError(String message)
-    {
-        ChatOutputHandler.broadcast(ChatOutputHandler.error(message));
-    }
+	/**
+	 * Broadcast a notification message to all players
+	 */
+	public void chatNotification(String message) {
+		ChatOutputHandler.broadcast(ChatOutputHandler.notification(message));
+	}
 
-    /**
-     * Broadcast a warning message to all players
-     */
-    public void chatWarning(String message)
-    {
-        ChatOutputHandler.broadcast(ChatOutputHandler.warning(message));
-    }
+	/**
+	 * Broadcast an error message to all players
+	 */
+	public void chatError(String message) {
+		ChatOutputHandler.broadcast(ChatOutputHandler.error(message));
+	}
 
-    /**
-     * Returns the amount of time this player was active on the server in seconds
-     */
-    public double getTps()
-    {
-        return Math.min(20, ServerUtil.getTPS());
-    }
+	/**
+	 * Broadcast a warning message to all players
+	 */
+	public void chatWarning(String message) {
+		ChatOutputHandler.broadcast(ChatOutputHandler.warning(message));
+	}
 
-    /**
-     * Time since server start in ms
-     */
-    public long getUptime()
-    {
-        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-        return rb.getUptime();
-    }
+	/**
+	 * Returns the amount of time this player was active on the server in seconds
+	 */
+	public double getTps() {
+		return Math.min(20, ServerUtil.getTPS());
+	}
 
-    /**
-     * Returns the number of players currently online
-     */
-    public int getCurrentPlayerCount()
-    {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        return server == null ? 0 : server.getPlayerCount();
-    }
+	/**
+	 * Time since server start in ms
+	 */
+	public long getUptime() {
+		RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
+		return rb.getUptime();
+	}
 
-    /**
-     * Returns an array of players online
-     */
-    public String[] getOnlinePlayers()
-    {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server == null)
-        {
-            return new String[] {};
-        }
-        else
-        {
-            return server.getPlayerNames();
-        }
-    }
+	/**
+	 * Returns the number of players currently online
+	 */
+	public int getCurrentPlayerCount() {
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		return server == null ? 0 : server.getPlayerCount();
+	}
 
-    /**
-     * Returns the total number of unique players that have connected to this server
-     */
-    public int getUniquePlayerCount()
-    {
-        return APIRegistry.perms.getServerZone().getKnownPlayers().size();
-    }
+	/**
+	 * Returns an array of players online
+	 */
+	public String[] getOnlinePlayers() {
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		if (server == null) {
+			return new String[] {};
+		} else {
+			return server.getPlayerNames();
+		}
+	}
 
-    public List<String> getAllPlayers()
-    {
-        List<String> x = new ArrayList<>();
-        for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers())
-        {
-            x.add(j.getUsername());
-        }
-        return x;
-    }
+	/**
+	 * Returns the total number of unique players that have connected to this server
+	 */
+	public int getUniquePlayerCount() {
+		return APIRegistry.perms.getServerZone().getKnownPlayers().size();
+	}
 
-    public void serverLog(String msg)
-    {
-        if (msg != null)
-        {
-            this.getServer().chat(msg);
-        }
-    }
+	public List<String> getAllPlayers() {
+		List<String> x = new ArrayList<>();
+		for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers()) {
+			x.add(j.getUsername());
+		}
+		return x;
+	}
 
-    public void tellRaw(String msg)
-    {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        try
-        {
-            ITextComponent component = ITextComponent.Serializer.fromJson(msg);
+	public void serverLog(String msg) {
+		if (msg != null) {
+			this.getServer().chat(msg);
+		}
+	}
 
-            for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
-            {
-                server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getUUID());
-            }
-        }
-        catch (JsonParseException jsonparseexception)
-        {
-            this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
-        }
-    }
+	public void tellRaw(String msg) {
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		try {
+			ITextComponent component = ITextComponent.Serializer.fromJson(msg);
+
+			for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+				server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getUUID());
+			}
+		} catch (JsonParseException jsonparseexception) {
+			this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
+		}
+	}
 
 }

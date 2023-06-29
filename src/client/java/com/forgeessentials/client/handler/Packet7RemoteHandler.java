@@ -21,36 +21,31 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet7RemoteHandler extends Packet7Remote
-{
-    Packet7RemoteHandler(String linkg)
-    {
-        super(linkg);
-    }
+public class Packet7RemoteHandler extends Packet7Remote {
+	Packet7RemoteHandler(String linkg) {
+		super(linkg);
+	}
 
-    public static Packet7RemoteHandler decode(PacketBuffer buf)
-    {
-        return new Packet7RemoteHandler(buf.readUtf());
-    }
+	public static Packet7RemoteHandler decode(PacketBuffer buf) {
+		return new Packet7RemoteHandler(buf.readUtf());
+	}
 
-    @Override
-    public void handle(NetworkEvent.Context context) {
-        try
-        {
-            BufferedImage img =ImageIO.read(new URL(link));
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(img, "png", baos);
-            InputStream is = new ByteArrayInputStream(baos.toByteArray());
-            DynamicTexture qrCodeTexture = new DynamicTexture(NativeImage.read(is));
-            ForgeEssentialsClient.qrCodeRenderer.qrCode = Minecraft.getInstance().getTextureManager().register("qr_code", qrCodeTexture);
-        }
-        catch (IOException e)
-        {
-            TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
-            cmsg.withStyle(TextFormatting.RED);
-            Minecraft instance = Minecraft.getInstance();
-            instance.player.sendMessage(cmsg,instance.player.getUUID());
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void handle(NetworkEvent.Context context) {
+		try {
+			BufferedImage img = ImageIO.read(new URL(link));
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(img, "png", baos);
+			InputStream is = new ByteArrayInputStream(baos.toByteArray());
+			DynamicTexture qrCodeTexture = new DynamicTexture(NativeImage.read(is));
+			ForgeEssentialsClient.qrCodeRenderer.qrCode = Minecraft.getInstance().getTextureManager()
+					.register("qr_code", qrCodeTexture);
+		} catch (IOException e) {
+			TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
+			cmsg.withStyle(TextFormatting.RED);
+			Minecraft instance = Minecraft.getInstance();
+			instance.player.sendMessage(cmsg, instance.player.getUUID());
+			e.printStackTrace();
+		}
+	}
 }

@@ -1,19 +1,8 @@
 package com.forgeessentials.economy.commands;
 
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -25,109 +14,104 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandSellCommand extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.ItemArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandSellCommand(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandSellCommand extends ForgeEssentialsCommandBuilder {
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "sellcommand";
-    }
+	public CommandSellCommand(boolean enabled) {
+		super(enabled);
+	}
 
-    @Override
-    public String[] getDefaultSecondaryAliases()
-    {
-        return new String[] { "sc", "scmd" };
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "sellcommand";
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleEconomy.PERM_COMMAND + ".sellcommand";
-    }
+	@Override
+	public String[] getDefaultSecondaryAliases() {
+		return new String[] { "sc", "scmd" };
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public String getPermissionNode() {
+		return ModuleEconomy.PERM_COMMAND + ".sellcommand";
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    /*
-     * Expected structure: "/sellcommand <player> <item> <amount> <command...>"
-     */
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("item", ItemArgument.item())
-                                .then(Commands.argument("amount", IntegerArgumentType.integer())
-                                        .then(Commands.argument("command", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext, "blank")
-                                                        )
-                                                )
-                                        )
-                                )
-                        );
-    }
+	/*
+	 * Expected structure: "/sellcommand <player> <item> <amount> <command...>"
+	 */
 
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
-        ServerPlayerEntity player = ident.getPlayerMP();
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+				.then(Commands.argument("item", ItemArgument.item())
+						.then(Commands.argument("amount", IntegerArgumentType.integer())
+								.then(Commands.argument("command", StringArgumentType.greedyString())
+										.executes(CommandContext -> execute(CommandContext, "blank"))))));
+	}
 
-        int amount = IntegerArgumentType.getInteger(ctx, "amount");
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
+		ServerPlayerEntity player = ident.getPlayerMP();
 
-        Item item = ItemArgument.getItem(ctx, "item").getItem();
-        ItemStack itemStack = new ItemStack(item, amount);
+		int amount = IntegerArgumentType.getInteger(ctx, "amount");
 
-        int foundStacks = 0;
-        for (int slot = 0; slot < player.inventory.items.size(); slot++)
-        {
-            ItemStack stack = player.inventory.items.get(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
-                    && (itemStack.getDamageValue() == -1 || stack.getDamageValue() == itemStack.getDamageValue()))
-                foundStacks += stack.getCount();
-        }
+		Item item = ItemArgument.getItem(ctx, "item").getItem();
+		ItemStack itemStack = new ItemStack(item, amount);
 
-        if (foundStacks < amount)
-        {
-            ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName().getString()));
-            return Command.SINGLE_SUCCESS;
-        }
+		int foundStacks = 0;
+		for (int slot = 0; slot < player.inventory.items.size(); slot++) {
+			ItemStack stack = player.inventory.items.get(slot);
+			if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
+					&& (itemStack.getDamageValue() == -1 || stack.getDamageValue() == itemStack.getDamageValue()))
+				foundStacks += stack.getCount();
+		}
 
-        ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
-                amount, itemStack.getDisplayName().getString(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
+		if (foundStacks < amount) {
+			ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this",
+					itemStack.getDisplayName().getString()));
+			return Command.SINGLE_SUCCESS;
+		}
 
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack()).createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
+		ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
+				amount, itemStack.getDisplayName().getString(),
+				APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
-        for (int slot = 0; slot < player.inventory.items.size(); slot++)
-        {
-            ItemStack stack = player.inventory.items.get(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
-                    && (itemStack.getDamageValue() == -1 || stack.getDamageValue() == itemStack.getDamageValue()))
-            {
-                int removeCount = Math.min(stack.getCount(), amount);
-                player.inventory.removeItem(slot, removeCount);
-                foundStacks -= removeCount;
-                amount -= removeCount;
-                if (amount <= 0)
-                    break;
-            }
-        }
-        return Command.SINGLE_SUCCESS;
-    }
+		ServerLifecycleHooks.getCurrentServer().getCommands()
+				.performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack())
+						.createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
+
+		for (int slot = 0; slot < player.inventory.items.size(); slot++) {
+			ItemStack stack = player.inventory.items.get(slot);
+			if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
+					&& (itemStack.getDamageValue() == -1 || stack.getDamageValue() == itemStack.getDamageValue())) {
+				int removeCount = Math.min(stack.getCount(), amount);
+				player.inventory.removeItem(slot, removeCount);
+				foundStacks -= removeCount;
+				amount -= removeCount;
+				if (amount <= 0)
+					break;
+			}
+		}
+		return Command.SINGLE_SUCCESS;
+	}
 }

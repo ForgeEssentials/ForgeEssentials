@@ -12,31 +12,28 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND_COMPLETE)
-public class CommandCompleteHandler extends GenericRemoteHandler<String>
-{
+public class CommandCompleteHandler extends GenericRemoteHandler<String> {
 
-    public static final String PERM = CommandHandler.PERM;
+	public static final String PERM = CommandHandler.PERM;
 
-    public CommandCompleteHandler()
-    {
-        super(PERM, String.class);
-    }
+	public CommandCompleteHandler() {
+		super(PERM, String.class);
+	}
 
-    @Override
-    protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
-    {
-        if (request.data == null)
-            error("Missing command");
+	@Override
+	protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request) {
+		if (request.data == null)
+			error("Missing command");
 
-        String[] args = request.data.split(" ");
-        //String commandName = args[0].substring(1);
-        args = Arrays.copyOfRange(args, 1, args.length);
-        //if (command == null)
-            // TODO: Complete command name
-            error("Command not found");
+		String[] args = request.data.split(" ");
+		// String commandName = args[0].substring(1);
+		args = Arrays.copyOfRange(args, 1, args.length);
+		// if (command == null)
+		// TODO: Complete command name
+		error("Command not found");
 
-        //RemoteCommandSender sender = RemoteCommandSender.get(session);
-        return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, new ArrayList<String>());
-    }
+		// RemoteCommandSender sender = RemoteCommandSender.get(session);
+		return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, new ArrayList<String>());
+	}
 
 }

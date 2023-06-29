@@ -10,28 +10,30 @@ public abstract class BaseCommand {
 	boolean enabled;
 	String name;
 	int permissionLevel;
-	
+
 	public BaseCommand(boolean enabled) {
-		this.builder = Commands.literal(getPrimaryAlias()).requires(source -> source.hasPermission(getPermissionLevel()));
+		this.builder = Commands.literal(getPrimaryAlias())
+				.requires(source -> source.hasPermission(getPermissionLevel()));
 		this.enabled = enabled;
 	}
-	
+
 	public LiteralArgumentBuilder<CommandSource> getBuilder() {
 		return builder;
 	}
-	
+
 	public boolean isEnabled() {
 		return enabled;
 	}
-	
+
 	public LiteralArgumentBuilder<CommandSource> setExecution() {
 		return null;
 	}
-    public String getPrimaryAlias() {
-        return "";
-    }
 
-    public int getPermissionLevel() {
-        return 0;
-    }
+	public String getPrimaryAlias() {
+		return "";
+	}
+
+	public int getPermissionLevel() {
+		return 0;
+	}
 }

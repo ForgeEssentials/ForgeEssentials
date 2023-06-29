@@ -1,11 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -16,66 +10,62 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandLocate extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandLocate(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandLocate extends ForgeEssentialsCommandBuilder {
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "locate";
-    }
+	public CommandLocate(boolean enabled) {
+		super(enabled);
+	}
 
-    @Override
-    public String[] getDefaultSecondaryAliases()
-    {
-        return new String[] { "gps", "loc", "playerinfo" };
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "locate";
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public String[] getDefaultSecondaryAliases() {
+		return new String[] { "gps", "loc", "playerinfo" };
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".locate";
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, "blank")
-                                )
-                        );
-    }
+	@Override
+	public String getPermissionNode() {
+		return ModuleCommands.PERM + ".locate";
+	}
 
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (player == null){
-        	ChatOutputHandler.chatError(ctx.getSource(), "Player does not exist, or is not online.");
-        }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+				.executes(CommandContext -> execute(CommandContext, "blank")));
+	}
 
-        WorldPoint point = new WorldPoint(player);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is at %d, %d, %d in dim %s with gamemode %s", //
-                player.getDisplayName().getString(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
-                player.gameMode.getGameModeForPlayer().getName()));
-        return Command.SINGLE_SUCCESS;
-    }
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+		if (player == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Player does not exist, or is not online.");
+		}
+
+		WorldPoint point = new WorldPoint(player);
+		ChatOutputHandler.chatConfirmation(ctx.getSource(),
+				Translator.format("%s is at %d, %d, %d in dim %s with gamemode %s", //
+						player.getDisplayName().getString(), point.getX(), point.getY(), point.getZ(),
+						point.getDimension(), //
+						player.gameMode.getGameModeForPlayer().getName()));
+		return Command.SINGLE_SUCCESS;
+	}
 }

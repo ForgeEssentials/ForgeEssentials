@@ -1,9 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -16,68 +12,61 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandSeen extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandSeen(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandSeen extends ForgeEssentialsCommandBuilder {
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "seen";
-    }
+	public CommandSeen(boolean enabled) {
+		super(enabled);
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "seen";
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.ALL;
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".seen";
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.ALL;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.argument("player", StringArgumentType.word())
-                        .executes(CommandContext -> execute(CommandContext, "player")
-                                )
-                        );
-    }
+	@Override
+	public String getPermissionNode() {
+		return ModuleCommands.PERM + ".seen";
+	}
 
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        UserIdent player = UserIdent.get(StringArgumentType.getString(ctx, "player"),false);
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.then(Commands.argument("player", StringArgumentType.word())
+				.executes(CommandContext -> execute(CommandContext, "player")));
+	}
 
-        if (player.hasPlayer()&&!player.getPlayerMP().hasDisconnected())
-        {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Player %s is currently online", player.getUsernameOrUuid()));
-            return Command.SINGLE_SUCCESS;
-        }
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		UserIdent player = UserIdent.get(StringArgumentType.getString(ctx, "player"), false);
 
-        if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid())) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Player not found");
-            return Command.SINGLE_SUCCESS;
-        }
-        PlayerInfo pi = PlayerInfo.get(player.getUuid());
-        long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(),
-                ChatOutputHandler.formatTimeDurationReadable(t, false)));
-        PlayerInfo.discard(pi.ident.getUuid());
-        return Command.SINGLE_SUCCESS;
-    }
+		if (player.hasPlayer() && !player.getPlayerMP().hasDisconnected()) {
+			ChatOutputHandler.chatConfirmation(ctx.getSource(),
+					Translator.format("Player %s is currently online", player.getUsernameOrUuid()));
+			return Command.SINGLE_SUCCESS;
+		}
+
+		if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid())) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Player not found");
+			return Command.SINGLE_SUCCESS;
+		}
+		PlayerInfo pi = PlayerInfo.get(player.getUuid());
+		long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Player %s was last seen %s ago",
+				player.getUsernameOrUuid(), ChatOutputHandler.formatTimeDurationReadable(t, false)));
+		PlayerInfo.discard(pi.ident.getUuid());
+		return Command.SINGLE_SUCCESS;
+	}
 }

@@ -1,64 +1,53 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandUuid extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandUuid(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandUuid extends ForgeEssentialsCommandBuilder {
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "uuid";
-    }
+	public CommandUuid(boolean enabled) {
+		super(enabled);
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.commands.uuid";
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "uuid";
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public String getPermissionNode() {
+		return "fe.commands.uuid";
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, "blank")
-                                )
-                        );
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "UUID= "+ player.getStringUUID());
-        return Command.SINGLE_SUCCESS;
-    }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+				.executes(CommandContext -> execute(CommandContext, "blank")));
+	}
+
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "UUID= " + player.getStringUUID());
+		return Command.SINGLE_SUCCESS;
+	}
 }

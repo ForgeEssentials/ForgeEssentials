@@ -3,7 +3,6 @@ package com.forgeessentials.playerlogger;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
@@ -16,11 +15,11 @@ import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.playerlogger.command.CommandTestPlayerlogger;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
@@ -31,94 +30,93 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, defaultModule = false)
-public class ModulePlayerLogger implements ConfigSaver
-{
-    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
-    public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
-    
-    public static final String PERM = "fe.pl";
-    public static final String PERM_WAND = PERM + ".wand";
-    public static final String PERM_COMMAND = PERM + ".cmd";
+public class ModulePlayerLogger implements ConfigSaver {
+	private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
+	public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG,
+			new ForgeConfigSpec.Builder());
 
-    private static PlayerLogger logger = null;
+	public static final String PERM = "fe.pl";
+	public static final String PERM_WAND = PERM + ".wand";
+	public static final String PERM_COMMAND = PERM + ".cmd";
 
-    private static PlayerLoggerEventHandler eventHandler = null;
+	private static PlayerLogger logger = null;
 
-    public ModulePlayerLogger() {
-        logger=new PlayerLogger();
-        eventHandler=new PlayerLoggerEventHandler();
-    }
+	private static PlayerLoggerEventHandler eventHandler = null;
 
-    @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
-    {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandRollback(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPlayerlogger(true), dispatcher);
+	public ModulePlayerLogger() {
+		logger = new PlayerLogger();
+		eventHandler = new PlayerLoggerEventHandler();
+	}
 
-        CommandTestPlayerlogger test = new CommandTestPlayerlogger(true);
-        FECommandManager.registerCommand(test, dispatcher);
-        MinecraftForge.EVENT_BUS.register(test);
-    }
+	@SubscribeEvent
+	public void registerCommands(FERegisterCommandsEvent event) {
+		CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+		FECommandManager.registerCommand(new CommandRollback(true), dispatcher);
+		FECommandManager.registerCommand(new CommandPlayerlogger(true), dispatcher);
 
-    @SubscribeEvent
-    public void serverPreInit(FEModuleServerAboutToStartEvent e)
-    {
-        //DataManager.addDataType(new WorldDataType());
-        DataManager.addDataType(new PlayerDataType());
-        DataManager.addDataType(new BlockDataType());
-        registerPermissions();
-        logger.loadDatabase();
-    }
+		CommandTestPlayerlogger test = new CommandTestPlayerlogger(true);
+		FECommandManager.registerCommand(test, dispatcher);
+		MinecraftForge.EVENT_BUS.register(test);
+	}
 
-    @SubscribeEvent
-    public void serverPostInit(FEModuleServerStartedEvent e)
-    {
-        if (PlayerLoggerConfig.getLogDuration() > 0)
-        {
-            final Date startTime = new Date();
-            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.getLogDuration()));
-            final String startTimeStr = startTime.toString();
+	@SubscribeEvent
+	public void serverPreInit(FEModuleServerAboutToStartEvent e) {
+		// DataManager.addDataType(new WorldDataType());
+		DataManager.addDataType(new PlayerDataType());
+		DataManager.addDataType(new BlockDataType());
+		registerPermissions();
+		logger.loadDatabase();
+	}
 
-            LoggingHandler.felog.info(String.format("Purging all playerlogger log data before %s. The server may lag while this is being done.", startTimeStr));
-            getLogger().purgeOldData(startTime, null);
-        }
-    }
+	@SubscribeEvent
+	public void serverPostInit(FEModuleServerStartedEvent e) {
+		if (PlayerLoggerConfig.getLogDuration() > 0) {
+			final Date startTime = new Date();
+			startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.getLogDuration()));
+			final String startTimeStr = startTime.toString();
 
-    private void registerPermissions()
-    {
-        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Player logger permisssions");
-        APIRegistry.perms.registerPermission(PERM_WAND, DefaultPermissionLevel.OP, "Allow usage of player loggger wand (clock)");
-    }
+			LoggingHandler.felog.info(String.format(
+					"Purging all playerlogger log data before %s. The server may lag while this is being done.",
+					startTimeStr));
+			getLogger().purgeOldData(startTime, null);
+		}
+	}
 
-    @SubscribeEvent
-    public void serverStopped(FEModuleServerStoppedEvent e)
-    {
-        if (logger != null)
-            logger.close();
-    }
+	private void registerPermissions() {
+		APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Player logger permisssions");
+		APIRegistry.perms.registerPermission(PERM_WAND, DefaultPermissionLevel.OP,
+				"Allow usage of player loggger wand (clock)");
+	}
 
-    public static PlayerLogger getLogger()
-    {
-        return logger;
-    }
-    public static PlayerLoggerEventHandler getEventHandler()
-    {
-        return eventHandler;
-    }
+	@SubscribeEvent
+	public void serverStopped(FEModuleServerStoppedEvent e) {
+		if (logger != null)
+			logger.close();
+	}
+
+	public static PlayerLogger getLogger() {
+		return logger;
+	}
+
+	public static PlayerLoggerEventHandler getEventHandler() {
+		return eventHandler;
+	}
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload) {
 		PlayerLoggerConfig.load(BUILDER, isReload);
 	}
+
 	@Override
 	public void bakeConfig(boolean reload) {
 		PlayerLoggerConfig.bakeConfig(reload);
 	}
+
 	@Override
 	public ConfigData returnData() {
 		return data;
 	}
+
 	@Override
 	public void save(boolean reload) {
 		PlayerLoggerConfig.save(reload);

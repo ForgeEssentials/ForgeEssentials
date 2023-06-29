@@ -1,53 +1,45 @@
 package com.forgeessentials.worldborder;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.mojang.brigadier.context.CommandContext;
 
-public abstract class WorldBorderEffect
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
-    protected int triggerDistance = 0;
+public abstract class WorldBorderEffect {
 
-    public WorldBorderEffect()
-    {
-    }
+	protected int triggerDistance = 0;
 
-    public WorldBorderEffect(int triggerDistance)
-    {
-        this.triggerDistance = triggerDistance;
-    }
+	public WorldBorderEffect() {
+	}
 
-    public double getTriggerDistance()
-    {
-        return triggerDistance;
-    }
+	public WorldBorderEffect(int triggerDistance) {
+		this.triggerDistance = triggerDistance;
+	}
 
-    public abstract void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException;
+	public double getTriggerDistance() {
+		return triggerDistance;
+	}
 
-    public abstract String getSyntax();
+	public abstract void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException;
 
-    public void activate(WorldBorder border, ServerPlayerEntity player)
-    {
-        /* do nothing */
-    }
+	public abstract String getSyntax();
 
-    public void deactivate(WorldBorder border, ServerPlayerEntity player)
-    {
-        /* do nothing */
-    }
+	public void activate(WorldBorder border, ServerPlayerEntity player) {
+		/* do nothing */
+	}
 
-    public void tick(WorldBorder border, ServerPlayerEntity player)
-    {
-        /* do nothing */
-    }
+	public void deactivate(WorldBorder border, ServerPlayerEntity player) {
+		/* do nothing */
+	}
 
-    public void playerMove(WorldBorder border, PlayerMoveEvent event)
-    {
-        /* do nothing */
-    }
+	public void tick(WorldBorder border, ServerPlayerEntity player) {
+		/* do nothing */
+	}
+
+	public void playerMove(WorldBorder border, PlayerMoveEvent event) {
+		/* do nothing */
+	}
 
 }

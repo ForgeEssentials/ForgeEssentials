@@ -1,5 +1,14 @@
 package com.forgeessentials.util;
 
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -12,124 +21,100 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.UUID;
+public class DoAsCommandSender extends FakePlayer {
+	private static final UUID DOAS_UUID = UUID.fromString("35763490-CD67-428C-9A29-4DED4429A487");
 
-import javax.annotation.Nullable;
+	protected CommandSource sender;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.util.output.ChatOutputHandler;
-import com.mojang.authlib.GameProfile;
+	protected UserIdent ident;
 
-public class DoAsCommandSender extends FakePlayer
-{
-    private static final UUID DOAS_UUID = UUID.fromString("35763490-CD67-428C-9A29-4DED4429A487");
+	protected boolean hideChatMessages;
 
-    protected CommandSource sender;
+	public DoAsCommandSender(ServerWorld world, GameProfile name, UserIdent ident) {
+		super(world, name);
+		this.ident = ident;
+	}
 
-    protected UserIdent ident;
+	public DoAsCommandSender() {
+		this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD),
+				new GameProfile(DOAS_UUID, "@SERVER"), APIRegistry.IDENT_SERVER);
+		this.sender = getServer().createCommandSourceStack();
+	}
 
-    protected boolean hideChatMessages;
+	public DoAsCommandSender(UserIdent ident) {
+		this(ident.getPlayerMP().getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
+		this.sender = ident.getPlayerMP().createCommandSourceStack();
+	}
 
-    public DoAsCommandSender(ServerWorld world, GameProfile name, UserIdent ident)
-    {
-        super(world, name);
-        this.ident = ident;
-    }
-    public DoAsCommandSender()
-    {
-        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD), new GameProfile(DOAS_UUID, "@SERVER"), APIRegistry.IDENT_SERVER);
-        this.sender = getServer().createCommandSourceStack();
-    }
+	public DoAsCommandSender(UserIdent ident, CommandSource sender) {
+		this(sender.getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
+		this.sender = sender;
+	}
 
-    public DoAsCommandSender(UserIdent ident)
-    {
-        this(ident.getPlayerMP().getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
-        this.sender = ident.getPlayerMP().createCommandSourceStack();
-    }
+	public CommandSource getOriginalSender() {
+		return sender;
+	}
 
-    public DoAsCommandSender(UserIdent ident, CommandSource sender)
-    {
-        this(sender.getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
-        this.sender = sender;
-    }
+	public UserIdent getUserIdent() {
+		return ident;
+	}
 
-    public CommandSource getOriginalSender()
-    {
-        return sender;
-    }
-
-    public UserIdent getUserIdent()
-    {
-        return ident;
-    }
-
-    @Override
-    public ITextComponent getDisplayName()
-    {
-        return new StringTextComponent(ident.getUsername());
-    }
+	@Override
+	public ITextComponent getDisplayName() {
+		return new StringTextComponent(ident.getUsername());
+	}
 
 	@Override
 	public void sendMessage(ITextComponent message, UUID p_145747_2_) {
 		if (!hideChatMessages)
-		    ChatOutputHandler.sendMessageI(sender, message);
-		
+			ChatOutputHandler.sendMessageI(sender, message);
+
 	}
 
-    @Override
-    public ServerWorld getLevel()
-    {
-        return sender.getLevel();
-    }
+	@Override
+	public ServerWorld getLevel() {
+		return sender.getLevel();
+	}
 
-    @Override
-    public BlockPos blockPosition()
-    {
-        return new BlockPos(position());
-    }
+	@Override
+	public BlockPos blockPosition() {
+		return new BlockPos(position());
+	}
 
-    @Override
-    public Vector3d position()
-    {
-        return sender.getPosition();
-    }
+	@Override
+	public Vector3d position() {
+		return sender.getPosition();
+	}
 
-    @Override
-    @Nullable
-    public Entity getEntity()
-    {
-        return sender.getEntity();
-    }
+	@Override
+	@Nullable
+	public Entity getEntity() {
+		return sender.getEntity();
+	}
 
-    public MinecraftServer getServer()
-    {
-        return ServerLifecycleHooks.getCurrentServer();
-    }
+	public MinecraftServer getServer() {
+		return ServerLifecycleHooks.getCurrentServer();
+	}
 
-    public UserIdent getIdent()
-    {
-        return ident;
-    }
+	public UserIdent getIdent() {
+		return ident;
+	}
 
-    public void setIdent(UserIdent ident)
-    {
-        this.ident = ident;
-    }
+	public void setIdent(UserIdent ident) {
+		this.ident = ident;
+	}
 
-    public void setHideChatMessages(boolean hideChatMessages)
-    {
-        this.hideChatMessages = hideChatMessages;
-    }
+	public void setHideChatMessages(boolean hideChatMessages) {
+		this.hideChatMessages = hideChatMessages;
+	}
 
-    public boolean isHideChatMessages()
-    {
-        return hideChatMessages;
-    }
+	public boolean isHideChatMessages() {
+		return hideChatMessages;
+	}
 
 	@Override
 	public boolean acceptsSuccess() {
-	      return sender.getLevel().getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK);
+		return sender.getLevel().getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK);
 	}
 
 	@Override

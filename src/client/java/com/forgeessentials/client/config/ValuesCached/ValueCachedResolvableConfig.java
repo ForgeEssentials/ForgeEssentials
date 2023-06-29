@@ -33,7 +33,7 @@ public abstract class ValueCachedResolvableConfig<TYPE, REAL> {
 
 	public TYPE get() {
 		if (cachedValue == null) {
-			//If we don't have a cached value, resolve it from the actual ConfigValue
+			// If we don't have a cached value, resolve it from the actual ConfigValue
 			cachedValue = resolve(internal.get());
 		}
 		return cachedValue;

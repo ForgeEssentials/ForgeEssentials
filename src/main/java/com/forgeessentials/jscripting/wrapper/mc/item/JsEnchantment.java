@@ -1,16 +1,14 @@
 package com.forgeessentials.jscripting.wrapper.mc.item;
 
-import net.minecraft.enchantment.Enchantment;
-
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
-public class JsEnchantment<T extends Enchantment> extends JsWrapper<T>
-{
+import net.minecraft.enchantment.Enchantment;
 
-    public JsEnchantment(T that)
-    {
-        super(that);
-    }
+public class JsEnchantment<T extends Enchantment> extends JsWrapper<T> {
 
-    // TODO: implement this
+	public JsEnchantment(T that) {
+		super(that);
+	}
+
+	// TODO: implement this
 }

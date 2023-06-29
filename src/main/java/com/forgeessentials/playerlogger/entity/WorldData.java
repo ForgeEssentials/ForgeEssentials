@@ -1,4 +1,5 @@
 package com.forgeessentials.playerlogger.entity;
+
 //
 //import javax.persistence.Column;
 //import javax.persistence.Entity;

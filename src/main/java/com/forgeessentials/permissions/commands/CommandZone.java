@@ -1,11 +1,5 @@
 package com.forgeessentials.permissions.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,454 +23,375 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-public class CommandZone extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandZone(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandZone extends ForgeEssentialsCommandBuilder {
 
-    public static final String PERM_NODE = "fe.perm.zone";
-    public static final String PERM_ALL = PERM_NODE + Zone.ALL_PERMS;
-    public static final String PERM_LIST = PERM_NODE + ".list";
-    public static final String PERM_INFO = PERM_NODE + ".info";
-    public static final String PERM_DEFINE = PERM_NODE + ".define";
-    public static final String PERM_DELETE = PERM_NODE + ".delete";
-    public static final String PERM_SETTINGS = PERM_NODE + ".settings";
+	public CommandZone(boolean enabled) {
+		super(enabled);
+	}
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "area";
-    }
+	public static final String PERM_NODE = "fe.perm.zone";
+	public static final String PERM_ALL = PERM_NODE + Zone.ALL_PERMS;
+	public static final String PERM_LIST = PERM_NODE + ".list";
+	public static final String PERM_INFO = PERM_NODE + ".info";
+	public static final String PERM_DEFINE = PERM_NODE + ".define";
+	public static final String PERM_DELETE = PERM_NODE + ".delete";
+	public static final String PERM_SETTINGS = PERM_NODE + ".settings";
 
-    @Override
-    public String[] getDefaultSecondaryAliases()
-    {
-        return new String[] { "zone" };
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "area";
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM_NODE;
-    }
+	@Override
+	public String[] getDefaultSecondaryAliases() {
+		return new String[] { "zone" };
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public String getPermissionNode() {
+		return PERM_NODE;
+	}
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-        		.executes(CommandContext -> execute(CommandContext, "help")
-                        )
-                .then(Commands.literal("help")
-                        .executes(CommandContext -> execute(CommandContext, "help")
-                                )
-                        )
-                .then(Commands.literal("select")
-                        .then(Commands.argument("Zone", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .executes(context -> execute(context, "select")
-                                        )
-                                )
-                        )
-                .then(Commands.literal("list")
-                        .then(Commands.argument("pageLimit", IntegerArgumentType.integer(1))
-                                .executes(context -> execute(context, "list-Zones")
-                                        )
-                                )
-                        .executes(CommandContext -> execute(CommandContext, "list-empty")
-                                )
-                        )
-                .then(Commands.literal("info")
-                        .then(Commands.argument("Zone", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .executes(context -> execute(context, "info")
-                                        )
-                                )
-                        )
-                .then(Commands.literal("define")
-                        .then(Commands.argument("Zone", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .then(Commands.argument("type", StringArgumentType.string())
-                                        .suggests(SUGGEST_AREATYPES)
-                                        .executes(context -> execute(context, "define")
-                                                )
-                                        )
-                                )
-                        )
-                .then(Commands.literal("redefine")
-                        .then(Commands.argument("Zone", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .then(Commands.argument("type", StringArgumentType.string())
-                                        .suggests(SUGGEST_AREATYPES)
-                                        .executes(context -> execute(context, "redefine")
-                                                )
-                                        )
-                                )
-                        )
-                .then(Commands.literal("delete")
-                        .then(Commands.argument("Zone", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .executes(context -> execute(context, "delete")
-                                        )
-                                )
-                        )
-                .then(Commands.literal("message")
-                        .then(Commands.literal("exit")
-                                .then(Commands.argument("Zone", StringArgumentType.string())
-                                        .suggests(SUGGEST_WORLDZONES)
-                                        .then(Commands.literal("get")
-                                                .executes(context -> execute(context, "exit-get")
-                                                        )
-                                                )
-                                        .then(Commands.literal("clear")
-                                                .executes(context -> execute(context, "exit-clear")
-                                                        )
-                                                )
-                                        .then(Commands.literal("set")
-                                        		.then(Commands.argument("message", StringArgumentType.greedyString())
-                                                        .executes(context -> execute(context, "exit-message")
-                                                                )
-                                                        )
-                                                )
+	@Override
+	public boolean canConsoleUseCommand() {
+		return false;
+	}
 
-                                        )
-                                )
-                        .then(Commands.literal("entry")
-                                .then(Commands.argument("Zone", StringArgumentType.string())
-                                        .suggests(SUGGEST_WORLDZONES)
-                                        .then(Commands.literal("get")
-                                                .executes(context -> execute(context, "entry-get")
-                                                        )
-                                                )
-                                        .then(Commands.literal("clear")
-                                                .executes(context -> execute(context, "entry-clear")
-                                                        )
-                                                )
-                                        .then(Commands.literal("set")
-                                        		.then(Commands.argument("message", StringArgumentType.greedyString())
-                                                        .executes(context -> execute(context, "entry-message")
-                                                                )
-                                                        )
-                                                )
-                                        )
-                                )
-                        );
-    }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.executes(CommandContext -> execute(CommandContext, "help"))
+				.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
+				.then(Commands.literal("select")
+						.then(Commands.argument("Zone", StringArgumentType.string()).suggests(SUGGEST_WORLDZONES)
+								.executes(context -> execute(context, "select"))))
+				.then(Commands.literal("list")
+						.then(Commands.argument("pageLimit", IntegerArgumentType.integer(1))
+								.executes(context -> execute(context, "list-Zones")))
+						.executes(CommandContext -> execute(CommandContext, "list-empty")))
+				.then(Commands.literal("info")
+						.then(Commands.argument("Zone", StringArgumentType.string()).suggests(SUGGEST_WORLDZONES)
+								.executes(context -> execute(context, "info"))))
+				.then(Commands.literal("define")
+						.then(Commands.argument("Zone", StringArgumentType.string()).suggests(SUGGEST_WORLDZONES)
+								.then(Commands.argument("type", StringArgumentType.string()).suggests(SUGGEST_AREATYPES)
+										.executes(context -> execute(context, "define")))))
+				.then(Commands.literal("redefine")
+						.then(Commands.argument("Zone", StringArgumentType.string()).suggests(SUGGEST_WORLDZONES)
+								.then(Commands.argument("type", StringArgumentType.string()).suggests(SUGGEST_AREATYPES)
+										.executes(context -> execute(context, "redefine")))))
+				.then(Commands.literal("delete")
+						.then(Commands.argument("Zone", StringArgumentType.string()).suggests(SUGGEST_WORLDZONES)
+								.executes(context -> execute(context, "delete"))))
+				.then(Commands.literal("message").then(Commands.literal("exit")
+						.then(Commands.argument("Zone", StringArgumentType.string()).suggests(SUGGEST_WORLDZONES)
+								.then(Commands.literal("get").executes(context -> execute(context, "exit-get")))
+								.then(Commands.literal("clear").executes(context -> execute(context, "exit-clear")))
+								.then(Commands.literal("set")
+										.then(Commands.argument("message", StringArgumentType.greedyString())
+												.executes(context -> execute(context, "exit-message"))))
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_WORLDZONES = (ctx, builder) -> {
-        List<String> availableZones = new ArrayList<>();
-        for (Zone z : APIRegistry.perms.getZones())
-        {
-            if (z instanceof AreaZone)
-            {
-                availableZones.add(z.getName());
-                availableZones.add(Integer.toString(z.getId()));
-            }
-        }
-        return ISuggestionProvider.suggest(availableZones, builder);
-     };
-     public static final SuggestionProvider<CommandSource> SUGGEST_AREATYPES = (ctx, builder) -> {
-         List<String> availableTypes = new ArrayList<>();
-         for (String name : AreaShape.valueNames())
-         {
-             availableTypes.add(name);
-         }
-         return ISuggestionProvider.suggest(availableTypes, builder);
-      };
+						))
+						.then(Commands.literal("entry").then(Commands.argument("Zone", StringArgumentType.string())
+								.suggests(SUGGEST_WORLDZONES)
+								.then(Commands.literal("get").executes(context -> execute(context, "entry-get")))
+								.then(Commands.literal("clear").executes(context -> execute(context, "entry-clear")))
+								.then(Commands.literal("set")
+										.then(Commands.argument("message", StringArgumentType.greedyString())
+												.executes(context -> execute(context, "entry-message")))))));
+	}
 
-    @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        if (params.equals("help"))
-        {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone list [page]: Lists all zones");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone select <zone>: Selects a zone");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone info <zone>: Zone information");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone define|redefine <zone-name>: define or redefine a zone.");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone delete <zone-id>: Delete a zone.");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone message entry|exit <zone-id> <get|clear|set <message>>: Set the zone entry/exit message.");
-            return Command.SINGLE_SUCCESS;
-        }
+	public static final SuggestionProvider<CommandSource> SUGGEST_WORLDZONES = (ctx, builder) -> {
+		List<String> availableZones = new ArrayList<>();
+		for (Zone z : APIRegistry.perms.getZones()) {
+			if (z instanceof AreaZone) {
+				availableZones.add(z.getName());
+				availableZones.add(Integer.toString(z.getId()));
+			}
+		}
+		return ISuggestionProvider.suggest(availableZones, builder);
+	};
+	public static final SuggestionProvider<CommandSource> SUGGEST_AREATYPES = (ctx, builder) -> {
+		List<String> availableTypes = new ArrayList<>();
+		for (String name : AreaShape.valueNames()) {
+			availableTypes.add(name);
+		}
+		return ISuggestionProvider.suggest(availableTypes, builder);
+	};
 
-        String[] arg = params.split("-");
-        switch (arg[0])
-        {
-        case "select":
-            parseSelect(ctx, params);
-            break;
-        case "info":
-            parseInfo(ctx, params);
-            break;
-        case "list":
-            parseList(ctx, params);
-            break;
-        case "define":
-            parseDefine(ctx, false, params);
-            break;
-        case "redefine":
-            parseDefine(ctx, true, params);
-            break;
-        case "delete":
-            parseDelete(ctx, params);
-            break;
-        case "entry":
-            parseEntryExitMessage(ctx, true, params);
-            break;
-        case "exit":
-            parseEntryExitMessage(ctx, false, params);
-            break;
-        default:
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg.toString());
-            return Command.SINGLE_SUCCESS;
-        }
-        return Command.SINGLE_SUCCESS;
-    }
+	@Override
+	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		if (params.equals("help")) {
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone list [page]: Lists all zones");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone select <zone>: Selects a zone");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone info <zone>: Zone information");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(),
+					"/zone define|redefine <zone-name>: define or redefine a zone.");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone delete <zone-id>: Delete a zone.");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(),
+					"/zone message entry|exit <zone-id> <get|clear|set <message>>: Set the zone entry/exit message.");
+			return Command.SINGLE_SUCCESS;
+		}
 
-    public static AreaZone getAreaZone(WorldZone worldZone, String arg)
-    {
-        try
-        {
-            Zone z = APIRegistry.perms.getZoneById(arg);
-            if (z != null && z instanceof AreaZone)
-                return (AreaZone) z;
-        }
-        catch (NumberFormatException e)
-        {
-            /* none */
-        }
-        return worldZone.getAreaZone(arg);
-    }
+		String[] arg = params.split("-");
+		switch (arg[0]) {
+		case "select":
+			parseSelect(ctx, params);
+			break;
+		case "info":
+			parseInfo(ctx, params);
+			break;
+		case "list":
+			parseList(ctx, params);
+			break;
+		case "define":
+			parseDefine(ctx, false, params);
+			break;
+		case "redefine":
+			parseDefine(ctx, true, params);
+			break;
+		case "delete":
+			parseDelete(ctx, params);
+			break;
+		case "entry":
+			parseEntryExitMessage(ctx, true, params);
+			break;
+		case "exit":
+			parseEntryExitMessage(ctx, false, params);
+			break;
+		default:
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg.toString());
+			return Command.SINGLE_SUCCESS;
+		}
+		return Command.SINGLE_SUCCESS;
+	}
 
-    public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException
-    {
-    	if(!hasPermission(ctx.getSource(), PERM_LIST)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
-        String[] arg = params.split("-");
-        final int PAGE_SIZE = 12;
-        int limit = 1;
-        if (arg[1]=="Zones")
-        {
-            limit = IntegerArgumentType.getInteger(ctx, "pageLimit");
-        }
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of areas (page #" + limit + "):");
-        limit *= PAGE_SIZE;
+	public static AreaZone getAreaZone(WorldZone worldZone, String arg) {
+		try {
+			Zone z = APIRegistry.perms.getZoneById(arg);
+			if (z != null && z instanceof AreaZone)
+				return (AreaZone) z;
+		} catch (NumberFormatException e) {
+			/* none */
+		}
+		return worldZone.getAreaZone(arg);
+	}
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
-        if (worldZone == null)
-        {
-            for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
-            {
-                for (AreaZone areaZone : wz.getAreaZones())
-                {
-                    if (areaZone.isHidden())
-                        continue;
-                    if (limit >= 0)
-                    {
-                        if (limit <= PAGE_SIZE)
-                            ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + areaZone.getId() + ": " + areaZone.toString());
-                        limit--;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if(worldZone.getAreaZones().isEmpty()) {
-                ChatOutputHandler.chatNotification(ctx.getSource(), "No areazones found");
-            }
-            for (AreaZone areaZone : worldZone.getAreaZones())
-            {
-                if (areaZone.isHidden())
-                    continue;
-                if (limit >= 0)
-                {
-                    if (limit <= PAGE_SIZE)
-                        ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + areaZone.getId() + ": " + areaZone.toString());
-                    limit--;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-    }
+	public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException {
+		if (!hasPermission(ctx.getSource(), PERM_LIST)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		String[] arg = params.split("-");
+		final int PAGE_SIZE = 12;
+		int limit = 1;
+		if (arg[1] == "Zones") {
+			limit = IntegerArgumentType.getInteger(ctx, "pageLimit");
+		}
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of areas (page #" + limit + "):");
+		limit *= PAGE_SIZE;
 
-    public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params) throws CommandException
-    {
-    	if(!hasPermission(ctx.getSource(), PERM_DEFINE)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
+		WorldZone worldZone = APIRegistry.perms.getServerZone()
+				.getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
+		if (worldZone == null) {
+			for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values()) {
+				for (AreaZone areaZone : wz.getAreaZones()) {
+					if (areaZone.isHidden())
+						continue;
+					if (limit >= 0) {
+						if (limit <= PAGE_SIZE)
+							ChatOutputHandler.chatConfirmation(ctx.getSource(),
+									"#" + areaZone.getId() + ": " + areaZone.toString());
+						limit--;
+					} else {
+						break;
+					}
+				}
+			}
+		} else {
+			if (worldZone.getAreaZones().isEmpty()) {
+				ChatOutputHandler.chatNotification(ctx.getSource(), "No areazones found");
+			}
+			for (AreaZone areaZone : worldZone.getAreaZones()) {
+				if (areaZone.isHidden())
+					continue;
+				if (limit >= 0) {
+					if (limit <= PAGE_SIZE)
+						ChatOutputHandler.chatConfirmation(ctx.getSource(),
+								"#" + areaZone.getId() + ": " + areaZone.toString());
+					limit--;
+				} else {
+					break;
+				}
+			}
+		}
+	}
 
-        String areaName = StringArgumentType.getString(ctx, "Zone");
+	public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params)
+			throws CommandException {
+		if (!hasPermission(ctx.getSource(), PERM_DEFINE)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
-        AreaZone area = getAreaZone(worldZone, areaName);
-        if (!redefine && area != null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Area %s already exists!", areaName);
-            return;
-        }
-        if (redefine && area == null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
-            return;
-        }
+		String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        AreaShape shape = AreaShape.getByName(StringArgumentType.getString(ctx, "type"));
-        if (shape == null)
-            shape = AreaShape.BOX;
+		WorldZone worldZone = APIRegistry.perms.getServerZone()
+				.getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
+		AreaZone area = getAreaZone(worldZone, areaName);
+		if (!redefine && area != null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Area %s already exists!", areaName);
+			return;
+		}
+		if (redefine && area == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+			return;
+		}
 
-        AreaBase selection = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
-        if (selection == null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "No selection available. Please select a region first.");
-            return;
-        }
+		AreaShape shape = AreaShape.getByName(StringArgumentType.getString(ctx, "type"));
+		if (shape == null)
+			shape = AreaShape.BOX;
 
-        //arguments.context = new AreaContext(getServerPlayer(ctx.getSource()), selection.toAxisAlignedBB()); what this do? it isn't being called from commandparcerargs
-        if(!hasPermission(ctx.getSource(), PERM_DEFINE)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
+		AreaBase selection = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
+		if (selection == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "No selection available. Please select a region first.");
+			return;
+		}
 
-        if (redefine && area != null)
-        {
-            area.setArea(selection);
-            if (shape != null)
-                area.setShape(shape);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been redefined.", areaName);
-        }
-        else
-        {
-            try
-            {
-                area = new AreaZone(worldZone, areaName, selection);
-                if (shape != null)
-                    area.setShape(shape);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been defined.", areaName);
-            }
-            catch (EventCancelledException e)
-            {
-                ChatOutputHandler.chatError(ctx.getSource(), "Defining area %s has been cancelled.", areaName);
-                return;
-            }
-        }
-    }
+		// arguments.context = new AreaContext(getServerPlayer(ctx.getSource()),
+		// selection.toAxisAlignedBB()); what this do? it isn't being called from
+		// commandparcerargs
+		if (!hasPermission(ctx.getSource(), PERM_DEFINE)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
 
-    public static void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException
-    {
-    	if(!hasPermission(ctx.getSource(), PERM_DELETE)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
+		if (redefine && area != null) {
+			area.setArea(selection);
+			if (shape != null)
+				area.setShape(shape);
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been redefined.", areaName);
+		} else {
+			try {
+				area = new AreaZone(worldZone, areaName, selection);
+				if (shape != null)
+					area.setShape(shape);
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been defined.", areaName);
+			} catch (EventCancelledException e) {
+				ChatOutputHandler.chatError(ctx.getSource(), "Defining area %s has been cancelled.", areaName);
+				return;
+			}
+		}
+	}
 
-        String areaName = StringArgumentType.getString(ctx, "Zone");
+	public static void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException {
+		if (!hasPermission(ctx.getSource(), PERM_DELETE)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
-        AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
-            return;
-        }
-        areaZone.getWorldZone().removeAreaZone(areaZone);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been deleted.", areaZone.getName());
-    }
+		String areaName = StringArgumentType.getString(ctx, "Zone");
 
-    public static void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException
-    {
-    	if(!hasPermission(ctx.getSource(), PERM_INFO)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
+		WorldZone worldZone = APIRegistry.perms.getServerZone()
+				.getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
+		AreaZone areaZone = getAreaZone(worldZone, areaName);
+		if (areaZone == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+			return;
+		}
+		areaZone.getWorldZone().removeAreaZone(areaZone);
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been deleted.", areaZone.getName());
+	}
 
-        String areaName = StringArgumentType.getString(ctx, "Zone");
+	public static void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException {
+		if (!hasPermission(ctx.getSource(), PERM_INFO)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
-        AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
-            return;
-        }
+		String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        AreaBase area = areaZone.getArea();
-        SelectionHandler.select(getServerPlayer(ctx.getSource()), worldZone.getDimensionID(), area);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been selected.", areaName);
-    }
+		WorldZone worldZone = APIRegistry.perms.getServerZone()
+				.getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
+		AreaZone areaZone = getAreaZone(worldZone, areaName);
+		if (areaZone == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+			return;
+		}
 
-    public static void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException
-    {
-    	if(!hasPermission(ctx.getSource(), PERM_INFO)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
-        String areaName = StringArgumentType.getString(ctx, "Zone");
+		AreaBase area = areaZone.getArea();
+		SelectionHandler.select(getServerPlayer(ctx.getSource()), worldZone.getDimensionID(), area);
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been selected.", areaName);
+	}
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
-        AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
-            return;
-        }
-        AreaBase area = areaZone.getArea();
+	public static void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException {
+		if (!hasPermission(ctx.getSource(), PERM_INFO)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s", areaZone.getName());
-        ChatOutputHandler.chatNotification(ctx.getSource(), "  start = " + area.getLowPoint().toString());
-        ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
-    }
+		WorldZone worldZone = APIRegistry.perms.getServerZone()
+				.getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
+		AreaZone areaZone = getAreaZone(worldZone, areaName);
+		if (areaZone == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+			return;
+		}
+		AreaBase area = areaZone.getArea();
 
-    public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params) throws CommandException
-    {
-    	if(!hasPermission(ctx.getSource(), PERM_SETTINGS)) {
-    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-    		return;
-    	}
-        String[] arg = params.toString().split("-");
-        String areaName = StringArgumentType.getString(ctx, "Zone");
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s", areaZone.getName());
+		ChatOutputHandler.chatNotification(ctx.getSource(), "  start = " + area.getLowPoint().toString());
+		ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
+	}
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
-        AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null) {
-            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
-            return;
-        }
+	public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params)
+			throws CommandException {
+		if (!hasPermission(ctx.getSource(), PERM_SETTINGS)) {
+			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+			return;
+		}
+		String[] arg = params.toString().split("-");
+		String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        if (arg[1].equals("get"))
-        {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format((isEntry ? "Entry" : "Exit") + " message for area %s:", areaZone.getName()));
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), areaZone.getGroupPermission(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE));
-            return;
-        }
+		WorldZone worldZone = APIRegistry.perms.getServerZone()
+				.getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
+		AreaZone areaZone = getAreaZone(worldZone, areaName);
+		if (areaZone == null) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+			return;
+		}
 
-        String msg = "";
-        if(arg[1].equals("clear")) {
-            msg = null;
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared message for area %s", areaZone.getName());
-        }else if(arg[1].equals("message")){
-            msg = StringArgumentType.getString(ctx, "message");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set message for area %s:", areaZone.getName());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), msg);
-        }
+		if (arg[1].equals("get")) {
+			ChatOutputHandler.chatConfirmation(ctx.getSource(),
+					Translator.format((isEntry ? "Entry" : "Exit") + " message for area %s:", areaZone.getName()));
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), areaZone.getGroupPermission(Zone.GROUP_DEFAULT,
+					isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE));
+			return;
+		}
 
-        areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
-    }
+		String msg = "";
+		if (arg[1].equals("clear")) {
+			msg = null;
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared message for area %s", areaZone.getName());
+		} else if (arg[1].equals("message")) {
+			msg = StringArgumentType.getString(ctx, "message");
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set message for area %s:", areaZone.getName());
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), msg);
+		}
+
+		areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT,
+				isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
+	}
 
 }

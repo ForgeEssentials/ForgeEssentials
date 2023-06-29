@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
@@ -16,30 +12,32 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.mojang.brigadier.tree.CommandNode;
 
+import net.minecraft.command.CommandSource;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
 @FERemoteHandler(id = RemoteMessageID.COMMAND_LIST)
-public class CommandListHandler extends GenericRemoteHandler<String>
-{
+public class CommandListHandler extends GenericRemoteHandler<String> {
 
-    public static final String PERM = CommandHandler.PERM;
+	public static final String PERM = CommandHandler.PERM;
 
-    public CommandListHandler()
-    {
-        super(PERM, String.class);
-    }
+	public CommandListHandler() {
+		super(PERM, String.class);
+	}
 
-    @Override
-    protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
-    {
-        List<String> commands = new ArrayList<String>();
+	@Override
+	protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request) {
+		List<String> commands = new ArrayList<String>();
 
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher().getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher()
+				.getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
 
-        for(String command : map.values()) {
-            commands.add(command);
-        }
+		for (String command : map.values()) {
+			commands.add(command);
+		}
 
-        return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, commands);
-    }
+		return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, commands);
+	}
 
 }

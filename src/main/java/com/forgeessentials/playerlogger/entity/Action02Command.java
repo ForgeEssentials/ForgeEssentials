@@ -9,13 +9,12 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue(value = "2")
-public class Action02Command extends Action
-{
+public class Action02Command extends Action {
 
-    @Column(name = "command")
-    public String command;
+	@Column(name = "command")
+	public String command;
 
-    @Column(name = "arguments")
-    public String arguments;
+	@Column(name = "arguments")
+	public String arguments;
 
 }

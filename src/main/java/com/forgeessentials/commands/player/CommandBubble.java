@@ -1,10 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
@@ -18,95 +13,77 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandBubble extends ForgeEssentialsCommandBuilder
-{
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-    public CommandBubble(boolean enabled)
-    {
-        super(enabled);
-    }
+public class CommandBubble extends ForgeEssentialsCommandBuilder {
 
-    public static String BUBBLE_GROUP = "command_bubble";
+	public CommandBubble(boolean enabled) {
+		super(enabled);
+	}
 
-    @Override
-    public String getPrimaryAlias()
-    {
-        return "bubble";
-    }
+	public static String BUBBLE_GROUP = "command_bubble";
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
+	@Override
+	public String getPrimaryAlias() {
+		return "bubble";
+	}
 
-    @Override
-    public DefaultPermissionLevel getPermissionLevel()
-    {
-        return DefaultPermissionLevel.OP;
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return true;
+	}
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".bubble";
-    }
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
 
-    @SubscribeEvent
-    public void permissionInitializeEvent(PermissionEvent.Initialize e)
-    {
-        e.serverZone.setGroupPermissionProperty(BUBBLE_GROUP, FEPermissions.GROUP_PRIORITY, "45");
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
-    }
+	@Override
+	public String getPermissionNode() {
+		return ModuleCommands.PERM + ".bubble";
+	}
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .then(Commands.literal("on")
-                        .executes(CommandContext -> execute(CommandContext, "on")
-                                )
-                        )
-                .then(Commands.literal("off")
-                        .executes(CommandContext -> execute(CommandContext, "off")
-                                )
-                        )
-                .executes(CommandContext -> execute(CommandContext, "toggle")
-                        );
-    }
+	@SubscribeEvent
+	public void permissionInitializeEvent(PermissionEvent.Initialize e) {
+		e.serverZone.setGroupPermissionProperty(BUBBLE_GROUP, FEPermissions.GROUP_PRIORITY, "45");
+		e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
+		e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
+		e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
+		e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
+		e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
+	}
 
-    @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        boolean toggleOn = false;
-        if (params.equals("toggle"))
-        {
-            toggleOn = !APIRegistry.perms.getServerZone().getIncludedGroups(Zone.GROUP_DEFAULT).contains(BUBBLE_GROUP);
-        }
-        else
-        {
-            switch(params) 
-            {
-            case ("on"):
-                toggleOn = true;
-            case ("off"):
-                toggleOn = false;
-            }
-        }
-        if (toggleOn)
-        {
-            APIRegistry.perms.getServerZone().groupIncludeAdd(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Activated bubble. Players are now unable to interact with the world.");
-        }
-        else
-        {
-            APIRegistry.perms.getServerZone().groupIncludeRemove(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deactivated bubble");
-        }
-        return Command.SINGLE_SUCCESS;
-    }
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder.then(Commands.literal("on").executes(CommandContext -> execute(CommandContext, "on")))
+				.then(Commands.literal("off").executes(CommandContext -> execute(CommandContext, "off")))
+				.executes(CommandContext -> execute(CommandContext, "toggle"));
+	}
+
+	@Override
+	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		boolean toggleOn = false;
+		if (params.equals("toggle")) {
+			toggleOn = !APIRegistry.perms.getServerZone().getIncludedGroups(Zone.GROUP_DEFAULT).contains(BUBBLE_GROUP);
+		} else {
+			switch (params) {
+			case ("on"):
+				toggleOn = true;
+			case ("off"):
+				toggleOn = false;
+			}
+		}
+		if (toggleOn) {
+			APIRegistry.perms.getServerZone().groupIncludeAdd(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
+			ChatOutputHandler.chatConfirmation(ctx.getSource(),
+					"Activated bubble. Players are now unable to interact with the world.");
+		} else {
+			APIRegistry.perms.getServerZone().groupIncludeRemove(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deactivated bubble");
+		}
+		return Command.SINGLE_SUCCESS;
+	}
 }

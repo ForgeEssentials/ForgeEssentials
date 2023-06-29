@@ -11,19 +11,17 @@ import net.minecraftforge.eventbus.api.Event;
  **/
 
 @Cancelable
-public class SignEditEvent extends Event
-{
-    public final BlockPos pos;
-    public String[] text;
-    public final ServerPlayerEntity editor;
-    public ITextComponent[] formatted;
+public class SignEditEvent extends Event {
+	public final BlockPos pos;
+	public String[] text;
+	public final ServerPlayerEntity editor;
+	public ITextComponent[] formatted;
 
-    public SignEditEvent(BlockPos pos, String[] text, ServerPlayerEntity editor)
-    {
-        super();
-        this.pos = pos;
-        this.text = text;
-        this.editor = editor;
-        this.formatted = new ITextComponent[] { null, null, null, null };
-    }
+	public SignEditEvent(BlockPos pos, String[] text, ServerPlayerEntity editor) {
+		super();
+		this.pos = pos;
+		this.text = text;
+		this.editor = editor;
+		this.formatted = new ITextComponent[] { null, null, null, null };
+	}
 }

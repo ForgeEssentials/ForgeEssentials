@@ -12,21 +12,21 @@ import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 
 public class HibernatePersistenceUnitInfo implements PersistenceUnitInfo {
-    
-    public static String JPA_VERSION = "2.2";
-    private String persistenceUnitName;
-    private List<String> managedClassNames;
-    private Properties properties;
-    
-    public HibernatePersistenceUnitInfo(
-      String persistenceUnitName, List<String> managedClassNames, Properties properties) {
-        this.persistenceUnitName = persistenceUnitName;
-        this.managedClassNames = managedClassNames;
-        this.properties = properties;
-    }
+
+	public static String JPA_VERSION = "2.2";
+	private String persistenceUnitName;
+	private List<String> managedClassNames;
+	private Properties properties;
+
+	public HibernatePersistenceUnitInfo(String persistenceUnitName, List<String> managedClassNames,
+			Properties properties) {
+		this.persistenceUnitName = persistenceUnitName;
+		this.managedClassNames = managedClassNames;
+		this.properties = properties;
+	}
 
 	@Override
-	public void addTransformer(ClassTransformer arg0) {	
+	public void addTransformer(ClassTransformer arg0) {
 	}
 
 	@Override

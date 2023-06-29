@@ -1,5 +1,17 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
+import java.util.Objects;
+
+import com.forgeessentials.commands.item.CommandVirtualchest;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
+import com.forgeessentials.jscripting.fewrapper.fe.JsWorldPoint;
+import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
+import com.forgeessentials.jscripting.wrapper.mc.item.JsInventoryPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -13,338 +25,292 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 
-import java.util.Objects;
+public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity> {
+	protected JsInventoryPlayer<?> inventory;
 
-import com.forgeessentials.commands.item.CommandVirtualchest;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
-import com.forgeessentials.jscripting.fewrapper.fe.JsWorldPoint;
-import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInventoryPlayer;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
+	private JsICommandSender commandSender;
 
-public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
-{
-    protected JsInventoryPlayer<?> inventory;
+	/**
+	 * @tsd.ignore
+	 */
+	public static JsEntityPlayer get(PlayerEntity player) {
+		return player == null ? null : new JsEntityPlayer(player);
+	}
 
-    private JsICommandSender commandSender;
+	/**
+	 * @tsd.ignore
+	 */
+	private JsEntityPlayer(PlayerEntity that) {
+		super(that);
+	}
 
-    /**
-     * @tsd.ignore
-     */
-    public static JsEntityPlayer get(PlayerEntity player)
-    {
-        return player == null ? null : new JsEntityPlayer(player);
-    }
+	/**
+	 * @tsd.ignore
+	 */
+	public JsEntityPlayer(PlayerEntity that, JsICommandSender commandSender) {
+		super(that);
+		this.commandSender = commandSender;
+	}
 
-    /**
-     * @tsd.ignore
-     */
-    private JsEntityPlayer(PlayerEntity that)
-    {
-        super(that);
-    }
+	public void setPosition(double x, double y, double z) {
+		that.setPos(x, x, z);
+		((ServerPlayerEntity) that).connection.teleport(x, y, z, that.yRot, that.xRot);
+	}
 
-    /**
-     * @tsd.ignore
-     */
-    public JsEntityPlayer(PlayerEntity that, JsICommandSender commandSender)
-    {
-        super(that);
-        this.commandSender = commandSender;
-    }
+	public void setPosition(double x, double y, double z, float yaw, float pitch) {
+		that.setPos(x, x, z);
+		((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
+	}
 
-    public void setPosition(double x, double y, double z)
-    {
-        that.setPos(x, x, z);
-        ((ServerPlayerEntity) that).connection.teleport(x, y, z, that.yRot, that.xRot);
-    }
+	public JsICommandSender asCommandSender() {
+		if (commandSender != null || !(that instanceof PlayerEntity))
+			return commandSender;
+		return commandSender = new JsICommandSender(that.createCommandSourceStack(), this);
+	}
 
-    public void setPosition(double x, double y, double z, float yaw, float pitch)
-    {
-        that.setPos(x, x, z);
-        ((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
-    }
+	public JsInventoryPlayer<?> getInventory() {
+		if (inventory == null)
+			inventory = JsInventoryPlayer.get(that.inventory);
+		return inventory;
+	}
 
-    public JsICommandSender asCommandSender()
-    {
-        if (commandSender != null || !(that instanceof PlayerEntity))
-            return commandSender;
-        return commandSender = new JsICommandSender(that.createCommandSourceStack(), this);
-    }
+	public JsPoint<?> getBedLocation(String dimension) {
+		BlockPos coord = ((ServerPlayerEntity) that).getRespawnPosition();
+		if (((ServerPlayerEntity) that).getRespawnDimension().location().toString().equals(dimension)) {
+			return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
+		}
+		return null;
+	}
 
-    public JsInventoryPlayer<?> getInventory()
-    {
-        if (inventory == null)
-            inventory = JsInventoryPlayer.get(that.inventory);
-        return inventory;
-    }
+	public GameType getGameType() {
+		if (that instanceof ServerPlayerEntity) {
+			return ((ServerPlayerEntity) that).gameMode.getGameModeForPlayer();
+		}
+		return GameType.NOT_SET;
+	}
 
-    public JsPoint<?> getBedLocation(String dimension)
-    {
-        BlockPos coord = ((ServerPlayerEntity) that).getRespawnPosition();
-        if(((ServerPlayerEntity) that).getRespawnDimension().location().toString().equals(dimension)) {
-            return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
-        }
-        return null;
-    }
+	/**
+	 * Sets the player's game mode and sends it to them.
+	 */
+	public void setGameType(GameType gameType) {
+		that.setGameMode(gameType);
+	}
 
-    public GameType getGameType()
-    {
-        if (that instanceof ServerPlayerEntity)
-        {
-            return ((ServerPlayerEntity) that).gameMode.getGameModeForPlayer();
-        }
-        return GameType.NOT_SET;
-    }
+	// ----- CHECKED UNTIL HERE -----
 
-    /**
-     * Sets the player's game mode and sends it to them.
-     */
-    public void setGameType(GameType gameType)
-    {
-        that.setGameMode(gameType);
-    }
+	/**
+	 * Whether the player is currently using an item (by holding down use button)
+	 */
+	public boolean isUsingItem() {
+		return that.isUsingItem();
+	}
 
-    // ----- CHECKED UNTIL HERE -----
+	/**
+	 * Whether the player is currently using an item to block attacks
+	 */
+	public boolean isBlocking() {
+		return that.isBlocking() && !that.getMainHandItem().isEmpty();
+	}
 
-    /**
-     * Whether the player is currently using an item (by holding down use button)
-     */
-    public boolean isUsingItem()
-    {
-        return that.isUsingItem();
-    }
+	public int getScore() {
+		return that.getScore();
+	}
 
-    /**
-     * Whether the player is currently using an item to block attacks
-     */
-    public boolean isBlocking()
-    {
-        return that.isBlocking() && !that.getMainHandItem().isEmpty();
-    }
+	/**
+	 * Set player's score
+	 */
+	public void setScore(int score) {
+		that.setScore(score);
+	}
 
-    public int getScore()
-    {
-        return that.getScore();
-    }
+	/**
+	 * Add to player's score
+	 */
+	public void addScore(int score) {
+		that.increaseScore(score);
+	}
 
-    /**
-     * Set player's score
-     */
-    public void setScore(int score)
-    {
-        that.setScore(score);
-    }
+	/**
+	 * Returns how strong the player is against the specified block at this moment
+	 */
+	public float getBreakSpeed(JsBlock block, boolean cannotHarvestBlock, int meta, int x, int y, int z) {
+		block.getThat();
+		return that.getDigSpeed(Block.stateById(meta), new BlockPos(x, y, z));
+	}
 
-    /**
-     * Add to player's score
-     */
-    public void addScore(int score)
-    {
-        that.increaseScore(score);
-    }
+	/**
+	 * Checks if the player has the ability to harvest a block (checks current
+	 * inventory item for a tool if necessary)
+	 */
+	public boolean canHarvestBlock(JsBlock block) {
+		return that.hasCorrectToolForDrops(block.getThat().defaultBlockState());
+	}
 
-    /**
-     * Returns how strong the player is against the specified block at this moment
-     */
-    public float getBreakSpeed(JsBlock block, boolean cannotHarvestBlock, int meta, int x, int y, int z)
-    {
-        block.getThat();
-        return that.getDigSpeed(Block.stateById(meta), new BlockPos(x, y, z));
-    }
+	public float getEyeHeight() {
+		return that.getEyeHeight();
+	}
 
-    /**
-     * Checks if the player has the ability to harvest a block (checks current inventory item for a tool if necessary)
-     */
-    public boolean canHarvestBlock(JsBlock block)
-    {
-        return that.hasCorrectToolForDrops(block.getThat().defaultBlockState());
-    }
+	public boolean canAttackPlayer(JsEntityPlayer player) {
+		return that.canAttack(player.getThat());
+	}
 
-    public float getEyeHeight()
-    {
-        return that.getEyeHeight();
-    }
+	/**
+	 * Returns the current armor value as determined by a call to
+	 * InventoryPlayer.getTotalArmorValue
+	 */
+	public int getTotalArmorValue() {
+		return that.getArmorValue();
+	}
 
-    public boolean canAttackPlayer(JsEntityPlayer player)
-    {
-        return that.canAttack(player.getThat());
-    }
+	/**
+	 * When searching for vulnerable players, if a player is invisible, the return
+	 * value of this is the chance of seeing them anyway.
+	 */
+	// public float getArmorVisibility()
+	// {
+	// return that.getArmorVisibility();
+	// } //NOT A THING ANYMORE
 
-    /**
-     * Returns the current armor value as determined by a call to InventoryPlayer.getTotalArmorValue
-     */
-    public int getTotalArmorValue()
-    {
-        return that.getArmorValue();
-    }
+	public boolean interactWith(JsEntity<?> entity) {
+		switch (that.interactOn(entity.getThat(), Hand.MAIN_HAND)) {
+		case SUCCESS:
+		case PASS:
+			return true;
+		case FAIL:
+			return false;
+		case CONSUME:
+			break;
+		default:
+			break;
+		}
 
-    /**
-     * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing them anyway.
-     */
-    //public float getArmorVisibility()
-    //{
-    //    return that.getArmorVisibility();
-    //} //NOT A THING ANYMORE
+		return false;
+	}
 
-    public boolean interactWith(JsEntity<?> entity)
-    {
-        switch (that.interactOn(entity.getThat(), Hand.MAIN_HAND))
-        {
-        case SUCCESS:
-        case PASS:
-            return true;
-        case FAIL:
-            return false;
-        case CONSUME:
-            break;
-        default:
-            break;
-        }
+	/**
+	 * Returns the currently being used item by the player.
+	 */
+	public JsItemStack getCurrentEquippedItem() {
+		return JsItemStack.get(that.getUseItem());
+	}
 
-        return false;
-    }
+	/**
+	 * Destroys the currently equipped item from the player's inventory.
+	 */
+	public void destroyCurrentEquippedItem() {
+		that.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+		;
+	}
 
-    /**
-     * Returns the currently being used item by the player.
-     */
-    public JsItemStack getCurrentEquippedItem()
-    {
-        return JsItemStack.get(that.getUseItem());
-    }
+	/**
+	 * Attacks for the player the targeted entity with the currently equipped
+	 * item.<br>
+	 * The equipped item has hitEntity called on it.
+	 */
+	public void attackTargetEntityWithCurrentItem(JsEntity<?> targetEntity) {
+		that.attack(targetEntity.getThat());
+	}
 
-    /**
-     * Destroys the currently equipped item from the player's inventory.
-     */
-    public void destroyCurrentEquippedItem()
-    {
-        that.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);;
-    }
+	/**
+	 * Returns whether player is sleeping or not
+	 */
+	public boolean isPlayerSleeping() {
+		return that.isSleeping();
+	}
 
-    /**
-     * Attacks for the player the targeted entity with the currently equipped item.<br>
-     * The equipped item has hitEntity called on it.
-     */
-    public void attackTargetEntityWithCurrentItem(JsEntity<?> targetEntity)
-    {
-        that.attack(targetEntity.getThat());
-    }
+	/**
+	 * Returns whether or not the player is asleep and the screen has fully faded.
+	 */
+	public boolean isPlayerFullyAsleep() {
+		return that.isSleepingLongEnough();
+	}
 
-    /**
-     * Returns whether player is sleeping or not
-     */
-    public boolean isPlayerSleeping()
-    {
-        return that.isSleeping();
-    }
+	public JsItemStack getCurrentArmor(int slot) {
+		EquipmentSlotType eeslot = EquipmentSlotType.MAINHAND;
+		switch (slot) {
+		case 0:
+			eeslot = EquipmentSlotType.FEET;
+			break;
+		case 1:
+			eeslot = EquipmentSlotType.LEGS;
+			break;
+		case 2:
+			eeslot = EquipmentSlotType.CHEST;
+			break;
+		case 3:
+			eeslot = EquipmentSlotType.HEAD;
+			break;
 
-    /**
-     * Returns whether or not the player is asleep and the screen has fully faded.
-     */
-    public boolean isPlayerFullyAsleep()
-    {
-        return that.isSleepingLongEnough();
-    }
+		}
+		return JsItemStack.get(that.getItemBySlot(eeslot));
+	}
 
-    public JsItemStack getCurrentArmor(int slot)
-    {
-        EquipmentSlotType eeslot = EquipmentSlotType.MAINHAND;
-        switch (slot)
-        {
-        case 0:
-            eeslot = EquipmentSlotType.FEET;
-            break;
-        case 1:
-            eeslot = EquipmentSlotType.LEGS;
-            break;
-        case 2:
-            eeslot = EquipmentSlotType.CHEST;
-            break;
-        case 3:
-            eeslot = EquipmentSlotType.HEAD;
-            break;
+	/**
+	 * Add experience points to player.
+	 */
+	public void addExperience(int exp) {
+		that.giveExperiencePoints(exp);
+	}
 
-        }
-        return JsItemStack.get(that.getItemBySlot(eeslot));
-    }
+	/**
+	 * Add experience levels to this player.
+	 */
+	public void addExperienceLevel(int levels) {
+		that.giveExperienceLevels(levels);
+	}
 
-    /**
-     * Add experience points to player.
-     */
-    public void addExperience(int exp)
-    {
-        that.giveExperiencePoints(exp);
-    }
+	/**
+	 * increases exhaustion level by supplied amount
+	 */
+	public void addExhaustion(float exhaustion) {
+		that.causeFoodExhaustion(exhaustion);
+	}
 
-    /**
-     * Add experience levels to this player.
-     */
-    public void addExperienceLevel(int levels)
-    {
-        that.giveExperienceLevels(levels);
-    }
+	/**
+	 * Get the player's food level.
+	 */
+	public int getFoodLevel() {
+		return that.getFoodData().getFoodLevel();
+	}
 
-    /**
-     * increases exhaustion level by supplied amount
-     */
-    public void addExhaustion(float exhaustion)
-    {
-        that.causeFoodExhaustion(exhaustion);
-    }
+	/**
+	 * Get the player's food saturation level.
+	 */
+	public float getSaturationLevel() {
+		return that.getFoodData().getSaturationLevel();
+	}
 
-    /**
-     * Get the player's food level.
-     */
-    public int getFoodLevel()
-    {
-        return that.getFoodData().getFoodLevel();
-    }
+	public void addFoodStats(int foodLevel, float foodSaturationModifier) {
+		that.getFoodData().eat(foodLevel, foodSaturationModifier);
+	}
 
-    /**
-     * Get the player's food saturation level.
-     */
-    public float getSaturationLevel()
-    {
-        return that.getFoodData().getSaturationLevel();
-    }
+	/**
+	 * If foodLevel is not max.
+	 */
+	public boolean needFood() {
+		return that.getFoodData().needsFood();
+	}
 
-    public void addFoodStats(int foodLevel, float foodSaturationModifier)
-    {
-        that.getFoodData().eat(foodLevel, foodSaturationModifier);
-    }
+	public boolean canEat(boolean canEatWithoutHunger) {
+		return that.canEat(canEatWithoutHunger);
+	}
 
-    /**
-     * If foodLevel is not max.
-     */
-    public boolean needFood()
-    {
-        return that.getFoodData().needsFood();
-    }
+	/**
+	 * Returns the InventoryEnderChest of this player.
+	 */
+	public JsInventory<?> getInventoryEnderChest() {
+		return JsInventory.get(that.getEnderChestInventory());
+	}
 
-    public boolean canEat(boolean canEatWithoutHunger)
-    {
-        return that.canEat(canEatWithoutHunger);
-    }
+	public void displayGUIChest(JsInventory<IInventory> inventory) {
+		that.openMenu(new SimpleNamedContainerProvider(
+				(syncId, inv, player) -> new ChestContainer(
+						CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
+						Objects.requireNonNull(inventory.getThat()), CommandVirtualchest.rowCount),
+				new StringTextComponent(CommandVirtualchest.name)));
+	}
 
-    /**
-     * Returns the InventoryEnderChest of this player.
-     */
-    public JsInventory<?> getInventoryEnderChest()
-    {
-        return JsInventory.get(that.getEnderChestInventory());
-    }
-
-    public void displayGUIChest(JsInventory<IInventory> inventory)
-    {
-        that.openMenu(new SimpleNamedContainerProvider((syncId, inv, player) -> new ChestContainer(CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
-                Objects.requireNonNull(inventory.getThat()), CommandVirtualchest.rowCount), new StringTextComponent(CommandVirtualchest.name)));
-    }
-
-    public void closeScreen()
-    {
-        that.closeContainer();
-    }
+	public void closeScreen() {
+		that.closeContainer();
+	}
 }

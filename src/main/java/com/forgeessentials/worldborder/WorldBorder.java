@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
-
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
@@ -18,137 +15,120 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
 
-public class WorldBorder implements Loadable
-{
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
 
-    private boolean enabled = false;
+public class WorldBorder implements Loadable {
 
-    private Point center;
+	private boolean enabled = false;
 
-    private Point size;
+	private Point center;
 
-    private AreaShape shape = AreaShape.BOX;
+	private Point size;
 
-    private List<WorldBorderEffect> effects = new ArrayList<>();
+	private AreaShape shape = AreaShape.BOX;
 
-    String dimID;
+	private List<WorldBorderEffect> effects = new ArrayList<>();
 
-    @Expose(serialize = false)
-    private AreaBase area;
+	String dimID;
 
-    @Expose(serialize = false)
-    private Map<PlayerEntity, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
+	@Expose(serialize = false)
+	private AreaBase area;
 
-    public WorldBorder(Point center, int xSize, int zSize, String registryKey)
-    {
-        this.center = center;
-        this.size = new Point(xSize, 0, zSize);
-        this.dimID = registryKey;
-        updateArea();
-    }
+	@Expose(serialize = false)
+	private Map<PlayerEntity, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
 
-    @Override
-    public void afterLoad()
-    {
-        if (effects == null)
-            effects = new ArrayList<>();
-        for (Iterator<WorldBorderEffect> iterator = effects.iterator(); iterator.hasNext();)
-            if (iterator.next() == null)
-                iterator.remove();
-        activeEffects = new WeakHashMap<>();
-        updateArea();
-    }
+	public WorldBorder(Point center, int xSize, int zSize, String registryKey) {
+		this.center = center;
+		this.size = new Point(xSize, 0, zSize);
+		this.dimID = registryKey;
+		updateArea();
+	}
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
+	@Override
+	public void afterLoad() {
+		if (effects == null)
+			effects = new ArrayList<>();
+		for (Iterator<WorldBorderEffect> iterator = effects.iterator(); iterator.hasNext();)
+			if (iterator.next() == null)
+				iterator.remove();
+		activeEffects = new WeakHashMap<>();
+		updateArea();
+	}
 
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-    }
+	public boolean isEnabled() {
+		return enabled;
+	}
 
-    public Point getCenter()
-    {
-        return center;
-    }
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
-    public void setCenter(Point center)
-    {
-        this.center = center;
-        updateArea();
-    }
+	public Point getCenter() {
+		return center;
+	}
 
-    public Point getSize()
-    {
-        return size;
-    }
+	public void setCenter(Point center) {
+		this.center = center;
+		updateArea();
+	}
 
-    public void setSize(Point size)
-    {
-        this.size = size;
-        updateArea();
-    }
+	public Point getSize() {
+		return size;
+	}
 
-    public void addEffect(WorldBorderEffect effect)
-    {
-        effects.add(effect);
-    }
+	public void setSize(Point size) {
+		this.size = size;
+		updateArea();
+	}
 
-    public List<WorldBorderEffect> getEffects()
-    {
-        return effects;
-    }
+	public void addEffect(WorldBorderEffect effect) {
+		effects.add(effect);
+	}
 
-    public AreaShape getShape()
-    {
-        return shape;
-    }
+	public List<WorldBorderEffect> getEffects() {
+		return effects;
+	}
 
-    public void setShape(AreaShape shape)
-    {
-        this.shape = shape;
-    }
+	public AreaShape getShape() {
+		return shape;
+	}
 
-    public AreaBase getArea()
-    {
-        return area;
-    }
+	public void setShape(AreaShape shape) {
+		this.shape = shape;
+	}
 
-    public void updateArea()
-    {
-        Point minP = new Point(center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ());
-        Point maxP = new Point( center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ());
-        area = new AreaBase(minP, maxP);
-    }
+	public AreaBase getArea() {
+		return area;
+	}
 
-    public Set<WorldBorderEffect> getOrCreateActiveEffects(PlayerEntity player)
-    {
-        Set<WorldBorderEffect> effects = activeEffects.get(player);
-        if (effects == null)
-        {
-            effects = new HashSet<WorldBorderEffect>();
-            activeEffects.put(player, effects);
-        }
-        return effects;
-    }
+	public void updateArea() {
+		Point minP = new Point(center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ());
+		Point maxP = new Point(center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ());
+		area = new AreaBase(minP, maxP);
+	}
 
-    public Set<WorldBorderEffect> getActiveEffects(PlayerEntity player)
-    {
-        return activeEffects.get(player);
-    }
+	public Set<WorldBorderEffect> getOrCreateActiveEffects(PlayerEntity player) {
+		Set<WorldBorderEffect> effects = activeEffects.get(player);
+		if (effects == null) {
+			effects = new HashSet<WorldBorderEffect>();
+			activeEffects.put(player, effects);
+		}
+		return effects;
+	}
 
-    public void save()
-    {
-        String key = dimID;
-        DataManager.getInstance().save(this, key.replace(":", "-"));
-    }
+	public Set<WorldBorderEffect> getActiveEffects(PlayerEntity player) {
+		return activeEffects.get(player);
+	}
 
-    public static WorldBorder load(World world)
-    {
-        String key = world.dimension().location().toString();
-        return DataManager.getInstance().load(WorldBorder.class, key.replace(":", "-"));
-    }
+	public void save() {
+		String key = dimID;
+		DataManager.getInstance().save(this, key.replace(":", "-"));
+	}
+
+	public static WorldBorder load(World world) {
+		String key = world.dimension().location().toString();
+		return DataManager.getInstance().load(WorldBorder.class, key.replace(":", "-"));
+	}
 
 }

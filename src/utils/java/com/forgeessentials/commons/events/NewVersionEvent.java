@@ -2,7 +2,7 @@ package com.forgeessentials.commons.events;
 
 import net.minecraftforge.eventbus.api.Event;
 
-public class NewVersionEvent extends Event
-{
-	public NewVersionEvent() {}
+public class NewVersionEvent extends Event {
+	public NewVersionEvent() {
+	}
 }

@@ -21,80 +21,72 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class Packet3PlayerPermissionsOverlay extends AbstractGui
-{
+public class Packet3PlayerPermissionsOverlay extends AbstractGui {
 
-    protected ResourceLocation deniedPlaceTexture;
+	protected ResourceLocation deniedPlaceTexture;
 
-    protected ResourceLocation deniedBreakTexture;
+	protected ResourceLocation deniedBreakTexture;
 
-    protected Packet3PlayerPermissions permissions = new Packet3PlayerPermissions();
+	protected Packet3PlayerPermissions permissions = new Packet3PlayerPermissions();
 
-    private int zLevel = 100;
-    
-    public Packet3PlayerPermissionsOverlay()
-    {
-        deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_place.png");
-        deniedBreakTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_break.png");
-    }
+	private int zLevel = 100;
 
-    @SubscribeEvent
-    public void renderGameOverlayEvent(RenderGameOverlayEvent event)
-    {
-        if (!event.isCancelable() && event.getType() == ElementType.HOTBAR)
-        {
-        	Minecraft instance = Minecraft.getInstance();
-        	instance.getTextureManager().bind(deniedBreakTexture);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_BLEND);
-            
-            int width = instance.getWindow().getGuiScaledWidth();
-            int height = instance.getWindow().getGuiScaledHeight();
+	public Packet3PlayerPermissionsOverlay() {
+		deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(),
+				"textures/gui/denied_place.png");
+		deniedBreakTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(),
+				"textures/gui/denied_break.png");
+	}
 
-            for (int i = 0; i < 9; ++i)
-            {
-            	ItemStack stack = instance.player.inventory.getItem(i);
-                if (stack == ItemStack.EMPTY)
-                    continue;
-                int id = Item.getId(stack.getItem());
-                if (!permissions.placeIds.contains(id))
-                    continue;
-                int x = width / 2 - 90 + i * 20 + 2;
-                int y = height - 16 - 3;
-                drawTexturedRect(x + 8, y + 1, 8, 8);
-            }
-        }
-        else if (event.isCancelable() && event.getType() == ElementType.CROSSHAIRS)
-        {
-        	Minecraft instance = Minecraft.getInstance();
-        	float width = instance.getWindow().getGuiScaledWidth();
-        	float height = instance.getWindow().getGuiScaledHeight();
+	@SubscribeEvent
+	public void renderGameOverlayEvent(RenderGameOverlayEvent event) {
+		if (!event.isCancelable() && event.getType() == ElementType.HOTBAR) {
+			Minecraft instance = Minecraft.getInstance();
+			instance.getTextureManager().bind(deniedBreakTexture);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_BLEND);
 
-            RayTraceResult mop = instance.hitResult;
-            if (mop.getType() == RayTraceResult.Type.BLOCK)
-            {
-                BlockState block = instance.level.getBlockState(new BlockPos(mop.getLocation()));
-                int blockId = Block.getId(block);
-                if (permissions.breakIds.contains(blockId))
-                {
-                	instance.textureManager.bind(deniedBreakTexture);
-                	drawTexturedRect(width / 2 - 5, height / 2 - 5, 10, 10);
-                	event.setCanceled(true);
-                }
-            }
-        }
-    }
+			int width = instance.getWindow().getGuiScaledWidth();
+			int height = instance.getWindow().getGuiScaledHeight();
 
-    public void drawTexturedRect(double xPos, double yPos, double width, double height)
-    {
-        BufferBuilder wr = Tessellator.getInstance().getBuilder();
-        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        wr.vertex(xPos, yPos + height, zLevel).uv(0, 1).endVertex();
-        wr.vertex(xPos + width, yPos + height, zLevel).uv(1, 1).endVertex();
-        wr.vertex(xPos + width, yPos, zLevel).uv(1, 0).endVertex();
-        wr.vertex(xPos, yPos, zLevel).uv(0, 0).endVertex();
-        Tessellator.getInstance().end();
-    }
+			for (int i = 0; i < 9; ++i) {
+				ItemStack stack = instance.player.inventory.getItem(i);
+				if (stack == ItemStack.EMPTY)
+					continue;
+				int id = Item.getId(stack.getItem());
+				if (!permissions.placeIds.contains(id))
+					continue;
+				int x = width / 2 - 90 + i * 20 + 2;
+				int y = height - 16 - 3;
+				drawTexturedRect(x + 8, y + 1, 8, 8);
+			}
+		} else if (event.isCancelable() && event.getType() == ElementType.CROSSHAIRS) {
+			Minecraft instance = Minecraft.getInstance();
+			float width = instance.getWindow().getGuiScaledWidth();
+			float height = instance.getWindow().getGuiScaledHeight();
+
+			RayTraceResult mop = instance.hitResult;
+			if (mop.getType() == RayTraceResult.Type.BLOCK) {
+				BlockState block = instance.level.getBlockState(new BlockPos(mop.getLocation()));
+				int blockId = Block.getId(block);
+				if (permissions.breakIds.contains(blockId)) {
+					instance.textureManager.bind(deniedBreakTexture);
+					drawTexturedRect(width / 2 - 5, height / 2 - 5, 10, 10);
+					event.setCanceled(true);
+				}
+			}
+		}
+	}
+
+	public void drawTexturedRect(double xPos, double yPos, double width, double height) {
+		BufferBuilder wr = Tessellator.getInstance().getBuilder();
+		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		wr.vertex(xPos, yPos + height, zLevel).uv(0, 1).endVertex();
+		wr.vertex(xPos + width, yPos + height, zLevel).uv(1, 1).endVertex();
+		wr.vertex(xPos + width, yPos, zLevel).uv(1, 0).endVertex();
+		wr.vertex(xPos, yPos, zLevel).uv(0, 0).endVertex();
+		Tessellator.getInstance().end();
+	}
 
 }
