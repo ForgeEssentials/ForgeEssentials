@@ -133,7 +133,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder {
 	}
 
 	public static void sendPairingData(ServerPlayerEntity player, Consumer<IPacket<?>> p_219452_1_) {
-		if (player.removed) {
+		if (player.isAlive()) {
 			LoggingHandler.felog.warn("Fetching packet for removed entity " + player);
 		}
 
