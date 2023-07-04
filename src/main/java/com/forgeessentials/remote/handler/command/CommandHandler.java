@@ -7,7 +7,6 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.mojang.brigadier.ParseResults;
@@ -41,7 +40,7 @@ public class CommandHandler extends GenericRemoteHandler<String> {
 		if (command.getReader().canRead() != true)
 			error(String.format("Command \"/%s\" not found", commandName));
 
-		checkPermission(session, PermissionManager.getCommandPermission(command.getReader().getString().substring(1)));
+		checkPermission(session, command.getReader().getString().substring(1));
 
 		TaskRegistry.runLater(new Runnable() {
 			@Override

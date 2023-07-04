@@ -15,7 +15,6 @@ import com.mojang.brigadier.tree.CommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.DefaultPermissionHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 /**
@@ -23,100 +22,44 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  */
 public class PermissionManager {
 	/*
-	 * First String is command name Second string is the node
+	 * First String is command node Second string is the DefaultPermissionLevel
 	 */
-	protected static Map<String, String> commandPermissions = new WeakHashMap<>();
 	protected static Map<String, DefaultPermissionLevel> commandPermissionMap = new WeakHashMap<>();
 
-	@Deprecated
-	public static String getCommandPermission(String commandName) {
-		String permission = commandPermissions.get(commandName);
-		if (permission != null)
-			return permission;
-		return "command." + commandName;
-	}
-
-	@Deprecated
-	public static DefaultPermissionLevel getCommandLevel(String commandName) {
-		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
-				.getDispatcher();
-
-		for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
-			if (commandNode.getRequirement() != null) {
-				String permission = stripNode(commandNode.getRequirement().toString());
-				// LoggingHandler.felog.info("Compairing: " + commandNode.getUsageText() + "
-				// with: " + commandNode.getUsageText());
-				if (commandName == commandNode.getUsageText()) {
-					DefaultPermissionLevel level = DefaultPermissionHandler.INSTANCE
-							.getDefaultPermissionLevel(permission);
-					//LoggingHandler.felog.debug("Found Permission for command: {" + fromDefaultPermissionLevel(level)
-					//		+ "} " + commandNode.getUsageText());
-					return level;
-				}
-			}
-		}
-		LoggingHandler.felog.info("Failed to get Permission for command: " + commandName);
-		return DefaultPermissionLevel.OP;
-	}
-
 	/**
-	 * <b>FOR INTERNAL USE ONLY</b> <br>
-	 * This method should not be called directly, but instead is called by forge
-	 * upon registration of a new command
+	 * This method allows you to register permissions for commands
 	 *
-	 * @param command
-	 */
-	@Deprecated
-	public static void registerCommandPermission(String commandName) {
-		commandPermissions.put(commandName, getCommandPermission(commandName));
-		APIRegistry.perms.registerNode(getCommandPermission(commandName), getCommandLevel(commandName), "");
-	}
-
-	/**
-	 * This method allows you to register permissions for commands that cannot
-	 * implement the PermissionObject interface for any reason.
-	 *
-	 * @param command
-	 * @param permission
+	 * @param commandNode
 	 * @param permissionLevel
 	 */
-	@Deprecated
-	public static void registerCommandPermission(String commandName, String permission,
-			DefaultPermissionLevel permissionLevel) {
-		commandPermissions.put(commandName, permission);
-		APIRegistry.perms.registerNode(permission, permissionLevel, "");
+	public static void registerCommandPermission(String commandNode, DefaultPermissionLevel permissionLevel) {
+		commandPermissionMap.put(commandNode, permissionLevel);
+		APIRegistry.perms.registerPermission(commandNode, permissionLevel, "");
 	}
 
 	/**
-	 * This method allows you to register permissions for commands that cannot
-	 * implement the PermissionObject interface for any reason.
+	 * This method allows you to register permissions for commands
 	 *
-	 * @param command
-	 * @param permission
+	 * @param commandNode
+	 * @param permissionLevel
 	 */
-	@Deprecated
-	public static void registerCommandPermission(String commandName, String permission) {
-		registerCommandPermission(commandName, permission, getCommandLevel(commandName));
+	public static void registerCommandPermissionDiscription(String commandNode, DefaultPermissionLevel permissionLevel, String disc) {
+		commandPermissionMap.put(commandNode, permissionLevel);
+		APIRegistry.perms.registerPermission(commandNode, permissionLevel, disc);
 	}
 
 	/**
 	 * <b>FOR INTERNAL USE ONLY</b> <br>
 	 */
 	public static void registerCommandPermissions() {
-		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
-
 		for(Map.Entry<String, DefaultPermissionLevel> node : getAllUsage().entrySet()) {
-			LoggingHandler.felog.debug("Command: " + StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
-		}
-		for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
-			if (commandNode.getRequirement() != null) {
-				//LoggingHandler.felog.debug("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20)
-				//		+ " - Permission: " + getCommandPermission(commandNode.getUsageText()));
-			} else {
-				LoggingHandler.felog.info("Bad CommandRe: " + StringUtils.rightPad(commandNode.getUsageText(), 20));
+			if (!commandPermissionMap.containsKey(node.getKey())) {
+				registerCommandPermission(node.getKey(), node.getValue());
+				LoggingHandler.felog.debug("Command: " + StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
 			}
-			if (!commandPermissions.containsKey(commandNode.getUsageText()))
-				registerCommandPermission(commandNode.getUsageText());
+			else {
+				LoggingHandler.felog.debug("Command Tried to be registered twice: " + node.getKey());
+			}
 		}
 	}
 
@@ -150,6 +93,7 @@ public class PermissionManager {
 		}
 		return result;
 	}
+
 	/**
 	 * Strip a commandNode string from beginning to the index of a $ character
 	 *

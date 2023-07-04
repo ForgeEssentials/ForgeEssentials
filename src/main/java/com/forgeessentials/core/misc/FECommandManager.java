@@ -132,8 +132,8 @@ public class FECommandManager {
 			commandData.setRegistered(true);
 			registeredFEcommands.add(name);
 		}
-		PermissionManager.registerCommandPermission(name, commandData.getData().getPermissionNode(),
-				commandData.getData().getPermissionLevel());
+		//PermissionManager.registerCommandPermission(commandData.getData().getPermissionNode(),
+		//		commandData.getData().getPermissionLevel());
 		commandData.getData().registerExtraPermissions();
 	}
 

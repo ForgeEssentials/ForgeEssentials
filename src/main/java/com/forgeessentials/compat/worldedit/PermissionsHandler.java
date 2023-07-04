@@ -1,7 +1,6 @@
 package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.sk89q.worldedit.forge.ForgePermissionsProvider;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -16,10 +15,10 @@ public class PermissionsHandler implements ForgePermissionsProvider {
 
 	@Override
 	public void registerPermission(String permission) {
-		boolean allowForAllPlayers = permission.startsWith("worldedit.selection");
-
-		PermissionManager.registerCommandPermission(permission.split("\\.")[1], permission,
-				allowForAllPlayers ? DefaultPermissionLevel.ALL : DefaultPermissionLevel.OP);
+		APIRegistry.perms.registerPermission(permission, DefaultPermissionLevel.OP, "");
+		//boolean allowForAllPlayers = permission.startsWith("worldedit.selection");
+		//PermissionManager.registerCommandPermission(permission.split("\\.")[1], permission,
+		//		allowForAllPlayers ? DefaultPermissionLevel.ALL : DefaultPermissionLevel.OP);
 	}
 
 }

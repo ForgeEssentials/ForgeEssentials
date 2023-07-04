@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -97,13 +96,13 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder {
 		CommandDispatcher<CommandSource> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
 		Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(), ctx.getSource());
 		for (CommandNode<CommandSource> cmdObj : map.keySet()) {
-			if (!hasPermission(sender, cmdObj.toString()))
+			if (!cmdObj.canUse(sender.createCommandSourceStack()))
 				continue;
 
 			Set<String> commands = new HashSet<>();
 			commands.add("/" + cmdObj.getName());
 
-			String perm = PermissionManager.getCommandPermission(cmdObj.toString());
+			String perm = "TODO PLACEHOLDER";
 			String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
 					(perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK
 					+ cmdObj.getUsageText();
