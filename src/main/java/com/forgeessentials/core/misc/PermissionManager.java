@@ -1,6 +1,5 @@
 package com.forgeessentials.core.misc;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
@@ -11,6 +10,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.misc.commandperms.CommandFaker;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 
 import net.minecraft.command.CommandSource;
@@ -26,6 +26,7 @@ public class PermissionManager {
 	 * First String is command name Second string is the node
 	 */
 	protected static Map<String, String> commandPermissions = new WeakHashMap<>();
+	protected static Map<String, DefaultPermissionLevel> commandPermissionMap = new WeakHashMap<>();
 
 	@Deprecated
 	public static String getCommandPermission(String commandName) {
@@ -130,22 +131,24 @@ public class PermissionManager {
 		}
 	}
 
-	public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode) {
+	public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode, String name) {
+		DefaultPermissionLevel result;
 		if(commandNode.canUse(new CommandFaker().createCommandSourceStack(0))) {
-			LoggingHandler.felog.debug("Command: required All");
-			return DefaultPermissionLevel.ALL;
+			result = DefaultPermissionLevel.ALL;
 		}
 		else if(commandNode.canUse(new CommandFaker().createCommandSourceStack(1))||
 				commandNode.canUse(new CommandFaker().createCommandSourceStack(2))||
 				commandNode.canUse(new CommandFaker().createCommandSourceStack(3))||
 				commandNode.canUse(new CommandFaker().createCommandSourceStack(4))){
-			LoggingHandler.felog.debug("Command: required OP");
-			return DefaultPermissionLevel.OP;
+			result = DefaultPermissionLevel.OP;
 		}
 		else {
-			LoggingHandler.felog.debug("Command: required NONE");
-			return DefaultPermissionLevel.NONE;
+			result = DefaultPermissionLevel.NONE;
 		}
+		if(name != null) {
+			LoggingHandler.felog.debug("Command: "+name+" Requires: "+result.name());
+		}
+		return result;
 	}
 	/**
 	 * Strip a commandNode string from beginning to the index of a $ character
@@ -176,9 +179,12 @@ public class PermissionManager {
     }
 
     private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher) {
-
+    	if (node instanceof ArgumentCommandNode) {
+			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix);
+			return;
+        }
         if (node.getCommand() != null) {
-            result.put(prefix, getCommandPermFromNode(node));
+            result.put(prefix, getCommandPermFromNode(node, prefix));
         }
 
         if (node.getRedirect() != null) {
