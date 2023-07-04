@@ -86,7 +86,7 @@ public class PermissionManager {
 			result = DefaultPermissionLevel.OP;
 		}
 		else {
-			result = DefaultPermissionLevel.NONE;
+			result = DefaultPermissionLevel.ALL;
 		}
 		if(name != null) {
 			LoggingHandler.felog.debug("Command: "+name+" Requires: "+result.name());
@@ -118,17 +118,20 @@ public class PermissionManager {
     public static Map<String, DefaultPermissionLevel> getAllUsage() {
 		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
         final TreeMap<String, DefaultPermissionLevel> result = new TreeMap<String, DefaultPermissionLevel>();
-        getAllUsage(dispatcher.getRoot(), result, "", dispatcher);
+        getAllUsage(dispatcher.getRoot(), result, "", dispatcher, DefaultPermissionLevel.ALL);
         return result;
     }
 
-    private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher) {
+    private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher, DefaultPermissionLevel parentLevel) {
     	if (node instanceof ArgumentCommandNode && !ModulePermissions.fullcommandNode) {
 			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix);
 			return;
         }
         if (node.getCommand() != null) {
-            result.put(prefix, getCommandPermFromNode(node, prefix));
+        	if(parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node, prefix) == DefaultPermissionLevel.OP) {
+        		parentLevel=DefaultPermissionLevel.OP;
+        	}
+            result.put(prefix.replace(' ', '.'), parentLevel);
         }
 
         if (node.getRedirect() != null) {
@@ -137,7 +140,7 @@ public class PermissionManager {
             //result.add(prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect);
         } else if (!node.getChildren().isEmpty()) {
             for (final CommandNode<CommandSource> child : node.getChildren()) {
-                getAllUsage(child, result, prefix.isEmpty() ? child.getUsageText() : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + child.getUsageText(), dispatcher);
+                getAllUsage(child, result, prefix.isEmpty() ? child.getUsageText() : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + child.getUsageText(), dispatcher, parentLevel);
             }
         }
     }
