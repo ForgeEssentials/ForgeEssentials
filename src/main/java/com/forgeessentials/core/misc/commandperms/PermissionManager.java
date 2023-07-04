@@ -123,7 +123,7 @@ public class PermissionManager {
     }
 
     private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher) {
-    	if (node instanceof ArgumentCommandNode && ModulePermissions.fullcommandNode) {
+    	if (node instanceof ArgumentCommandNode && !ModulePermissions.fullcommandNode) {
 			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix);
 			return;
         }

@@ -210,7 +210,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_LIST)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -220,7 +220,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
 	}
 
-	public static void parseCreate(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseCreate(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_CREATE)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -255,7 +255,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Created faction [%s] \"%s\"", faction, name);
 	}
 
-	public static void parseJoin(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseJoin(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (getServerPlayer(ctx.getSource()) == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
 			return;
@@ -325,7 +325,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "No player found to accept join request");
 	}
 
-	public static void parseLeave(CommandContext<CommandSource> ctx, String faction) throws CommandException {
+	public void parseLeave(CommandContext<CommandSource> ctx, String faction) throws CommandException {
 		if (faction == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
 			return;
@@ -343,7 +343,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), MSG_LEFT_FACTION, ModuleFactions.getFactionName(faction));
 	}
 
-	public static void parseInvite(CommandContext<CommandSource> ctx, String params, String faction)
+	public void parseInvite(CommandContext<CommandSource> ctx, String params, String faction)
 			throws CommandException {
 		if (faction == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
@@ -362,7 +362,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
 	}
 
-	public static void parseAlly(CommandContext<CommandSource> ctx, String params, String faction, boolean ally)
+	public void parseAlly(CommandContext<CommandSource> ctx, String params, String faction, boolean ally)
 			throws CommandException {
 		if (faction == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
@@ -381,7 +381,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
 	}
 
-	public static void parseMembers(CommandContext<CommandSource> ctx, String params, String faction)
+	public void parseMembers(CommandContext<CommandSource> ctx, String params, String faction)
 			throws CommandException {
 		if (faction == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
@@ -403,7 +403,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
 	}
 
-	public static void parseFrindlyFire(CommandContext<CommandSource> ctx, String params, String faction)
+	public void parseFrindlyFire(CommandContext<CommandSource> ctx, String params, String faction)
 			throws CommandException {
 		if (faction == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
@@ -422,7 +422,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
 	}
 
-	public static void parseBonus(CommandContext<CommandSource> ctx, String params, String faction)
+	public void parseBonus(CommandContext<CommandSource> ctx, String params, String faction)
 			throws CommandException {
 		if (faction == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
@@ -441,7 +441,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
 	}
 
-	public static void parseDelete(CommandContext<CommandSource> ctx, final String faction) throws CommandException {
+	public void parseDelete(CommandContext<CommandSource> ctx, final String faction) throws CommandException {
 		if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_DELETE)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;

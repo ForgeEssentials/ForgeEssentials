@@ -85,7 +85,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder {
 			}
 		}
 		if (params.equals("othersT")) {
-			if (hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+			if (hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 				ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
 				if (!player.hasDisconnected()) {
 					player.setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));

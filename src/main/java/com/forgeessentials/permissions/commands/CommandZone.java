@@ -176,7 +176,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static AreaZone getAreaZone(WorldZone worldZone, String arg) {
+	public AreaZone getAreaZone(WorldZone worldZone, String arg) {
 		try {
 			Zone z = APIRegistry.perms.getZoneById(arg);
 			if (z != null && z instanceof AreaZone)
@@ -187,7 +187,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		return worldZone.getAreaZone(arg);
 	}
 
-	public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), PERM_LIST)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -237,7 +237,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params)
+	public void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params)
 			throws CommandException {
 		if (!hasPermission(ctx.getSource(), PERM_DEFINE)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
@@ -294,7 +294,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), PERM_DELETE)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -313,7 +313,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been deleted.", areaZone.getName());
 	}
 
-	public static void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), PERM_INFO)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -334,7 +334,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been selected.", areaName);
 	}
 
-	public static void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), PERM_INFO)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -355,7 +355,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
 	}
 
-	public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params)
+	public void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params)
 			throws CommandException {
 		if (!hasPermission(ctx.getSource(), PERM_SETTINGS)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);

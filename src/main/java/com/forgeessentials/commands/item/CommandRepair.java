@@ -87,7 +87,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder {
 				item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
 			}
 		} else if (args[1].equals("others")
-				&& hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+				&& hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 			ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
 			if (args[0].equals("Max")) {
 				ItemStack item = player.getMainHandItem();

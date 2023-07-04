@@ -72,7 +72,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder {
 		}
 		if ((ctx.getSource().getEntity() instanceof ServerPlayerEntity) && playerS.equalsIgnoreCase("_CONSOLE_")) {
 			ServerPlayerEntity player = getServerPlayer(ctx.getSource());
-			if (!hasPermission(player, "fe.commands.doas.console")) {
+			if (!hasPermission(player.createCommandSourceStack(), "fe.commands.doas.console")) {
 				ChatOutputHandler.chatWarning(player, FEPermissions.MSG_NO_COMMAND_PERM);
 				return Command.SINGLE_SUCCESS;
 			}

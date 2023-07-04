@@ -15,6 +15,8 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
@@ -195,6 +197,15 @@ public class CommandUtils {
 		return arraylist;
 	}
 
+	public static boolean hasPermissionNOC(CommandSource sender, String perm) {
+		if (sender.getEntity()!=null && sender.getEntity() instanceof PlayerEntity)
+			return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
+		ICommandSource source = GetSource(sender);
+		if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
+			return true;
+		return false;
+	}
+
 	@Deprecated
 	public static TextComponent getChatComponentFromNthArg(String[] args, int index) {
 		TextComponent itextcomponent = new StringTextComponent("");
@@ -333,17 +344,6 @@ public class CommandUtils {
 				? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent()
 				: null) : UserIdent.get(senderPlayer);
 		return ident;
-	}
-
-	public static boolean hasPermission(CommandSource sender, String perm) {
-		if (sender.getEntity() instanceof PlayerEntity)
-			return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
-		else
-			return true;
-	}
-
-	public static boolean hasPermission(PlayerEntity sender, String perm) {
-		return APIRegistry.perms.checkPermission(sender, perm);
 	}
 
 	public WorldPoint getSenderPoint(CommandSource sender) {

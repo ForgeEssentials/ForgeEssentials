@@ -92,7 +92,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder {
 
 	public static void checkClip(PlayerEntity player) {
 		PlayerInfo pi = PlayerInfo.get(player);
-		if (pi.isNoClip() && hasPermission(player, ModuleCommands.PERM + ".noclip")) {
+		if (pi.isNoClip() && hasPermissionNOC(player.createCommandSourceStack(), ModuleCommands.PERM + ".noclip")) {
 			if (!player.abilities.flying) {
 				pi.setNoClip(false);
 				player.noPhysics = false;

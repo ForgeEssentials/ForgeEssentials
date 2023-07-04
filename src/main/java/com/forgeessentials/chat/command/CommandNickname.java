@@ -89,7 +89,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		if (!hasPermission((PlayerEntity) ctx.getSource().getEntity(), PERM_OTHERS)) {
+		if (!hasPermission(((PlayerEntity) ctx.getSource().getEntity()).createCommandSourceStack(), PERM_OTHERS)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return Command.SINGLE_SUCCESS;
 		}

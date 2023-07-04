@@ -123,7 +123,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder {
 							&& ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource()))) {
 						((LivingEntity) entity).removeAllEffects();
 					} else {
-						if (!hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+						if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 							ChatOutputHandler.chatWarning(ctx.getSource(),
 									Translator.format("You dont have permission to remove effects from %s",
 											entity.getDisplayName().getString()));
@@ -143,7 +143,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder {
 							&& ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource()))) {
 						((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
 					} else {
-						if (!hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+						if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 							ChatOutputHandler.chatWarning(ctx.getSource(),
 									Translator.format("You dont have permission to remove effects from %s",
 											entity.getDisplayName().getString()));
@@ -194,7 +194,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder {
 					EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
 					((LivingEntity) entity).addEffect(effectinstance);
 				} else {
-					if (!hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+					if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 						ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
 								"You dont have permission to give effects to %s", entity.getDisplayName().getString()));
 						continue;

@@ -66,7 +66,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder {
 		if (params.equals("set")) {
 			ServerPlayerEntity player = getServerPlayer(ctx.getSource());
 
-			if (!hasPermission(player, TeleportModule.PERM_HOME_SET)) {
+			if (!hasPermission(player.createCommandSourceStack(), TeleportModule.PERM_HOME_SET)) {
 				ChatOutputHandler.chatError(ctx.getSource(),
 						"You don't have the permission to set your home location.");
 				return Command.SINGLE_SUCCESS;
@@ -82,7 +82,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder {
 		if (params.equals("setOthers")) {
 			ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
 			if (player != getServerPlayer(ctx.getSource())
-					&& !hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_HOME_OTHER)) {
+					&& !hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), TeleportModule.PERM_HOME_OTHER)) {
 				ChatOutputHandler.chatError(ctx.getSource(),
 						"You don't have the permission to access other players home.");
 				return Command.SINGLE_SUCCESS;

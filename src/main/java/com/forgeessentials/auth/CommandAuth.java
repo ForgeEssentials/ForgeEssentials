@@ -77,7 +77,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		boolean hasAdmin = hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".admin");
+		boolean hasAdmin = hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".admin");
 
 		// help.
 		if (params.equals("help")) {

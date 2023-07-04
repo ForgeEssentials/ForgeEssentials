@@ -62,7 +62,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder {
 	@Override
 	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
 		if (EntityArgument.getPlayer(ctx, "victim") != getServerPlayer(ctx.getSource())
-				&& hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+				&& hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 			ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
 			if (!player.hasDisconnected()) {
 				player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);

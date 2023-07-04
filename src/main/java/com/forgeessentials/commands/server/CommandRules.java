@@ -195,7 +195,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder {
 			return Command.SINGLE_SUCCESS;
 		} else if (params.equals("help")) {
 			ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");
-			if (hasPermission(Splayer, getPermissionNode() + ".edit")) {
+			if (hasPermission(Splayer.createCommandSourceStack(), getPermissionNode() + ".edit")) {
 				ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules <#> [changedRule]");
 				ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules add <newRule>");
 				ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules remove <#>");

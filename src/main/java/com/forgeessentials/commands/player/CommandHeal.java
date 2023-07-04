@@ -68,7 +68,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder {
 		if (params.equals("blank")) {
 			heal(ctx.getSource().getPlayerOrException());
 		} else if (params.equals("others")
-				&& hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others")) {
+				&& hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others")) {
 			ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
 			if (!player.hasDisconnected()) {
 				heal(player);

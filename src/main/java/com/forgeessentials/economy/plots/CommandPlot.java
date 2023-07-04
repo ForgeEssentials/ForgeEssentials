@@ -268,7 +268,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static void parseDefine(CommandContext<CommandSource> ctx) throws CommandException {
+	public void parseDefine(CommandContext<CommandSource> ctx) throws CommandException {
 		if (!hasPermission(ctx.getSource(), Plot.PERM_DEFINE)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -299,7 +299,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseDelete(CommandContext<CommandSource> ctx) throws CommandException {
+	public void parseDelete(CommandContext<CommandSource> ctx) throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
 			return;
@@ -318,7 +318,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseClaim(final CommandContext<CommandSource> ctx) throws CommandException {
+	public void parseClaim(final CommandContext<CommandSource> ctx) throws CommandException {
 		if (!hasPermission(ctx.getSource(), Plot.PERM_CLAIM)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -385,7 +385,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 
 	}
 
-	private static void checkLimits(CommandContext<CommandSource> ctx, WorldArea newArea) throws CommandException {
+	private void checkLimits(CommandContext<CommandSource> ctx, WorldArea newArea) throws CommandException {
 		int plotSize = newArea.getXLength() * newArea.getZLength()
 				* (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
 
@@ -429,7 +429,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseList(final CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
+	public void parseList(final CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
 		if (!hasPermission(ctx.getSource(), Plot.PERM_LIST)) {
 			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
 			return;
@@ -476,7 +476,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 			plot.printInfo(ctx.getSource());
 	}
 
-	public static void parseLimits(CommandContext<CommandSource> ctx) throws CommandException {
+	public void parseLimits(CommandContext<CommandSource> ctx) throws CommandException {
 		String limitCount = APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()),
 				Plot.PERM_LIMIT_COUNT);
 		if (limitCount == null || limitCount.isEmpty())
@@ -500,7 +500,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 				Translator.format("You used %d of %s allowed plot size.", usedSize, limitSize));
 	}
 
-	public static void parseSelect(CommandContext<CommandSource> ctx) throws CommandException {
+	public void parseSelect(CommandContext<CommandSource> ctx) throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
 			return;
@@ -510,7 +510,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selected plot");
 	}
 
-	public static void parseMods(CommandContext<CommandSource> ctx, List<String> params, boolean modifyUsers)
+	public void parseMods(CommandContext<CommandSource> ctx, List<String> params, boolean modifyUsers)
 			throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
@@ -558,7 +558,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseSet(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
+	public void parseSet(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
 		if (params.isEmpty()) {
 			if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(), Plot.PERM_SET_PRICE))
 				ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot set price: Put up plot for sale");
@@ -589,7 +589,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseSetPrice(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
+	public void parseSetPrice(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
 			return;
@@ -627,7 +627,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseSetFee(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
+	public void parseSetFee(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
 			return;
@@ -655,7 +655,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 				APIRegistry.economy.toString(amount), timeout));
 	}
 
-	public static void parseSetName(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
+	public void parseSetName(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
 			return;
@@ -678,7 +678,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot name to \"%s\"", name));
 	}
 
-	public static void parseSetOwner(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
+	public void parseSetOwner(CommandContext<CommandSource> ctx, List<String> params) throws CommandException {
 		Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
 			return;
@@ -712,7 +712,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 				Translator.format("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid()));
 	}
 
-	public static void parsePerms(CommandContext<CommandSource> ctx, List<String> params, boolean userPerms)
+	public void parsePerms(CommandContext<CommandSource> ctx, List<String> params, boolean userPerms)
 			throws CommandException {
 		final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door",
 				"animal" };
@@ -838,7 +838,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void parseBuyStart(final CommandContext<CommandSource> ctx, List<String> params)
+	public void parseBuyStart(final CommandContext<CommandSource> ctx, List<String> params)
 			throws CommandException {
 		final Plot plot = getPlot(ctx.getSource());
 		if (plot == null) {
@@ -955,7 +955,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		}
 	}
 
-	public static void buyPlot(CommandContext<CommandSource> ctx, Plot plot, long price) throws CommandException {
+	public void buyPlot(CommandContext<CommandSource> ctx, Plot plot, long price) throws CommandException {
 		String priceStr = APIRegistry.economy.toString(price);
 		Wallet buyerWallet = APIRegistry.economy.getWallet(getIdent(ctx.getSource()));
 		if (!buyerWallet.withdraw(price)) {
@@ -983,7 +983,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder {
 		plot.setPrice(-1);
 	}
 
-	public static Plot getPlot(CommandSource sender) throws CommandException {
+	public Plot getPlot(CommandSource sender) throws CommandException {
 		Plot plot = Plot.getPlot(new WorldPoint(sender.getEntity().level.dimension(), sender.getPosition()));
 		if (plot == null) {
 			ChatOutputHandler.chatError(sender,

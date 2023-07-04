@@ -83,7 +83,7 @@ public class CommandJump extends ForgeEssentialsCommandBuilder {
 		ItemStack stack = event.getPlayer().getMainHandItem();
 		if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
 			return;
-		if (!hasPermission(event.getPlayer(), TeleportModule.PERM_JUMP_TOOL))
+		if (!hasPermission(event.getPlayer().createCommandSourceStack(), TeleportModule.PERM_JUMP_TOOL))
 			return;
 
 		try {

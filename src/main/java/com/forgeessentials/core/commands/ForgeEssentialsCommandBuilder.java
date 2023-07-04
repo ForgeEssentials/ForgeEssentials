@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -46,31 +45,24 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor {
 
 	// ------------------------------------------------------------
 	// Permissions
-	@Deprecated
-	public boolean checkPermission(CommandSource sender) {
+	public boolean hasPermission(CommandSource sender, String perm) {
 		if (!canConsoleUseCommand() && !(sender.getEntity() instanceof PlayerEntity))
 			return false;
-		return this.checkCommandPermission(sender);
+		if (sender.getEntity()!=null && sender.getEntity() instanceof PlayerEntity)
+			return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
+		ICommandSource source = GetSource(sender);
+		if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
+			return true;
+		return false;
 	}
 
 	public abstract boolean canConsoleUseCommand();
 
 	/**
-	 * @deprecated Check, if the sender has permissions to use this command
-	 */
-	public boolean checkCommandPermission(CommandSource sender) {
-		ICommandSource source = GetSource(sender);
-		if (getPermissionNode() == null || getPermissionNode().isEmpty())
-			return true;
-		if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
-			return true;
-		return APIRegistry.perms.checkPermission(
-				UserIdent.get(((PlayerEntity) sender.getEntity()).getGameProfile()).getPlayer(), getPermissionNode());
-	}
-
-	/**
+	 * @Deprecated 
 	 * formerly of PermissionObject
 	 */
+	@Deprecated
 	public abstract String getPermissionNode();
 
 	public abstract DefaultPermissionLevel getPermissionLevel();

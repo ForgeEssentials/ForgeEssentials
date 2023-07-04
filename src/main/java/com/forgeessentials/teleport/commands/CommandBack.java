@@ -51,9 +51,9 @@ public class CommandBack extends ForgeEssentialsCommandBuilder {
 		ServerPlayerEntity player = getServerPlayer(ctx.getSource());
 		PlayerInfo pi = PlayerInfo.get(player.getUUID());
 		WarpPoint point = null;
-		if (hasPermission(player, TeleportModule.PERM_BACK_ONDEATH))
+		if (hasPermission(player.createCommandSourceStack(), TeleportModule.PERM_BACK_ONDEATH))
 			point = pi.getLastDeathLocation();
-		if (point == null && hasPermission(player, TeleportModule.PERM_BACK_ONTP))
+		if (point == null && hasPermission(player.createCommandSourceStack(), TeleportModule.PERM_BACK_ONTP))
 			point = pi.getLastTeleportOrigin();
 		if (point == null) {
 			ChatOutputHandler.chatError(ctx.getSource(), "You have nowhere to get back to");

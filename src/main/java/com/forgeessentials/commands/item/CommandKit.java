@@ -87,10 +87,10 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
 		return availableKits;
 	}
 
-	public static final SuggestionProvider<CommandSource> SUGGEST_KITS = (ctx, builder) -> {
+	public final SuggestionProvider<CommandSource> SUGGEST_KITS = (ctx, builder) -> {
 		List<String> availableKits = new ArrayList<>();
 		for (Kit kit : CommandKit.kits.values())
-			if (com.forgeessentials.util.CommandUtils.hasPermission(ctx.getSource(),
+			if (hasPermission(ctx.getSource(),
 					CommandKit.PERM + "." + kit.getName()))
 				availableKits.add(kit.getName());
 		return ISuggestionProvider.suggest(availableKits, builder);
