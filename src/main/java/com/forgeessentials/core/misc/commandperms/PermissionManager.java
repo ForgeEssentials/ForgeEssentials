@@ -7,6 +7,7 @@ import java.util.WeakHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
@@ -178,7 +179,7 @@ public class PermissionManager {
     }
 
     private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher) {
-    	if (node instanceof ArgumentCommandNode) {
+    	if (node instanceof ArgumentCommandNode && ModulePermissions.fullcommandNode) {
 			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix);
 			return;
         }

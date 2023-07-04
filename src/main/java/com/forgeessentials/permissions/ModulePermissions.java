@@ -66,6 +66,8 @@ public class ModulePermissions extends ConfigLoaderBase {
 
 	public static boolean fakePlayerIsSpecialBunny = true;
 
+	public static boolean fullcommandNode = false;
+
 	public ModulePermissions() {
 		// Earliest initialization of permission system possible
 		permissionHelper = new ZonedPermissionHelper();
@@ -229,6 +231,7 @@ public class ModulePermissions extends ConfigLoaderBase {
 
 	static ForgeConfigSpec.ConfigValue<String> FEpersistenceBackend;
 	static ForgeConfigSpec.BooleanValue FEfakePlayerIsSpecialBunny;
+	static ForgeConfigSpec.BooleanValue FEfullcommandNode;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload) {
@@ -237,6 +240,9 @@ public class ModulePermissions extends ConfigLoaderBase {
 		FEfakePlayerIsSpecialBunny = BUILDER.comment(
 				"Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!")
 				.define("fakePlayerIsSpecialBunny", true);
+		FEfullcommandNode = BUILDER.comment(
+				"Should we use the entire command node for permission checking? You might have to reset all your command perm settings if you change this!")
+				.define("useEntireCommandNode", false);
 		BUILDER.pop();
 		ItemPermissionManager.load(BUILDER, isReload);
 		PermissionScheduler.load(BUILDER, isReload);
@@ -247,6 +253,7 @@ public class ModulePermissions extends ConfigLoaderBase {
 	public void bakeConfig(boolean reload) {
 		persistenceBackend = FEpersistenceBackend.get();
 		fakePlayerIsSpecialBunny = FEfakePlayerIsSpecialBunny.get();
+		fullcommandNode = FEfullcommandNode.get();
 		ItemPermissionManager.bakeConfig(reload);
 		PermissionScheduler.bakeConfig(reload);
 		dbConnector.bakeConfig(reload);
