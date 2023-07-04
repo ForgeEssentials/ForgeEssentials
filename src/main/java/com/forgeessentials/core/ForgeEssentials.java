@@ -392,7 +392,7 @@ public class ForgeEssentials {
 		APIRegistry.perms.registerPermission(PERM_VERSIONINFO, DefaultPermissionLevel.OP,
 				"Shows notification to the player if FE version is outdated");
 
-		PermissionManager.registerCommandPermission("command.help", DefaultPermissionLevel.ALL);
+		PermissionManager.registerCommandPermission("help", DefaultPermissionLevel.ALL);
 		APIRegistry.perms.registerPermission("command.help", DefaultPermissionLevel.ALL, "Help command");
 
 		// Teleport
@@ -488,7 +488,7 @@ public class ForgeEssentials {
 		boolean perm = false;
 		CommandInfo info = CommandUtils.getCommandInfo(event);
 		if (info.getSource().getEntity() instanceof ServerPlayerEntity) {
-			perm = checkPerms(info.getPermissionNode(), CommandUtils.getServerPlayer(info.getSource()));
+			perm = checkPerms("command."+info.getPermissionNode(), CommandUtils.getServerPlayer(info.getSource()));
 		} else {
 			perm = true;
 		}

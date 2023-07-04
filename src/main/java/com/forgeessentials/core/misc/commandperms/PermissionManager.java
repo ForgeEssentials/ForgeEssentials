@@ -34,7 +34,7 @@ public class PermissionManager {
 	 */
 	public static void registerCommandPermission(String commandNode, DefaultPermissionLevel permissionLevel) {
 		commandPermissionMap.put(commandNode, permissionLevel);
-		APIRegistry.perms.registerPermission(commandNode, permissionLevel, "");
+		registerCommandPermissionDiscription(commandNode, permissionLevel, "");
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class PermissionManager {
 	 */
 	public static void registerCommandPermissionDiscription(String commandNode, DefaultPermissionLevel permissionLevel, String disc) {
 		commandPermissionMap.put(commandNode, permissionLevel);
-		APIRegistry.perms.registerPermission(commandNode, permissionLevel, disc);
+		APIRegistry.perms.registerPermission("command."+commandNode, permissionLevel, disc);
 	}
 
 	/**
