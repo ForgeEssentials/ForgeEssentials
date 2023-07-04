@@ -1,11 +1,14 @@
 package com.forgeessentials.core.misc;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.misc.commandperms.CommandFaker;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
@@ -45,8 +48,8 @@ public class PermissionManager {
 				if (commandName == commandNode.getUsageText()) {
 					DefaultPermissionLevel level = DefaultPermissionHandler.INSTANCE
 							.getDefaultPermissionLevel(permission);
-					LoggingHandler.felog.debug("Found Permission for command: {" + fromDefaultPermissionLevel(level)
-							+ "} " + commandNode.getUsageText());
+					//LoggingHandler.felog.debug("Found Permission for command: {" + fromDefaultPermissionLevel(level)
+					//		+ "} " + commandNode.getUsageText());
 					return level;
 				}
 			}
@@ -97,19 +100,17 @@ public class PermissionManager {
 
 	/**
 	 * <b>FOR INTERNAL USE ONLY</b> <br>
-	 * TODO This method should be removed in the PR
-	 *
-	 * @param command a command
 	 */
-	@Deprecated
 	public static void registerCommandPermissions() {
-		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
-				.getDispatcher();
+		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
 
+		for(Map.Entry<String, DefaultPermissionLevel> node : getAllUsage().entrySet()) {
+			LoggingHandler.felog.debug("Command: " + StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
+		}
 		for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
 			if (commandNode.getRequirement() != null) {
-				LoggingHandler.felog.debug("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20)
-						+ " - Permission: " + getCommandPermission(commandNode.getUsageText()));
+				//LoggingHandler.felog.debug("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20)
+				//		+ " - Permission: " + getCommandPermission(commandNode.getUsageText()));
 			} else {
 				LoggingHandler.felog.info("Bad CommandRe: " + StringUtils.rightPad(commandNode.getUsageText(), 20));
 			}
@@ -118,41 +119,76 @@ public class PermissionManager {
 		}
 	}
 
-	@Deprecated
-	public static DefaultPermissionLevel fromIntegerLevel(int value) {
-		switch (value) {
-		case 0:
-			return DefaultPermissionLevel.ALL;
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-			return DefaultPermissionLevel.OP;
-		default:
-			return DefaultPermissionLevel.NONE;
-		}
-
-	}
-
-	@Deprecated
 	public static int fromDefaultPermissionLevel(DefaultPermissionLevel level) {
 		switch (level) {
-		case ALL:
-			return 0;
-		case OP:
-			return 4;
-		default:
-			return 4;
+			case ALL :
+				return 0;
+			case OP :
+				return 4;
+			default :
+				return 4;
 		}
-
 	}
 
+	public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode) {
+		if(commandNode.canUse(new CommandFaker().createCommandSourceStack(0))) {
+			LoggingHandler.felog.debug("Command: required All");
+			return DefaultPermissionLevel.ALL;
+		}
+		else if(commandNode.canUse(new CommandFaker().createCommandSourceStack(1))||
+				commandNode.canUse(new CommandFaker().createCommandSourceStack(2))||
+				commandNode.canUse(new CommandFaker().createCommandSourceStack(3))||
+				commandNode.canUse(new CommandFaker().createCommandSourceStack(4))){
+			LoggingHandler.felog.debug("Command: required OP");
+			return DefaultPermissionLevel.OP;
+		}
+		else {
+			LoggingHandler.felog.debug("Command: required NONE");
+			return DefaultPermissionLevel.NONE;
+		}
+	}
+	/**
+	 * Strip a commandNode string from beginning to the index of a $ character
+	 *
+	 * @param commandNode
+	 */
 	public static String stripNode(String node) {
 
-		int index = node.indexOf("$"); // Find index of $ character
-		if (index != -1) { // Check if $ character was found
+		int index = node.indexOf("$");
+		if (index != -1) {
 			node = node.substring(0, index);
 		}
 		return node;
 	}
+
+    /**
+     * Gets all possible command nodes following the given node.
+     * 
+     * @param node target node to get child usage strings for
+     * @param source a custom "source" object, usually representing the originator of this command
+     * @return array of full usage strings under the target node
+     */
+    public static Map<String, DefaultPermissionLevel> getAllUsage() {
+		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+        final TreeMap<String, DefaultPermissionLevel> result = new TreeMap<String, DefaultPermissionLevel>();
+        getAllUsage(dispatcher.getRoot(), result, "", dispatcher);
+        return result;
+    }
+
+    private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher) {
+
+        if (node.getCommand() != null) {
+            result.put(prefix, getCommandPermFromNode(node));
+        }
+
+        if (node.getRedirect() != null) {
+            final String redirect = node.getRedirect() == dispatcher.getRoot() ? "..." : "-> " + node.getRedirect().getUsageText();
+			LoggingHandler.felog.debug("Found Command Redirect: "+ (prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect));
+            //result.add(prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect);
+        } else if (!node.getChildren().isEmpty()) {
+            for (final CommandNode<CommandSource> child : node.getChildren()) {
+                getAllUsage(child, result, prefix.isEmpty() ? child.getUsageText() : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + child.getUsageText(), dispatcher);
+            }
+        }
+    }
 }
