@@ -1,7 +1,7 @@
 package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.misc.PermissionManager;
+import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.sk89q.worldedit.forge.ForgePermissionsProvider;
 
 import net.minecraft.entity.player.ServerPlayerEntity;

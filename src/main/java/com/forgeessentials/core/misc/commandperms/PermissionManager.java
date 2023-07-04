@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.core.misc.commandperms;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -7,7 +7,6 @@ import java.util.WeakHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.misc.commandperms.CommandFaker;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.ArgumentCommandNode;

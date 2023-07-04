@@ -6,6 +6,7 @@ import java.util.Set;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;

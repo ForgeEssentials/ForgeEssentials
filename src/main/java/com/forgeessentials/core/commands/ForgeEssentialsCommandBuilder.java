@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.misc.PermissionManager;
+import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.command.CommandSource;

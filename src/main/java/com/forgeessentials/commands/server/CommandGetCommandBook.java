@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.PermissionManager;
+import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
