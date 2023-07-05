@@ -124,7 +124,7 @@ public class PermissionManager {
 			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix.replace(' ', '.'));
 			return;
         }
-        if (node.getCommand() != null) {
+        if (prefix != "") {
         	if(parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node) == DefaultPermissionLevel.OP) {
         		parentLevel=DefaultPermissionLevel.OP;
         	}
