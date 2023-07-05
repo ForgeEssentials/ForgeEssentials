@@ -74,7 +74,7 @@ public class PermissionManager {
 		}
 	}
 
-	public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode, String name) {
+	public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode) {
 		DefaultPermissionLevel result;
 		if(commandNode.canUse(new CommandFaker().createCommandSourceStack(0))) {
 			result = DefaultPermissionLevel.ALL;
@@ -87,9 +87,6 @@ public class PermissionManager {
 		}
 		else {
 			result = DefaultPermissionLevel.ALL;
-		}
-		if(name != null) {
-			LoggingHandler.felog.debug("Command: "+name+" Requires: "+result.name());
 		}
 		return result;
 	}
@@ -124,11 +121,11 @@ public class PermissionManager {
 
     private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher, DefaultPermissionLevel parentLevel) {
     	if (node instanceof ArgumentCommandNode && !ModulePermissions.fullcommandNode) {
-			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix);
+			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix.replace(' ', '.'));
 			return;
         }
         if (node.getCommand() != null) {
-        	if(parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node, prefix) == DefaultPermissionLevel.OP) {
+        	if(parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node) == DefaultPermissionLevel.OP) {
         		parentLevel=DefaultPermissionLevel.OP;
         	}
             result.put(prefix.replace(' ', '.'), parentLevel);
