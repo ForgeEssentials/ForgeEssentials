@@ -90,8 +90,6 @@ import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class ProtectionEventHandler extends ServerEventHandler {
@@ -347,14 +345,7 @@ public class ProtectionEventHandler extends ServerEventHandler {
 		int cz = (int) Math.floor(center.z);
 		Explosion explosion = event.getExplosion();
 		// Store the value of private field in variable
-		float size;
-
-		try {
-			size = (float) ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77280_f");
-		} catch (UnableToAccessFieldException e) {
-			e.printStackTrace();
-			size = 4;
-		}
+		float size =explosion.radius;
 
 		int s = (int) Math.ceil(size);
 

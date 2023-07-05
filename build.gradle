@@ -1,45 +1,41 @@
 // Build repositories
 buildscript {
 	repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
+		maven { url = 'https://maven.minecraftforge.net' }
 		maven {
-			name = "forge"
-			url = "https://files.minecraftforge.net/maven"
+			name = "sonatype releases"
+			url = "https://oss.sonatype.org/content/repositories/releases/"
 		}
 		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/releases/"
+			name = "sonatype snapshots"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
 		}
         maven {
             name = "sponge"
-            url = "https://repo.spongepowered.org/maven/"
+            url = "https://repo.spongepowered.org/repository/maven-public/"
         }
 		mavenCentral()
 		mavenLocal()
-		gradlePluginPortal()
-		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
 		jcenter()
-
 	}
 	dependencies {
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
 		classpath "com.discord4j:discord4j-core:3.2.1"
+ 		classpath files('lib/plugins/mixingradle-0.7.39.jar')//built from https://github.com/CreativeMD/MixinGradle/tree/task_fix
 	}
 }
 
 plugins {
     id 'eclipse'
+    id 'com.diffplug.eclipse.apt' version '3.35.0'
     id 'org.sonarqube' version '2.5'
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 apply plugin: 'jacoco'
+apply plugin: 'org.spongepowered.mixin'
 
 sonarqube {
     properties {
@@ -50,7 +46,7 @@ sonarqube {
 }
 
 //Clear repositories since spongepowered plugin is inserting an extra repo with http!
-repositories.clear()
+repositories.clear() //still needed?
 // Set up FE required repositories
 repositories {
     flatDir {
@@ -91,11 +87,6 @@ repositories {
 		url "https://oss.sonatype.org/content/repositories/public/"
 	}
 }
-
-
-import org.ajoberstar.grgit.Grgit
-import org.apache.tools.ant.filters.ReplaceTokens
-
 /************************************************************
  * General configuration
  */
@@ -111,7 +102,7 @@ ext.set 'changelog', System.getenv("CHANGE_LOG")
 ext.set 'releaseType', 'alpha'
 
 // Get commit hash
-
+import org.ajoberstar.grgit.Grgit
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
@@ -318,7 +309,7 @@ sourceSets {
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 }
-
+import org.apache.tools.ant.filters.ReplaceTokens
 project.compileUtilsJava {
     doFirst {
         copy {
