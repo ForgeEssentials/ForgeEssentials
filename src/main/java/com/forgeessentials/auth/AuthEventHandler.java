@@ -26,8 +26,10 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -177,16 +179,19 @@ public class AuthEventHandler extends ServerEventHandler {
 		}
 	}
 
-	/*
-	 * @SubscribeEvent(priority = EventPriority.HIGHEST) public void
-	 * onPlayerOpenContainer(PlayerOpenContainerEvent event) { UUID username =
-	 * event.getEntityPlayer();
-	 * 
-	 * if (!ModuleAuth.hasSession.contains(username)) {
-	 * event.setResult(Result.DENY);
-	 * ChatOutputHandler.chatError(event.getEntityPlayer(),
-	 * "Login required. Try /auth help."); } }
-	 */
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onPlayerOpenContainer(PlayerContainerEvent event) {
+		if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
+			return;
+
+		if (!ModuleAuth.isAuthenticated(event.getPlayer())) {
+			event.setResult(Result.DENY);
+			ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+					"Login required. Try /auth help.");
+		}
+	}
+	 
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
