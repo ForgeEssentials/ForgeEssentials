@@ -37,6 +37,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PermissionCommandParser extends CommandUtils {
 
@@ -142,6 +143,9 @@ public class PermissionCommandParser extends CommandUtils {
 		if (params.isEmpty()) {
 			ModulePermissions.permissionHelper.setDirty(false);
 			ModulePermissions.permissionHelper.save();
+			for (ServerPlayerEntity serverplayerentity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+				ServerLifecycleHooks.getCurrentServer().getCommands().sendCommands(serverplayerentity);
+			}
 			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permissions saved!");
 		} else {
 			String action = params.remove(0).toLowerCase();

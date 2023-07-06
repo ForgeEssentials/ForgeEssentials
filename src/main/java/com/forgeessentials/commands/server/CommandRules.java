@@ -153,7 +153,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder {
 						.then(Commands.argument("page1", IntegerArgumentType.integer(1, rules.size()))
 								.then(Commands.argument("page2", IntegerArgumentType.integer(1, Integer.MAX_VALUE))
 										.executes(CommandContext -> execute(CommandContext, "move")))))
-				.then(Commands.literal("add").then(Commands.argument("rule", StringArgumentType.greedyString()))
+				.then(Commands.literal("add").then(Commands.argument("newRule", StringArgumentType.greedyString()))
 						.executes(CommandContext -> execute(CommandContext, "add")))
 				.then(Commands.literal("change")
 						.then(Commands.argument("page", IntegerArgumentType.integer(1, rules.size()))
@@ -165,6 +165,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder {
 
 	@Override
 	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+		System.out.println("Found root node");
 		ServerPlayerEntity Splayer = getServerPlayer(ctx.getSource());
 		if (params.equals("blank")) {
 			for (String rule : rules) {
@@ -223,11 +224,11 @@ public class CommandRules extends ForgeEssentialsCommandBuilder {
 			ChatOutputHandler.chatConfirmation(ctx.getSource(),
 					Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
 		} else if (params.equals("add")) {
-			String newRule = StringArgumentType.getString(ctx, "rule");
+			String newRule = StringArgumentType.getString(ctx, "newRule");
 			newRule = ChatOutputHandler.formatColors(newRule);
 			rules.add(newRule);
 			ChatOutputHandler.chatConfirmation(ctx.getSource(),
-					Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "rule")));
+					Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "newRule")));
 		} else if (params.equals("move")) {
 			index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
 
@@ -286,11 +287,11 @@ public class CommandRules extends ForgeEssentialsCommandBuilder {
 			ChatOutputHandler.chatConfirmation(ctx.getSource(),
 					Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
 		} else if (params.equals("add")) {
-			String newRule = StringArgumentType.getString(ctx, "rule");
+			String newRule = StringArgumentType.getString(ctx, "newRule");
 			newRule = ChatOutputHandler.formatColors(newRule);
 			rules.add(newRule);
 			ChatOutputHandler.chatConfirmation(ctx.getSource(),
-					Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "rule")));
+					Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "newRule")));
 		} else if (params.equals("move")) {
 			index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
 

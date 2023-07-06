@@ -2,14 +2,11 @@ package com.forgeessentials.core.mixin.command;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.ICommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.SuggestionProviders;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SCommandListPacket;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.context.PlayerContext;
 
 import java.util.Map;
 
@@ -17,8 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.util.CommandUtils;
-import com.forgeessentials.util.DoAsCommandSender;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -46,9 +41,11 @@ public class MixinCommands
 	
     private void fillUsableCommandsNodes(CommandNode<CommandSource> p_197052_1_, CommandNode<ISuggestionProvider> p_197052_2_, CommandSource p_197052_3_, Map<CommandNode<CommandSource>, CommandNode<ISuggestionProvider>> p_197052_4_, String nodeString, boolean dontChangeNode) {
 		for(CommandNode<CommandSource> commandnode : p_197052_1_.getChildren()) {
+
 			String newNode=nodeString.isEmpty() ? commandnode.getUsageText() : nodeString + CommandDispatcher.ARGUMENT_SEPARATOR + commandnode.getUsageText();
 			newNode = newNode.replace("<", "").replace(">", "");
 			//System.out.println("Checking perm: "+newNode.replace(' ', '.'));
+
 	        if (checkPerms(newNode.replace(' ', '.'), p_197052_3_)) {
 				ArgumentBuilder<ISuggestionProvider, ?> argumentbuilder = (ArgumentBuilder) commandnode.createBuilder();
 	            argumentbuilder.requires((p_197060_0_) -> {
@@ -104,29 +101,32 @@ public class MixinCommands
 //    }
 
     private static boolean checkPerms(String commandNode, CommandSource source1) {
-    	//System.out.println("Checking perm: "+commandNode);
-    	//return true;
-        ICommandSource source = CommandUtils.GetSource(source1);
-        if (source instanceof DoAsCommandSender) {
-            if (!((DoAsCommandSender) source).getIdent().isPlayer()) {
-                if (((DoAsCommandSender) source).getIdent().isNpc()) {
-                    return APIRegistry.perms.hasPermission(((DoAsCommandSender) source).getIdent().getGameProfile(), commandNode, null);
-                }
-                else
-                {
-                    return true;
-                }
-            } else {
-                return APIRegistry.perms.hasPermission(((DoAsCommandSender) source).getIdent().getGameProfile(), commandNode,new PlayerContext(((DoAsCommandSender) source).getIdent().getPlayer()));
-            }
-        }
-
-        if (source1.getEntity() instanceof PlayerEntity)
-        {
-            return APIRegistry.perms.hasPermission(((PlayerEntity) source1.getEntity()).getGameProfile(), commandNode, new PlayerContext((PlayerEntity)source1.getEntity()));
-        } else {
-            UserIdent ident = UserIdent.get(source1);
-            return APIRegistry.perms.hasPermission(ident.getGameProfile(), commandNode, null);
-        }
+    	if(!APIRegistry.perms.checkUserPermission(UserIdent.get(source1), "command."+commandNode)) {
+    		System.out.println("Restricted perm: "+commandNode);
+    		return false;
+    	}
+    	return true;
+//        ICommandSource source = CommandUtils.GetSource(source1);
+//        if (source instanceof DoAsCommandSender) {
+//            if (!((DoAsCommandSender) source).getIdent().isPlayer()) {
+//                if (((DoAsCommandSender) source).getIdent().isNpc()) {
+//                    return APIRegistry.perms.hasPermission(((DoAsCommandSender) source).getIdent().getGameProfile(), commandNode, null);
+//                }
+//                else
+//                {
+//                    return true;
+//                }
+//            } else {
+//                return APIRegistry.perms.hasPermission(((DoAsCommandSender) source).getIdent().getGameProfile(), commandNode,new PlayerContext(((DoAsCommandSender) source).getIdent().getPlayer()));
+//            }
+//        }
+//
+//        if (source1.getEntity() instanceof PlayerEntity)
+//        {
+//            return APIRegistry.perms.hasPermission(((PlayerEntity) source1.getEntity()).getGameProfile(), commandNode, new PlayerContext((PlayerEntity)source1.getEntity()));
+//        } else {
+//            UserIdent ident = UserIdent.get(source1);
+//            return APIRegistry.perms.hasPermission(ident.getGameProfile(), commandNode, null);
+//        }
     }
 }

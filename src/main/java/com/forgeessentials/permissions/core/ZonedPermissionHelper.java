@@ -50,6 +50,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -64,6 +65,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.context.AreaContext;
 import net.minecraftforge.server.permission.context.BlockPosContext;
@@ -552,6 +554,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 				System.currentTimeMillis() - firstDirtyTime > 1000 * 60)) {
 			firstDirtyTime = 0;
 			save();
+			for (ServerPlayerEntity serverplayerentity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+				ServerLifecycleHooks.getCurrentServer().getCommands().sendCommands(serverplayerentity);
+			}
 		}
 		// TODO: Detect manual changes to persistence backend
 	}
