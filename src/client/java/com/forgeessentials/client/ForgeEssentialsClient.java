@@ -27,7 +27,6 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -49,9 +48,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
-import net.minecraftforge.fml.network.FMLHandshakeMessages;
-import net.minecraftforge.fml.network.FMLHandshakeMessages.S2CModList;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 @Mod(ForgeEssentialsClient.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD, value = Dist.CLIENT)
@@ -141,15 +137,8 @@ public class ForgeEssentialsClient {
 	public void newVersion(NewVersionEvent e) {
 	}
 
-	@SubscribeEvent
-	public void getServerMods(NetworkEvent.LoginPayloadEvent e) {
-		PacketBuffer payload = e.getPayload();
-		S2CModList list = FMLHandshakeMessages.S2CModList.decode(payload);
-		for (String mod : list.getModList()) {
-			feclientlog.info("Mod from server: " + mod);
-		}
-
-		if (list.getModList().contains("forgeessentials")) {
+	public static void getServerMods(List<String> e) {
+		if (e.contains("forgeessentials")) {
 			serverHasFE = true;
 			feclientlog.info("The server is running ForgeEssentials.");
 		}
@@ -296,13 +285,12 @@ public class ForgeEssentialsClient {
 
 	public void sendClientHandshake() {
 		if (ForgeEssentialsClient.serverHasFE()) {
-			Minecraft instance = Minecraft.getInstance();
-			instance.gui.getChat().addMessage(new StringTextComponent("Sending Handshake Packet to FE Server"));
+			//Minecraft instance = Minecraft.getInstance();
+			//instance.gui.getChat().addMessage(new StringTextComponent("Sending Handshake Packet to FE Server"));
 			NetworkUtils.sendToServer(new Packet0Handshake());
 		} else {
-			Minecraft instance = Minecraft.getInstance();
-			instance.gui.getChat()
-					.addMessage(new StringTextComponent("Server Does not have FE, can't send initialization Packet"));
+			//Minecraft instance = Minecraft.getInstance();
+			//instance.gui.getChat().addMessage(new StringTextComponent("Server Does not have FE, can't send initialization Packet"));
 			ForgeEssentialsClient.feclientlog.warn("Server Does not have FE, can't send initialization Packet");
 		}
 	}

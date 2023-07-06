@@ -5,6 +5,7 @@
 	"refmap": "mixins.forgeessentials.client.refmap.json",
 	"compatibilityLevel": "JAVA_8",
 	"client": [
-		"MixinPlayerEntity"
+		"MixinPlayerEntity",
+		"ServerModListMixin"
 	]  
 }
