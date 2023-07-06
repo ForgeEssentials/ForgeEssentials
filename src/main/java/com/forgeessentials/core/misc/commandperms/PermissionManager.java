@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -55,7 +53,7 @@ public class PermissionManager {
 		for(Map.Entry<String, DefaultPermissionLevel> node : getAllUsage().entrySet()) {
 			if (!commandPermissionMap.containsKey(node.getKey())) {
 				registerCommandPermission(node.getKey(), node.getValue());
-				LoggingHandler.felog.debug("Command: " + StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
+				LoggingHandler.felog.debug("Command: " + org.apache.commons.lang3.StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
 			}
 			else {
 				LoggingHandler.felog.debug("Command Tried to be registered twice: " + node.getKey());
@@ -121,7 +119,7 @@ public class PermissionManager {
 
     private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix, CommandDispatcher<CommandSource> dispatcher, DefaultPermissionLevel parentLevel) {
     	if (node instanceof ArgumentCommandNode && !ModulePermissions.fullcommandNode) {
-			LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix.replace(' ', '.'));
+			//LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix.replace(' ', '.'));
 			return;
         }
         if (prefix != "") {
@@ -132,8 +130,8 @@ public class PermissionManager {
         }
 
         if (node.getRedirect() != null) {
-            final String redirect = node.getRedirect() == dispatcher.getRoot() ? "..." : "-> " + node.getRedirect().getUsageText();
-			LoggingHandler.felog.debug("Found Command Redirect: "+ (prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect));
+            //final String redirect = node.getRedirect() == dispatcher.getRoot() ? "..." : "-> " + node.getRedirect().getUsageText();
+			//LoggingHandler.felog.debug("Found Command Redirect: "+ (prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect));
             //result.add(prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect);
         } else if (!node.getChildren().isEmpty()) {
             for (final CommandNode<CommandSource> child : node.getChildren()) {
