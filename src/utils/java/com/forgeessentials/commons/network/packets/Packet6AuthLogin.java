@@ -10,29 +10,17 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet6AuthLogin implements IFEPacket {
 	/*
-	 * 0 = request to get hash from client (hash will be empty!) 1 = reply from
-	 * client with hash (empty if client does not have hash) 2 = request to put hash
-	 * in client keystore 3 = reply from client on keystore save (hash will be
-	 * either SUCCESS or FAILURE)
+	 * request to get hash from client
 	 */
-	public int mode;
 
-	public String hash;
-
-	public Packet6AuthLogin(int mode, String hash) {
-		this.mode = mode;
-		this.hash = hash;
-	}
+	public Packet6AuthLogin() {}
 
 	public static Packet6AuthLogin decode(PacketBuffer buf) {
-		return new Packet6AuthLogin(buf.readInt(), buf.readUtf());
+		return new Packet6AuthLogin();
 	}
 
 	@Override
-	public void encode(PacketBuffer buf) {
-		buf.writeInt(mode);
-		buf.writeUtf(hash);
-	}
+	public void encode(PacketBuffer buf) { }
 
 	@Override
 	public void handle(NetworkEvent.Context context) {

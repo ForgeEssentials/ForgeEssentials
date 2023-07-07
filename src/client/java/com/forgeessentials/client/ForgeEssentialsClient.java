@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.forgeessentials.client.auth.AuthAutoLogin;
 import com.forgeessentials.client.commands.CommandInit;
 import com.forgeessentials.client.config.ClientConfig;
 import com.forgeessentials.client.config.FEModConfig;
@@ -19,12 +20,14 @@ import com.forgeessentials.client.handler.Packet5NoClipHandler;
 import com.forgeessentials.client.handler.Packet6AuthLoginHandler;
 import com.forgeessentials.client.handler.Packet7RemoteHandler;
 import com.forgeessentials.client.handler.Packet7RemoteQRRenderer;
+import com.forgeessentials.client.handler.Packet9AuthRequestHandler;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet8AuthReply;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
@@ -84,6 +87,8 @@ public class ForgeEssentialsClient {
 	public static Boolean noClipChanged = false;
 
 	/* ------------------------------------------------------------ */
+
+	public static AuthAutoLogin authDatabase = new AuthAutoLogin();
 
 	public static Packet1SelectionUpdateCUIRenderrer cuiRenderer = new Packet1SelectionUpdateCUIRenderrer();
 
@@ -191,24 +196,17 @@ public class ForgeEssentialsClient {
 
 	private static void registerNetworkMessages() {
 		// Register network messages
-		NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode,
-				Packet0Handshake::decode, Packet0Handshake::handler);
-		NetworkUtils.registerServerToClient(1, Packet1SelectionUpdateHandler.class,
-				Packet1SelectionUpdateHandler::encode, Packet1SelectionUpdateHandler::decode,
-				Packet1SelectionUpdateHandler::handler);
-		// NetworkUtils.registerServerToClient(2, Packet2Reach.class,
-		// Packet2Reach::decode);
-		NetworkUtils.registerServerToClient(3, Packet3PlayerPermissionsHandler.class,
-				Packet3PlayerPermissionsHandler::encode, Packet3PlayerPermissionsHandler::decode,
-				Packet3PlayerPermissionsHandler::handler);
-		// NetworkUtils.registerServerToClient(2, Packet4Economy.class,
-		// Packet4Economy::decode); //heck why not add something to space 4
-		NetworkUtils.registerServerToClient(5, Packet5NoClipHandler.class, Packet5NoClipHandler::encode,
-				Packet5NoClipHandler::decode, Packet5NoClipHandler::handler);
-		NetworkUtils.registerBiDirectional(6, Packet6AuthLoginHandler.class, Packet6AuthLoginHandler::encode,
-				Packet6AuthLoginHandler::decode, Packet6AuthLoginHandler::handler);
-		NetworkUtils.registerServerToClient(7, Packet7RemoteHandler.class, Packet7RemoteHandler::encode,
-				Packet7RemoteHandler::decode, Packet7RemoteHandler::handler);
+		NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode, Packet0Handshake::handler);
+		NetworkUtils.registerServerToClient(1, Packet1SelectionUpdateHandler.class, Packet1SelectionUpdateHandler::encode, Packet1SelectionUpdateHandler::decode, Packet1SelectionUpdateHandler::handler);
+		// NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+		NetworkUtils.registerServerToClient(3, Packet3PlayerPermissionsHandler.class, Packet3PlayerPermissionsHandler::encode, Packet3PlayerPermissionsHandler::decode, Packet3PlayerPermissionsHandler::handler);
+		// NetworkUtils.registerServerToClient(4, Packet4Economy.class, Packet4Economy::decode); //heck why not add something to space 4
+		NetworkUtils.registerServerToClient(5, Packet5NoClipHandler.class, Packet5NoClipHandler::encode, Packet5NoClipHandler::decode, Packet5NoClipHandler::handler);
+		NetworkUtils.registerServerToClient(6, Packet6AuthLoginHandler.class, Packet6AuthLoginHandler::encode, Packet6AuthLoginHandler::decode, Packet6AuthLoginHandler::handler);
+		NetworkUtils.registerServerToClient(7, Packet7RemoteHandler.class, Packet7RemoteHandler::encode, Packet7RemoteHandler::decode, Packet7RemoteHandler::handler);
+		NetworkUtils.registerClientToServer(8, Packet8AuthReply.class, Packet8AuthReply::encode, Packet8AuthReply::decode, Packet8AuthReply::handler);
+		NetworkUtils.registerServerToClient(9, Packet9AuthRequestHandler.class, Packet9AuthRequestHandler::encode, Packet9AuthRequestHandler::decode, Packet9AuthRequestHandler::handler);
+
 	}
 
 	private void onConfigLoad(ModConfigEvent configEvent) {

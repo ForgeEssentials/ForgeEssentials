@@ -64,17 +64,6 @@ public class NetworkUtils {
 	}
 
 	/**
-	 * Register a network packet.<br>
-	 * Registers a packet that can be sent from both the client or the server.
-	 */
-	public static <MSG extends IFEPacket> void registerBiDirectional(int index, Class<MSG> type,
-			BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
-			BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler) {
-		registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_SERVER);
-		registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_CLIENT);
-	}
-
-	/**
 	 * INTERNAL METHOD, DO NOT CALL.
 	 */
 	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type,

@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet9AuthRequest;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -228,7 +229,7 @@ public class AuthEventHandler extends ServerEventHandler {
 		if (!ModuleAuth.isEnabled())
 			return;
 		if (ModuleAuth.isRegistered(e.getPlayer().getUUID()) && !ModuleAuth.isAuthenticated(e.getPlayer())) {
-			NetworkUtils.sendTo(new Packet6AuthLogin(0, ""), (ServerPlayerEntity) e.getPlayer());
+			NetworkUtils.sendTo(new Packet6AuthLogin(), (ServerPlayerEntity) e.getPlayer());
 		}
 	}
 
@@ -236,8 +237,9 @@ public class AuthEventHandler extends ServerEventHandler {
 	public void onAuthLogin(PlayerAuthLoginEvent.Success e) {
 		if (e.source == Source.COMMAND && ModuleAuth.allowAutoLogin) {
 			UUID token = UUID.randomUUID();
-			NetworkUtils.sendTo(new Packet6AuthLogin(2, token.toString()), (ServerPlayerEntity) e.getPlayer());
+			NetworkUtils.sendTo(new Packet9AuthRequest(token.toString()), (ServerPlayerEntity) e.getPlayer());
 			PasswordManager.addSession(e.getPlayer().getUUID(), token);
+			ChatOutputHandler.chatConfirmation(e.getPlayer(), "AutoAuth Login Successful.");
 		}
 		APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer().createCommandSourceStack());
 	}

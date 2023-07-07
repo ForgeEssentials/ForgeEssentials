@@ -4,6 +4,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.player.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.player.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -133,7 +134,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder {
 
 			}
 
-			if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration) {
+			if (!ServerUtil.isOnlineMode()&&!ModuleAuth.allowOfflineRegistration) {
 				ChatOutputHandler.chatWarning(ctx.getSource(),
 						Translator.translate("Registrations have been disabled."));
 				return Command.SINGLE_SUCCESS;
@@ -154,11 +155,9 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder {
 		boolean isLogged = true;
 
 		// check if the player is logged.
-		ServerPlayerEntity player = (ServerPlayerEntity) UserIdent.getPlayerByMatchOrUsername(ctx.getSource(),
-				EntityArgument.getPlayer(ctx, "player").getDisplayName().getString());
+		ServerPlayerEntity player = (ServerPlayerEntity) UserIdent.get(EntityArgument.getPlayer(ctx, "player")).getPlayer();
 		if (player == null) {
-			ChatOutputHandler.chatWarning(ctx.getSource(),
-					"A player of that name is not on the server. Doing the action anyways.");
+			ChatOutputHandler.chatWarning(ctx.getSource(), "A player of that name is not on the server. Doing the action anyways.");
 			isLogged = false;
 		}
 

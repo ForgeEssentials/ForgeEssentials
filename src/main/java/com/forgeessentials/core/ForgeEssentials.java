@@ -251,21 +251,17 @@ public class ForgeEssentials {
 	private void registerNetworkMessages() {
 		LoggingHandler.felog.info("ForgeEssentials registering network Packets");
 		// Load network packages
-		NetworkUtils.registerClientToServer(0, Packet0HandshakeHandler.class, Packet0HandshakeHandler::encode,
-				Packet0HandshakeHandler::decode, Packet0HandshakeHandler::handler);
-		NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode,
-				Packet1SelectionUpdate::decode, Packet1SelectionUpdate::handler);
-		// NetworkUtils.registerServerToClient(2, Packet2Reach.class,
-		// Packet2Reach::decode);
-		NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode,
-				Packet3PlayerPermissions::decode, Packet3PlayerPermissions::handler);
-		// NetworkUtils.registerServerToClient(2, Packet4Economy.class,
-		// Packet4Economy::decode); old times
-		NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode,
-				Packet5Noclip::handler);
-		// Packet6Auth is registered in the Auth Module
+		NetworkUtils.registerClientToServer(0, Packet0HandshakeHandler.class, Packet0HandshakeHandler::encode, Packet0HandshakeHandler::decode, Packet0HandshakeHandler::handler);
+		NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode, Packet1SelectionUpdate::handler);
+		// NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode); old times
+		NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode, Packet3PlayerPermissions::handler);
+		// NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
+		NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode, Packet5Noclip::handler);
+		// Packet6AuthLogin is registered in the Auth Module
 		// Packet7Remote is registered in the Remote Module
 		MinecraftForge.EVENT_BUS.post(new RegisterPacketEvent());
+		// Packet8AuthReply is registered in the Remote Module
+		// Packet9AuthRequest is registered in the Remote Module
 
 	}
 

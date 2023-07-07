@@ -53,7 +53,7 @@ public class PermissionManager {
 		for(Map.Entry<String, DefaultPermissionLevel> node : getAllUsage().entrySet()) {
 			if (!commandPermissionMap.containsKey(node.getKey())) {
 				registerCommandPermission(node.getKey(), node.getValue());
-				LoggingHandler.felog.debug("Command: " + org.apache.commons.lang3.StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
+				//LoggingHandler.felog.debug("Command: " + org.apache.commons.lang3.StringUtils.rightPad(node.getKey(), 30) + " - Permission: " + node.getValue().name());
 			}
 			else {
 				LoggingHandler.felog.debug("Command Tried to be registered twice: " + node.getKey());

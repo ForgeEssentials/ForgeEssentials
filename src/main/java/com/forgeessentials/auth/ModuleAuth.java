@@ -7,9 +7,8 @@ import java.util.UUID;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
-import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet9AuthRequest;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -25,7 +24,6 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -79,8 +77,9 @@ public class ModuleAuth extends ConfigLoaderBase {
 
 	@SubscribeEvent
 	public void registerPacket(RegisterPacketEvent event) {
-		NetworkUtils.registerBiDirectional(6, AuthNetHandler.class, AuthNetHandler::encode, AuthNetHandler::decode,
-				AuthNetHandler::handler);
+		NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::encode, Packet6AuthLogin::decode, Packet6AuthLogin::handler);
+		NetworkUtils.registerClientToServer(8, AuthNetHandler.class, AuthNetHandler::encode, AuthNetHandler::decode, AuthNetHandler::handler);
+		NetworkUtils.registerServerToClient(9, Packet9AuthRequest.class, Packet9AuthRequest::encode, Packet9AuthRequest::decode, Packet9AuthRequest::handler);
 	}
 
 	@SubscribeEvent
@@ -142,9 +141,9 @@ public class ModuleAuth extends ConfigLoaderBase {
 		return isAuthenticated(player.getUUID());
 	}
 
-	public static boolean isAllowedMethod(IPacket<?> msg) {
-		return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
-	}
+//	public static boolean isAllowedMethod(IPacket<?> msg) {
+//		return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
+//	}
 
 	public static void authenticate(UUID player) {
 		authenticatedUsers.add(player);
@@ -161,7 +160,7 @@ public class ModuleAuth extends ConfigLoaderBase {
 	 * @return
 	 */
 	public static boolean isGuestCommand(CommandInfo info) {
-		return info.getCommandName().equals("auth") || info.getCommandName().equals("FEauth")
+		return info.getCommandName().equals("auth") || info.getCommandName().equals("feauth")
 				|| info.getCommandName().equals("help") || info.getCommandName().equals("fehelp");
 	}
 

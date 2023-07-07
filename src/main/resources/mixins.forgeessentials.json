@@ -13,8 +13,8 @@
 		"entity.MixinItemFrameEntity",
 		"entity.player.MixinEntityPlayer",
 		//"item.crafting.MixinCraftingManager",
-		"network.MixinNetHandlerPlayServer",
-		"network.MixinSimpleChannelHandlerWrapper"
+		"network.MixinNetHandlerPlayServer"
+		//"network.MixinSimpleChannelHandlerWrapper"
 		//"MixinDimensionManager"
 		//"tileentity.MixinMobSpawnerBaseLogic"
 	],
