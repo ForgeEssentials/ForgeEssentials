@@ -30,9 +30,9 @@ public class QuestionerKeyHandler {
 			return;
 		}
 		if (yes.isDown()) {
-			minecraft.player.chat("/yes");
+			minecraft.player.chat("/feyes");
 		} else if (no.isDown()) {
-			minecraft.player.chat("/no");
+			minecraft.player.chat("/feno");
 		}
 	}
 }
