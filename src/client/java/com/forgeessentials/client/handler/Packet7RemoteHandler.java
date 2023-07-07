@@ -9,7 +9,6 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
 
 import net.minecraft.client.Minecraft;
@@ -19,6 +18,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet7RemoteHandler extends Packet7Remote {
@@ -32,18 +32,27 @@ public class Packet7RemoteHandler extends Packet7Remote {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {
+		Minecraft instance = Minecraft.getInstance();
 		try {
 			BufferedImage img = ImageIO.read(new URL(link));
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(img, "png", baos);
 			InputStream is = new ByteArrayInputStream(baos.toByteArray());
 			DynamicTexture qrCodeTexture = new DynamicTexture(NativeImage.read(is));
-			ForgeEssentialsClient.qrCodeRenderer.qrCode = Minecraft.getInstance().getTextureManager()
+			Packet7RemoteQRRenderer.qrCode = instance.getTextureManager()
 					.register("qr_code", qrCodeTexture);
+			
+			TextComponent qrLink = new StringTextComponent("[QR code]");
+			ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
+			qrLink.withStyle((style) -> {
+				return style.withClickEvent(click);
+			});
+			qrLink.withStyle(TextFormatting.RED);
+			qrLink.withStyle(TextFormatting.UNDERLINE);
+			instance.player.sendMessage(qrLink, instance.player.getUUID());
 		} catch (IOException e) {
 			TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
 			cmsg.withStyle(TextFormatting.RED);
-			Minecraft instance = Minecraft.getInstance();
 			instance.player.sendMessage(cmsg, instance.player.getUUID());
 			e.printStackTrace();
 		}

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -25,6 +26,12 @@ public class QuestionerKeyHandler {
 
 	@SubscribeEvent
 	public void onKeyPress(ClickInputEvent e) {
+		if(Packet7RemoteQRRenderer.qrCode!=null) {
+			Packet7RemoteQRRenderer.qrCode=null;
+		}
+	}
+	@SubscribeEvent
+	public void onKeyPress(KeyInputEvent e) {
 		Minecraft minecraft = Minecraft.getInstance();
 		if (!minecraft.isWindowActive()) {
 			return;

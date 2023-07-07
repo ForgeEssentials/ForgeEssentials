@@ -10,8 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class Packet7RemoteQRRenderer {
 
-	public ResourceLocation qrCode;
-
+	public static ResourceLocation qrCode;
 	@SubscribeEvent
 	public void render(RenderWorldLastEvent event) {
 		Minecraft instance = Minecraft.getInstance();
