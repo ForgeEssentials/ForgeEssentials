@@ -19,6 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
@@ -166,6 +167,10 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder {
 			return Command.SINGLE_SUCCESS;
 		}
 		case "qr": {
+			if(!(ctx.getSource().getEntity() instanceof PlayerEntity)) {
+				ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+				return Command.SINGLE_SUCCESS;
+			}
 			if (!PlayerInfo.get(getIdent(ctx.getSource()).getPlayerMP()).getHasFEClient()) {
 				showPasskey(ctx.getSource(), getIdent(ctx.getSource()), false);
 			} else {
