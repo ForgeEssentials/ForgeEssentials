@@ -1,6 +1,7 @@
 package com.forgeessentials.client.handler;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,9 +13,9 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
  * will only give you an error message.
  */
 public class QuestionerKeyHandler {
-	private static final String category = "keys.fe.questioner";
-	private static final KeyBinding yes = new KeyBinding("keys.fe.yes", 297, category);
-	private static final KeyBinding no = new KeyBinding("keys.fe.no", 298, category);
+	private static final String category = I18n.get("forgeessentialsclient.questioner");
+	private static final KeyBinding yes = new KeyBinding(I18n.get("forgeessentialsclient.yes"), 297, category);
+	private static final KeyBinding no = new KeyBinding(I18n.get("forgeessentialsclient.no"), 298, category);
 
 	public QuestionerKeyHandler() {
 		ClientRegistry.registerKeyBinding(yes);
