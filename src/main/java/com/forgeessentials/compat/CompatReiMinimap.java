@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class CompatReiMinimap {
-
+	//TODO determine if this should be removed
 	public static final String PERM = "fe.reimm.compat";
 	public static final String PERM_CAVEMAP = PERM + ".cavemap";
 	public static final String PERM_RADAR = PERM + ".radar";

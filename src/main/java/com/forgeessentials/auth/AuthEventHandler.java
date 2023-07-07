@@ -201,9 +201,6 @@ public class AuthEventHandler extends ServerEventHandler {
 		if (!ModuleAuth.isRegistered(event.getPlayer().getUUID())) {
 			ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
 					"Registration required. Try /auth help.");
-		} else {
-			ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-					"Login required. Try /auth help.");
 		}
 
 		if (!APIRegistry.perms.checkPermission(event.getPlayer(), "fe.auth.isVIP")) {

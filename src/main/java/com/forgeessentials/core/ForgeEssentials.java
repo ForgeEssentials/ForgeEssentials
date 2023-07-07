@@ -19,7 +19,6 @@ import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.compat.BaublesCompat;
-import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandFEWorldInfo;
@@ -213,7 +212,7 @@ public class ForgeEssentials {
 		questioner = new Questioner();
 		respawnHandler = new RespawnHandler();
 		selectionHandler = new SelectionHandler();
-		MinecraftForge.EVENT_BUS.register(new CompatReiMinimap());
+		//MinecraftForge.EVENT_BUS.register(new CompatReiMinimap());
 
 		// Load submodules
 		moduleLauncher.init();

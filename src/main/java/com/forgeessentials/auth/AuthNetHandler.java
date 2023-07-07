@@ -23,14 +23,17 @@ public class AuthNetHandler extends Packet8AuthReply {
 
 	@Override
 	public void handle(NetworkEvent.Context context) {
-		if (ModuleAuth.allowAutoLogin)
+		if (ModuleAuth.allowAutoLogin) {
 			if (!hash.isEmpty()) {
 				if (PasswordManager.hasSession(UserIdent.get(context.getSender()).getUuid(),UUID.fromString(hash))) {
 					ModuleAuth.authenticate(context.getSender().getUUID());
 					APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
 					ChatOutputHandler.chatConfirmation(context.getSender(), "AutoAuth Login Successful.");
-
+				}
+				else {
+					ChatOutputHandler.chatError(context.getSender(), "Failed to AutoAuth Login, please authenticate and login again for this to go away.");
 				}
 			}
+		}
 	}
 }
