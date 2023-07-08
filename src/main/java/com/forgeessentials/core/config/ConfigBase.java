@@ -1,6 +1,5 @@
 package com.forgeessentials.core.config;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -26,8 +25,7 @@ public class ConfigBase {
 	public static Predicate<Object> intValidator = b -> b instanceof Integer;
 	public static Predicate<Object> booleanValidator = c -> c instanceof Boolean;
 
-	public ConfigBase(File rootDirectory1) {
-		// rootDirectory = rootDirectory1;
+	public ConfigBase() {
 		moduleConfig = new ModuleConfig();
 	}
 

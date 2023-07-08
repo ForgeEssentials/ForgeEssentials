@@ -233,7 +233,7 @@ public class ForgeEssentials {
 		// moduleDirectory = new File(feDirectory, "modules");
 		// moduleDirectory.mkdirs();
 
-		configManager = new ConfigBase(feDirectory);
+		configManager = new ConfigBase();
 
 		ConfigBase.getModuleConfig().loadModuleConfig();
 		ConfigBase.getModuleConfig().saveConfig();

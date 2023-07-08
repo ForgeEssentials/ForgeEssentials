@@ -200,7 +200,6 @@ public class ShopManager extends ServerEventHandler {
 		}
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void playerInteractEvent(final PlayerInteractEvent event) {
 		if (event instanceof LeftClickBlock || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
@@ -228,7 +227,7 @@ public class ShopManager extends ServerEventHandler {
 			if (!ItemUtil.isSign(block))
 				return;
 			ITextComponent[] text = ItemUtil.getSignText(point);
-			if (text == null || text.length < 1 || !shopTags.contains(text[0].plainCopy()))
+			if (text == null || text.length < 1 || !shopTags.contains(text[0].getString()))
 				return;
 			if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE)) {
 				ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
