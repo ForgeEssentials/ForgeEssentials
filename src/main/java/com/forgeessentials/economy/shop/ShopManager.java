@@ -13,6 +13,7 @@ import java.util.WeakHashMap;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -126,7 +127,7 @@ public class ShopManager extends ServerEventHandler {
 	public void breakEvent(BreakEvent event) {
 		if (FMLEnvironment.dist.isClient())
 			return;
-		WorldPoint point = new WorldPoint(event.getPlayer());
+		WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
 		ShopData shop = getShop(point, event.getPlayer().createCommandSourceStack());
 		if (shop == null)
 			return;
@@ -204,7 +205,7 @@ public class ShopManager extends ServerEventHandler {
 	public void playerInteractEvent(final PlayerInteractEvent event) {
 		if (event instanceof LeftClickBlock || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
 			return;
-
+		ModuleCommands.eventHandler.playerActive((ServerPlayerEntity)event.getPlayer());
 		ItemStack equippedStack = event.getPlayer().getMainHandItem();
 		Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 
@@ -221,7 +222,7 @@ public class ShopManager extends ServerEventHandler {
 
 		UserIdent ident = UserIdent.get(event.getPlayer());
 		ShopData shop = shopSignMap.get(point);
-		boolean newShop = shop == null;
+		boolean newShop = (shop == null);
 		if (newShop) {
 			Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
 			if (!ItemUtil.isSign(block))

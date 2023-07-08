@@ -17,7 +17,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -71,10 +70,6 @@ public class WorldPoint extends Point {
 
 	public WorldPoint(WarpPoint other) {
 		this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
-	}
-
-	public WorldPoint(BlockEvent event) {
-		this(event.getWorld(), event.getPos());
 	}
 
 	public WorldPoint(IWorld world2, BlockPos pos) {

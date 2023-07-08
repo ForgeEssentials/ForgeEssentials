@@ -72,6 +72,7 @@ public class ShopData {
 		this.pos = point;
 		this.itemFrameId = frame.getUUID();
 		this.itemFrame = new WeakReference<ItemFrameEntity>(frame);
+		this.stock=0;
 	}
 
 	public void update() {
@@ -102,7 +103,7 @@ public class ShopData {
 		sellPrice = -1;
 		amount = 1;
 		for (int i = 1; i < text.length; i++) {
-			Matcher matcher = PATTERN_BUY.matcher(text[i].plainCopy().getContents());
+			Matcher matcher = PATTERN_BUY.matcher(text[i].getString());
 			if (matcher.matches()) {
 				if (buyPrice != -1) {
 					error = Translator.translate("Buy price specified twice");
@@ -111,7 +112,7 @@ public class ShopData {
 				buyPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
 				continue;
 			}
-			matcher = PATTERN_SELL.matcher(text[i].plainCopy().getContents());
+			matcher = PATTERN_SELL.matcher(text[i].getString());
 			if (matcher.matches()) {
 				if (sellPrice != -1) {
 					error = Translator.translate("Sell price specified twice");
@@ -120,7 +121,7 @@ public class ShopData {
 				sellPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
 				continue;
 			}
-			matcher = PATTERN_AMOUNT.matcher(text[i].plainCopy().getContents());
+			matcher = PATTERN_AMOUNT.matcher(text[i].getString());
 			if (matcher.matches()) {
 				if (amount != 1) {
 					error = Translator.translate("Amount specified twice");

@@ -42,8 +42,10 @@ public abstract class PlayerUtil {
 	 */
 	public static void give(PlayerEntity player, ItemStack item) {
 		ItemEntity entityitem = player.drop(item, false);
-		entityitem.setNoPickUpDelay();
-		entityitem.setOwner(player.getUUID());
+		if(entityitem!=null) {
+			entityitem.setNoPickUpDelay();
+			entityitem.setOwner(player.getUUID());
+		}
 	}
 
 	/**
