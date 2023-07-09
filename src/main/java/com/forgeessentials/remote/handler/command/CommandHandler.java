@@ -18,50 +18,59 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND)
-public class CommandHandler extends GenericRemoteHandler<String> {
+public class CommandHandler extends GenericRemoteHandler<String>
+{
 
-	public static final String PERM = PERM_REMOTE + ".command";
+    public static final String PERM = PERM_REMOTE + ".command";
 
-	public CommandHandler() {
-		super(PERM, String.class);
-		APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows to run commands remotely");
-	}
+    public CommandHandler()
+    {
+        super(PERM, String.class);
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows to run commands remotely");
+    }
 
-	@Override
-	protected RemoteResponse<?> handleData(final RemoteSession session, final RemoteRequest<String> request) {
-		if (request.data == null)
-			error("Missing command");
+    @Override
+    protected RemoteResponse<?> handleData(final RemoteSession session, final RemoteRequest<String> request)
+    {
+        if (request.data == null)
+            error("Missing command");
 
-		String commandName = request.data;
+        String commandName = request.data;
 
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
-				.parse(commandName, server.createCommandSourceStack());
-		if (command.getReader().canRead() != true)
-			error(String.format("Command \"/%s\" not found", commandName));
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
+                .parse(commandName, server.createCommandSourceStack());
+        if (command.getReader().canRead() != true)
+            error(String.format("Command \"/%s\" not found", commandName));
 
-		checkPermission(session, command.getReader().getString().substring(1));
+        checkPermission(session, command.getReader().getString().substring(1));
 
-		TaskRegistry.runLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					CommandSource sender;
-					if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
-						sender = session.getUserIdent().getPlayer().createCommandSourceStack();
-					else
-						sender = RemoteCommandSender.get(session).createCommandSourceStack();
-					server.getCommands().performCommand(sender, commandName);
-					session.trySendMessage(RemoteResponse.success(request));
-				} catch (CommandException e) {
-					session.trySendMessage(RemoteResponse.error(request, e.getMessage()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					session.trySendMessage(RemoteResponse.error(request, "Exception: " + e.getMessage()));
-				}
-			}
-		});
-		return new RemoteResponse.Ignore();
-	}
+        TaskRegistry.runLater(new Runnable() {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    CommandSource sender;
+                    if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
+                        sender = session.getUserIdent().getPlayer().createCommandSourceStack();
+                    else
+                        sender = RemoteCommandSender.get(session).createCommandSourceStack();
+                    server.getCommands().performCommand(sender, commandName);
+                    session.trySendMessage(RemoteResponse.success(request));
+                }
+                catch (CommandException e)
+                {
+                    session.trySendMessage(RemoteResponse.error(request, e.getMessage()));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    session.trySendMessage(RemoteResponse.error(request, "Exception: " + e.getMessage()));
+                }
+            }
+        });
+        return new RemoteResponse.Ignore();
+    }
 
 }

@@ -16,33 +16,39 @@ import net.minecraft.util.DamageSource;
  *
  * Use 20 for damage if you want to kill him, interval is always in seconds.
  */
-public class EffectDamage extends WorldBorderEffect {
+public class EffectDamage extends WorldBorderEffect
+{
 
-	private int interval = 1000;
+    private int interval = 1000;
 
-	private int damage = 1;
+    private int damage = 1;
 
-	@Override
-	public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException {
-		interval = IntegerArgumentType.getInteger(ctx, "interval");
-		damage = IntegerArgumentType.getInteger(ctx, "damage");
-	}
+    @Override
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    {
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        damage = IntegerArgumentType.getInteger(ctx, "damage");
+    }
 
-	@Override
-	public void tick(WorldBorder border, ServerPlayerEntity player) {
-		PlayerInfo pi = PlayerInfo.get(player);
-		if (pi.checkTimeout(this.getClass().getName())) {
-			player.hurt(DamageSource.OUT_OF_WORLD, damage);
-			pi.startTimeout(this.getClass().getName(), interval * 1000);
-		}
-	}
+    @Override
+    public void tick(WorldBorder border, ServerPlayerEntity player)
+    {
+        PlayerInfo pi = PlayerInfo.get(player);
+        if (pi.checkTimeout(this.getClass().getName()))
+        {
+            player.hurt(DamageSource.OUT_OF_WORLD, damage);
+            pi.startTimeout(this.getClass().getName(), interval * 1000);
+        }
+    }
 
-	public String toString() {
-		return "damage trigger: " + triggerDistance + " damage: " + damage;
-	}
+    public String toString()
+    {
+        return "damage trigger: " + triggerDistance + " damage: " + damage;
+    }
 
-	public String getSyntax() {
-		return "<interval> <damage>";
-	}
+    public String getSyntax()
+    {
+        return "<interval> <damage>";
+    }
 
 }

@@ -12,51 +12,61 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandFeReload extends ForgeEssentialsCommandBuilder {
+public class CommandFeReload extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandFeReload(boolean enabled) {
-		super(enabled);
-	}
+    public CommandFeReload(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "fereload";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "fereload";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "reload" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "reload" };
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ForgeEssentials.PERM_RELOAD;
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ForgeEssentials.PERM_RELOAD;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		reload(ctx.getSource());
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        reload(ctx.getSource());
+        return Command.SINGLE_SUCCESS;
+    }
 
-	public static void reload(CommandSource sender) {
-		ModuleLauncher.instance.reloadConfigs();
-		ChatOutputHandler.chatConfirmation(sender,
-				Translator.translate("Reloaded configs. (may not work for all settings)"));
-	}
+    public static void reload(CommandSource sender)
+    {
+        ModuleLauncher.instance.reloadConfigs();
+        ChatOutputHandler.chatConfirmation(sender,
+                Translator.translate("Reloaded configs. (may not work for all settings)"));
+    }
 }

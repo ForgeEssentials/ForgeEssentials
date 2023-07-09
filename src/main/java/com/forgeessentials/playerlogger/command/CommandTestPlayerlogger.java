@@ -19,66 +19,76 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder {
+public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandTestPlayerlogger(boolean enabled) {
-		super(enabled);
-	}
+    public CommandTestPlayerlogger(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	public ServerPlayerEntity player;
+    public ServerPlayerEntity player;
 
-	public boolean place;
+    public boolean place;
 
-	@Override
-	public String getPrimaryAlias() {
-		return "testpl";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "testpl";
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "testpl";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return "testpl";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		if (player == null)
-			player = getServerPlayer(ctx.getSource());
-		else
-			player = null;
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (player == null)
+            player = getServerPlayer(ctx.getSource());
+        else
+            player = null;
+        return Command.SINGLE_SUCCESS;
+    }
 
-	@SubscribeEvent
-	public void tick(TickEvent.ServerTickEvent event) {
-		if (player != null) {
-			int x = 0;
-			int y = 200;
-			int z = 0;
-			BlockPos pos = new BlockPos(x, y, z);
-			for (int i = 0; i < 300; i++)
-				if (place)
-					ForgeEventFactory.onBlockPlace(player,
-							BlockSnapshot.create(player.level.dimension(), player.level, pos), Direction.DOWN);
-				else
-					MinecraftForge.EVENT_BUS.post(
-							new BlockEvent.BreakEvent(player.level, pos, Blocks.DIRT.defaultBlockState(), player));
-			place = !place;
-		}
-	}
+    @SubscribeEvent
+    public void tick(TickEvent.ServerTickEvent event)
+    {
+        if (player != null)
+        {
+            int x = 0;
+            int y = 200;
+            int z = 0;
+            BlockPos pos = new BlockPos(x, y, z);
+            for (int i = 0; i < 300; i++)
+                if (place)
+                    ForgeEventFactory.onBlockPlace(player,
+                            BlockSnapshot.create(player.level.dimension(), player.level, pos), Direction.DOWN);
+                else
+                    MinecraftForge.EVENT_BUS.post(
+                            new BlockEvent.BreakEvent(player.level, pos, Blocks.DIRT.defaultBlockState(), player));
+            place = !place;
+        }
+    }
 
 }

@@ -20,39 +20,47 @@ import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
 /**
  * @tsd.namespace mc
  */
-public class ScriptExtensionRoot implements ScriptExtension {
+public class ScriptExtensionRoot implements ScriptExtension
+{
 
-	private String INIT_SCRIPT;
+    private String INIT_SCRIPT;
 
-	public ScriptExtensionRoot() {
-		try {
-			INIT_SCRIPT = IOUtils.toString(ScriptExtensionRoot.class.getResource("init.js"), "UTF-8");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		ScriptCompiler.registerWrapperClass(Date.class, "");
-		ScriptCompiler.registerWrapperClass(Calendar.class, "");
-	}
+    public ScriptExtensionRoot()
+    {
+        try
+        {
+            INIT_SCRIPT = IOUtils.toString(ScriptExtensionRoot.class.getResource("init.js"), "UTF-8");
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        ScriptCompiler.registerWrapperClass(Date.class, "");
+        ScriptCompiler.registerWrapperClass(Calendar.class, "");
+    }
 
-	@Override
-	public void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException {
-		engine.put("window", new JsWindow(script));
-		engine.put("Server", new JsServer(script));
-		engine.put("Block", ScriptCompiler.toNashornClass(JsBlock.class));
-		engine.put("Item", ScriptCompiler.toNashornClass(JsItem.class));
-		engine.put("World", ScriptCompiler.toNashornClass(JsWorld.class));
-		engine.put("localStorage", ScriptCompiler.toNashornClass(JsLocalStorage.class));
-		engine.put("Color", ScriptCompiler.toNashornClass(JsFormat.class));
+    @Override
+    public void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException
+    {
+        engine.put("window", new JsWindow(script));
+        engine.put("Server", new JsServer(script));
+        engine.put("Block", ScriptCompiler.toNashornClass(JsBlock.class));
+        engine.put("Item", ScriptCompiler.toNashornClass(JsItem.class));
+        engine.put("World", ScriptCompiler.toNashornClass(JsWorld.class));
+        engine.put("localStorage", ScriptCompiler.toNashornClass(JsLocalStorage.class));
+        engine.put("Color", ScriptCompiler.toNashornClass(JsFormat.class));
 
-		engine.eval(INIT_SCRIPT);
-	}
+        engine.eval(INIT_SCRIPT);
+    }
 
-	@Override
-	public void serverStarted() {
-	}
+    @Override
+    public void serverStarted()
+    {
+    }
 
-	@Override
-	public void serverStopped() {
-	}
+    @Override
+    public void serverStopped()
+    {
+    }
 
 }

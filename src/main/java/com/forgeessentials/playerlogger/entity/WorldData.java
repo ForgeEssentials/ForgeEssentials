@@ -1,24 +1,24 @@
 package com.forgeessentials.playerlogger.entity;
 
 //
-//import javax.persistence.Column;
-//import javax.persistence.Entity;
-//import javax.persistence.Id;
-//import javax.persistence.Table;
+// import javax.persistence.Column;
+// import javax.persistence.Entity;
+// import javax.persistence.Id;
+// import javax.persistence.Table;
 //
-///**
+/// **
 // *
 // */
-//@Entity
-//@Table
-//public class WorldData
-//{
+// @Entity
+// @Table
+// public class WorldData
+// {
 //
-//    @Id
-//    @Column(name = "id")
-//    public String id;
+// @Id
+// @Column(name = "id")
+// public String id;
 //
-//    @Column(name = "name")
-//    public String name;
+// @Column(name = "name")
+// public String name;
 //
-//}
+// }

@@ -30,95 +30,109 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 /**
  * Opens a configurable virtual chest
  */
-public class CommandVirtualchest extends ForgeEssentialsCommandBuilder {
-	public CommandVirtualchest(boolean enabled) {
-		super(enabled);
-	}
+public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
+{
+    public CommandVirtualchest(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	public static final String VIRTUALCHEST_TAG = "VirtualChestItems";
+    public static final String VIRTUALCHEST_TAG = "VirtualChestItems";
 
-	public static final List<ContainerType<ChestContainer>> chestTypes = ImmutableList.of(ContainerType.GENERIC_9x1,
-			ContainerType.GENERIC_9x2, ContainerType.GENERIC_9x3, ContainerType.GENERIC_9x4, ContainerType.GENERIC_9x5,
-			ContainerType.GENERIC_9x6);
+    public static final List<ContainerType<ChestContainer>> chestTypes = ImmutableList.of(ContainerType.GENERIC_9x1,
+            ContainerType.GENERIC_9x2, ContainerType.GENERIC_9x3, ContainerType.GENERIC_9x4, ContainerType.GENERIC_9x5,
+            ContainerType.GENERIC_9x6);
 
-	public static int size = 54;
-	public static int rowCount = 6;
-	public static String name = "Vault 13";
+    public static int size = 54;
+    public static int rowCount = 6;
+    public static String name = "Vault 13";
 
-	@Override
-	public String getPrimaryAlias() {
-		return "virtualchest";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "virtualchest";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "vchest" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "vchest" };
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".virtualchest";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".virtualchest";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "me"))
-				.then(Commands.argument("player", EntityArgument.player())
-						.executes(CommandContext -> execute(CommandContext, "blank")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "me"))
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		ServerPlayerEntity playerServer;
-		if (params.equals("me")) {
-			playerServer = getServerPlayer(ctx.getSource());
-		} else {
-			playerServer = EntityArgument.getPlayer(ctx, "player");
-		}
-		if (playerServer.containerMenu != playerServer.inventoryMenu) {
-			playerServer.doCloseContainer();
-		}
-		playerServer.nextContainerCounter();
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity playerServer;
+        if (params.equals("me"))
+        {
+            playerServer = getServerPlayer(ctx.getSource());
+        }
+        else
+        {
+            playerServer = EntityArgument.getPlayer(ctx, "player");
+        }
+        if (playerServer.containerMenu != playerServer.inventoryMenu)
+        {
+            playerServer.doCloseContainer();
+        }
+        playerServer.nextContainerCounter();
 
-		playerServer.openMenu(new SimpleNamedContainerProvider(
-				(syncId, inv, player) -> new ChestContainer(
-						CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
-						Objects.requireNonNull(getVirtualChest(1, playerServer)), CommandVirtualchest.rowCount),
-				new StringTextComponent(CommandVirtualchest.name)));
-		return Command.SINGLE_SUCCESS;
-	}
+        playerServer.openMenu(new SimpleNamedContainerProvider(
+                (syncId, inv, player) -> new ChestContainer(
+                        CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
+                        Objects.requireNonNull(getVirtualChest(1, playerServer)), CommandVirtualchest.rowCount),
+                new StringTextComponent(CommandVirtualchest.name)));
+        return Command.SINGLE_SUCCESS;
+    }
 
-	public static Inventory getVirtualChest(int id, PlayerEntity player) {
-		// TODO add multiple virtualChests
-		int maxNumberVC = 1;
-		// if (id > maxNumberVC) return null;
-		int rows = CommandVirtualchest.rowCount;
-		ListNBT virtualchests = PlayerUtil.getPersistedTag(player, false).getList(VIRTUALCHEST_TAG, 9);
-		if (virtualchests.size() < maxNumberVC)
-			for (int i = 0; i < maxNumberVC - virtualchests.size() + 1; i++)
-				virtualchests.add(new ListNBT());
-		Inventory inv = new Inventory(rows * 9);
-		ListNBT virtualchest = virtualchests.getList(id - 1);
-		for (int i = 0; i < virtualchest.size(); i++)
-			inv.setItem(i, ItemStack.of(virtualchest.getCompound(i)));
-		inv.addListener(inventory -> {
-			virtualchests.remove(id - 1);
-			ListNBT stacks = new ListNBT();
-			for (int i = 0; i < inv.getContainerSize(); i++)
-				stacks.add(inv.getItem(i).save(new CompoundNBT()));
-			virtualchests.add(id - 1, stacks);
-			PlayerUtil.getPersistedTag(player, true).put(VIRTUALCHEST_TAG, virtualchests);
-		});
-		return inv;
-	}
+    public static Inventory getVirtualChest(int id, PlayerEntity player)
+    {
+        // TODO add multiple virtualChests
+        int maxNumberVC = 1;
+        // if (id > maxNumberVC) return null;
+        int rows = CommandVirtualchest.rowCount;
+        ListNBT virtualchests = PlayerUtil.getPersistedTag(player, false).getList(VIRTUALCHEST_TAG, 9);
+        if (virtualchests.size() < maxNumberVC)
+            for (int i = 0; i < maxNumberVC - virtualchests.size() + 1; i++)
+                virtualchests.add(new ListNBT());
+        Inventory inv = new Inventory(rows * 9);
+        ListNBT virtualchest = virtualchests.getList(id - 1);
+        for (int i = 0; i < virtualchest.size(); i++)
+            inv.setItem(i, ItemStack.of(virtualchest.getCompound(i)));
+        inv.addListener(inventory -> {
+            virtualchests.remove(id - 1);
+            ListNBT stacks = new ListNBT();
+            for (int i = 0; i < inv.getContainerSize(); i++)
+                stacks.add(inv.getItem(i).save(new CompoundNBT()));
+            virtualchests.add(id - 1, stacks);
+            PlayerUtil.getPersistedTag(player, true).put(VIRTUALCHEST_TAG, virtualchests);
+        });
+        return inv;
+    }
 }

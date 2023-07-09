@@ -10,11 +10,9 @@ import com.forgeessentialsclient.core.ClientProxy;
 */
 public class FEConfigGUI // extends GuiConfig
 {
-	/*
-	 * public FEConfigGUI(GuiScreen parentScreen) { super(parentScreen, new
-	 * ConfigElement(ClientProxy.getConfig().getCategory(Configuration.
-	 * CATEGORY_GENERAL)).getChildElements(), "TestMod", false, false,
-	 * "FE Client Addon Config"); }
-	 */
+    /*
+     * public FEConfigGUI(GuiScreen parentScreen) { super(parentScreen, new ConfigElement(ClientProxy.getConfig().getCategory(Configuration. CATEGORY_GENERAL)).getChildElements(),
+     * "TestMod", false, false, "FE Client Addon Config"); }
+     */
 
 }

@@ -11,49 +11,57 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-public class SSLContextHelper {
+public class SSLContextHelper
+{
 
-	private SSLContext sslCtx;
+    private SSLContext sslCtx;
 
-	public SSLContext getSSLCtx() {
-		return sslCtx;
-	}
+    public SSLContext getSSLCtx()
+    {
+        return sslCtx;
+    }
 
-	public SSLContextHelper() {
-		try {
-			sslCtx = SSLContext.getDefault();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-	}
+    public SSLContextHelper()
+    {
+        try
+        {
+            sslCtx = SSLContext.getDefault();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-	public void loadSSLCertificate(InputStream keystore, String storepass, String keypass)
-			throws IOException, GeneralSecurityException {
-		if (keystore == null)
-			throw new IOException("Invalid keystore");
+    public void loadSSLCertificate(InputStream keystore, String storepass, String keypass)
+            throws IOException, GeneralSecurityException
+    {
+        if (keystore == null)
+            throw new IOException("Invalid keystore");
 
-		// Load KeyStore
-		KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-		ks.load(keystore, storepass.toCharArray());
+        // Load KeyStore
+        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(keystore, storepass.toCharArray());
 
-		// Init KeyManager
-		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-		kmf.init(ks, keypass.toCharArray());
+        // Init KeyManager
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmf.init(ks, keypass.toCharArray());
 
-		// Init TrustManager
-		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-		tmf.init(ks);
+        // Init TrustManager
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(ks);
 
-		// Init SSLContext
-		SSLContext ctx = SSLContext.getInstance("TLS");
-		ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        // Init SSLContext
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-		sslCtx = ctx;
-	}
+        sslCtx = ctx;
+    }
 
-	public void loadSSLCertificate(String filename, String storepass, String keypass)
-			throws IOException, GeneralSecurityException {
-		loadSSLCertificate(new FileInputStream(filename), storepass, keypass);
-	}
+    public void loadSSLCertificate(String filename, String storepass, String keypass)
+            throws IOException, GeneralSecurityException
+    {
+        loadSSLCertificate(new FileInputStream(filename), storepass, keypass);
+    }
 
 }

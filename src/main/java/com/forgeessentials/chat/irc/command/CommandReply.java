@@ -13,49 +13,58 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 
-public class CommandReply implements IrcCommand {
+public class CommandReply implements IrcCommand
+{
 
-	@Override
-	public Collection<String> getCommandNames() {
-		return Arrays.asList("reply", "r");
-	}
+    @Override
+    public Collection<String> getCommandNames()
+    {
+        return Arrays.asList("reply", "r");
+    }
 
-	@Override
-	public String getUsage() {
-		return "<message...>";
-	}
+    @Override
+    public String getUsage()
+    {
+        return "<message...>";
+    }
 
-	@Override
-	public String getCommandHelp() {
-		return "Reply to the last private message";
-	}
+    @Override
+    public String getCommandHelp()
+    {
+        return "Reply to the last private message";
+    }
 
-	@Override
-	public boolean isAdminCommand() {
-		return false;
-	}
+    @Override
+    public boolean isAdminCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public void processCommand(CommandSource sender, String[] args) throws CommandException {
-		if (args.length < 1) {
-			ChatOutputHandler.chatError(sender, Translator.format("Invalid Syntax"));
-			return;
-		}
+    @Override
+    public void processCommand(CommandSource sender, String[] args) throws CommandException
+    {
+        if (args.length < 1)
+        {
+            ChatOutputHandler.chatError(sender, Translator.format("Invalid Syntax"));
+            return;
+        }
 
-		CommandSource target = com.forgeessentials.chat.command.CommandReply
-				.getReplyTarget(CommandUtils.getServerPlayer(sender)).createCommandSourceStack();
-		if (target == null) {
-			ChatOutputHandler.chatError(sender, Translator.format("Player not found"));
-			// return Command.SINGLE_SUCCESS;
-			return;
-		}
+        CommandSource target = com.forgeessentials.chat.command.CommandReply
+                .getReplyTarget(CommandUtils.getServerPlayer(sender)).createCommandSourceStack();
+        if (target == null)
+        {
+            ChatOutputHandler.chatError(sender, Translator.format("Player not found"));
+            // return Command.SINGLE_SUCCESS;
+            return;
+        }
 
-		if (target == sender) {
-			ChatOutputHandler.chatError(sender, "You can't send a message to your self");
-			// return Command.SINGLE_SUCCESS;
-			return;
-		}
+        if (target == sender)
+        {
+            ChatOutputHandler.chatError(sender, "You can't send a message to your self");
+            // return Command.SINGLE_SUCCESS;
+            return;
+        }
 
-		ModuleChat.tell(sender, ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 0), target);
-	}
+        ModuleChat.tell(sender, ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 0), target);
+    }
 }

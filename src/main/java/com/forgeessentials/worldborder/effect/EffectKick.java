@@ -17,43 +17,51 @@ import net.minecraft.util.text.StringTextComponent;
 /**
  * Expected syntax: <interval> (in seconds)
  */
-public class EffectKick extends WorldBorderEffect {
+public class EffectKick extends WorldBorderEffect
+{
 
-	private int timeout = 0;
+    private int timeout = 0;
 
-	@Override
-	public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException {
-		timeout = IntegerArgumentType.getInteger(ctx, "timeout");
-	}
+    @Override
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    {
+        timeout = IntegerArgumentType.getInteger(ctx, "timeout");
+    }
 
-	@Override
-	public void activate(WorldBorder border, ServerPlayerEntity player) {
-		if (!player.getServer().isDedicatedServer()) {
-			LoggingHandler.felog.warn("[WorldBorder] Kick effect is not supported on integrated servers!");
-			return;
-		}
-		ChatOutputHandler.chatError(player.createCommandSourceStack(), Translator
-				.format("You have %d seconds to return inside the world border, or you will get kicked!", timeout));
-		PlayerInfo pi = PlayerInfo.get(player);
-		pi.startTimeout(this.getClass().getName(), timeout * 1000);
-	}
+    @Override
+    public void activate(WorldBorder border, ServerPlayerEntity player)
+    {
+        if (!player.getServer().isDedicatedServer())
+        {
+            LoggingHandler.felog.warn("[WorldBorder] Kick effect is not supported on integrated servers!");
+            return;
+        }
+        ChatOutputHandler.chatError(player.createCommandSourceStack(), Translator
+                .format("You have %d seconds to return inside the world border, or you will get kicked!", timeout));
+        PlayerInfo pi = PlayerInfo.get(player);
+        pi.startTimeout(this.getClass().getName(), timeout * 1000);
+    }
 
-	@Override
-	public void tick(WorldBorder border, ServerPlayerEntity player) {
-		PlayerInfo pi = PlayerInfo.get(player);
-		if (pi.checkTimeout(this.getClass().getName())) {
-			player.connection.disconnect(new StringTextComponent("You left the world border"));
-			// For safety restart the timeout
-			pi.startTimeout(this.getClass().getName(), timeout);
-		}
-	}
+    @Override
+    public void tick(WorldBorder border, ServerPlayerEntity player)
+    {
+        PlayerInfo pi = PlayerInfo.get(player);
+        if (pi.checkTimeout(this.getClass().getName()))
+        {
+            player.connection.disconnect(new StringTextComponent("You left the world border"));
+            // For safety restart the timeout
+            pi.startTimeout(this.getClass().getName(), timeout);
+        }
+    }
 
-	public String toString() {
-		return "kick trigger: " + triggerDistance + "interval: " + timeout;
-	}
+    public String toString()
+    {
+        return "kick trigger: " + triggerDistance + "interval: " + timeout;
+    }
 
-	public String getSyntax() {
-		return "<interval>";
-	}
+    public String getSyntax()
+    {
+        return "<interval>";
+    }
 
 }

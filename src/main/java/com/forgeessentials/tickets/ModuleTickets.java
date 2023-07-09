@@ -28,117 +28,135 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
-public class ModuleTickets implements ConfigSaver {
-	private static ForgeConfigSpec TICKETS_CONFIG;
-	private static final ConfigData data = new ConfigData("Tickets", TICKETS_CONFIG, new ForgeConfigSpec.Builder());
+public class ModuleTickets implements ConfigSaver
+{
+    private static ForgeConfigSpec TICKETS_CONFIG;
+    private static final ConfigData data = new ConfigData("Tickets", TICKETS_CONFIG, new ForgeConfigSpec.Builder());
 
-	public static final String PERMBASE = "fe.tickets";
+    public static final String PERMBASE = "fe.tickets";
 
-	public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+    public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
-	public static List<String> categories = new ArrayList<String>();
+    public static List<String> categories = new ArrayList<String>();
 
-	public static int currentID;
+    public static int currentID;
 
-	@SubscribeEvent
-	public void registerCommands(FERegisterCommandsEvent event) {
-		CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-		FECommandManager.registerCommand(new CommandTicket(true), dispatcher);
-	}
+    @SubscribeEvent
+    public void registerCommands(FERegisterCommandsEvent event)
+    {
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandTicket(true), dispatcher);
+    }
 
-	@SubscribeEvent
-	public void serverStarting(FEModuleServerStartingEvent e) {
-		loadAll();
-		APIRegistry.perms.registerPermission(PERMBASE + ".new", DefaultPermissionLevel.ALL, "Create new tickets");
-		APIRegistry.perms.registerPermission(PERMBASE + ".view", DefaultPermissionLevel.ALL, "View tickets");
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent e)
+    {
+        loadAll();
+        APIRegistry.perms.registerPermission(PERMBASE + ".new", DefaultPermissionLevel.ALL, "Create new tickets");
+        APIRegistry.perms.registerPermission(PERMBASE + ".view", DefaultPermissionLevel.ALL, "View tickets");
 
-		APIRegistry.perms.registerPermission(PERMBASE + ".tp", DefaultPermissionLevel.ALL,
-				"Teleport to ticket location");
-		APIRegistry.perms.registerPermission(PERMBASE + ".admin", DefaultPermissionLevel.OP, "Administer tickets");
-	}
+        APIRegistry.perms.registerPermission(PERMBASE + ".tp", DefaultPermissionLevel.ALL,
+                "Teleport to ticket location");
+        APIRegistry.perms.registerPermission(PERMBASE + ".admin", DefaultPermissionLevel.OP, "Administer tickets");
+    }
 
-	@SubscribeEvent
-	public void serverStopping(FEModuleServerStoppingEvent e) {
-		saveAll();
-	}
+    @SubscribeEvent
+    public void serverStopping(FEModuleServerStoppingEvent e)
+    {
+        saveAll();
+    }
 
-	/**
-	 * Used to get ID for new Tickets
-	 *
-	 * @return
-	 */
-	public static int getNextID() {
-		currentID++;
-		return currentID;
-	}
+    /**
+     * Used to get ID for new Tickets
+     *
+     * @return
+     */
+    public static int getNextID()
+    {
+        currentID++;
+        return currentID;
+    }
 
-	public static void loadAll() {
-		Map<String, Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
-		ticketList.clear();
-		for (Ticket ticket : loadedTickets.values())
-			ticketList.add(ticket);
-	}
+    public static void loadAll()
+    {
+        Map<String, Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
+        ticketList.clear();
+        for (Ticket ticket : loadedTickets.values())
+            ticketList.add(ticket);
+    }
 
-	public static void saveAll() {
-		for (Ticket ticket : ticketList) {
-			DataManager.getInstance().save(ticket, Integer.toString(ticket.id));
-		}
-		FEcategories.set(ModuleTickets.categories);
-		FEcurrentID.set(ModuleTickets.currentID);
-	}
+    public static void saveAll()
+    {
+        for (Ticket ticket : ticketList)
+        {
+            DataManager.getInstance().save(ticket, Integer.toString(ticket.id));
+        }
+        FEcategories.set(ModuleTickets.categories);
+        FEcurrentID.set(ModuleTickets.currentID);
+    }
 
-	public static Ticket getID(int i) {
-		for (Ticket ticket : ticketList) {
-			if (ticket.id == i) {
-				return ticket;
-			}
-		}
-		return null;
-	}
+    public static Ticket getID(int i)
+    {
+        for (Ticket ticket : ticketList)
+        {
+            if (ticket.id == i)
+            {
+                return ticket;
+            }
+        }
+        return null;
+    }
 
-	@SubscribeEvent
-	public void loadData(PlayerEvent.PlayerLoggedInEvent e) {
-		if (APIRegistry.perms.checkPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin")) {
-			if (!ModuleTickets.ticketList.isEmpty()) {
-				ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
-						TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
-			}
-		}
-	}
+    @SubscribeEvent
+    public void loadData(PlayerEvent.PlayerLoggedInEvent e)
+    {
+        if (APIRegistry.perms.checkPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin"))
+        {
+            if (!ModuleTickets.ticketList.isEmpty())
+            {
+                ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
+                        TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+            }
+        }
+    }
 
-	static ForgeConfigSpec.ConfigValue<List<? extends String>> FEcategories;
-	static ForgeConfigSpec.IntValue FEcurrentID;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEcategories;
+    static ForgeConfigSpec.IntValue FEcurrentID;
 
-	@Override
-	public void load(Builder BUILDER, boolean isReload) {
-		LoggingHandler.felog.debug("Loading Tickets Config");
-		BUILDER.push("Tickets");
-		FEcategories = BUILDER.defineList("categories", new ArrayList<String>() {
-			{
-				add("griefing");
-				add("overflow");
-				add("dispute");
-			}
-		}, ConfigBase.stringValidator);
-		FEcurrentID = BUILDER.comment("Don't change anything in there.").defineInRange("currentID", 0, 0,
-				Integer.MAX_VALUE);
-		BUILDER.pop();
-	}
+    @Override
+    public void load(Builder BUILDER, boolean isReload)
+    {
+        LoggingHandler.felog.debug("Loading Tickets Config");
+        BUILDER.push("Tickets");
+        FEcategories = BUILDER.defineList("categories", new ArrayList<String>() {
+            {
+                add("griefing");
+                add("overflow");
+                add("dispute");
+            }
+        }, ConfigBase.stringValidator);
+        FEcurrentID = BUILDER.comment("Don't change anything in there.").defineInRange("currentID", 0, 0,
+                Integer.MAX_VALUE);
+        BUILDER.pop();
+    }
 
-	@Override
-	public void bakeConfig(boolean reload) {
-		ModuleTickets.categories = new ArrayList<>(FEcategories.get());
-		ModuleTickets.currentID = FEcurrentID.get();
-	}
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        ModuleTickets.categories = new ArrayList<>(FEcategories.get());
+        ModuleTickets.currentID = FEcurrentID.get();
+    }
 
-	@Override
-	public ConfigData returnData() {
-		return data;
-	}
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
+    }
 
-	@Override
-	public void save(boolean reload) {
-		FEcategories.set(ModuleTickets.categories);
-		FEcurrentID.set(ModuleTickets.currentID);
-	}
+    @Override
+    public void save(boolean reload)
+    {
+        FEcategories.set(ModuleTickets.categories);
+        FEcurrentID.set(ModuleTickets.currentID);
+    }
 }

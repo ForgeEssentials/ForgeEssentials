@@ -12,42 +12,50 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandUuid extends ForgeEssentialsCommandBuilder {
+public class CommandUuid extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandUuid(boolean enabled) {
-		super(enabled);
-	}
+    public CommandUuid(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "uuid";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "uuid";
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "fe.commands.uuid";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.commands.uuid";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("player", EntityArgument.player())
-				.executes(CommandContext -> execute(CommandContext, "blank")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), "UUID= " + player.getStringUUID());
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "UUID= " + player.getStringUUID());
+        return Command.SINGLE_SUCCESS;
+    }
 }

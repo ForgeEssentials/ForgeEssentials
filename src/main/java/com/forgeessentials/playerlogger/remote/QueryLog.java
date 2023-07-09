@@ -12,24 +12,27 @@ import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.remote.RemoteMessageID;
 
 @FERemoteHandler(id = RemoteMessageID.PL_QUERY_LOG)
-public class QueryLog extends GenericRemoteHandler<QueryLogRequest> {
+public class QueryLog extends GenericRemoteHandler<QueryLogRequest>
+{
 
-	public QueryLog() {
-		super(ModulePlayerLogger.PERM, QueryLogRequest.class);
-	}
+    public QueryLog()
+    {
+        super(ModulePlayerLogger.PERM, QueryLogRequest.class);
+    }
 
-	@Override
-	protected RemoteResponse<QueryLogResponse<Action>> handleData(RemoteSession session,
-			RemoteRequest<QueryLogRequest> request) {
-		QueryLogRequest data = request.data == null ? new QueryLogRequest() : request.data;
-		List<Action> result;
-		if (data.hasArea())
-			result = ModulePlayerLogger.getLogger().getLoggedActions(data.getArea(), data.startTime, data.endTime, 0,
-					data.getLimit());
-		else
-			result = ModulePlayerLogger.getLogger().getLoggedActions(data.getPoint(), data.startTime, data.endTime, 0,
-					data.getLimit());
-		return new RemoteResponse<>(request, new QueryLogResponse<>(request.data, result));
-	}
+    @Override
+    protected RemoteResponse<QueryLogResponse<Action>> handleData(RemoteSession session,
+            RemoteRequest<QueryLogRequest> request)
+    {
+        QueryLogRequest data = request.data == null ? new QueryLogRequest() : request.data;
+        List<Action> result;
+        if (data.hasArea())
+            result = ModulePlayerLogger.getLogger().getLoggedActions(data.getArea(), data.startTime, data.endTime, 0,
+                    data.getLimit());
+        else
+            result = ModulePlayerLogger.getLogger().getLoggedActions(data.getPoint(), data.startTime, data.endTime, 0,
+                    data.getLimit());
+        return new RemoteResponse<>(request, new QueryLogResponse<>(request.data, result));
+    }
 
 }

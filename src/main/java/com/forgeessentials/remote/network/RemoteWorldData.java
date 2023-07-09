@@ -1,16 +1,16 @@
 package com.forgeessentials.remote.network;
 
-//public class RemoteWorldData
-//{
+// public class RemoteWorldData
+// {
 //
-//    public String id;
+// public String id;
 //
-//    public String name;
+// public String name;
 //
-//    public RemoteWorldData(WorldData worldData)
-//    {
-//        this.id = worldData.id;
-//        this.name = worldData.name;
-//    }
+// public RemoteWorldData(WorldData worldData)
+// {
+// this.id = worldData.id;
+// this.name = worldData.name;
+// }
 //
-//}
+// }

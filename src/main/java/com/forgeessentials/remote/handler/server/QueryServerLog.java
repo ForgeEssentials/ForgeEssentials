@@ -14,20 +14,23 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_SERVER_LOG)
-public class QueryServerLog extends GenericRemoteHandler<Integer> {
+public class QueryServerLog extends GenericRemoteHandler<Integer>
+{
 
-	public static final String PERM_SERVER = PERM_REMOTE + ".server";
-	public static final String PERM = PERM_SERVER + ".log";
+    public static final String PERM_SERVER = PERM_REMOTE + ".server";
+    public static final String PERM = PERM_SERVER + ".log";
 
-	public QueryServerLog() {
-		super(PERM, Integer.class);
-		APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows querying server log");
-	}
+    public QueryServerLog()
+    {
+        super(PERM, Integer.class);
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows querying server log");
+    }
 
-	@Override
-	protected RemoteResponse<List<String>> handleData(RemoteSession session, RemoteRequest<Integer> request) {
-		return new RemoteResponse<List<String>>(request,
-				LoggingHandler.getLatestLog(request.data == null ? LoggingHandler.MAX_LOG_LENGTH : request.data));
-	}
+    @Override
+    protected RemoteResponse<List<String>> handleData(RemoteSession session, RemoteRequest<Integer> request)
+    {
+        return new RemoteResponse<List<String>>(request,
+                LoggingHandler.getLatestLog(request.data == null ? LoggingHandler.MAX_LOG_LENGTH : request.data));
+    }
 
 }

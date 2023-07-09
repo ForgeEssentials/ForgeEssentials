@@ -14,46 +14,55 @@ import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandIrc extends ForgeEssentialsCommandBuilder {
+public class CommandIrc extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandIrc(boolean enabled) {
-		super(enabled);
-	}
+    public CommandIrc(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "irc";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "irc";
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "fe.chat.irc";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.chat.irc";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.ALL;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.ALL;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("message", StringArgumentType.greedyString())
-				.executes(CommandContext -> execute(CommandContext, "blank")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("message", StringArgumentType.greedyString())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		if (!IrcHandler.getInstance().isConnected()) {
-			ChatOutputHandler.chatError(ctx.getSource(), "Not connected to IRC!");
-			return Command.SINGLE_SUCCESS;
-		}
-		IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(),
-				new StringTextComponent(StringArgumentType.getString(ctx, "message")));
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (!IrcHandler.getInstance().isConnected())
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Not connected to IRC!");
+            return Command.SINGLE_SUCCESS;
+        }
+        IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(),
+                new StringTextComponent(StringArgumentType.getString(ctx, "message")));
+        return Command.SINGLE_SUCCESS;
+    }
 }

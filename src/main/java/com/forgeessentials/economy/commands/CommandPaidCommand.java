@@ -21,72 +21,83 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandPaidCommand extends ForgeEssentialsCommandBuilder {
-	public CommandPaidCommand(boolean enabled) {
-		super(enabled);
-	}
+public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
+{
+    public CommandPaidCommand(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "paidcommand";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "paidcommand";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "pc", "pcmd" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "pc", "pcmd" };
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleEconomy.PERM_COMMAND + ".paidcommand";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleEconomy.PERM_COMMAND + ".paidcommand";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.NONE;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.NONE;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	/*
-	 * Expected structure: "/paidcommand <player> <amount> <command...>"
-	 */
+    /*
+     * Expected structure: "/paidcommand <player> <amount> <command...>"
+     */
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("player", EntityArgument.player())
-				.then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-						.then(Commands.argument("command", StringArgumentType.greedyString())
-								.executes(CommandContext -> execute(CommandContext, "blank")))));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+                .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                        .then(Commands.argument("command", StringArgumentType.greedyString())
+                                .executes(CommandContext -> execute(CommandContext, "blank")))));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
-		if (!ident.hasPlayer()) {
-			ChatOutputHandler.chatError(ctx.getSource(),
-					Translator.format("Player %s is currently offline", ident.getUsername()));
-			return Command.SINGLE_SUCCESS;
-		}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
+        if (!ident.hasPlayer())
+        {
+            ChatOutputHandler.chatError(ctx.getSource(),
+                    Translator.format("Player %s is currently offline", ident.getUsername()));
+            return Command.SINGLE_SUCCESS;
+        }
 
-		int amount = IntegerArgumentType.getInteger(ctx, "amount");
-		Wallet wallet = APIRegistry.economy.getWallet(ident);
-		if (!wallet.withdraw(amount)) {
-			ChatOutputHandler.chatError(ident.getPlayerMP(), Translator.translate("You can't afford that"));
-			return Command.SINGLE_SUCCESS;
-		}
+        int amount = IntegerArgumentType.getInteger(ctx, "amount");
+        Wallet wallet = APIRegistry.economy.getWallet(ident);
+        if (!wallet.withdraw(amount))
+        {
+            ChatOutputHandler.chatError(ident.getPlayerMP(), Translator.translate("You can't afford that"));
+            return Command.SINGLE_SUCCESS;
+        }
 
-		ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
-				new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP().createCommandSourceStack())
-						.createCommandSourceStack(),
-				StringArgumentType.getString(ctx, "command"));
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
+                new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP().createCommandSourceStack())
+                        .createCommandSourceStack(),
+                StringArgumentType.getString(ctx, "command"));
 
-		ChatOutputHandler.chatConfirmation(ident.getPlayerMP(),
-				Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
-		ModuleEconomy.confirmNewWalletAmount(ident, wallet);
-		return Command.SINGLE_SUCCESS;
-	}
+        ChatOutputHandler.chatConfirmation(ident.getPlayerMP(),
+                Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
+        ModuleEconomy.confirmNewWalletAmount(ident, wallet);
+        return Command.SINGLE_SUCCESS;
+    }
 }

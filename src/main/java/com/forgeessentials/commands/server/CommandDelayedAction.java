@@ -18,57 +18,69 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandDelayedAction extends ForgeEssentialsCommandBuilder {
+public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandDelayedAction(boolean enabled) {
-		super(enabled);
-	}
+    public CommandDelayedAction(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "delayedaction";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "delayedaction";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".delayedaction";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".delayedaction";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("time", StringArgumentType.string())
-				.then(Commands.argument("command", StringArgumentType.greedyString())
-						.executes(CommandContext -> execute(CommandContext, "blank"))));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("time", StringArgumentType.string())
+                .then(Commands.argument("command", StringArgumentType.greedyString())
+                        .executes(CommandContext -> execute(CommandContext, "blank"))));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		long time;
-		try {
-			time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
-		} catch (FECommandParsingException e) {
-			ChatOutputHandler.chatError(ctx.getSource(), e.error);
-			return Command.SINGLE_SUCCESS;
-		}
-		final String execute = StringArgumentType.getString(ctx, "command");
-		TaskRegistry.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				ctx.getSource().getServer().getCommands().performCommand(ctx.getSource(), execute);
-			}
-		}, time);
-		ChatOutputHandler.chatNotification(ctx.getSource(),
-				Translator.format(execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true)));
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        long time;
+        try
+        {
+            time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
+        }
+        catch (FECommandParsingException e)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), e.error);
+            return Command.SINGLE_SUCCESS;
+        }
+        final String execute = StringArgumentType.getString(ctx, "command");
+        TaskRegistry.schedule(new TimerTask() {
+            @Override
+            public void run()
+            {
+                ctx.getSource().getServer().getCommands().performCommand(ctx.getSource(), execute);
+            }
+        }, time);
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                Translator.format(execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true)));
+        return Command.SINGLE_SUCCESS;
+    }
 }

@@ -21,42 +21,49 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet7RemoteHandler extends Packet7Remote {
-	Packet7RemoteHandler(String linkg) {
-		super(linkg);
-	}
+public class Packet7RemoteHandler extends Packet7Remote
+{
+    Packet7RemoteHandler(String linkg)
+    {
+        super(linkg);
+    }
 
-	public static Packet7RemoteHandler decode(PacketBuffer buf) {
-		return new Packet7RemoteHandler(buf.readUtf());
-	}
+    public static Packet7RemoteHandler decode(PacketBuffer buf)
+    {
+        return new Packet7RemoteHandler(buf.readUtf());
+    }
 
-	@Override
-	public void handle(NetworkEvent.Context context) {
-		Minecraft instance = Minecraft.getInstance();
-		try {
-			BufferedImage img = ImageIO.read(new URL(link));
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(img, "png", baos);
-			InputStream is = new ByteArrayInputStream(baos.toByteArray());
-			DynamicTexture qrCodeTexture = new DynamicTexture(NativeImage.read(is));
-			Packet7RemoteQRRenderer.qrCode = instance.getTextureManager()
-					.register("qr_code", qrCodeTexture);
-			
-			TextComponent qrLink = new StringTextComponent("[QR code]");
-			ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
-			qrLink.withStyle((style) -> {
-				return style.withClickEvent(click);
-			});
-			qrLink.withStyle(TextFormatting.RED);
-			qrLink.withStyle(TextFormatting.UNDERLINE);
-			TextComponent msg = new StringTextComponent("Click in-game with mouse to close qrCode");
-			qrLink.append(msg);
-			instance.player.sendMessage(qrLink, instance.player.getUUID());
-		} catch (IOException e) {
-			TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
-			cmsg.withStyle(TextFormatting.RED);
-			instance.player.sendMessage(cmsg, instance.player.getUUID());
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void handle(NetworkEvent.Context context)
+    {
+        Minecraft instance = Minecraft.getInstance();
+        try
+        {
+            BufferedImage img = ImageIO.read(new URL(link));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, "png", baos);
+            InputStream is = new ByteArrayInputStream(baos.toByteArray());
+            DynamicTexture qrCodeTexture = new DynamicTexture(NativeImage.read(is));
+            Packet7RemoteQRRenderer.qrCode = instance.getTextureManager()
+                    .register("qr_code", qrCodeTexture);
+
+            TextComponent qrLink = new StringTextComponent("[QR code]");
+            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
+            qrLink.withStyle((style) -> {
+                return style.withClickEvent(click);
+            });
+            qrLink.withStyle(TextFormatting.RED);
+            qrLink.withStyle(TextFormatting.UNDERLINE);
+            TextComponent msg = new StringTextComponent("Click in-game with mouse to close qrCode");
+            qrLink.append(msg);
+            instance.player.sendMessage(qrLink, instance.player.getUUID());
+        }
+        catch (IOException e)
+        {
+            TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
+            cmsg.withStyle(TextFormatting.RED);
+            instance.player.sendMessage(cmsg, instance.player.getUUID());
+            e.printStackTrace();
+        }
+    }
 }

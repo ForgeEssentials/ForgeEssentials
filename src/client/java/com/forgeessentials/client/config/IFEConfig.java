@@ -6,21 +6,23 @@ import com.forgeessentials.client.config.ValuesCached.ValueCachedResolvableConfi
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 
-public interface IFEConfig {
+public interface IFEConfig
+{
 
-	String getFileName();
+    String getFileName();
 
-	ForgeConfigSpec getConfigSpec();
+    ForgeConfigSpec getConfigSpec();
 
-	ModConfig.Type getConfigType();
+    ModConfig.Type getConfigType();
 
-	void clearListenerCache();
+    void clearListenerCache();
 
-	<T, R> void addCachedValue(ValueCachedResolvableConfig<T, R> configValue);
+    <T, R> void addCachedValue(ValueCachedResolvableConfig<T, R> configValue);
 
-	<T> void addCachedValue(ValueCachedPrimitive<T> configValue);
+    <T> void addCachedValue(ValueCachedPrimitive<T> configValue);
 
-	default boolean addToContainer() {
-		return true;
-	}
+    default boolean addToContainer()
+    {
+        return true;
+    }
 }

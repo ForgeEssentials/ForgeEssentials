@@ -11,27 +11,30 @@ import com.forgeessentials.util.events.world.FireEvent;
 
 import net.minecraft.world.server.ServerWorld;
 
-public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy> {
+public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
+{
 
-	public Blob tileEntityBlob;
+    public Blob tileEntityBlob;
 
-	public LogEventBurn(FireEvent.Destroy event) {
-		super(event);
-		tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
-	}
+    public LogEventBurn(FireEvent.Destroy event)
+    {
+        super(event);
+        tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
+    }
 
-	@Override
-	public void process(EntityManager em) {
-		Action01Block action = new Action01Block();
-		action.time = date;
-		action.world = ((ServerWorld) event.getWorld()).getLevel().dimension().location().toString();
-		action.block = getBlock(event.getState().getBlock());
-		action.entity = tileEntityBlob;
-		action.type = ActionBlockType.BURN;
-		action.x = event.getPos().getX();
-		action.y = event.getPos().getY();
-		action.z = event.getPos().getZ();
-		em.persist(action);
-	}
+    @Override
+    public void process(EntityManager em)
+    {
+        Action01Block action = new Action01Block();
+        action.time = date;
+        action.world = ((ServerWorld) event.getWorld()).getLevel().dimension().location().toString();
+        action.block = getBlock(event.getState().getBlock());
+        action.entity = tileEntityBlob;
+        action.type = ActionBlockType.BURN;
+        action.x = event.getPos().getX();
+        action.y = event.getPos().getY();
+        action.z = event.getPos().getZ();
+        em.persist(action);
+    }
 
 }

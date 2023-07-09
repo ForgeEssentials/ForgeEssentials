@@ -14,65 +14,75 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandServerPerf extends ForgeEssentialsCommandBuilder {
+public class CommandServerPerf extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandServerPerf(boolean enabled) {
-		super(enabled);
-	}
+    public CommandServerPerf(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
+    private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
-	@Override
-	public String getPrimaryAlias() {
-		return "perfstats";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "perfstats";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
-		ChatOutputHandler.chatNotification(ctx.getSource(),
-				"Max Allowed: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-		ChatOutputHandler.chatNotification(ctx.getSource(),
-				"Total Allocated: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-		ChatOutputHandler.chatNotification(ctx.getSource(), "Amount Used: "
-				+ ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + " MiB");
-		ChatOutputHandler.chatNotification(ctx.getSource(),
-				"Amount Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Max Allowed: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Total Allocated: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Amount Used: "
+                + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Amount Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
 
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		ChatOutputHandler.chatNotification(ctx.getSource(),
-				"Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
-		ChatOutputHandler.chatNotification(ctx.getSource(), "For Better TPS information, run /forge tps.");
-		return Command.SINGLE_SUCCESS;
-	}
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "For Better TPS information, run /forge tps.");
+        return Command.SINGLE_SUCCESS;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "fe.perftools.perfstats";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.perftools.perfstats";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	private double func_120035_a(long[] p_120035_1_) {
-		long i = 0L;
+    private double func_120035_a(long[] p_120035_1_)
+    {
+        long i = 0L;
 
-		for (int j = 0; j < p_120035_1_.length; ++j) {
-			i += p_120035_1_[j];
-		}
+        for (int j = 0; j < p_120035_1_.length; ++j)
+        {
+            i += p_120035_1_[j];
+        }
 
-		return (double) i / (double) p_120035_1_.length;
-	}
+        return (double) i / (double) p_120035_1_.length;
+    }
 }

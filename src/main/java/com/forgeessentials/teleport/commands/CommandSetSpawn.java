@@ -19,63 +19,71 @@ import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandSetSpawn extends ForgeEssentialsCommandBuilder {
+public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandSetSpawn(boolean enabled) {
-		super(enabled);
-	}
+    public CommandSetSpawn(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	public static final String PERM_SETSPAWN = "fe.perm.setspawn";
+    public static final String PERM_SETSPAWN = "fe.perm.setspawn";
 
-	@Override
-	public String getPrimaryAlias() {
-		return "setspawn";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "setspawn";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return PERM_SETSPAWN;
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM_SETSPAWN;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder
-				.then(Commands.literal("bed")
-						.then(Commands.literal("enable")
-								.executes(CommandContext -> execute(CommandContext, "bed-enable")))
-						.then(Commands.literal("disable")
-								.executes(CommandContext -> execute(CommandContext, "bed-disable"))))
-				.then(Commands.literal("here").executes(CommandContext -> execute(CommandContext, "here")))
-				.then(Commands.literal("clear").executes(CommandContext -> execute(CommandContext, "clear")))
-				.then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands
-						.argument("dim", DimensionArgument.dimension())
-						.executes(CommandContext -> execute(CommandContext, Integer
-								.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX()) + "&&"
-								+ Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())
-								+ "&&"
-								+ Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())
-								+ "&&"
-								+ DimensionArgument.getDimension(CommandContext, "dim").dimension().location()
-										.toString()))))
-				.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
-				.executes(CommandContext -> execute(CommandContext, "help"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .then(Commands.literal("bed")
+                        .then(Commands.literal("enable")
+                                .executes(CommandContext -> execute(CommandContext, "bed-enable")))
+                        .then(Commands.literal("disable")
+                                .executes(CommandContext -> execute(CommandContext, "bed-disable"))))
+                .then(Commands.literal("here").executes(CommandContext -> execute(CommandContext, "here")))
+                .then(Commands.literal("clear").executes(CommandContext -> execute(CommandContext, "clear")))
+                .then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands
+                        .argument("dim", DimensionArgument.dimension())
+                        .executes(CommandContext -> execute(CommandContext, Integer
+                                .toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX()) + "&&"
+                                + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())
+                                + "&&"
+                                + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())
+                                + "&&"
+                                + DimensionArgument.getDimension(CommandContext, "dim").dimension().location()
+                                        .toString()))))
+                .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
+                .executes(CommandContext -> execute(CommandContext, "help"));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&")));
-		PermissionCommandParser.parseGroupSpawn(ctx, args, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone(), true);
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&")));
+        PermissionCommandParser.parseGroupSpawn(ctx, args, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone(), true);
+        return Command.SINGLE_SUCCESS;
+    }
 
 }

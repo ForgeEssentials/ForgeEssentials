@@ -24,76 +24,90 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandJump extends ForgeEssentialsCommandBuilder {
+public class CommandJump extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandJump(boolean enabled) {
-		super(enabled);
-	}
+    public CommandJump(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "jump";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "jump";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return TeleportModule.PERM_JUMP;
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_JUMP;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		jump(getServerPlayer(ctx.getSource()));
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        jump(getServerPlayer(ctx.getSource()));
+        return Command.SINGLE_SUCCESS;
+    }
 
-	public void jump(ServerPlayerEntity player) throws CommandException {
-		RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
-		if (mo.getType() == RayTraceResult.Type.MISS) {
-			ChatOutputHandler.chatError(player, "The spot you are looking at is too far away to teleport.");
-			return;
-		}
+    public void jump(ServerPlayerEntity player) throws CommandException
+    {
+        RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
+        if (mo.getType() == RayTraceResult.Type.MISS)
+        {
+            ChatOutputHandler.chatError(player, "The spot you are looking at is too far away to teleport.");
+            return;
+        }
 
-		BlockPos pos = new BlockPos(mo.getLocation().x, mo.getLocation().y, mo.getLocation().z);
-		pos.offset(0, 1, 0);
-		TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
-	}
+        BlockPos pos = new BlockPos(mo.getLocation().x, mo.getLocation().y, mo.getLocation().z);
+        pos.offset(0, 1, 0);
+        TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
+    }
 
-	@SubscribeEvent
-	public void playerInteractEvent(PlayerInteractEvent event) {
-		if (!(event.getPlayer() instanceof ServerPlayerEntity))
-			return;
-		if (!(event instanceof PlayerInteractEvent.RightClickItem)
-				&& !(event instanceof PlayerInteractEvent.RightClickBlock))
-			return;
-		ItemStack stack = event.getPlayer().getMainHandItem();
-		if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
-			return;
-		if (!hasPermission(event.getPlayer().createCommandSourceStack(), TeleportModule.PERM_JUMP_TOOL))
-			return;
+    @SubscribeEvent
+    public void playerInteractEvent(PlayerInteractEvent event)
+    {
+        if (!(event.getPlayer() instanceof ServerPlayerEntity))
+            return;
+        if (!(event instanceof PlayerInteractEvent.RightClickItem)
+                && !(event instanceof PlayerInteractEvent.RightClickBlock))
+            return;
+        ItemStack stack = event.getPlayer().getMainHandItem();
+        if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
+            return;
+        if (!hasPermission(event.getPlayer().createCommandSourceStack(), TeleportModule.PERM_JUMP_TOOL))
+            return;
 
-		try {
-			jump((ServerPlayerEntity) event.getPlayer());
-		} catch (Exception e) {
-			e.printStackTrace();
-			StringTextComponent msg = new StringTextComponent(e.getCause() + e.getMessage());
-			msg.withStyle(TextFormatting.RED);
-			event.getPlayer().sendMessage(msg, event.getPlayer().getUUID());
-		}
-	}
+        try
+        {
+            jump((ServerPlayerEntity) event.getPlayer());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            StringTextComponent msg = new StringTextComponent(e.getCause() + e.getMessage());
+            msg.withStyle(TextFormatting.RED);
+            event.getPlayer().sendMessage(msg, event.getPlayer().getUUID());
+        }
+    }
 
 }

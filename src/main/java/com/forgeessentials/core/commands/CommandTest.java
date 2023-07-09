@@ -12,47 +12,56 @@ import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandTest extends ForgeEssentialsCommandBuilder {
+public class CommandTest extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandTest(boolean enabled) {
-		super(enabled);
-	}
+    public CommandTest(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "fetesting";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "fetesting";
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ForgeEssentials.PERM_CORE + ".testing";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ForgeEssentials.PERM_CORE + ".testing";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
-				.getDispatcher();
-		String[] result = dispatcher.getAllUsage(dispatcher.getRoot(), ctx.getSource(), false);
-		int num = 0;
-		for (String node : result) {
-			LoggingHandler.felog.info("Node " + num + ": " + node);
-			num += 1;
-		}
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
+                .getDispatcher();
+        String[] result = dispatcher.getAllUsage(dispatcher.getRoot(), ctx.getSource(), false);
+        int num = 0;
+        for (String node : result)
+        {
+            LoggingHandler.felog.info("Node " + num + ": " + node);
+            num += 1;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

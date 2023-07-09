@@ -12,14 +12,15 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
-public class BlockData {
+public class BlockData
+{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	public String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public String id;
 
-	@Column(name = "name")
-	public String name;
+    @Column(name = "name")
+    public String name;
 
 }

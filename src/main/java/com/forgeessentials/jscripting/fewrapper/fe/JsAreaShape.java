@@ -5,13 +5,15 @@ import com.forgeessentials.commons.selections.AreaShape;
 /**
  * @tsd.static AreaShape
  */
-public class JsAreaShape {
+public class JsAreaShape
+{
 
-	private JsAreaShape() {
-	}
+    private JsAreaShape()
+    {
+    }
 
-	public static final AreaShape BOX = AreaShape.BOX;
-	public static final AreaShape ELLIPSOID = AreaShape.ELLIPSOID;
-	public static final AreaShape CYLINDER = AreaShape.CYLINDER;
+    public static final AreaShape BOX = AreaShape.BOX;
+    public static final AreaShape ELLIPSOID = AreaShape.ELLIPSOID;
+    public static final AreaShape CYLINDER = AreaShape.CYLINDER;
 
 }

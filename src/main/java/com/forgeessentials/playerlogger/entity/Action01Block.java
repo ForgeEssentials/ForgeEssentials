@@ -17,21 +17,23 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @DiscriminatorValue(value = "1")
-public class Action01Block extends Action {
+public class Action01Block extends Action
+{
 
-	@Column(name = "type")
-	@Enumerated(EnumType.ORDINAL)
-	public ActionBlockType type;
+    @Column(name = "type")
+    @Enumerated(EnumType.ORDINAL)
+    public ActionBlockType type;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "block_id")
-	public BlockData block;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "block_id")
+    public BlockData block;
 
-	@Column(name = "entity")
-	public Blob entity;
+    @Column(name = "entity")
+    public Blob entity;
 
-	public static enum ActionBlockType {
-		PLACE, BREAK, DETONATE, USE_LEFT, USE_RIGHT, BURN
-	}
+    public static enum ActionBlockType
+    {
+        PLACE, BREAK, DETONATE, USE_LEFT, USE_RIGHT, BURN
+    }
 
 }

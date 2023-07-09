@@ -7,147 +7,180 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.util.PlayerInfo;
 
-public class JsPlayerInfo extends JsWrapper<PlayerInfo> {
-	public JsPlayerInfo(PlayerInfo that) {
-		super(that);
-	}
+public class JsPlayerInfo extends JsWrapper<PlayerInfo>
+{
+    public JsPlayerInfo(PlayerInfo that)
+    {
+        super(that);
+    }
 
-	public JsPlayerInfo(UUID that) {
-		super(PlayerInfo.get(that));
-	}
+    public JsPlayerInfo(UUID that)
+    {
+        super(PlayerInfo.get(that));
+    }
 
-	public JsUserIdent getUserIdent() {
-		return new JsUserIdent(that.ident);
-	}
+    public JsUserIdent getUserIdent()
+    {
+        return new JsUserIdent(that.ident);
+    }
 
-	public Date getFirstLogin() {
-		return that.getFirstLogin();
-	}
+    public Date getFirstLogin()
+    {
+        return that.getFirstLogin();
+    }
 
-	public Date getLastLogin() {
-		return that.getLastLogin();
-	}
+    public Date getLastLogin()
+    {
+        return that.getLastLogin();
+    }
 
-	public Date getLastLogout() {
-		return that.getLastLogout();
-	}
+    public Date getLastLogout()
+    {
+        return that.getLastLogout();
+    }
 
-	public long getTimePlayed() {
-		return that.getTimePlayed();
-	}
+    public long getTimePlayed()
+    {
+        return that.getTimePlayed();
+    }
 
-	public void setActive() {
-		that.setActive();
-	}
+    public void setActive()
+    {
+        that.setActive();
+    }
 
-	public void setActive(long delta) {
-		that.setActive(delta);
-	}
+    public void setActive(long delta)
+    {
+        that.setActive(delta);
+    }
 
-	public long getInactiveTime() {
-		return that.getInactiveTime();
-	}
+    public long getInactiveTime()
+    {
+        return that.getInactiveTime();
+    }
 
-	public void removeTimeout(String name) {
-		that.removeTimeout(name);
-	}
+    public void removeTimeout(String name)
+    {
+        that.removeTimeout(name);
+    }
 
-	public boolean checkTimeout(String name) {
-		return that.checkTimeout(name);
-	}
+    public boolean checkTimeout(String name)
+    {
+        return that.checkTimeout(name);
+    }
 
-	public long getRemainingTimeout(String name) {
-		return that.getRemainingTimeout(name);
-	}
+    public long getRemainingTimeout(String name)
+    {
+        return that.getRemainingTimeout(name);
+    }
 
-	public void startTimeout(String name, long milliseconds) {
-		that.startTimeout(name, milliseconds);
-	}
+    public void startTimeout(String name, long milliseconds)
+    {
+        that.startTimeout(name, milliseconds);
+    }
 
-	public boolean isWandEnabled() {
-		return that.isWandEnabled();
-	}
+    public boolean isWandEnabled()
+    {
+        return that.isWandEnabled();
+    }
 
-	public void setWandEnabled(boolean wandEnabled) {
-		that.setWandEnabled(wandEnabled);
-	}
+    public void setWandEnabled(boolean wandEnabled)
+    {
+        that.setWandEnabled(wandEnabled);
+    }
 
-	public String getWandID() {
-		return that.getWandID();
-	}
+    public String getWandID()
+    {
+        return that.getWandID();
+    }
 
-	public void setWandID(String wandID) {
-		that.setWandID(wandID);
-	}
+    public void setWandID(String wandID)
+    {
+        that.setWandID(wandID);
+    }
 
-	public JsPoint getSel1() {
-		return new JsPoint(that.getSel1());
-	}
+    public JsPoint getSel1()
+    {
+        return new JsPoint(that.getSel1());
+    }
 
-	public JsPoint getSel2() {
-		return new JsPoint(that.getSel2());
-	}
+    public JsPoint getSel2()
+    {
+        return new JsPoint(that.getSel2());
+    }
 
-	public String getSelDim() {
-		return that.getSelDim();
-	}
+    public String getSelDim()
+    {
+        return that.getSelDim();
+    }
 
-	public void setSel1(JsPoint<Point> point) {
-		that.setSel1(point.getThat());
-	}
+    public void setSel1(JsPoint<Point> point)
+    {
+        that.setSel1(point.getThat());
+    }
 
-	public void setSel2(JsPoint<Point> point) {
-		that.setSel2(point.getThat());
-	}
+    public void setSel2(JsPoint<Point> point)
+    {
+        that.setSel2(point.getThat());
+    }
 
-	public void setSelDim(String dimension) {
-		that.setSelDim(dimension);
-	}
+    public void setSelDim(String dimension)
+    {
+        that.setSelDim(dimension);
+    }
 
-	// TODO: Expose InventoryGroups to Js
-	/*
-	 * public Map<String, List<JsItemStack>> getModInventoryGroups() {
-	 * 
-	 * }
-	 * 
-	 * public List<JsItemStack> getInventoryGroupItems(String name) {
-	 * 
-	 * }
-	 * 
-	 * public String getInventoryGroup() { return that.getInventoryGroup(); }
-	 * 
-	 * public void setInventoryGroup(String name) { that.setInventoryGroup(name); }
-	 */
+    // TODO: Expose InventoryGroups to Js
+    /*
+     * public Map<String, List<JsItemStack>> getModInventoryGroups() {
+     * 
+     * }
+     * 
+     * public List<JsItemStack> getInventoryGroupItems(String name) {
+     * 
+     * }
+     * 
+     * public String getInventoryGroup() { return that.getInventoryGroup(); }
+     * 
+     * public void setInventoryGroup(String name) { that.setInventoryGroup(name); }
+     */
 
-	public JsWarpPoint getLastTeleportOrigin() {
-		return new JsWarpPoint(that.getLastTeleportOrigin());
-	}
+    public JsWarpPoint getLastTeleportOrigin()
+    {
+        return new JsWarpPoint(that.getLastTeleportOrigin());
+    }
 
-	public void setLastTeleportOrigin(JsWarpPoint lastTeleportStart) {
-		that.setLastTeleportOrigin(lastTeleportStart.getThat());
-	}
+    public void setLastTeleportOrigin(JsWarpPoint lastTeleportStart)
+    {
+        that.setLastTeleportOrigin(lastTeleportStart.getThat());
+    }
 
-	public JsWarpPoint getLastDeathLocation() {
-		return new JsWarpPoint(that.getLastDeathLocation());
-	}
+    public JsWarpPoint getLastDeathLocation()
+    {
+        return new JsWarpPoint(that.getLastDeathLocation());
+    }
 
-	public void setLastDeathLocation(JsWarpPoint lastDeathLocation) {
-		that.setLastDeathLocation(lastDeathLocation.getThat());
-	}
+    public void setLastDeathLocation(JsWarpPoint lastDeathLocation)
+    {
+        that.setLastDeathLocation(lastDeathLocation.getThat());
+    }
 
-	public long getLastTeleportTime() {
-		return that.getLastTeleportTime();
-	}
+    public long getLastTeleportTime()
+    {
+        return that.getLastTeleportTime();
+    }
 
-	public void setLastTeleportTime(long currentTimeMillis) {
-		that.setLastTeleportTime(currentTimeMillis);
-	}
+    public void setLastTeleportTime(long currentTimeMillis)
+    {
+        that.setLastTeleportTime(currentTimeMillis);
+    }
 
-	public JsWarpPoint getHome() {
-		return new JsWarpPoint(that.getHome());
-	}
+    public JsWarpPoint getHome()
+    {
+        return new JsWarpPoint(that.getHome());
+    }
 
-	public void setHome(JsWarpPoint home) {
-		that.setHome(home.getThat());
-	}
+    public void setHome(JsWarpPoint home)
+    {
+        that.setHome(home.getThat());
+    }
 }

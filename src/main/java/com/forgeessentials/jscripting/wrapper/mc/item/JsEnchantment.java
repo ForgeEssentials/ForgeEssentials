@@ -4,11 +4,13 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 import net.minecraft.enchantment.Enchantment;
 
-public class JsEnchantment<T extends Enchantment> extends JsWrapper<T> {
+public class JsEnchantment<T extends Enchantment> extends JsWrapper<T>
+{
 
-	public JsEnchantment(T that) {
-		super(that);
-	}
+    public JsEnchantment(T that)
+    {
+        super(that);
+    }
 
-	// TODO: implement this
+    // TODO: implement this
 }

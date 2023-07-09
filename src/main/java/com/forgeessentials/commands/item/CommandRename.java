@@ -16,49 +16,58 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandRename extends ForgeEssentialsCommandBuilder {
+public class CommandRename extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandRename(boolean enabled) {
-		super(enabled);
-	}
+    public CommandRename(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "rename";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "rename";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".rename";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".rename";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("name", StringArgumentType.greedyString())
-				.executes(CommandContext -> execute(CommandContext, "blank")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("name", StringArgumentType.greedyString())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
 
-		ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();
-		if (is == ItemStack.EMPTY) {
-			ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not holding a valid item."));
-			return Command.SINGLE_SUCCESS;
-		}
+        ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();
+        if (is == ItemStack.EMPTY)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not holding a valid item."));
+            return Command.SINGLE_SUCCESS;
+        }
 
-		String nameS = StringArgumentType.getString(ctx, "name").trim();
-		is.setHoverName(new StringTextComponent(nameS));
-		return Command.SINGLE_SUCCESS;
-	}
+        String nameS = StringArgumentType.getString(ctx, "name").trim();
+        is.setHoverName(new StringTextComponent(nameS));
+        return Command.SINGLE_SUCCESS;
+    }
 }

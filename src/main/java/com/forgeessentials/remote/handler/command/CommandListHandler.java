@@ -17,27 +17,31 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND_LIST)
-public class CommandListHandler extends GenericRemoteHandler<String> {
+public class CommandListHandler extends GenericRemoteHandler<String>
+{
 
-	public static final String PERM = CommandHandler.PERM;
+    public static final String PERM = CommandHandler.PERM;
 
-	public CommandListHandler() {
-		super(PERM, String.class);
-	}
+    public CommandListHandler()
+    {
+        super(PERM, String.class);
+    }
 
-	@Override
-	protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request) {
-		List<String> commands = new ArrayList<String>();
+    @Override
+    protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
+    {
+        List<String> commands = new ArrayList<String>();
 
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher()
-				.getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher()
+                .getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
 
-		for (String command : map.values()) {
-			commands.add(command);
-		}
+        for (String command : map.values())
+        {
+            commands.add(command);
+        }
 
-		return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, commands);
-	}
+        return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, commands);
+    }
 
 }

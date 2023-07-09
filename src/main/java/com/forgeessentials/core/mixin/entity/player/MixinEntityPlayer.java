@@ -11,28 +11,31 @@ import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.entity.player.PlayerEntity;
 
 @Mixin(PlayerEntity.class)
-public abstract class MixinEntityPlayer {
+public abstract class MixinEntityPlayer
+{
 
-	/**
-	 * Custom permissions for command blocks
-	 * 
-	 * @author Maximuslotro
-	 * @reason stuff
-	 */
-	@Overwrite
-	public boolean canUseGameMasterBlocks() {
-		return ((PlayerEntity) (Object) this).isCreative()
-				&& APIRegistry.perms.checkPermission((PlayerEntity) (Object) this, "mc.commandblock");
-	}
+    /**
+     * Custom permissions for command blocks
+     * 
+     * @author Maximuslotro
+     * @reason stuff
+     */
+    @Overwrite
+    public boolean canUseGameMasterBlocks()
+    {
+        return ((PlayerEntity) (Object) this).isCreative()
+                && APIRegistry.perms.checkPermission((PlayerEntity) (Object) this, "mc.commandblock");
+    }
 
-	/**
-	 * Solve for noClip functionality
-	 * 
-	 * @author Maximuslotro
-	 * @reason stuff
-	 */
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
-	public boolean onUpdate_NoClip(PlayerEntity _this) {
-		return _this.isSpectator() || PlayerInfo.get(_this).isNoClip();
-	}
+    /**
+     * Solve for noClip functionality
+     * 
+     * @author Maximuslotro
+     * @reason stuff
+     */
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
+    public boolean onUpdate_NoClip(PlayerEntity _this)
+    {
+        return _this.isSpectator() || PlayerInfo.get(_this).isNoClip();
+    }
 }

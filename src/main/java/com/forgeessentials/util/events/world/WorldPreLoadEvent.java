@@ -6,12 +6,14 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 @Cancelable
-public class WorldPreLoadEvent extends Event {
+public class WorldPreLoadEvent extends Event
+{
 
-	public final RegistryKey<World> dim;
+    public final RegistryKey<World> dim;
 
-	public WorldPreLoadEvent(RegistryKey<World> dim) {
-		this.dim = dim;
-	}
+    public WorldPreLoadEvent(RegistryKey<World> dim)
+    {
+        this.dim = dim;
+    }
 
 }

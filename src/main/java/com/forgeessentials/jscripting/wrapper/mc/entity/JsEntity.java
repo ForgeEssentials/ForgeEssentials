@@ -14,160 +14,195 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
-public class JsEntity<T extends Entity> extends JsWrapper<T> {
+public class JsEntity<T extends Entity> extends JsWrapper<T>
+{
 
-	private static Map<Class<?>, Constructor<?>> entityWrapperConstructors = new HashMap<>();
+    private static Map<Class<?>, Constructor<?>> entityWrapperConstructors = new HashMap<>();
 
-	/**
-	 * @tsd.ignore
-	 */
-	public static JsEntity<?> get(Entity entity) {
-		if (entity == null)
-			return null;
-		// Fancy reflection crap to get a specific entity type if it exists
-		// TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
-		try {
-			Class<?> entityClazz = entity.getClass();
-			Constructor<?> con = entityWrapperConstructors.get(entity.getClass());
-			if (con != null)
-				return (JsEntity<?>) con.newInstance(entity);
+    /**
+     * @tsd.ignore
+     */
+    public static JsEntity<?> get(Entity entity)
+    {
+        if (entity == null)
+            return null;
+        // Fancy reflection crap to get a specific entity type if it exists
+        // TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
+        try
+        {
+            Class<?> entityClazz = entity.getClass();
+            Constructor<?> con = entityWrapperConstructors.get(entity.getClass());
+            if (con != null)
+                return (JsEntity<?>) con.newInstance(entity);
 
-			for (; Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass()) {
-				try {
-					Class<?> clazz = Class.forName(
-							"com.forgeessentials.jscripting.wrapper.mc.entity.Js" + entityClazz.getSimpleName());
-					if (JsEntity.class.isAssignableFrom(clazz)) {
-						con = clazz.getDeclaredConstructor(entityClazz);
-						con.setAccessible(true);
-						entityWrapperConstructors.put(entity.getClass(), con);
-						return (JsEntity<?>) con.newInstance(entity);
-					}
-				} catch (ClassNotFoundException e) {
-					/* do nothing */
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return new JsEntity<>(entity);
-	}
+            for (; Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
+            {
+                try
+                {
+                    Class<?> clazz = Class.forName(
+                            "com.forgeessentials.jscripting.wrapper.mc.entity.Js" + entityClazz.getSimpleName());
+                    if (JsEntity.class.isAssignableFrom(clazz))
+                    {
+                        con = clazz.getDeclaredConstructor(entityClazz);
+                        con.setAccessible(true);
+                        entityWrapperConstructors.put(entity.getClass(), con);
+                        return (JsEntity<?>) con.newInstance(entity);
+                    }
+                }
+                catch (ClassNotFoundException e)
+                {
+                    /* do nothing */
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        return new JsEntity<>(entity);
+    }
 
-	private JsWorld<?> world;
+    private JsWorld<?> world;
 
-	private JsEntity<?> ridingEntity;
+    private JsEntity<?> ridingEntity;
 
-	private JsEntityList riddenByEntity;
+    private JsEntityList riddenByEntity;
 
-	protected JsEntity(T that) {
-		super(that);
-	}
+    protected JsEntity(T that)
+    {
+        super(that);
+    }
 
-	public String getName() {
-		return that.getDisplayName().getString();
-	}
+    public String getName()
+    {
+        return that.getDisplayName().getString();
+    }
 
-	public String getId() {
-		return that.getUUID().toString();
-	}
+    public String getId()
+    {
+        return that.getUUID().toString();
+    }
 
-	public UUID getUuid() {
-		return that.getUUID();
-	}
+    public UUID getUuid()
+    {
+        return that.getUUID();
+    }
 
-	public int getEntityId() {
-		return that.getId();
-	}
+    public int getEntityId()
+    {
+        return that.getId();
+    }
 
-	public World getDimension() {
-		return that.level;
-	}
+    public World getDimension()
+    {
+        return that.level;
+    }
 
-	public double getX() {
-		return that.position().x;
-	}
+    public double getX()
+    {
+        return that.position().x;
+    }
 
-	public double getY() {
-		return that.position().y;
-	}
+    public double getY()
+    {
+        return that.position().y;
+    }
 
-	public double getZ() {
-		return that.position().z;
-	}
+    public double getZ()
+    {
+        return that.position().z;
+    }
 
-	public double getMotionX() {
-		return that.getDeltaMovement().x;
-	}
+    public double getMotionX()
+    {
+        return that.getDeltaMovement().x;
+    }
 
-	public double getMotionY() {
-		return that.getDeltaMovement().y;
-	}
+    public double getMotionY()
+    {
+        return that.getDeltaMovement().y;
+    }
 
-	public double getMotionZ() {
-		return that.getDeltaMovement().z;
-	}
+    public double getMotionZ()
+    {
+        return that.getDeltaMovement().z;
+    }
 
-	public int getChunkCoordX() {
-		return that.xChunk;
-	}
+    public int getChunkCoordX()
+    {
+        return that.xChunk;
+    }
 
-	public int getChunkCoordY() {
-		return that.yChunk;
-	}
+    public int getChunkCoordY()
+    {
+        return that.yChunk;
+    }
 
-	public int getChunkCoordZ() {
-		return that.zChunk;
-	}
+    public int getChunkCoordZ()
+    {
+        return that.zChunk;
+    }
 
-	public float getWidth() {
-		return that.getBbWidth();
-	}
+    public float getWidth()
+    {
+        return that.getBbWidth();
+    }
 
-	public float getHeight() {
-		return that.getBbHeight();
-	}
+    public float getHeight()
+    {
+        return that.getBbHeight();
+    }
 
-	public float getStepHeight() {
-		return that.maxUpStep;
-	}
+    public float getStepHeight()
+    {
+        return that.maxUpStep;
+    }
 
-	public boolean isOnGround() {
-		return that.isOnGround();
-	}
+    public boolean isOnGround()
+    {
+        return that.isOnGround();
+    }
 
-	public JsEntity<?> getRidingEntity() {
-		if (ridingEntity == null)
-			ridingEntity = get(that.getEntity().getVehicle());
-		return ridingEntity;
-	}
+    public JsEntity<?> getRidingEntity()
+    {
+        if (ridingEntity == null)
+            ridingEntity = get(that.getEntity().getVehicle());
+        return ridingEntity;
+    }
 
-	public JsEntityList getRiddenByEntity() {
-		if (riddenByEntity == null)
-			riddenByEntity = new JsEntityList(that.getPassengers());
-		return riddenByEntity;
-	}
+    public JsEntityList getRiddenByEntity()
+    {
+        if (riddenByEntity == null)
+            riddenByEntity = new JsEntityList(that.getPassengers());
+        return riddenByEntity;
+    }
 
-	public JsWorld<?> getWorld() {
-		if (world == null)
-			world = JsWorld.get(that.level);
-		return world;
-	}
+    public JsWorld<?> getWorld()
+    {
+        if (world == null)
+            world = JsWorld.get(that.level);
+        return world;
+    }
 
-	/**
-	 * @tsd.ignore
-	 */
-	public String _getNbt() {
-		return DataManager.toJson(that.getEntityData());
-	}
+    /**
+     * @tsd.ignore
+     */
+    public String _getNbt()
+    {
+        return DataManager.toJson(that.getEntityData());
+    }
 
-	/**
-	 * @tsd.ignore
-	 */
-	public void _setNbt(String value) {
-		ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundNBT.class));
-	}
+    /**
+     * @tsd.ignore
+     */
+    public void _setNbt(String value)
+    {
+        ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundNBT.class));
+    }
 
-	public String getEntityType() {
-		return that.getClass().getSimpleName();
-	}
+    public String getEntityType()
+    {
+        return that.getClass().getSimpleName();
+    }
 
 }

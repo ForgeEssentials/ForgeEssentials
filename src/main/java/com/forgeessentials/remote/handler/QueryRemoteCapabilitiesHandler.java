@@ -16,33 +16,38 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.google.gson.JsonElement;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_REMOTE_CAPABILITIES)
-public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonElement> {
+public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonElement>
+{
 
-	// public static final String PERM = PERM_REMOTE + ".query.remote.capabilities";
+    // public static final String PERM = PERM_REMOTE + ".query.remote.capabilities";
 
-	public QueryRemoteCapabilitiesHandler() {
-		super(null, JsonElement.class);
-		// APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL,
-		// "Allows querying capabilities (allowed handlers - should ALWAYS be
-		// granted)");
-	}
+    public QueryRemoteCapabilitiesHandler()
+    {
+        super(null, JsonElement.class);
+        // APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL,
+        // "Allows querying capabilities (allowed handlers - should ALWAYS be
+        // granted)");
+    }
 
-	@Override
-	protected RemoteResponse<QueryRemoteCapabilitiesHandler.Response> handleData(RemoteSession session,
-			RemoteRequest<JsonElement> request) {
-		Response response = new Response();
-		for (Entry<String, RemoteHandler> handler : ModuleRemote.getInstance().getHandlers().entrySet()) {
-			String p = handler.getValue().getPermission();
-			if (p == null || APIRegistry.perms.checkUserPermission(session.getUserIdent(), p))
-				response.handlers.add(handler.getKey());
-		}
-		return new RemoteResponse<QueryRemoteCapabilitiesHandler.Response>(request, response);
-	}
+    @Override
+    protected RemoteResponse<QueryRemoteCapabilitiesHandler.Response> handleData(RemoteSession session,
+            RemoteRequest<JsonElement> request)
+    {
+        Response response = new Response();
+        for (Entry<String, RemoteHandler> handler : ModuleRemote.getInstance().getHandlers().entrySet())
+        {
+            String p = handler.getValue().getPermission();
+            if (p == null || APIRegistry.perms.checkUserPermission(session.getUserIdent(), p))
+                response.handlers.add(handler.getKey());
+        }
+        return new RemoteResponse<QueryRemoteCapabilitiesHandler.Response>(request, response);
+    }
 
-	public static class Response {
+    public static class Response
+    {
 
-		public Set<String> handlers = new HashSet<>();
+        public Set<String> handlers = new HashSet<>();
 
-	}
+    }
 
 }

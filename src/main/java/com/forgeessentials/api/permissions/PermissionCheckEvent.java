@@ -7,27 +7,29 @@ import com.forgeessentials.api.UserIdent;
 
 import net.minecraftforge.eventbus.api.Event;
 
-public class PermissionCheckEvent extends Event {
+public class PermissionCheckEvent extends Event
+{
 
-	public final UserIdent ident;
+    public final UserIdent ident;
 
-	public final Collection<Zone> zones;
+    public final Collection<Zone> zones;
 
-	public final List<String> groups;
+    public final List<String> groups;
 
-	public final List<String> nodes;
+    public final List<String> nodes;
 
-	public final boolean isProperty;
+    public final boolean isProperty;
 
-	public String result = null;
+    public String result = null;
 
-	public PermissionCheckEvent(UserIdent ident, Collection<Zone> zones, List<String> groups, List<String> nodes,
-			boolean isProperty) {
-		this.ident = ident;
-		this.zones = zones;
-		this.groups = groups;
-		this.nodes = nodes;
-		this.isProperty = isProperty;
-	}
+    public PermissionCheckEvent(UserIdent ident, Collection<Zone> zones, List<String> groups, List<String> nodes,
+            boolean isProperty)
+    {
+        this.ident = ident;
+        this.zones = zones;
+        this.groups = groups;
+        this.nodes = nodes;
+        this.isProperty = isProperty;
+    }
 
 }

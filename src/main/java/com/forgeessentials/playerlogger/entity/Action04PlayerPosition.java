@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue(value = "4")
-public class Action04PlayerPosition extends Action {
+public class Action04PlayerPosition extends Action
+{
 
 }

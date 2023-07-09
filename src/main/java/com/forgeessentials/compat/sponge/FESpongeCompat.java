@@ -18,27 +18,32 @@ import com.google.inject.Inject;
  * Watch this space, more to come.
  */
 @Plugin(value = "forgeessentials-sponge")
-public class FESpongeCompat {
+public class FESpongeCompat
+{
 
-	@Inject
-	private Game game;
+    @Inject
+    private Game game;
 
-	@Listener
-	public void checkEnvironment(StartingEngineEvent<?> e) {
-		if (!game.platform().executionType().name().equals("SpongeForge")) {
-			throw new RuntimeException(
-					"You must be running the Forge implementation of SpongeAPI on Minecraft Forge in order to load ForgeEssentials!");
-		}
-	}
+    @Listener
+    public void checkEnvironment(StartingEngineEvent<?> e)
+    {
+        if (!game.platform().executionType().name().equals("SpongeForge"))
+        {
+            throw new RuntimeException(
+                    "You must be running the Forge implementation of SpongeAPI on Minecraft Forge in order to load ForgeEssentials!");
+        }
+    }
 
-	@Listener
-	public void register(LoadedGameEvent e) {
-		Environment.registerSpongeCompatPlugin(game.pluginManager().plugin("worldedit").isPresent());
-	}
+    @Listener
+    public void register(LoadedGameEvent e)
+    {
+        Environment.registerSpongeCompatPlugin(game.pluginManager().plugin("worldedit").isPresent());
+    }
 
-	@Listener
-	public void provideEconomyService(final GameScoped<EconomyService> event) {
-		event.suggest(() -> new FEEconService());
-	}
+    @Listener
+    public void provideEconomyService(final GameScoped<EconomyService> event)
+    {
+        event.suggest(() -> new FEEconService());
+    }
 
 }

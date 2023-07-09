@@ -23,99 +23,115 @@ import net.minecraft.command.CommandSource;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class Mailer extends ServerEventHandler {
+public class Mailer extends ServerEventHandler
+{
 
-	public Mailer() {
-		super();
-	}
+    public Mailer()
+    {
+        super();
+    }
 
-	@SubscribeEvent
-	public void registerCommands(FERegisterCommandsEvent event) {
-		CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-		FECommandManager.registerCommand(new CommandMail(true), dispatcher);
+    @SubscribeEvent
+    public void registerCommands(FERegisterCommandsEvent event)
+    {
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandMail(true), dispatcher);
 
-	}
+    }
 
-	public static class Mail {
+    public static class Mail
+    {
 
-		public UserIdent sender;
+        public UserIdent sender;
 
-		public String message;
+        public String message;
 
-		public Date timestamp = new Date();
+        public Date timestamp = new Date();
 
-		public Mail(UserIdent sender, String message) {
-			this.sender = sender;
-			this.message = message;
-		}
+        public Mail(UserIdent sender, String message)
+        {
+            this.sender = sender;
+            this.message = message;
+        }
 
-	}
+    }
 
-	public static class Mails {
+    public static class Mails
+    {
 
-		public UserIdent user;
+        public UserIdent user;
 
-		public List<Mail> mails = new ArrayList<Mail>();
+        public List<Mail> mails = new ArrayList<Mail>();
 
-		public Mails(UserIdent user) {
-			this.user = user;
-		}
+        public Mails(UserIdent user)
+        {
+            this.user = user;
+        }
 
-	}
+    }
 
-	private static Map<UserIdent, Mails> mailBags = new HashMap<>();
+    private static Map<UserIdent, Mails> mailBags = new HashMap<>();
 
-	@SubscribeEvent
-	public void serverStartingEvent(FEModuleServerStartingEvent event) {
-		loadAllMails();
-	}
+    @SubscribeEvent
+    public void serverStartingEvent(FEModuleServerStartingEvent event)
+    {
+        loadAllMails();
+    }
 
-	@SubscribeEvent
-	public void playerLoggedInEvent(PlayerLoggedInEvent event) {
-		UserIdent user = UserIdent.get(event.getPlayer());
-		Mails mailBag = getMailBag(user);
-		if (mailBag.mails.isEmpty())
-			return;
-		Set<UserIdent> senders = new HashSet<>();
-		for (Mail mail : mailBag.mails)
-			senders.add(mail.sender);
-		String message = Translator.format("You have unread mails from %s. Use /mail to read.",
-				UserIdent.join(senders, ", ", " and "));
-		ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
-	}
+    @SubscribeEvent
+    public void playerLoggedInEvent(PlayerLoggedInEvent event)
+    {
+        UserIdent user = UserIdent.get(event.getPlayer());
+        Mails mailBag = getMailBag(user);
+        if (mailBag.mails.isEmpty())
+            return;
+        Set<UserIdent> senders = new HashSet<>();
+        for (Mail mail : mailBag.mails)
+            senders.add(mail.sender);
+        String message = Translator.format("You have unread mails from %s. Use /mail to read.",
+                UserIdent.join(senders, ", ", " and "));
+        ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
+    }
 
-	public static void loadAllMails() {
-		Map<String, Mails> loadedMails = DataManager.getInstance().loadAll(Mails.class);
-		mailBags.clear();
-		for (Mails mailBag : loadedMails.values())
-			try {
-				mailBags.put(mailBag.user, mailBag);
-			} catch (IllegalArgumentException e) {
-				/* do nothing */
-			}
-	}
+    public static void loadAllMails()
+    {
+        Map<String, Mails> loadedMails = DataManager.getInstance().loadAll(Mails.class);
+        mailBags.clear();
+        for (Mails mailBag : loadedMails.values())
+            try
+            {
+                mailBags.put(mailBag.user, mailBag);
+            }
+            catch (IllegalArgumentException e)
+            {
+                /* do nothing */
+            }
+    }
 
-	public static void saveMails(UserIdent user, Mails mails) {
-		if (mails == null)
-			DataManager.getInstance().delete(Mails.class, user.toString());
-		else
-			DataManager.getInstance().save(mails, user.getOrGenerateUuid().toString());
-	}
+    public static void saveMails(UserIdent user, Mails mails)
+    {
+        if (mails == null)
+            DataManager.getInstance().delete(Mails.class, user.toString());
+        else
+            DataManager.getInstance().save(mails, user.getOrGenerateUuid().toString());
+    }
 
-	public static Mails getMailBag(UserIdent user) {
-		Mails mails = mailBags.get(user);
-		if (mails == null)
-			mails = new Mails(user);
-		return mails;
-	}
+    public static Mails getMailBag(UserIdent user)
+    {
+        Mails mails = mailBags.get(user);
+        if (mails == null)
+            mails = new Mails(user);
+        return mails;
+    }
 
-	public static void sendMail(UserIdent sender, UserIdent recipent, String message) {
-		Mails mailBag = getMailBag(recipent);
-		mailBag.mails.add(new Mail(sender, message));
-		saveMails(recipent, mailBag);
-		if (recipent.hasPlayer())
-			ChatOutputHandler.chatNotification(recipent.getPlayer().createCommandSourceStack(), Translator
-					.format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
-	}
+    public static void sendMail(UserIdent sender, UserIdent recipent, String message)
+    {
+        Mails mailBag = getMailBag(recipent);
+        mailBag.mails.add(new Mail(sender, message));
+        saveMails(recipent, mailBag);
+        if (recipent.hasPlayer())
+            ChatOutputHandler.chatNotification(recipent.getPlayer().createCommandSourceStack(), Translator
+                    .format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
+    }
 
 }

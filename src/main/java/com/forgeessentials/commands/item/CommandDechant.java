@@ -23,63 +23,75 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandDechant extends ForgeEssentialsCommandBuilder {
-	public CommandDechant(boolean enabled) {
-		super(enabled);
-	}
+public class CommandDechant extends ForgeEssentialsCommandBuilder
+{
+    public CommandDechant(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	private static final String PERM = ModuleCommands.PERM + ".dechant";
+    private static final String PERM = ModuleCommands.PERM + ".dechant";
 
-	@Override
-	public String getPrimaryAlias() {
-		return "dechant";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "dechant";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return PERM;
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM;
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("name", EnchantmentArgument.enchantment())
-				.executes(CommandContext -> execute(CommandContext, "blank")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("name", EnchantmentArgument.enchantment())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
-		if (stack == ItemStack.EMPTY) {
-			ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
-			return Command.SINGLE_SUCCESS;
-		}
-		Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
+        if (stack == ItemStack.EMPTY)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
+            return Command.SINGLE_SUCCESS;
+        }
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
-		List<Enchantment> validEnchantments = new ArrayList<>();
-		Iterator<Enchantment> itor = ForgeRegistries.ENCHANTMENTS.iterator();
-		while (itor.hasNext()) {
-			Enchantment enchantment = itor.next();
-			if (enchantment != null && enchantments.containsKey(enchantment)) {
-				validEnchantments.add(enchantment);
-			}
-		}
-		Enchantment enchantmentC = EnchantmentArgument.getEnchantment(ctx, "name");
-		if (enchantmentC == null | !validEnchantments.contains(enchantmentC)) {
-			ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantmentC));
-			return Command.SINGLE_SUCCESS;
-		}
-		enchantments.remove(enchantmentC);
-		EnchantmentHelper.setEnchantments(enchantments, stack);
-		return Command.SINGLE_SUCCESS;
-	}
+        List<Enchantment> validEnchantments = new ArrayList<>();
+        Iterator<Enchantment> itor = ForgeRegistries.ENCHANTMENTS.iterator();
+        while (itor.hasNext())
+        {
+            Enchantment enchantment = itor.next();
+            if (enchantment != null && enchantments.containsKey(enchantment))
+            {
+                validEnchantments.add(enchantment);
+            }
+        }
+        Enchantment enchantmentC = EnchantmentArgument.getEnchantment(ctx, "name");
+        if (enchantmentC == null | !validEnchantments.contains(enchantmentC))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantmentC));
+            return Command.SINGLE_SUCCESS;
+        }
+        enchantments.remove(enchantmentC);
+        EnchantmentHelper.setEnchantments(enchantments, stack);
+        return Command.SINGLE_SUCCESS;
+    }
 }

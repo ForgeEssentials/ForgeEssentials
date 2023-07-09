@@ -26,100 +26,116 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder {
+public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandGetCommandBook(boolean enabled) {
-		super(enabled);
-	}
+    public CommandGetCommandBook(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	public static String joinAliases(Object[] par0ArrayOfObj) {
-		StringBuilder var1 = new StringBuilder();
+    public static String joinAliases(Object[] par0ArrayOfObj)
+    {
+        StringBuilder var1 = new StringBuilder();
 
-		for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2) {
-			String var3 = "/" + par0ArrayOfObj[var2].toString();
+        for (int var2 = 0; var2 < par0ArrayOfObj.length; ++var2)
+        {
+            String var3 = "/" + par0ArrayOfObj[var2].toString();
 
-			if (var2 > 0) {
-				var1.append(", ");
-			}
+            if (var2 > 0)
+            {
+                var1.append(", ");
+            }
 
-			var1.append(var3);
-		}
+            var1.append(var3);
+        }
 
-		return var1.toString();
-	}
+        return var1.toString();
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "commandbook";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "commandbook";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "cmdbook" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "cmdbook" };
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.ALL;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.ALL;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".commandbook";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".commandbook";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
-		if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK))) {
-			for (int i = 0; i < sender.inventory.items.size(); i++) {
-				ItemStack e = sender.inventory.items.get(i);
-				if (e != ItemStack.EMPTY && e.hasTag() && e.getTag().contains("title") && e.getTag().contains("author")
-						&& e.getTag().getString("title").equals("CommandBook")
-						&& e.getTag().getString("author").equals("ForgeEssentials")) {
-					sender.inventory.setItem(i, ItemStack.EMPTY);
-				}
-			}
-		}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
+        if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK)))
+        {
+            for (int i = 0; i < sender.inventory.items.size(); i++)
+            {
+                ItemStack e = sender.inventory.items.get(i);
+                if (e != ItemStack.EMPTY && e.hasTag() && e.getTag().contains("title") && e.getTag().contains("author")
+                        && e.getTag().getString("title").equals("CommandBook")
+                        && e.getTag().getString("author").equals("ForgeEssentials"))
+                {
+                    sender.inventory.setItem(i, ItemStack.EMPTY);
+                }
+            }
+        }
 
-		Set<String> pages = new TreeSet<>();
-		CommandDispatcher<CommandSource> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
-		Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(), ctx.getSource());
-		for (CommandNode<CommandSource> cmdObj : map.keySet()) {
-			if (!cmdObj.canUse(sender.createCommandSourceStack()))
-				continue;
+        Set<String> pages = new TreeSet<>();
+        CommandDispatcher<CommandSource> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+        Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(), ctx.getSource());
+        for (CommandNode<CommandSource> cmdObj : map.keySet())
+        {
+            if (!cmdObj.canUse(sender.createCommandSourceStack()))
+                continue;
 
-			Set<String> commands = new HashSet<>();
-			commands.add("/" + cmdObj.getName());
+            Set<String> commands = new HashSet<>();
+            commands.add("/" + cmdObj.getName());
 
-			String perm = "TODO PLACEHOLDER";
-			String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
-					(perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK
-					+ cmdObj.getUsageText();
-			pages.add(text);
-		}
+            String perm = "TODO PLACEHOLDER";
+            String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
+                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK
+                    + cmdObj.getUsageText();
+            pages.add(text);
+        }
 
-		ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
 
-		ListNBT pagesNbt = new ListNBT();
-		for (String page : pages)
-			pagesNbt.add(StringNBT.valueOf(page));
+        ListNBT pagesNbt = new ListNBT();
+        for (String page : pages)
+            pagesNbt.add(StringNBT.valueOf(page));
 
-		is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
-		is.addTagElement("title", StringNBT.valueOf("CommandBook"));
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf("CommandBook"));
 
-		sender.inventory.add(is);
-		return Command.SINGLE_SUCCESS;
-	}
+        sender.inventory.add(is);
+        return Command.SINGLE_SUCCESS;
+    }
 
 }

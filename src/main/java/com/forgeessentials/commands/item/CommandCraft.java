@@ -21,57 +21,68 @@ import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandCraft extends ForgeEssentialsCommandBuilder {
+public class CommandCraft extends ForgeEssentialsCommandBuilder
+{
 
-	protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
+    protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
 
-	public CommandCraft(boolean enabled) {
-		super(enabled);
-	}
+    public CommandCraft(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "craft";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "craft";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".craft";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".craft";
+    }
 
-	@SubscribeEvent
-	public void playerOpenContainerEvent(PlayerContainerEvent.Open event) {
-		if (event.getContainer().stillValid(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer()) {
-			event.setResult(Result.ALLOW);
-		}
-	}
+    @SubscribeEvent
+    public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
+    {
+        if (event.getContainer().stillValid(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer())
+        {
+            event.setResult(Result.ALLOW);
+        }
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		ServerPlayerEntity player = getServerPlayer(ctx.getSource());
-		ctx.getSource().getPlayerOrException()
-				.openMenu(new SimpleNamedContainerProvider(
-						(i, playerInventory, playerEntity) -> new WorkbenchContainer(i, playerInventory,
-								IWorldPosCallable.create(player.getCommandSenderWorld(), player.blockPosition())) {
-							public boolean stillValid(PlayerEntity p_75145_1_) {
-								return true;
-							}
-						}, new StringTextComponent("FE Virtual Crafting")));
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        ctx.getSource().getPlayerOrException()
+                .openMenu(new SimpleNamedContainerProvider(
+                        (i, playerInventory, playerEntity) -> new WorkbenchContainer(i, playerInventory,
+                                IWorldPosCallable.create(player.getCommandSenderWorld(), player.blockPosition())) {
+                            public boolean stillValid(PlayerEntity p_75145_1_)
+                            {
+                                return true;
+                            }
+                        }, new StringTextComponent("FE Virtual Crafting")));
+        return Command.SINGLE_SUCCESS;
+    }
 }

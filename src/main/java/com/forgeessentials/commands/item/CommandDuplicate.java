@@ -16,58 +16,68 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandDuplicate extends ForgeEssentialsCommandBuilder {
+public class CommandDuplicate extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandDuplicate(boolean enabled) {
-		super(enabled);
-	}
+    public CommandDuplicate(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "duplicate";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "duplicate";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + "." + "duplicate";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + "duplicate";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder
-				.then(Commands.argument("size", IntegerArgumentType.integer(0, 64))
-						.executes(CommandContext -> execute(CommandContext, "size")))
-				.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .then(Commands.argument("size", IntegerArgumentType.integer(0, 64))
+                        .executes(CommandContext -> execute(CommandContext, "size")))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		PlayerEntity player = (PlayerEntity) ctx.getSource().getEntity();
-		ItemStack stack = player.getMainHandItem();
-		if (stack == ItemStack.EMPTY) {
-			ChatOutputHandler.chatError(ctx.getSource(), "No item equipped");
-			return Command.SINGLE_SUCCESS;
-		}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerEntity player = (PlayerEntity) ctx.getSource().getEntity();
+        ItemStack stack = player.getMainHandItem();
+        if (stack == ItemStack.EMPTY)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No item equipped");
+            return Command.SINGLE_SUCCESS;
+        }
 
-		int stackSize = 0;
-		if (params.equals("size")) {
-			stackSize = IntegerArgumentType.getInteger(ctx, "size");
-		}
-		ItemStack newStack = stack.copy();
-		if (stackSize > 0)
-			newStack.setCount(stackSize);
+        int stackSize = 0;
+        if (params.equals("size"))
+        {
+            stackSize = IntegerArgumentType.getInteger(ctx, "size");
+        }
+        ItemStack newStack = stack.copy();
+        if (stackSize > 0)
+            newStack.setCount(stackSize);
 
-		PlayerUtil.give(player, newStack);
-		return Command.SINGLE_SUCCESS;
-	}
+        PlayerUtil.give(player, newStack);
+        return Command.SINGLE_SUCCESS;
+    }
 }

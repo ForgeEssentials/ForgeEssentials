@@ -15,52 +15,63 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandVIP extends ForgeEssentialsCommandBuilder {
+public class CommandVIP extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandVIP(boolean enabled) {
-		super(enabled);
-	}
+    public CommandVIP(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "vip";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "vip";
+    }
 
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder
-				.then(Commands.literal("add")
-						.then(Commands.argument("player", EntityArgument.player())
-								.executes(CommandContext -> execute(CommandContext, "add"))))
-				.then(Commands.literal("add").then(Commands.argument("player", EntityArgument.player())
-						.executes(CommandContext -> execute(CommandContext, "remove"))));
-	}
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .then(Commands.literal("add")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "add"))))
+                .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "remove"))));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		PlayerEntity arg = EntityArgument.getPlayer(ctx, "player");
-		if (params.equals("add")) {
-			APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", true);
-			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player added to vip list");
-		} else if (params.equals("remove")) {
-			APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", false);
-			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player removed from vip list");
-		}
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerEntity arg = EntityArgument.getPlayer(ctx, "player");
+        if (params.equals("add"))
+        {
+            APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", true);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player added to vip list");
+        }
+        else if (params.equals("remove"))
+        {
+            APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", false);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player removed from vip list");
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "fe.auth.vipcmd";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.auth.vipcmd";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
 }

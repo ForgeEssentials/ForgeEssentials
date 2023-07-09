@@ -16,56 +16,66 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandLocate extends ForgeEssentialsCommandBuilder {
+public class CommandLocate extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandLocate(boolean enabled) {
-		super(enabled);
-	}
+    public CommandLocate(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "locate";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "locate";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "gps", "loc", "playerinfo" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "gps", "loc", "playerinfo" };
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".locate";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".locate";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("player", EntityArgument.player())
-				.executes(CommandContext -> execute(CommandContext, "blank")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-		if (player == null) {
-			ChatOutputHandler.chatError(ctx.getSource(), "Player does not exist, or is not online.");
-		}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (player == null)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Player does not exist, or is not online.");
+        }
 
-		WorldPoint point = new WorldPoint(player);
-		ChatOutputHandler.chatConfirmation(ctx.getSource(),
-				Translator.format("%s is at %d, %d, %d in dim %s with gamemode %s", //
-						player.getDisplayName().getString(), point.getX(), point.getY(), point.getZ(),
-						point.getDimension(), //
-						player.gameMode.getGameModeForPlayer().getName()));
-		return Command.SINGLE_SUCCESS;
-	}
+        WorldPoint point = new WorldPoint(player);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                Translator.format("%s is at %d, %d, %d in dim %s with gamemode %s", //
+                        player.getDisplayName().getString(), point.getX(), point.getY(), point.getZ(),
+                        point.getDimension(), //
+                        player.gameMode.getGameModeForPlayer().getName()));
+        return Command.SINGLE_SUCCESS;
+    }
 }

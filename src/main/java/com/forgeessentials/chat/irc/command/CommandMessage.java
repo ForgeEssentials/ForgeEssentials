@@ -13,43 +13,51 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.TextComponent;
 
-public class CommandMessage implements IrcCommand {
+public class CommandMessage implements IrcCommand
+{
 
-	@Override
-	public Collection<String> getCommandNames() {
-		return Arrays.asList("msg", "m");
-	}
+    @Override
+    public Collection<String> getCommandNames()
+    {
+        return Arrays.asList("msg", "m");
+    }
 
-	@Override
-	public String getUsage() {
-		return "<player> <message...>";
-	}
+    @Override
+    public String getUsage()
+    {
+        return "<player> <message...>";
+    }
 
-	@Override
-	public String getCommandHelp() {
-		return "Send a private message to a player";
-	}
+    @Override
+    public String getCommandHelp()
+    {
+        return "Send a private message to a player";
+    }
 
-	@Override
-	public boolean isAdminCommand() {
-		return false;
-	}
+    @Override
+    public boolean isAdminCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public void processCommand(CommandSource sender, String[] args) throws CommandException {
-		if (args.length == 0) {
-			ChatOutputHandler.chatError(sender, "No player specified!");
-			return;
-		}
+    @Override
+    public void processCommand(CommandSource sender, String[] args) throws CommandException
+    {
+        if (args.length == 0)
+        {
+            ChatOutputHandler.chatError(sender, "No player specified!");
+            return;
+        }
 
-		UserIdent player = UserIdent.get(args[0], true);
-		if (args.length < 2) {
-			ChatOutputHandler.chatError(sender, "No message specified");
-			return;
-		}
+        UserIdent player = UserIdent.get(args[0], true);
+        if (args.length < 2)
+        {
+            ChatOutputHandler.chatError(sender, "No message specified");
+            return;
+        }
 
-		TextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
-		ModuleChat.tell(sender, msg, player.getPlayer().createCommandSourceStack());
-	}
+        TextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
+        ModuleChat.tell(sender, msg, player.getPlayer().createCommandSourceStack());
+    }
 
 }

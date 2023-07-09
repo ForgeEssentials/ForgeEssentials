@@ -14,34 +14,39 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
-public class PlayerPositionEventFactory extends ServerEventHandler {
+public class PlayerPositionEventFactory extends ServerEventHandler
+{
 
-	private HashMap<UUID, WarpPoint> lastPlayerPosition = new HashMap<>();
+    private HashMap<UUID, WarpPoint> lastPlayerPosition = new HashMap<>();
 
-	@SubscribeEvent
-	public void playerTickEvent(ServerTickEvent.PlayerTickEvent e) {
-		if (e.side != LogicalSide.SERVER || e.phase == ServerTickEvent.Phase.START)
-			return;
-		PlayerEntity player = (PlayerEntity) e.player;
-		WarpPoint before = lastPlayerPosition.get(player.getUUID());
-		WarpPoint current = new WarpPoint(e.player);
+    @SubscribeEvent
+    public void playerTickEvent(ServerTickEvent.PlayerTickEvent e)
+    {
+        if (e.side != LogicalSide.SERVER || e.phase == ServerTickEvent.Phase.START)
+            return;
+        PlayerEntity player = (PlayerEntity) e.player;
+        WarpPoint before = lastPlayerPosition.get(player.getUUID());
+        WarpPoint current = new WarpPoint(e.player);
 
-		if (before != null && !player.isDeadOrDying() && player.level != null && !before.equals(current)) {
-			PlayerMoveEvent event = new PlayerMoveEvent(player, before, current);
-			MinecraftForge.EVENT_BUS.post(event);
-			if (event.isCanceled()) {
-				// Check, if the position was not changed by one of the event handlers
-				if (current.equals(new WarpPoint(e.player)))
-					// Move the player to his last position
-					TeleportHelper.doTeleport(player, before);
-			}
-		}
-		lastPlayerPosition.put(player.getUUID(), new WarpPoint(e.player));
-	}
+        if (before != null && !player.isDeadOrDying() && player.level != null && !before.equals(current))
+        {
+            PlayerMoveEvent event = new PlayerMoveEvent(player, before, current);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (event.isCanceled())
+            {
+                // Check, if the position was not changed by one of the event handlers
+                if (current.equals(new WarpPoint(e.player)))
+                    // Move the player to his last position
+                    TeleportHelper.doTeleport(player, before);
+            }
+        }
+        lastPlayerPosition.put(player.getUUID(), new WarpPoint(e.player));
+    }
 
-	@SubscribeEvent
-	public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e) {
-		lastPlayerPosition.remove(e.getPlayer().getUUID());
-	}
+    @SubscribeEvent
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
+    {
+        lastPlayerPosition.remove(e.getPlayer().getUUID());
+    }
 
 }

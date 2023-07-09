@@ -1,4 +1,4 @@
-//TODO: Determine How to Handle Advancements Later
+// TODO: Determine How to Handle Advancements Later
 /*
  * package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
  * 
@@ -8,8 +8,7 @@
  * 
  * public class JsAchievementEvent extends JsPlayerEvent<AchievementEvent> {
  * 
- * @SubscribeEvent public final void _handle(AchievementEvent event) {
- * _callEvent(event); }
+ * @SubscribeEvent public final void _handle(AchievementEvent event) { _callEvent(event); }
  * 
  * }
  */

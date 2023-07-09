@@ -22,99 +22,112 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandRemove extends ForgeEssentialsCommandBuilder {
+public class CommandRemove extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandRemove(boolean enabled) {
-		super(enabled);
-	}
+    public CommandRemove(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "remove";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "remove";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "clearGroundItems" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "clearGroundItems" };
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleCommands.PERM + ".remove";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".remove";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-				.then(Commands.argument("position", BlockPosArgument.blockPos())
-						.then(Commands.argument("dimension", DimensionArgument.dimension())
-								.executes(CommandContext -> execute(CommandContext, "dim")))
-						.executes(CommandContext -> execute(CommandContext, "blank"))));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                .then(Commands.argument("position", BlockPosArgument.blockPos())
+                        .then(Commands.argument("dimension", DimensionArgument.dimension())
+                                .executes(CommandContext -> execute(CommandContext, "dim")))
+                        .executes(CommandContext -> execute(CommandContext, "blank"))));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		int radius = 10;
-		double centerX;
-		double centerY;
-		double centerZ;
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        int radius = 10;
+        double centerX;
+        double centerY;
+        double centerZ;
 
-		radius = IntegerArgumentType.getInteger(ctx, "radius");
-		centerX = BlockPosArgument.getLoadedBlockPos(ctx, "position").getX();
-		centerY = BlockPosArgument.getLoadedBlockPos(ctx, "position").getY();
-		centerZ = BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ();
+        radius = IntegerArgumentType.getInteger(ctx, "radius");
+        centerX = BlockPosArgument.getLoadedBlockPos(ctx, "position").getX();
+        centerY = BlockPosArgument.getLoadedBlockPos(ctx, "position").getY();
+        centerZ = BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ();
 
-		List<ItemEntity> entityList = getServerPlayer(ctx.getSource()).getLevel().getEntitiesOfClass(ItemEntity.class,
-				new AxisAlignedBB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1,
-						centerY + radius + 1, centerZ + radius + 1));
+        List<ItemEntity> entityList = getServerPlayer(ctx.getSource()).getLevel().getEntitiesOfClass(ItemEntity.class,
+                new AxisAlignedBB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1,
+                        centerY + radius + 1, centerZ + radius + 1));
 
-		int counter = 0;
-		for (int i = 0; i < entityList.size(); i++) {
-			ItemEntity entity = entityList.get(i);
-			counter += entity.getItem().getCount();
-			entity.remove();
-		}
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
-		return Command.SINGLE_SUCCESS;
-	}
+        int counter = 0;
+        for (int i = 0; i < entityList.size(); i++)
+        {
+            ItemEntity entity = entityList.get(i);
+            counter += entity.getItem().getCount();
+            entity.remove();
+        }
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
+        return Command.SINGLE_SUCCESS;
+    }
 
-	@Override
-	public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		int radius = 0;
-		WorldPoint center = new WorldPoint("minecraft:overworld", 0, 0, 0);
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        int radius = 0;
+        WorldPoint center = new WorldPoint("minecraft:overworld", 0, 0, 0);
 
-		radius = IntegerArgumentType.getInteger(ctx, "radius");
-		center.setX(BlockPosArgument.getLoadedBlockPos(ctx, "position").getX());
-		center.setY(BlockPosArgument.getLoadedBlockPos(ctx, "position").getY());
-		center.setZ(BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ());
+        radius = IntegerArgumentType.getInteger(ctx, "radius");
+        center.setX(BlockPosArgument.getLoadedBlockPos(ctx, "position").getX());
+        center.setY(BlockPosArgument.getLoadedBlockPos(ctx, "position").getY());
+        center.setZ(BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ());
 
-		if (params.equals("dim")) {
-			center.setDimension(DimensionArgument.getDimension(ctx, "dimension").dimension().location().toString());
-		}
+        if (params.equals("dim"))
+        {
+            center.setDimension(DimensionArgument.getDimension(ctx, "dimension").dimension().location().toString());
+        }
 
-		List<ItemEntity> entityList = ServerUtil.getWorldFromString(center.getDimension()).getEntitiesOfClass(
-				ItemEntity.class,
-				new AxisAlignedBB(center.getX() - radius, center.getY() - radius, center.getZ() - radius,
-						center.getX() + radius + 1, center.getY() + radius + 1, center.getZ() + radius + 1));
+        List<ItemEntity> entityList = ServerUtil.getWorldFromString(center.getDimension()).getEntitiesOfClass(
+                ItemEntity.class,
+                new AxisAlignedBB(center.getX() - radius, center.getY() - radius, center.getZ() - radius,
+                        center.getX() + radius + 1, center.getY() + radius + 1, center.getZ() + radius + 1));
 
-		int counter = 0;
-		for (int i = 0; i < entityList.size(); i++) {
-			ItemEntity entity = entityList.get(i);
-			counter += entity.getItem().getCount();
-			entity.remove();
-		}
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
-		return Command.SINGLE_SUCCESS;
-	}
+        int counter = 0;
+        for (int i = 0; i < entityList.size(); i++)
+        {
+            ItemEntity entity = entityList.get(i);
+            counter += entity.getItem().getCount();
+            entity.remove();
+        }
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
+        return Command.SINGLE_SUCCESS;
+    }
 
 }

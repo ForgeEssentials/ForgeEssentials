@@ -18,87 +18,102 @@ import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandJScript extends ForgeEssentialsCommandBuilder {
+public class CommandJScript extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandJScript(boolean enabled) {
-		super(enabled);
-	}
+    public CommandJScript(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "fescript";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "fescript";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "script" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "script" };
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return true;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.OP;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.OP;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return ModuleJScripting.PERM + ".manage";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleJScripting.PERM + ".manage";
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.then(Commands.literal("list").executes(CommandContext -> execute(CommandContext, "list")))
-				.then(Commands.literal("reload").executes(CommandContext -> execute(CommandContext, "reload")))
-				.then(Commands.literal("upgrade").executes(CommandContext -> execute(CommandContext, "upgrade")));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.then(Commands.literal("list").executes(CommandContext -> execute(CommandContext, "list")))
+                .then(Commands.literal("reload").executes(CommandContext -> execute(CommandContext, "reload")))
+                .then(Commands.literal("upgrade").executes(CommandContext -> execute(CommandContext, "upgrade")));
+    }
 
-	@Override
-	public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		switch (params) {
-		case "list":
-			parseList(ctx);
-			break;
-		case "reload":
-			parseReload(ctx);
-			break;
-		case "upgrade":
-			ScriptUpgrader.upgradeOldScripts(ctx.getSource());
-			break;
-		default:
-			ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
-			return Command.SINGLE_SUCCESS;
-		}
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        switch (params)
+        {
+        case "list":
+            parseList(ctx);
+            break;
+        case "reload":
+            parseReload(ctx);
+            break;
+        case "upgrade":
+            ScriptUpgrader.upgradeOldScripts(ctx.getSource());
+            break;
+        default:
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 
-	private static void parseReload(CommandContext<CommandSource> ctx) {
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Reloading scripts...");
-		ModuleJScripting.instance().reloadScripts(ctx.getSource());
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Done!");
-	}
+    private static void parseReload(CommandContext<CommandSource> ctx)
+    {
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Reloading scripts...");
+        ModuleJScripting.instance().reloadScripts(ctx.getSource());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Done!");
+    }
 
-	private static void parseList(CommandContext<CommandSource> ctx) {
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Loaded scripts:");
-		for (ScriptInstance script : ModuleJScripting.getScripts()) {
-			ChatOutputHandler.chatNotification(ctx.getSource(), script.getName());
+    private static void parseList(CommandContext<CommandSource> ctx)
+    {
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Loaded scripts:");
+        for (ScriptInstance script : ModuleJScripting.getScripts())
+        {
+            ChatOutputHandler.chatNotification(ctx.getSource(), script.getName());
 
-			List<String> eventHandlers = script.getEventHandlers();
-			if (!eventHandlers.isEmpty()) {
-				ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered events:");
-				for (String eventType : eventHandlers)
-					ctx.getSource().sendSuccess(new StringTextComponent(("    " + eventType)), true);
-			}
+            List<String> eventHandlers = script.getEventHandlers();
+            if (!eventHandlers.isEmpty())
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered events:");
+                for (String eventType : eventHandlers)
+                    ctx.getSource().sendSuccess(new StringTextComponent(("    " + eventType)), true);
+            }
 
-			List<CommandJScriptCommand> commands = script.getCommands();
-			if (!commands.isEmpty()) {
-				ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered commands:");
-				for (CommandJScriptCommand command : commands)
-					ctx.getSource().sendSuccess(new StringTextComponent("    /" + command.getName()), true);
-			}
-		}
-	}
+            List<CommandJScriptCommand> commands = script.getCommands();
+            if (!commands.isEmpty())
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered commands:");
+                for (CommandJScriptCommand command : commands)
+                    ctx.getSource().sendSuccess(new StringTextComponent("    /" + command.getName()), true);
+            }
+        }
+    }
 }

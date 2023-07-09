@@ -16,48 +16,56 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 /**
  * Expected syntax: <interval> <message>
  */
-public class EffectMessage extends WorldBorderEffect {
+public class EffectMessage extends WorldBorderEffect
+{
 
-	public String message = "You left the worldborder. Please return!";
+    public String message = "You left the worldborder. Please return!";
 
-	public int interval = 6000;
+    public int interval = 6000;
 
-	@Override
-	public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException {
-		interval = IntegerArgumentType.getInteger(ctx, "interval");
-		message = StringArgumentType.getString(ctx, "message");
-	}
+    @Override
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    {
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        message = StringArgumentType.getString(ctx, "message");
+    }
 
-	@Override
-	public void activate(WorldBorder border, ServerPlayerEntity player) {
-		if (interval <= 0)
-			doEffect(player);
-	}
+    @Override
+    public void activate(WorldBorder border, ServerPlayerEntity player)
+    {
+        if (interval <= 0)
+            doEffect(player);
+    }
 
-	@Override
-	public void tick(WorldBorder border, ServerPlayerEntity player) {
-		if (interval <= 0)
-			return;
-		PlayerInfo pi = PlayerInfo.get(player);
-		if (pi.checkTimeout(this.getClass().getName())) {
-			doEffect(player);
-			pi.startTimeout(this.getClass().getName(), interval * 1000);
-		}
-	}
+    @Override
+    public void tick(WorldBorder border, ServerPlayerEntity player)
+    {
+        if (interval <= 0)
+            return;
+        PlayerInfo pi = PlayerInfo.get(player);
+        if (pi.checkTimeout(this.getClass().getName()))
+        {
+            doEffect(player);
+            pi.startTimeout(this.getClass().getName(), interval * 1000);
+        }
+    }
 
-	public void doEffect(ServerPlayerEntity player) {
-		ChatOutputHandler.chatError(player,
-				ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
-	}
+    public void doEffect(ServerPlayerEntity player)
+    {
+        ChatOutputHandler.chatError(player,
+                ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
+    }
 
-	@Override
-	public String toString() {
-		return "message trigger: " + triggerDistance + "interval: " + interval + " message: " + message;
-	}
+    @Override
+    public String toString()
+    {
+        return "message trigger: " + triggerDistance + "interval: " + interval + " message: " + message;
+    }
 
-	@Override
-	public String getSyntax() {
-		return "<interval> <message>";
-	}
+    @Override
+    public String getSyntax()
+    {
+        return "<interval> <message>";
+    }
 
 }

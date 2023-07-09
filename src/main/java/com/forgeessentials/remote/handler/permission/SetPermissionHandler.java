@@ -14,37 +14,43 @@ import com.forgeessentials.remote.network.SetPermissionRequest;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.SET_PERMISSION)
-public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionRequest> {
+public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionRequest>
+{
 
-	public static final String PERM = QueryPermissionsHandler.PERM + ".set";
+    public static final String PERM = QueryPermissionsHandler.PERM + ".set";
 
-	public SetPermissionHandler() {
-		super(PERM, SetPermissionRequest.class);
-		APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows to change permissions");
-	}
+    public SetPermissionHandler()
+    {
+        super(PERM, SetPermissionRequest.class);
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows to change permissions");
+    }
 
-	@Override
-	protected RemoteResponse<Object> handleData(RemoteSession session, RemoteRequest<SetPermissionRequest> request) {
-		if (request.data.permission == null)
-			error("Missing permission");
-		if (request.data.user != null && request.data.group != null)
-			error("Only set player OR group!");
-		if (request.data.user == null && request.data.group == null)
-			error("Missing player or group name");
+    @Override
+    protected RemoteResponse<Object> handleData(RemoteSession session, RemoteRequest<SetPermissionRequest> request)
+    {
+        if (request.data.permission == null)
+            error("Missing permission");
+        if (request.data.user != null && request.data.group != null)
+            error("Only set player OR group!");
+        if (request.data.user == null && request.data.group == null)
+            error("Missing player or group name");
 
-		Zone zone = APIRegistry.perms.getZoneById(request.data.zoneId);
-		if (zone == null)
-			error("Zone with ID %s not found", request.data.zoneId);
+        Zone zone = APIRegistry.perms.getZoneById(request.data.zoneId);
+        if (zone == null)
+            error("Zone with ID %s not found", request.data.zoneId);
 
-		if (request.data.user != null) {
-			checkPermission(session, PermissionCommandParser.PERM_USER_PERMS);
-			zone.setPlayerPermissionProperty(request.data.user, request.data.permission, request.data.value);
-		} else {
-			checkPermission(session, PermissionCommandParser.PERM_GROUP_PERMS);
-			zone.setGroupPermissionProperty(request.data.group, request.data.permission, request.data.value);
-		}
+        if (request.data.user != null)
+        {
+            checkPermission(session, PermissionCommandParser.PERM_USER_PERMS);
+            zone.setPlayerPermissionProperty(request.data.user, request.data.permission, request.data.value);
+        }
+        else
+        {
+            checkPermission(session, PermissionCommandParser.PERM_GROUP_PERMS);
+            zone.setGroupPermissionProperty(request.data.group, request.data.permission, request.data.value);
+        }
 
-		return new RemoteResponse<Object>(request, null);
-	}
+        return new RemoteResponse<Object>(request, null);
+    }
 
 }

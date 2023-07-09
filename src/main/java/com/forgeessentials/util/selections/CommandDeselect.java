@@ -11,49 +11,58 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandDeselect extends ForgeEssentialsCommandBuilder {
+public class CommandDeselect extends ForgeEssentialsCommandBuilder
+{
 
-	public CommandDeselect(boolean enabled) {
-		super(enabled);
-	}
+    public CommandDeselect(boolean enabled)
+    {
+        super(enabled);
+    }
 
-	@Override
-	public String getPrimaryAlias() {
-		return "SELdesel";
-	}
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "SELdesel";
+    }
 
-	@Override
-	public String[] getDefaultSecondaryAliases() {
-		return new String[] { "/deselect", "/sel" };
-	}
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "/deselect", "/sel" };
+    }
 
-	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
-		return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
-	}
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-	@Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException {
-		PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID());
-		info.setSel1(null);
-		info.setSel2(null);
-		SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
-		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection cleared.");
-		return Command.SINGLE_SUCCESS;
-	}
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID());
+        info.setSel1(null);
+        info.setSel2(null);
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection cleared.");
+        return Command.SINGLE_SUCCESS;
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "fe.core.pos.deselect";
-	}
+    @Override
+    public String getPermissionNode()
+    {
+        return "fe.core.pos.deselect";
+    }
 
-	@Override
-	public DefaultPermissionLevel getPermissionLevel() {
-		return DefaultPermissionLevel.ALL;
-	}
+    @Override
+    public DefaultPermissionLevel getPermissionLevel()
+    {
+        return DefaultPermissionLevel.ALL;
+    }
 }

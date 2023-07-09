@@ -30,55 +30,57 @@ import net.minecraft.util.math.BlockPos;
  */
 @Entity
 @Table(indexes = { //
-		@Index(columnList = "player_id", name = "player_idx"), //
-		@Index(columnList = "world", name = "world_idx"), //
-		@Index(columnList = "x", name = "x_idx"), //
-		@Index(columnList = "y", name = "y_idx"), //
-		@Index(columnList = "z", name = "z_idx"), //
+        @Index(columnList = "player_id", name = "player_idx"), //
+        @Index(columnList = "world", name = "world_idx"), //
+        @Index(columnList = "x", name = "x_idx"), //
+        @Index(columnList = "y", name = "y_idx"), //
+        @Index(columnList = "z", name = "z_idx"), //
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 @AttributeOverride(name = "action", column = @Column(name = "action", nullable = false, length = 8, insertable = false, updatable = false))
 @DiscriminatorColumn(name = "action", discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue(value = "0")
-public abstract class Action {
+public abstract class Action
+{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	public Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public Long id;
 
-	@Column(name = "action")
-	public Integer action;
+    @Column(name = "action")
+    public Integer action;
 
-	@Column(name = "time")
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date time;
+    @Column(name = "time")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date time;
 
-	@Column(name = "x")
-	public int x;
+    @Column(name = "x")
+    public int x;
 
-	@Column(name = "y")
-	public int y;
+    @Column(name = "y")
+    public int y;
 
-	@Column(name = "z")
-	public int z;
+    @Column(name = "z")
+    public int z;
 
-	// @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	// @JoinColumn(name = "dimension")
-	@Column(name = "world")
-	public String world;
+    // @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // @JoinColumn(name = "dimension")
+    @Column(name = "world")
+    public String world;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "player_id")
-	public PlayerData player;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "player_id")
+    public PlayerData player;
 
-	@Transient
-	private BlockPos blockPos;
+    @Transient
+    private BlockPos blockPos;
 
-	public BlockPos getBlockPos() {
-		if (blockPos == null)
-			blockPos = new BlockPos(x, y, z);
-		return blockPos;
-	}
+    public BlockPos getBlockPos()
+    {
+        if (blockPos == null)
+            blockPos = new BlockPos(x, y, z);
+        return blockPos;
+    }
 
 }

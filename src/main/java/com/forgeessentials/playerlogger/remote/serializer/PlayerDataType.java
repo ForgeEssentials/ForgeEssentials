@@ -9,23 +9,27 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
-public class PlayerDataType implements DataType<PlayerData> {
+public class PlayerDataType implements DataType<PlayerData>
+{
 
-	@Override
-	public JsonElement serialize(PlayerData src, Type typeOfSrc, JsonSerializationContext context) {
-		return new JsonPrimitive(src.id);
-	}
+    @Override
+    public JsonElement serialize(PlayerData src, Type typeOfSrc, JsonSerializationContext context)
+    {
+        return new JsonPrimitive(src.id);
+    }
 
-	@Override
-	public PlayerData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-		PlayerData wd = new PlayerData();
-		wd.id = json.getAsLong();
-		return wd;
-	}
+    @Override
+    public PlayerData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    {
+        PlayerData wd = new PlayerData();
+        wd.id = json.getAsLong();
+        return wd;
+    }
 
-	@Override
-	public Class<PlayerData> getType() {
-		return PlayerData.class;
-	}
+    @Override
+    public Class<PlayerData> getType()
+    {
+        return PlayerData.class;
+    }
 
 }

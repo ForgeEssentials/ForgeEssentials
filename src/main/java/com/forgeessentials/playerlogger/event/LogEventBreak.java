@@ -10,30 +10,33 @@ import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 import net.minecraftforge.event.world.BlockEvent;
 
-public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent> {
+public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
+{
 
-	public Blob tileEntityBlob;
+    public Blob tileEntityBlob;
 
-	public LogEventBreak(BlockEvent.BreakEvent event) {
-		super(event);
-		tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
-	}
+    public LogEventBreak(BlockEvent.BreakEvent event)
+    {
+        super(event);
+        tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
+    }
 
-	@Override
-	public void process(EntityManager em) {
-		Action01Block action = new Action01Block();
-		action.time = date;
-		action.player = getPlayer(event.getPlayer());
-		// action.world =
-		// getWorld(event.getPlayer().level.dimension().location().toString());
-		action.world = event.getPlayer().level.dimension().location().toString();
-		action.block = getBlock(event.getState().getBlock());
-		action.entity = tileEntityBlob;
-		action.type = ActionBlockType.BREAK;
-		action.x = event.getPos().getX();
-		action.y = event.getPos().getY();
-		action.z = event.getPos().getZ();
-		em.persist(action);
-	}
+    @Override
+    public void process(EntityManager em)
+    {
+        Action01Block action = new Action01Block();
+        action.time = date;
+        action.player = getPlayer(event.getPlayer());
+        // action.world =
+        // getWorld(event.getPlayer().level.dimension().location().toString());
+        action.world = event.getPlayer().level.dimension().location().toString();
+        action.block = getBlock(event.getState().getBlock());
+        action.entity = tileEntityBlob;
+        action.type = ActionBlockType.BREAK;
+        action.x = event.getPos().getX();
+        action.y = event.getPos().getY();
+        action.z = event.getPos().getZ();
+        em.persist(action);
+    }
 
 }

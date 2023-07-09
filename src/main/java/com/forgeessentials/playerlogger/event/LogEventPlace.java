@@ -11,24 +11,27 @@ import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.world.BlockEvent;
 
-public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.EntityPlaceEvent> {
+public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.EntityPlaceEvent>
+{
 
-	public LogEventPlace(BlockEvent.EntityPlaceEvent event) {
-		super(event);
-	}
+    public LogEventPlace(BlockEvent.EntityPlaceEvent event)
+    {
+        super(event);
+    }
 
-	@Override
-	public void process(EntityManager em) {
-		Action01Block action = new Action01Block();
-		action.time = new Date();
-		action.player = getPlayer((PlayerEntity) event.getEntity());
-		action.world = event.getEntity().level.dimension().location().toString();
-		action.block = getBlock(event.getState().getBlock());
-		action.type = ActionBlockType.PLACE;
-		action.x = event.getPos().getX();
-		action.y = event.getPos().getY();
-		action.z = event.getPos().getZ();
-		em.persist(action);
-	}
+    @Override
+    public void process(EntityManager em)
+    {
+        Action01Block action = new Action01Block();
+        action.time = new Date();
+        action.player = getPlayer((PlayerEntity) event.getEntity());
+        action.world = event.getEntity().level.dimension().location().toString();
+        action.block = getBlock(event.getState().getBlock());
+        action.type = ActionBlockType.PLACE;
+        action.x = event.getPos().getX();
+        action.y = event.getPos().getY();
+        action.z = event.getPos().getZ();
+        em.persist(action);
+    }
 
 }
