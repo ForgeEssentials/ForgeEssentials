@@ -37,7 +37,7 @@ public class APIRegistry
     /**
      * Use this to call API functions available in the Module Launcher
      */
-    public static FEModules modules = new FEModules();;
+    public static FEModules modules = new FEModules();
 
     /**
      * Use this to call API functions available in the economy module.

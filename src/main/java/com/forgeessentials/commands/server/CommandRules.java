@@ -46,7 +46,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     public static final String[] autocomargs = { "add", "remove", "move", "change", "book" };
-    public static ArrayList<String> rules = new ArrayList<String>();;
+    public static ArrayList<String> rules = new ArrayList<String>();
     public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
     public static ArrayList<String> loadRules()

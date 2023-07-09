@@ -81,7 +81,7 @@ public class TeleportModule extends ConfigLoaderBase
     public static final String PERM_JUMP = "fe.teleport.jump";
     public static final String PERM_JUMP_TOOL = PERM_JUMP + ".tool";
 
-    private PortalManager portalManager = new PortalManager();;
+    private PortalManager portalManager = new PortalManager();
 
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
