@@ -25,6 +25,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class CommandPermissions extends ForgeEssentialsCommandBuilder
@@ -67,960 +68,526 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return baseBuilder.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
-                .then(Commands.literal("user").executes(CommandContext -> execute(CommandContext, "user"))
-                        .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "user")))
-                        .then(Commands.literal("perms")
-                                .executes(CommandContext -> execute(CommandContext,
-                                        "user&&" + StringArgumentType.getString(CommandContext, "player") + "&&perms")))
+        return baseBuilder
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
+                        )
+                .then(Commands.literal("user")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "user")
+                                        )
+                                )
                         .then(Commands.argument("player", StringArgumentType.word())
-                                .executes(CommandContext -> execute(CommandContext,
-                                        "user&&" + StringArgumentType.getString(CommandContext, "player")))
-                                .then(Commands.literal("zone").then(Commands
-                                        .argument("zone", StringArgumentType.string()).suggests(SUGGEST_zones)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "user&&" + StringArgumentType.getString(CommandContext, "player")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")))
-                                        .then(Commands.literal("group")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&group"))
-                                                .then(Commands.argument("arg", StringArgumentType.string())
-                                                        .suggests(SUGGEST_parseUserGroupArgs)
-                                                        .executes(CommandContext -> execute(CommandContext, "user&&"
-                                                                + StringArgumentType.getString(CommandContext, "player")
-                                                                + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&group&&"
-                                                                + StringArgumentType.getString(CommandContext, "arg")))
-                                                        .then(Commands.argument("group", StringArgumentType.string())
-                                                                .suggests(SUGGEST_group)
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zone&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "zone")
-                                                                                + "&&group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "arg")
-                                                                                + "&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group"))))))
-                                        .then(Commands.literal("allow").then(Commands
-                                                .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&allow&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "perm")))))
-                                        .then(Commands.literal("deny").then(Commands
-                                                .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&deny&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "perm")))))
-                                        .then(Commands.literal("clear").then(Commands
-                                                .argument("perm", StringArgumentType.string())
-                                                .suggests(SUGGEST_PlayerPerm)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&clear&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "perm")))))
-                                        .then(Commands.literal("value").then(Commands
-                                                .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&value&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "perm")))))
-                                        .then(Commands.literal("spawn").then(Commands.literal("help")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&spawn")))
-                                                .then(Commands.literal("bed").then(Commands.literal("enable")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&spawn&&bed&&enable")))
-                                                        .then(Commands.literal("disable")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zone&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "zone")
-                                                                                + "&&spawn&&bed&&disable"))))
-                                                .then(Commands.literal("here")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&spawn&&here")))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&spawn&&clear")))
-                                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                                        .then(Commands.argument("dim", DimensionArgument.dimension())
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zone&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "zone")
-                                                                                + "&&spawn&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getX())
-                                                                                + "&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getY())
-                                                                                + "&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getZ())
-                                                                                + "&&"
-                                                                                + DimensionArgument
-                                                                                        .getDimension(CommandContext,
-                                                                                                "dim")
-                                                                                        .dimension().location()
-                                                                                        .toString())))))
-                                        .then(Commands.literal("prefix").then(Commands
-                                                .argument("prefix", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&prefix&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "prefix"))))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&prefix&&clear"))))
-                                        .then(Commands.literal("suffix").then(Commands
-                                                .argument("suffix", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&suffix&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "suffix"))))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&suffix&&clear"))))
-                                        .then(Commands.literal("denydefault")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&denydefault"))))
-                                        .then(Commands.literal("MainServerZone")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "user&&" + StringArgumentType.getString(CommandContext,
-                                                                "player") + "&&zoneMain"))
+                                .suggests(SUGGEST_players)
+                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player"))
+                                        )
+                                .then(Commands.literal("perms")
+                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&perms")
+                                                )
+                                        )
+                                .then(Commands.literal("zone")
+                                        .then(Commands.argument("zone", StringArgumentType.string())
+                                                .suggests(SUGGEST_zones)
+                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone"))
+                                                        )
                                                 .then(Commands.literal("group")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType.getString(CommandContext,
-                                                                        "player") + "&&zoneMain&&group"))
+                                                        .then(Commands.literal("list")
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&group")
+                                                                        )
+                                                                )
                                                         .then(Commands.argument("arg", StringArgumentType.string())
                                                                 .suggests(SUGGEST_parseUserGroupArgs)
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "arg")))
-                                                                .then(Commands
-                                                                        .argument("group", StringArgumentType.string())
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&group&&"+StringArgumentType.getString(CommandContext, "arg"))
+                                                                        )
+                                                                .then(Commands.argument("group", StringArgumentType.string())
                                                                         .suggests(SUGGEST_group)
-                                                                        .executes(CommandContext -> execute(
-                                                                                CommandContext,
-                                                                                "user&&" + StringArgumentType.getString(
-                                                                                        CommandContext, "player")
-                                                                                        + "&&zoneMain&&group&&"
-                                                                                        + StringArgumentType.getString(
-                                                                                                CommandContext, "arg")
-                                                                                        + "&&"
-                                                                                        + StringArgumentType.getString(
-                                                                                                CommandContext,
-                                                                                                "group"))))))
+                                                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&group&&"+StringArgumentType.getString(CommandContext, "arg")+"&&"+StringArgumentType.getString(CommandContext, "group"))
+                                                                                )
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("perms")
+                                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&perms")
+                                                                )
+                                                        )
                                                 .then(Commands.literal("allow")
                                                         .then(Commands.argument("perm", StringArgumentType.string())
                                                                 .suggests(SUGGEST_perm)
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&allow&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "perm")))))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&allow&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
                                                 .then(Commands.literal("deny")
                                                         .then(Commands.argument("perm", StringArgumentType.string())
                                                                 .suggests(SUGGEST_perm)
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&deny&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "perm")))))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&deny&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
                                                 .then(Commands.literal("clear")
                                                         .then(Commands.argument("perm", StringArgumentType.string())
                                                                 .suggests(SUGGEST_PlayerPerm)
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&clear&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "perm")))))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&clear&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
                                                 .then(Commands.literal("value")
                                                         .then(Commands.argument("perm", StringArgumentType.string())
                                                                 .suggests(SUGGEST_perm)
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&value&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "perm")))))
-                                                .then(Commands.literal("spawn").then(Commands.literal("help")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType.getString(CommandContext,
-                                                                        "player") + "&&zoneMain&&spawn")))
-                                                        .then(Commands.literal("bed").then(Commands.literal("enable")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&spawn&&bed&&enable")))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&value&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("spawn")
+                                                        .then(Commands.literal("help")
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn")
+                                                                        )
+                                                                )
+                                                        .then(Commands.literal("bed")
+                                                                .then(Commands.literal("enable")
+                                                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&bed&&enable")
+                                                                                )
+                                                                        )
                                                                 .then(Commands.literal("disable")
-                                                                        .executes(CommandContext -> execute(
-                                                                                CommandContext,
-                                                                                "user&&" + StringArgumentType.getString(
-                                                                                        CommandContext, "player")
-                                                                                        + "&&zoneMain&&spawn&&bed&&disable"))))
+                                                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&bed&&disable")
+                                                                                )
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("here")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&spawn&&here")))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&here")
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("clear")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zoneMain&&spawn&&clear")))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&clear")
+                                                                        )
+                                                                )
                                                         .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                                                .then(Commands
-                                                                        .argument("dim", DimensionArgument.dimension())
-                                                                        .executes(CommandContext -> execute(
-                                                                                CommandContext,
-                                                                                "user&&" + StringArgumentType.getString(
-                                                                                        CommandContext, "player")
-                                                                                        + "&&zoneMain&&spawn&&"
-                                                                                        + Integer.toString(
-                                                                                                BlockPosArgument
-                                                                                                        .getLoadedBlockPos(
-                                                                                                                CommandContext,
-                                                                                                                "pos")
-                                                                                                        .getX())
-                                                                                        + "&&"
-                                                                                        + Integer.toString(
-                                                                                                BlockPosArgument
-                                                                                                        .getLoadedBlockPos(
-                                                                                                                CommandContext,
-                                                                                                                "pos")
-                                                                                                        .getY())
-                                                                                        + "&&"
-                                                                                        + Integer.toString(
-                                                                                                BlockPosArgument
-                                                                                                        .getLoadedBlockPos(
-                                                                                                                CommandContext,
-                                                                                                                "pos")
-                                                                                                        .getZ())
-                                                                                        + "&&"
-                                                                                        + DimensionArgument
-                                                                                                .getDimension(
-                                                                                                        CommandContext,
-                                                                                                        "dim")
-                                                                                                .dimension().location()
-                                                                                                .toString())))))
-                                                .then(Commands.literal("prefix").then(Commands
-                                                        .argument("prefix", StringArgumentType.greedyString())
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zoneMain&&prefix&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "prefix"))))
+                                                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())+"&&"+DimensionArgument.getDimension(CommandContext, "dim").dimension().location().toString())
+                                                                                )
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("prefix")
+                                                        .then(Commands.argument("prefix", StringArgumentType.greedyString())
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&prefix&&"+StringArgumentType.getString(CommandContext, "prefix"))
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("clear")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zone&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "zone")
-                                                                                + "&&prefix&&clear"))))
-                                                .then(Commands.literal("suffix").then(Commands
-                                                        .argument("suffix", StringArgumentType.greedyString())
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType
-                                                                        .getString(CommandContext, "player")
-                                                                        + "&&zoneMain&&suffix&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "suffix"))))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&prefix&&clear")
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("suffix")
+                                                        .then(Commands.argument("suffix", StringArgumentType.greedyString())
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&suffix&&"+StringArgumentType.getString(CommandContext, "suffix"))
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("clear")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "user&&" + StringArgumentType
-                                                                                .getString(CommandContext, "player")
-                                                                                + "&&zone&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "zone")
-                                                                                + "&&suffix&&clear"))))
+                                                                .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&suffix&&clear")
+                                                                        )
+                                                                )
+                                                        )
                                                 .then(Commands.literal("denydefault")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "user&&" + StringArgumentType.getString(CommandContext,
-                                                                        "player") + "&&zoneMain&&denydefault")))))))
-                .then(Commands.literal("group")// p
-                        .executes(CommandContext -> execute(CommandContext, "group"))
-                        .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "group")))
-                        .then(Commands.argument("group", StringArgumentType.string()).suggests(SUGGEST_group)
+                                                        .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&denydefault")
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("group")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "group")
+                                        )
+                                )
+                        .then(Commands.argument("group", StringArgumentType.string())
+                                .suggests(SUGGEST_group)
                                 .then(Commands.literal("create")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&create")))
+                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&create")
+                                                )
+                                        )
                                 .then(Commands.literal("perms")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&perms")))
+                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&perms")
+                                                )
+                                        )
                                 .then(Commands.literal("users")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&users")))
-                                .then(Commands.literal("priority").then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&priority")))
+                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&users")
+                                                )
+                                        )
+                                .then(Commands.literal("priority")
+                                        .then(Commands.literal("help")
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&priority")
+                                                        )
+                                                )
                                         .then(Commands.argument("priority", IntegerArgumentType.integer())
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + Integer.toString(IntegerArgumentType
-                                                                        .getInteger(CommandContext, "priority"))))))
-                                .then(Commands.literal("parent").then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&parent")))
-                                        .then(Commands.literal("add").then(Commands
-                                                .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&parent&&add&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "group1")))))
-                                        .then(Commands.literal("remove").then(Commands
-                                                .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&parent&&remove&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "group1")))))
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+Integer.toString(IntegerArgumentType.getInteger(CommandContext, "priority")))
+                                                        )
+                                                )
+                                        )
+                                .then(Commands.literal("parent")
+                                        .then(Commands.literal("help")
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&parent")
+                                                        )
+                                                )
+                                        .then(Commands.literal("add")
+                                                .then(Commands.argument("group1", StringArgumentType.string())
+                                                        .suggests(SUGGEST_group)
+                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&parent&&add&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                                )
+                                                        )
+                                                )
+                                        .then(Commands.literal("remove")
+                                                .then(Commands.argument("group1", StringArgumentType.string())
+                                                        .suggests(SUGGEST_group)
+                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&parent&&remove&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                                )
+                                                        )
+                                                )
                                         .then(Commands.literal("clear")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&" + StringArgumentType.getString(CommandContext,
-                                                                "group") + "&&parent&&clear")))
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&parent")))
-                                .then(Commands.literal("include").then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&include")))
-                                        .then(Commands.literal("add").then(Commands
-                                                .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&include&&add&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "group1")))))
-                                        .then(Commands.literal("remove").then(Commands
-                                                .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&include&&remove&&"
-                                                                + StringArgumentType.getString(CommandContext,
-                                                                        "group1")))))
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&parent&&clear")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&parent")
+                                                )
+                                        )
+                                .then(Commands.literal("include")
+                                        .then(Commands.literal("help")
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&include")
+                                                        )
+                                                )
+                                        .then(Commands.literal("add")
+                                                .then(Commands.argument("group1", StringArgumentType.string())
+                                                        .suggests(SUGGEST_group)
+                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&include&&add&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                                )
+                                                        )
+                                                )
+                                        .then(Commands.literal("remove")
+                                                .then(Commands.argument("group1", StringArgumentType.string())
+                                                        .suggests(SUGGEST_group)
+                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&include&&remove&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                                )
+                                                        )
+                                                )
                                         .then(Commands.literal("clear")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&" + StringArgumentType.getString(CommandContext,
-                                                                "group") + "&&include&&clear")))
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&include")))
-                                .then(Commands.literal("zone").then(Commands
-                                        .argument("zone", StringArgumentType.string()).suggests(SUGGEST_zones)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")))
-                                        .then(Commands.literal("allow").then(Commands
-                                                .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                                .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                        + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&allow&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("deny").then(Commands
-                                                .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                                .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                        + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&deny&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("clear").then(Commands
-                                                .argument("perm", StringArgumentType.string())
-                                                .suggests(SUGGEST_GroupPerm)
-                                                .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                        + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&clear&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("value").then(Commands
-                                                .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                                .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                        + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&value&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("spawn").then(Commands.literal("help")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&" + StringArgumentType.getString(CommandContext,
-                                                                "group") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&spawn")))
-                                                .then(Commands.literal("bed").then(Commands.literal("enable")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&spawn&&bed&&enable")))
-                                                        .then(Commands.literal("disable").executes(
-                                                                CommandContext -> execute(CommandContext, "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zone&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "zone")
-                                                                        + "&&spawn&&bed&&disable"))))
-                                                .then(Commands.literal("here")
-                                                        .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&spawn&&here")))
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&include&&clear")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&include")
+                                                )
+                                        )
+                                .then(Commands.literal("zone")
+                                        .then(Commands.argument("zone", StringArgumentType.string())
+                                                .suggests(SUGGEST_zones)
+                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone"))
+                                                        )
+                                                .then(Commands.literal("allow")
+                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                                .suggests(SUGGEST_perm)
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&allow&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("deny")
+                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                                .suggests(SUGGEST_perm)
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&deny&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
                                                 .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&spawn&&clear")))
-                                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                                        .then(Commands.argument("dim", DimensionArgument.dimension())
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group")
-                                                                                + "&&zone&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "zone")
-                                                                                + "&&spawn&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getX())
-                                                                                + "&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getY())
-                                                                                + "&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getZ())
-                                                                                + "&&"
-                                                                                + DimensionArgument
-                                                                                        .getDimension(CommandContext,
-                                                                                                "dim")
-                                                                                        .dimension().location()
-                                                                                        .toString())))))
-                                        .then(Commands.literal("prefix").then(Commands
-                                                .argument("prefix", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                        + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&prefix&&"
-                                                        + StringArgumentType.getString(CommandContext, "prefix"))))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&prefix&&clear"))))
-                                        .then(Commands.literal("suffix").then(Commands
-                                                .argument("suffix", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                        + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&suffix&&"
-                                                        + StringArgumentType.getString(CommandContext, "suffix"))))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext, "group&&"
-                                                                + StringArgumentType.getString(CommandContext, "group")
-                                                                + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&suffix&&clear"))))
-                                        .then(Commands.literal("denydefault")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "group&&" + StringArgumentType.getString(CommandContext,
-                                                                "group") + "&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&denydefault"))))
-                                        .then(Commands.literal("MainServerZone").executes(CommandContext -> execute(
-                                                CommandContext,
-                                                "group&&" + StringArgumentType.getString(CommandContext, "group")
-                                                        + "&&zoneMain"))
-                                                .then(Commands.literal("allow").then(Commands
-                                                        .argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_perm)
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zoneMain&&allow&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "perm")))))
-                                                .then(Commands.literal("deny").then(Commands
-                                                        .argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_perm)
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zoneMain&&deny&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "perm")))))
-                                                .then(Commands.literal("clear").then(Commands
-                                                        .argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_GroupPerm).executes(
-                                                                CommandContext -> execute(CommandContext,
-                                                                        "group&&" + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                                + "&&zoneMain&&clear&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "perm")))))
-                                                .then(Commands.literal("value").then(Commands
-                                                        .argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_perm)
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zoneMain&&value&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "perm")))))
-                                                .then(Commands.literal("spawn").then(Commands.literal("help")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&" + StringArgumentType.getString(CommandContext,
-                                                                        "group") + "&&zoneMain&&spawn")))
-                                                        .then(Commands.literal("bed").then(Commands.literal("enable")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group")
-                                                                                + "&&zoneMain&&spawn&&bed&&enable")))
+                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                                .suggests(SUGGEST_GroupPerm)
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&clear&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("value")
+                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                                .suggests(SUGGEST_perm)
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&value&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("spawn")
+                                                        .then(Commands.literal("help")
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn")
+                                                                        )
+                                                                )
+                                                        .then(Commands.literal("bed")
+                                                                .then(Commands.literal("enable")
+                                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&bed&&enable")
+                                                                                )
+                                                                        )
                                                                 .then(Commands.literal("disable")
-                                                                        .executes(CommandContext -> execute(
-                                                                                CommandContext,
-                                                                                "group&&"
-                                                                                        + StringArgumentType.getString(
-                                                                                                CommandContext, "group")
-                                                                                        + "&&zoneMain&&spawn&&bed&&disable"))))
+                                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&bed&&disable")
+                                                                                )
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("here")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group")
-                                                                                + "&&zoneMain&&spawn&&here")))
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&here")
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("clear")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group")
-                                                                                + "&&zoneMain&&spawn&&clear")))
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&clear")
+                                                                        )
+                                                                )
                                                         .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                                                .then(Commands
-                                                                        .argument("dim", DimensionArgument.dimension())
-                                                                        .executes(CommandContext -> execute(
-                                                                                CommandContext,
-                                                                                "group&&"
-                                                                                        + StringArgumentType.getString(
-                                                                                                CommandContext, "group")
-                                                                                        + "&&zoneMain&&spawn&&"
-                                                                                        + Integer.toString(
-                                                                                                BlockPosArgument
-                                                                                                        .getLoadedBlockPos(
-                                                                                                                CommandContext,
-                                                                                                                "pos")
-                                                                                                        .getX())
-                                                                                        + "&&"
-                                                                                        + Integer.toString(
-                                                                                                BlockPosArgument
-                                                                                                        .getLoadedBlockPos(
-                                                                                                                CommandContext,
-                                                                                                                "pos")
-                                                                                                        .getY())
-                                                                                        + "&&"
-                                                                                        + Integer.toString(
-                                                                                                BlockPosArgument
-                                                                                                        .getLoadedBlockPos(
-                                                                                                                CommandContext,
-                                                                                                                "pos")
-                                                                                                        .getZ())
-                                                                                        + "&&"
-                                                                                        + DimensionArgument
-                                                                                                .getDimension(
-                                                                                                        CommandContext,
-                                                                                                        "dim")
-                                                                                                .dimension().location()
-                                                                                                .toString())))))
-                                                .then(Commands.literal("prefix").then(Commands
-                                                        .argument("prefix", StringArgumentType.greedyString())
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zoneMain&&prefix&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "prefix"))))
+                                                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&spawn&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())+"&&"+DimensionArgument.getDimension(CommandContext, "dim").dimension().location().toString())
+                                                                                )
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("prefix")
+                                                        .then(Commands.argument("prefix", StringArgumentType.greedyString())
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&prefix&&"+StringArgumentType.getString(CommandContext, "prefix"))
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("clear")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group")
-                                                                                + "&&zoneMain&&prefix&&clear"))))
-                                                .then(Commands.literal("suffix").then(Commands
-                                                        .argument("suffix", StringArgumentType.greedyString())
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType
-                                                                                .getString(CommandContext, "group")
-                                                                        + "&&zoneMain&&suffix&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "suffix"))))
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&prefix&&clear")
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("suffix")
+                                                        .then(Commands.argument("suffix", StringArgumentType.greedyString())
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&suffix&&"+StringArgumentType.getString(CommandContext, "suffix"))
+                                                                        )
+                                                                )
                                                         .then(Commands.literal("clear")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "group&&"
-                                                                                + StringArgumentType.getString(
-                                                                                        CommandContext, "group")
-                                                                                + "&&zoneMain&&suffix&&clear"))))
+                                                                .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&suffix&&clear")
+                                                                        )
+                                                                )
+                                                        )
                                                 .then(Commands.literal("denydefault")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "group&&"
-                                                                        + StringArgumentType.getString(CommandContext,
-                                                                                "group")
-                                                                        + "&&zoneMain&&denydefault")))))))
-                .then(Commands.literal("global")// p
+                                                        .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&denydefault")
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("global")
                         .then(Commands.literal("perms")
-                                .executes(CommandContext -> execute(CommandContext, "global&&perms")))
+                                .executes(CommandContext -> execute(CommandContext, "global&&perms")
+                                        )
+                                )
                         .then(Commands.literal("users")
-                                .executes(CommandContext -> execute(CommandContext, "global&&users")))
+                                .executes(CommandContext -> execute(CommandContext, "global&&users")
+                                        )
+                                )
                         .then(Commands.literal("priority")
                                 .then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext, "global&&priority")))
+                                        .executes(CommandContext -> execute(CommandContext, "global&&priority")
+                                                )
+                                        )
                                 .then(Commands.argument("priority", IntegerArgumentType.integer())
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&" + Integer.toString(
-                                                        IntegerArgumentType.getInteger(CommandContext, "priority"))))))
+                                        .executes(CommandContext -> execute(CommandContext, "global&&"+Integer.toString(IntegerArgumentType.getInteger(CommandContext, "priority")))
+                                                )
+                                        )
+                                )
                         .then(Commands.literal("parent")
                                 .then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext, "global&&parent")))
-                                .then(Commands.literal("add").then(Commands
-                                        .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&parent&&add&&"
-                                                        + StringArgumentType.getString(CommandContext, "group1")))))
-                                .then(Commands.literal("remove").then(Commands
-                                        .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&parent&&remove&&"
-                                                        + StringArgumentType.getString(CommandContext, "group1")))))
+                                        .executes(CommandContext -> execute(CommandContext, "global&&parent")
+                                                )
+                                        )
+                                .then(Commands.literal("add")
+                                        .then(Commands.argument("group1", StringArgumentType.string())
+                                                .suggests(SUGGEST_group)
+                                                .executes(CommandContext -> execute(CommandContext, "global&&parent&&add&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                        )
+                                                )
+                                        )
+                                .then(Commands.literal("remove")
+                                        .then(Commands.argument("group1", StringArgumentType.string())
+                                                .suggests(SUGGEST_group)
+                                                .executes(CommandContext -> execute(CommandContext, "global&&parent&&remove&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                        )
+                                                )
+                                        )
                                 .then(Commands.literal("clear")
-                                        .executes(CommandContext -> execute(CommandContext, "global&&parent&&clear")))
-                                .executes(CommandContext -> execute(CommandContext, "global&&parent")))
+                                        .executes(CommandContext -> execute(CommandContext, "global&&parent&&clear")
+                                                )
+                                        )
+                                .executes(CommandContext -> execute(CommandContext, "global&&parent")
+                                        )
+                                )
                         .then(Commands.literal("include")
                                 .then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext, "global&&include")))
-                                .then(Commands.literal("add").then(Commands
-                                        .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&include&&add&&"
-                                                        + StringArgumentType.getString(CommandContext, "group1")))))
-                                .then(Commands.literal("remove").then(Commands
-                                        .argument("group1", StringArgumentType.string()).suggests(SUGGEST_group)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&include&&remove&&"
-                                                        + StringArgumentType.getString(CommandContext, "group1")))))
+                                        .executes(CommandContext -> execute(CommandContext, "global&&include")
+                                                )
+                                        )
+                                .then(Commands.literal("add")
+                                        .then(Commands.argument("group1", StringArgumentType.string())
+                                                .suggests(SUGGEST_group)
+                                                .executes(CommandContext -> execute(CommandContext, "global&&include&&add&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                        )
+                                                )
+                                        )
+                                .then(Commands.literal("remove")
+                                        .then(Commands.argument("group1", StringArgumentType.string())
+                                                .suggests(SUGGEST_group)
+                                                .executes(CommandContext -> execute(CommandContext, "global&&include&&remove&&"+StringArgumentType.getString(CommandContext, "group1"))
+                                                        )
+                                                )
+                                        )
                                 .then(Commands.literal("clear")
-                                        .executes(CommandContext -> execute(CommandContext, "global&&include&&clear")))
-                                .executes(CommandContext -> execute(CommandContext, "global&&include")))
-                        .then(Commands.literal("zone").then(Commands.argument("zone", StringArgumentType.string())
-                                .suggests(SUGGEST_zones)
-                                .then(Commands.literal("allow").then(Commands
-                                        .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&allow&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                .then(Commands.literal("deny").then(Commands
-                                        .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&deny&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                .then(Commands.literal("clear").then(Commands
-                                        .argument("perm", StringArgumentType.string()).suggests(SUGGEST_GlobalPerm)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&clear&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                .then(Commands.literal("value").then(Commands
-                                        .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&value&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                .then(Commands.literal("spawn").then(Commands.literal("help")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&spawn")))
-                                        .then(Commands.literal("bed").then(Commands.literal("enable")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "global&&zone&&"
-                                                                + StringArgumentType.getString(CommandContext, "zone")
-                                                                + "&&spawn&&bed&&enable")))
-                                                .then(Commands.literal("disable")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zone&&" + StringArgumentType
-                                                                        .getString(CommandContext, "zone")
-                                                                        + "&&spawn&&bed&&disable"))))
-                                        .then(Commands.literal("here").executes(CommandContext -> execute(
-                                                CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&spawn&&here")))
-                                        .then(Commands.literal("clear").executes(CommandContext -> execute(
-                                                CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&spawn&&clear")))
-                                        .then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands
-                                                .argument("dim", DimensionArgument.dimension())
-                                                .executes(CommandContext -> execute(CommandContext, "global&&zone&&"
-                                                        + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&spawn&&"
-                                                        + Integer.toString(BlockPosArgument
-                                                                .getLoadedBlockPos(CommandContext, "pos").getX())
-                                                        + "&&"
-                                                        + Integer.toString(BlockPosArgument
-                                                                .getLoadedBlockPos(CommandContext, "pos").getY())
-                                                        + "&&"
-                                                        + Integer.toString(BlockPosArgument
-                                                                .getLoadedBlockPos(CommandContext, "pos").getZ())
-                                                        + "&&"
-                                                        + DimensionArgument.getDimension(CommandContext, "dim")
-                                                                .dimension().location().toString())))))
-                                .then(Commands.literal("prefix").then(Commands
-                                        .argument("prefix", StringArgumentType.greedyString())
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&prefix&&"
-                                                        + StringArgumentType.getString(CommandContext, "prefix"))))
-                                        .then(Commands.literal("clear").executes(CommandContext -> execute(
-                                                CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&prefix&&clear"))))
-                                .then(Commands.literal("suffix").then(Commands
-                                        .argument("suffix", StringArgumentType.greedyString())
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&suffix&&"
-                                                        + StringArgumentType.getString(CommandContext, "suffix"))))
-                                        .then(Commands.literal("clear").executes(CommandContext -> execute(
-                                                CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&suffix&&clear"))))
-                                .then(Commands.literal("denydefault")
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zone&&" + StringArgumentType.getString(CommandContext, "zone")
-                                                        + "&&denydefault"))))
-                                .then(Commands.literal("MainServerZone").then(Commands.literal("allow").then(Commands
-                                        .argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                        .executes(CommandContext -> execute(CommandContext,
-                                                "global&&zoneMain&&allow&&"
-                                                        + StringArgumentType.getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("deny")
-                                                .then(Commands.argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_perm)
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&deny&&" + StringArgumentType
-                                                                        .getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("clear")
-                                                .then(Commands.argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_GlobalPerm)
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&clear&&" + StringArgumentType
-                                                                        .getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("value")
-                                                .then(Commands.argument("perm", StringArgumentType.string())
-                                                        .suggests(SUGGEST_perm)
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&value&&" + StringArgumentType
-                                                                        .getString(CommandContext, "perm")))))
-                                        .then(Commands.literal("spawn").then(Commands.literal("help").executes(
-                                                CommandContext -> execute(CommandContext, "global&&zoneMain&&spawn")))
-                                                .then(Commands.literal("bed")
-                                                        .then(Commands.literal("enable")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "global&&zoneMain&&spawn&&bed&&enable")))
-                                                        .then(Commands.literal("disable")
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "global&&zoneMain&&spawn&&bed&&disable"))))
-                                                .then(Commands.literal("here")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&spawn&&here")))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&spawn&&clear")))
-                                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                                                        .then(Commands.argument("dim", DimensionArgument.dimension())
-                                                                .executes(CommandContext -> execute(CommandContext,
-                                                                        "global&&zoneMain&&spawn&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getX())
-                                                                                + "&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getY())
-                                                                                + "&&"
-                                                                                + Integer.toString(BlockPosArgument
-                                                                                        .getLoadedBlockPos(
-                                                                                                CommandContext, "pos")
-                                                                                        .getZ())
-                                                                                + "&&"
-                                                                                + DimensionArgument
-                                                                                        .getDimension(CommandContext,
-                                                                                                "dim")
-                                                                                        .dimension().location()
-                                                                                        .toString())))))
-                                        .then(Commands.literal("prefix")
-                                                .then(Commands.argument("prefix", StringArgumentType.greedyString())
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&prefix&&" + StringArgumentType
-                                                                        .getString(CommandContext, "prefix"))))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&prefix&&clear"))))
-                                        .then(Commands.literal("suffix")
-                                                .then(Commands.argument("suffix", StringArgumentType.greedyString())
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&suffix&&" + StringArgumentType
-                                                                        .getString(CommandContext, "suffix"))))
-                                                .then(Commands.literal("clear")
-                                                        .executes(CommandContext -> execute(CommandContext,
-                                                                "global&&zoneMain&&suffix&&clear"))))
-                                        .then(Commands.literal("denydefault")
-                                                .executes(CommandContext -> execute(CommandContext,
-                                                        "global&&zoneMain&&denydefault"))))))
-                .then(Commands.literal("list")// p
-                        .executes(CommandContext -> execute(CommandContext, "list"))
-                        .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "list")))
-                        .then(Commands.argument("type", StringArgumentType.string()).suggests(SUGGEST_ListArgs)
-                                .executes(CommandContext -> execute(CommandContext,
-                                        "list&&" + StringArgumentType.getString(CommandContext, "type")))))
-                .then(Commands.literal("test")// p
-                        .then(Commands.argument("perm", StringArgumentType.string()).suggests(SUGGEST_perm)
-                                .executes(CommandContext -> execute(CommandContext,
-                                        "test&&" + StringArgumentType.getString(CommandContext, "perm")))))
-                .then(Commands.literal("reload")// p
-                        .executes(CommandContext -> execute(CommandContext, "reload")))
-                .then(Commands.literal("save")// p
-                        .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "save")))
+                                        .executes(CommandContext -> execute(CommandContext, "global&&include&&clear")
+                                                )
+                                        )
+                                .executes(CommandContext -> execute(CommandContext, "global&&include")
+                                        )
+                                )
+                        .then(Commands.literal("allow")
+                                .then(Commands.argument("perm", StringArgumentType.string())
+                                        .suggests(SUGGEST_perm)
+                                        .executes(CommandContext -> execute(CommandContext, "global&&allow&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("deny")
+                                .then(Commands.argument("perm", StringArgumentType.string())
+                                        .suggests(SUGGEST_perm)
+                                        .executes(CommandContext -> execute(CommandContext, "global&&deny&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("clear")
+                                .then(Commands.argument("perm", StringArgumentType.string())
+                                        .suggests(SUGGEST_GlobalPerm)
+                                        .executes(CommandContext -> execute(CommandContext, "global&&clear&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("value")
+                                .then(Commands.argument("perm", StringArgumentType.string())
+                                        .suggests(SUGGEST_perm)
+                                        .executes(CommandContext -> execute(CommandContext, "global&&value&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("spawn")
+                                .then(Commands.literal("help")
+                                        .executes(CommandContext -> execute(CommandContext, "global&&spawn")
+                                                )
+                                        )
+                                .then(Commands.literal("bed")
+                                        .then(Commands.literal("enable")
+                                                .executes(CommandContext -> execute(CommandContext, "global&&spawn&&bed&&enable")
+                                                        )
+                                                )
+                                        .then(Commands.literal("disable")
+                                                .executes(CommandContext -> execute(CommandContext, "global&&spawn&&bed&&disable")
+                                                        )
+                                                )
+                                        )
+                                .then(Commands.literal("here")
+                                        .executes(CommandContext -> execute(CommandContext, "global&&spawn&&here")
+                                                )
+                                        )
+                                .then(Commands.literal("clear")
+                                        .executes(CommandContext -> execute(CommandContext, "global&&spawn&&clear")
+                                                )
+                                        )
+                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("dim", DimensionArgument.dimension())
+                                                .executes(CommandContext -> execute(CommandContext, "global&&spawn&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())+"&&"+DimensionArgument.getDimension(CommandContext, "dim").dimension().location().toString())
+                                                        )
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("prefix")
+                                .then(Commands.argument("prefix", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "global&&prefix&&"+StringArgumentType.getString(CommandContext, "prefix"))
+                                                )
+                                        )
+                                .then(Commands.literal("clear")
+                                        .executes(CommandContext -> execute(CommandContext, "global&&prefix&&clear")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("suffix")
+                                .then(Commands.argument("suffix", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "global&&suffix&&"+StringArgumentType.getString(CommandContext, "suffix"))
+                                                )
+                                        )
+                                .then(Commands.literal("clear")
+                                        .executes(CommandContext -> execute(CommandContext, "global&&suffix&&clear")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("denydefault")
+                                .executes(CommandContext -> execute(CommandContext, "global&&denydefault")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("list")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "list")
+                                        )
+                                )
+                        .then(Commands.argument("type", StringArgumentType.string())
+                                .suggests(SUGGEST_ListArgs)
+                                .executes(CommandContext -> execute(CommandContext, "list&&"+StringArgumentType.getString(CommandContext, "type"))
+                                        )
+                                )
+                        )
+                .then(Commands.literal("test")
+                        .then(Commands.argument("perm", StringArgumentType.string())
+                                .suggests(SUGGEST_perm)
+                                .executes(CommandContext -> execute(CommandContext, "test&&"+StringArgumentType.getString(CommandContext, "perm"))
+                                        )
+                                )
+                        )
+                .then(Commands.literal("reload")
+                        .executes(CommandContext -> execute(CommandContext, "reload")
+                                )
+                        )
+                .then(Commands.literal("save")
+                        .then(Commands.literal("saveNow")
+                                .executes(CommandContext -> execute(CommandContext, "save")
+                                        )
+                                )
                         .then(Commands.literal("disable")
-                                .executes(CommandContext -> execute(CommandContext, "save&&disable")))
+                                .executes(CommandContext -> execute(CommandContext, "save&&disable")
+                                        )
+                                )
                         .then(Commands.literal("enable")
-                                .executes(CommandContext -> execute(CommandContext, "save&&enable")))
+                                .executes(CommandContext -> execute(CommandContext, "save&&enable")
+                                        )
+                                )
                         .then(Commands.literal("flatfile")
-                                .executes(CommandContext -> execute(CommandContext, "save&&flatfile")))
+                                .executes(CommandContext -> execute(CommandContext, "save&&flatfile")
+                                        )
+                                )
                         .then(Commands.literal("singlejson")
-                                .executes(CommandContext -> execute(CommandContext, "save&&singlejson")))
-                        .then(Commands.literal("json").executes(CommandContext -> execute(CommandContext, "savejson"))))
-                .then(Commands.literal("debug")// p
-                        .executes(CommandContext -> execute(CommandContext, "debug")));
+                                .executes(CommandContext -> execute(CommandContext, "save&&singlejson")
+                                        )
+                                )
+                        .then(Commands.literal("json")
+                                .executes(CommandContext -> execute(CommandContext, "savejson")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("debug")
+                        .executes(CommandContext -> execute(CommandContext, "debug")
+                                )
+                        );
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_ListArgs = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>();
         for (String arg : PermissionCommandParser.parseListArgs)
+        {
+            listArgs.add(arg);
+        }
+        return ISuggestionProvider.suggest(listArgs, builder);
+    };
+    public static final SuggestionProvider<CommandSource> SUGGEST_players = (ctx, builder) -> {
+        List<String> listArgs = new ArrayList<>();
+        for (String arg : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerNamesArray())
         {
             listArgs.add(arg);
         }
@@ -1040,10 +607,17 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         {
             listzones.add(z.getName());
         }
-        for (String n : APIRegistry.namedWorldHandler.getShortWorldNames())
+        for (int index = 0; index < listzones.size(); index++)
         {
-            listzones.add(n);
+            if(listzones.get(index).contains("_ROOT_")) {
+                listzones.remove(index);
+            }
+            else if (listzones.get(index).contains(":"))
+            {
+                listzones.set(index, listzones.get(index).replace(":", "-"));
+            }
         }
+        listzones.add("MainServerZone");
         return ISuggestionProvider.suggest(listzones, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_group = (ctx, builder) -> {
@@ -1084,6 +658,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         {
             listclear.add(z);
         }
+        for (int index = 0; index < listclear.size(); index++)
+        {
+            if (listclear.get(index).contains("*"))
+            {
+                listclear.set(index, listclear.get(index).replace("*", "+"));
+            }
+        }
         return ISuggestionProvider.suggest(listclear, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_GlobalPerm = (ctx, builder) -> {
@@ -1100,6 +681,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         for (String z : zone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet())
         {
             listclear.add(z);
+        }
+        for (int index = 0; index < listclear.size(); index++)
+        {
+            if (listclear.get(index).contains("*"))
+            {
+                listclear.set(index, listclear.get(index).replace("*", "+"));
+            }
         }
         return ISuggestionProvider.suggest(listclear, builder);
     };
@@ -1122,8 +710,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                 listclear.add(z);
             }
         }
-        catch (FECommandParsingException e)
+        catch (FECommandParsingException e){}
+        for (int index = 0; index < listclear.size(); index++)
         {
+            if (listclear.get(index).contains("*"))
+            {
+                listclear.set(index, listclear.get(index).replace("*", "+"));
+            }
         }
         return ISuggestionProvider.suggest(listclear, builder);
     };

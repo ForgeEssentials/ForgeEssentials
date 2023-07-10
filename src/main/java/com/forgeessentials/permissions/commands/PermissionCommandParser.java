@@ -375,18 +375,19 @@ public class PermissionCommandParser extends CommandUtils
             zone = parseZone(ctx, params);
             if (zone == null)
                 return;
+            params.remove(0);
             parseUserInner(ctx, params, ident, zone);
             return;
         }
 
         // Set default zone
-        if (cmd.equals("zonemain") || zone == null)
+        if (zone == null)
         {
             zone = APIRegistry.perms.getServerZone();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Using Main Zone");
         }
         // Catch case where zone is defined
-        if (cmd.equals("zone") || cmd.equals("zonemain"))
+        if (cmd.equals("zone"))
         {
             cmd = params.remove(0).toLowerCase();
         }
@@ -399,6 +400,13 @@ public class PermissionCommandParser extends CommandUtils
             break;
         case "perms":
             listUserPermissions(ctx.getSource(), ident, true);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    ident.getUsernameOrUuid() + "'s permissions in zone " + zone.getName() + ":");
+            for (Entry<String, String> perm : zone.getPlayerPermissions(ident).entrySet())
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        "  " + perm.getKey() + " = " + (perm.getValue() == null ? "null" : perm.getValue()));
+            }
             break;
         case "prefix":
             parseUserPrefixSuffix(ctx, params, ident, zone, false);
@@ -430,7 +438,7 @@ public class PermissionCommandParser extends CommandUtils
             denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX);
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX+""+ cmd+""+ params.toString());
             return;
         }
     }
@@ -773,32 +781,6 @@ public class PermissionCommandParser extends CommandUtils
     public static void parseGroupInner(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone)
             throws CommandException
     {
-        // Display help or player info
-        if (params.isEmpty())
-        {
-            if (zone == null)
-            {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group " + group + " permissions:");
-                listGroupPermissions(ctx.getSource(), group);
-                return;
-            }
-            if (zone.getGroupPermissions(group) == null)
-            {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        "Group " + group + " has no permissions in zone " + zone.getName() + ".");
-            }
-            else
-            {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        "Group " + group + " permissions in zone " + zone.getName() + ":");
-                for (Entry<String, String> perm : zone.getGroupPermissions(group).entrySet())
-                {
-                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + perm.getKey() + " = " + perm.getValue());
-                }
-            }
-            return;
-        }
-
         String cmd = params.remove(0).toLowerCase();
 
         if (cmd.equals("zone"))
@@ -816,26 +798,39 @@ public class PermissionCommandParser extends CommandUtils
             zone = parseZone(ctx, params);
             if (zone == null)
                 return;
+            params.remove(0);
             parseGroupInner(ctx, params, group, zone);
             return;
         }
 
         // Set default zone
-        if (cmd.equals("zonemain") || zone == null)
+        if (zone == null)
         {
             zone = APIRegistry.perms.getServerZone();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Using Main Zone");
         }
         // Catch case where zone is defined
-        if (cmd.equals("zone") || cmd.equals("zonemain"))
+        if (cmd.equals("zone"))
         {
             cmd = params.remove(0).toLowerCase();
         }
         switch (cmd)
         {
         case "perms":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group " + group + " permissions:");
-            listGroupPermissions(ctx.getSource(), group);
+            if (zone.getGroupPermissions(group) == null)
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        "Group " + group + " has no permissions in zone " + zone.getName() + ".");
+            }
+            else
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        "Group " + group + " permissions in zone " + zone.getName() + ":");
+                for (Entry<String, String> perm : zone.getGroupPermissions(group).entrySet())
+                {
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + perm.getKey() + " = " + perm.getValue());
+                }
+            }
             break;
         case "users":
             listGroupUsers(ctx.getSource(), group);
@@ -879,7 +874,7 @@ public class PermissionCommandParser extends CommandUtils
             denyDefault(zone.getGroupPermissions(group));
             break;
         default:
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX);
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX+""+ cmd+""+ params.toString());
             return;
         }
     }
@@ -1177,7 +1172,10 @@ public class PermissionCommandParser extends CommandUtils
 
     public static Zone parseZone(CommandContext<CommandSource> ctx, List<String> params)
     {
-        String zoneId = params.remove(0);
+        String zoneId = params.get(0).replace("-", ":");
+        if(zoneId.equals("MainServerZone")) {
+            return APIRegistry.perms.getServerZone();
+        }
         try
         {
             int intId = Integer.parseInt(zoneId);
@@ -1226,6 +1224,10 @@ public class PermissionCommandParser extends CommandUtils
 
     public static Zone parseZoneSafe(CommandSource ctx, String zoneId)
     {
+        zoneId = zoneId.replace("-", ":");
+        if(zoneId.equals("MainServerZone")) {
+            return APIRegistry.perms.getServerZone();
+        }
         try
         {
             int intId = Integer.parseInt(zoneId);
