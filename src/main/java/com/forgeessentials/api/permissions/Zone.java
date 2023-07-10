@@ -643,7 +643,7 @@ public abstract class Zone
         return perms;
     }
 
-    public String fixPerms(String perm)
+    public static String fixPerms(String perm)
     {
         if (perm.contains("+"))
         {

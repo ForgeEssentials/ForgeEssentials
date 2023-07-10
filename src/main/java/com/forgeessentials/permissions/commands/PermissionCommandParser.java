@@ -264,7 +264,7 @@ public class PermissionCommandParser extends CommandUtils
         if (CommandUtils.GetSource(ctx.getSource()) instanceof DoAsCommandSender)
             ident = ((DoAsCommandSender) CommandUtils.GetSource(ctx.getSource())).getUserIdent();
 
-        String permissionNode = params.remove(0);
+        String permissionNode = Zone.fixPerms(params.remove(0));
         String result = APIRegistry.perms.getUserPermissionProperty(ident, permissionNode);
         if (result == null)
         {
@@ -502,7 +502,7 @@ public class PermissionCommandParser extends CommandUtils
         // Apply permissions
         // while (!arguments.args.isEmpty())
         {
-            String permissionNode = params.remove(0);
+            String permissionNode = Zone.fixPerms(params.remove(0));
             String msg = null, value = null;
             if (type == PermissionAction.VALUE)
             {
@@ -934,7 +934,7 @@ public class PermissionCommandParser extends CommandUtils
         // Apply permissions
         // while (!arguments.args.isEmpty())
         {
-            String permissionNode = params.remove(0);
+            String permissionNode = Zone.fixPerms(params.remove(0));
             String msg = null, value = null;
             if (type == PermissionAction.VALUE)
             {
