@@ -47,8 +47,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -107,8 +105,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     private boolean disableDebug;
 
-    public Set<CommandSource> permissionDebugUsers = Collections
-            .newSetFromMap(new WeakHashMap<CommandSource, Boolean>());
+    public Set<PlayerEntity> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<PlayerEntity, Boolean>());
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
@@ -471,10 +468,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 msg2 = new TranslationTextComponent("  zone %s user %s", msgZone, msgUser);
             }
         }
-        for (CommandSource sender : permissionDebugUsers)
+        for (PlayerEntity sender : permissionDebugUsers)
         {
-            if (point != null && sender.getEntity() instanceof Entity
-                    && new WorldPoint((Entity) sender.getEntity()).distance(point) > 32)
+            if (point != null && new WorldPoint(sender).distance(point) > 32)
                 continue;
             ChatOutputHandler.sendMessage(sender, msg1);
             ChatOutputHandler.sendMessage(sender, msg2);
@@ -571,7 +567,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void playerLoggedOut(PlayerLoggedOutEvent e)
     {
-        permissionDebugUsers.remove(e.getPlayer().createCommandSourceStack());
+        permissionDebugUsers.remove(e.getPlayer());
     }
 
     @SubscribeEvent

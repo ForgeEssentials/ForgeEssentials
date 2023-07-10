@@ -128,14 +128,19 @@ public class PermissionCommandParser extends CommandUtils
                 ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
                 return;
             }
-            if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(ctx.getSource()))
+            if (getServerPlayer(ctx.getSource()) == null)
             {
-                ModulePermissions.permissionHelper.permissionDebugUsers.remove(ctx.getSource());
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                return;
+            }
+            if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(getServerPlayer(ctx.getSource())))
+            {
+                ModulePermissions.permissionHelper.permissionDebugUsers.remove(getServerPlayer(ctx.getSource()));
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permission debug mode off");
             }
             else
             {
-                ModulePermissions.permissionHelper.permissionDebugUsers.add(ctx.getSource());
+                ModulePermissions.permissionHelper.permissionDebugUsers.add(getServerPlayer(ctx.getSource()));
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permission debug mode on");
             }
             break;
