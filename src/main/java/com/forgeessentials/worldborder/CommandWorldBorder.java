@@ -106,8 +106,6 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                                                 .executes(CommandContext -> execute(CommandContext, "effect-add-list")))
                                         .then(Commands.literal("add").then(Commands
                                                 .argument("TriggerDistance", IntegerArgumentType.integer())
-                                                .then(Commands.literal("block").executes(
-                                                        CommandContext -> execute(CommandContext, "effect-add-block")))
                                                 .then(Commands.literal("command").then(Commands
                                                         .argument("interval", IntegerArgumentType.integer())
                                                         .then(Commands
@@ -332,7 +330,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                         "No effects are currently applied on this worldborder!");
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    "/wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
+                    "/wb effect <add [command|damage|kick|knockback|message|potion|smite] <trigger> | remove <index>");
             return;
         }
         if (params.equals("effect-remove"))
@@ -364,7 +362,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No effect provided! How about trying one of these:");
             ChatOutputHandler.chatError(ctx.getSource(),
-                    "block, command, damage, kick, knockback, message, potion, smite");
+                    "command, damage, kick, knockback, message, potion, smite");
             return;
         }
 
@@ -381,7 +379,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(ctx.getSource(),
                     String.format("Could not find an effect with name %s, how about trying one of these:", type));
             ChatOutputHandler.chatError(ctx.getSource(),
-                    "block, command, damage, kick, knockback, message, potion, smite");
+                    "command, damage, kick, knockback, message, potion, smite");
             return;
         }
 
