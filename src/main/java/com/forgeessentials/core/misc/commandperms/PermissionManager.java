@@ -149,7 +149,7 @@ public class PermissionManager
             {
                 parentLevel = DefaultPermissionLevel.OP;
             }
-            result.put(prefix.replace(' ', '.'), parentLevel);
+            result.put(prefix.replace(' ', '.').replace("<", "").replace(">", ""), parentLevel);
         }
 
         if (node.getRedirect() != null)
