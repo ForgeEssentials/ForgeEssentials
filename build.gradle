@@ -145,7 +145,7 @@ curseforge {
 // Set up forge options
 minecraft {
 	mappings channel: 'official', version: '1.16.5'
-    accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
+    //accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
     runs {
 	    client {
 	            workingDirectory project.file('rundir')
@@ -196,7 +196,7 @@ ext.serverManifest = manifest {
 	attributes (
 		//"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		"MixinConfigs": "mixins.forgeessentials.json",
-		"FMLAT": "forgeessentials_at.cfg",
+		//"FMLAT": "forgeessentials_at.cfg",
 	)
 }
 
