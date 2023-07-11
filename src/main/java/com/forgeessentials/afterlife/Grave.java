@@ -78,9 +78,14 @@ public class Grave implements Loadable
                 .tryParseDouble(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_XP));
         if (xpModifier != null)
         {
+            //System.out.println("TodalXP is: "+ player.totalExperience);
+            //System.out.println("LevelXP is: "+ player.experienceLevel);
+            //System.out.println("ProgrXP is: "+ player.experienceProgress);
+            //which value should i use for experience?
             xp = (int) (player.experienceLevel * xpModifier);
             player.experienceLevel = 0;
             player.totalExperience = 0;
+            player.experienceProgress = 0;
         }
 
         // Create no grave if no experience / items available

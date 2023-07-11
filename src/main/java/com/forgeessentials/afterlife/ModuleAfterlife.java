@@ -24,6 +24,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -136,6 +137,18 @@ public class ModuleAfterlife extends ServerEventHandler
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void exDropEvent(LivingExperienceDropEvent event)
+    {
+        if (event.getEntity() instanceof PlayerEntity)
+        {
+            //Test for the event where xp is set to zero because of keep inventory or spectator
+            if(event.getOriginalExperience()!=0) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
@@ -154,7 +167,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (event.getEntity().level.isClientSide)
             return;
 
-        WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
+        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
