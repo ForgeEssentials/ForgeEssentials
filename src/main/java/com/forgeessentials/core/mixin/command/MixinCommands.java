@@ -48,10 +48,11 @@ public class MixinCommands
 
             String newNode = nodeString.isEmpty() ? commandnode.getUsageText() : nodeString + CommandDispatcher.ARGUMENT_SEPARATOR + commandnode.getUsageText();
             newNode = newNode.replace("<", "").replace(">", "");
-            // System.out.println("Checking perm: "+newNode.replace(' ', '.'));
 
             if (checkPerms(newNode.replace(' ', '.'), p_197052_3_))
             {
+                //System.out.println("Perm true: command." +newNode.replace(' ', '.'));
+                
                 ArgumentBuilder<ISuggestionProvider, ?> argumentbuilder = (ArgumentBuilder) commandnode.createBuilder();
                 argumentbuilder.requires((p_197060_0_) -> {
                     return true;
@@ -84,6 +85,9 @@ public class MixinCommands
                 {
                     fillUsableCommandsNodes(commandnode, commandnode1, p_197052_3_, p_197052_4_, newNode, new Boolean(dontChangeNode));
                 }
+            }
+            else {
+                //System.out.println("Perm false: command." +newNode.replace(' ', '.'));
             }
         }
     }
