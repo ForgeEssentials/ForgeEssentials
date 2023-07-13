@@ -1,7 +1,7 @@
 package com.forgeessentials.serverNetwork;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.serverNetwork.server.packets.DataPacket;
+import com.forgeessentials.serverNetwork.packets.client.ClientPasswordPacket;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -56,10 +56,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopclient")){
-            if(ModuleNetworking.instance.stopClient(true)!=0){
-                ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop client or client is already stopped!");
-                return Command.SINGLE_SUCCESS;
-            }
+
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped client!");
             return Command.SINGLE_SUCCESS;
         }
@@ -72,19 +69,15 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopserver")){
-            if(ModuleNetworking.instance.stopServer(true)!=0){
-                ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
-                return Command.SINGLE_SUCCESS;
-            }
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped server!");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("clientmessage")){
-            ModuleNetworking.instance.getClient().sendPacket(new DataPacket("Client Message"));
+            ModuleNetworking.instance.getClient().sendPacket(new ClientPasswordPacket("Client Message"));
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("servermessage")){
-            ModuleNetworking.instance.getServer().sendPacketToAllSessions(new DataPacket("Client Message"));
+            ModuleNetworking.instance.getServer().sendPacket(new ClientPasswordPacket("Client Message"));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

@@ -9,8 +9,8 @@ import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.serverNetwork.server.FeNetworkClient;
-import com.forgeessentials.serverNetwork.server.FeNetworkServer;
+import com.forgeessentials.serverNetwork.client.FENetworkClient;
+import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -32,7 +32,8 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     private static final String CONFIG_CAT = "Networking";
 
-    public static final int channelVersion = 123456;
+    private static final int channelVersion = 123456;
+    private static final String channelName = "FENetwork";
 
     public static final char[] PASSKEY_CHARS;
 
@@ -69,9 +70,9 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     protected boolean localhostOnly;
 
-    protected FeNetworkServer server;
+    protected FENetworkServer server;
 
-    protected FeNetworkClient client;
+    protected FENetworkClient client;
 
     protected boolean mcServerStarted;
 
@@ -148,7 +149,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * @return the server
      */
-    public FeNetworkServer getServer()
+    public FENetworkServer getServer()
     {
         return server;
     }
@@ -163,7 +164,7 @@ public class ModuleNetworking extends ConfigLoaderBase
         try
         {
             String bindAddress = localhostOnly ? "localhost" : "0.0.0.0";
-            server = new FeNetworkServer(bindAddress, port);
+            server = new FENetworkServer(bindAddress, port, channelName, channelVersion);
             return server.startServer();
         }
         catch (Exception e1)
@@ -176,16 +177,12 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public int stopServer(boolean sendClosePacket)
+    public void stopServer(boolean sendClosePacket)
     {
         if (server != null)
         {
-            int flag;
-            flag = server.stopServer(sendClosePacket);
-            server = null;
-            return flag;
+            server.stopServer();
         }
-        return 1;
     }
 
     /* ------------------------------------------------------------ */
@@ -193,7 +190,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * @return the client
      */
-    public FeNetworkClient getClient()
+    public FENetworkClient getClient()
     {
         return client;
     }
@@ -207,12 +204,12 @@ public class ModuleNetworking extends ConfigLoaderBase
             return 1;
         try
         {
-            client = new FeNetworkClient("localhost", port);
+            client = new FENetworkClient("localhost", port, channelName, channelVersion);
             return client.connect();
         }
         catch (Exception e1)
         {
-            LoggingHandler.felog.error("[FEnetworking] Unable to start server: " + e1.getMessage());
+            LoggingHandler.felog.error("[FEnetworking] Unable to start client: " + e1.getMessage());
             return 1;
         }
     }
@@ -220,16 +217,12 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public int stopClient(boolean sendClosePacket)
+    public void stopClient(boolean sendClosePacket)
     {
         if (client != null)
         {
-            int flag;
-            flag = client.disconnect(sendClosePacket);
-            client = null;
-            return flag;
+            client.disconnect();
         }
-        return 1;
     }
 
 //    /* ------------------------------------------------------------ */
