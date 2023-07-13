@@ -177,12 +177,13 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public void stopServer(boolean sendClosePacket)
+    public int stopServer(boolean sendClosePacket)
     {
         if (server != null)
         {
-            server.stopServer();
+            return server.stopServer();
         }
+        return 1;
     }
 
     /* ------------------------------------------------------------ */
@@ -217,12 +218,13 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public void stopClient(boolean sendClosePacket)
+    public int stopClient(boolean sendClosePacket)
     {
         if (client != null)
         {
-            client.disconnect();
+            return client.disconnect();
         }
+        return 1;
     }
 
 //    /* ------------------------------------------------------------ */

@@ -71,20 +71,25 @@ public class FENetworkServer
         return 0;
     }
 
-    public final void stopServer() {
-        for (Channel channel : getConnectedChannels()) {
-            if(channel != null && channel.isOpen()) {
-                channel.close();
+    public final int stopServer() {
+        try {
+            for (Channel channel : getConnectedChannels()) {
+                if(channel != null && channel.isOpen()) {
+                    channel.close();
+                }
             }
+
+            if(nioEventLoopGroup != null)
+                nioEventLoopGroup.shutdownGracefully();
+
+            if(channelFuture != null)
+                channelFuture.channel().close();
+
+            cleanConnection();
+        }catch(Exception e) {
+            return 1;
         }
-
-        if(nioEventLoopGroup != null)
-            nioEventLoopGroup.shutdownGracefully();
-
-        if(channelFuture != null)
-            channelFuture.channel().close();
-
-        cleanConnection();
+        return 0;
     }
     public ArrayList<Channel> getConnectedChannels()
     {

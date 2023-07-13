@@ -66,17 +66,22 @@ public class FENetworkClient {
         return 0;
     }
 
-    public void disconnect() {
-        if(nioSocketChannel != null && nioSocketChannel.isOpen())
-            nioSocketChannel.close();
+    public int disconnect() {
+        try {
+            if(nioSocketChannel != null && nioSocketChannel.isOpen())
+                nioSocketChannel.close();
 
-        if(channelFuture != null)
-            channelFuture.channel().close();
+            if(channelFuture != null)
+                channelFuture.channel().close();
 
-        if(nioEventLoopGroup != null)
-            nioEventLoopGroup.shutdownGracefully();
+            if(nioEventLoopGroup != null)
+                nioEventLoopGroup.shutdownGracefully();
 
-        reset();
+            reset();
+        }catch(Exception e) {
+            return 1;
+        }
+        return 0;
     }
 
     public void sendPacket(FEPacket packet) {
