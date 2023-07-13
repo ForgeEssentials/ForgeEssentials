@@ -3,12 +3,18 @@ package com.forgeessentials.serverNetwork.server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.server.packets.DataPacket;
 import com.forgeessentials.serverNetwork.server.packets.Packet;
 import com.forgeessentials.serverNetwork.server.packets.PacketDirection;
@@ -16,6 +22,7 @@ import com.forgeessentials.serverNetwork.server.packets.PacketType;
 import com.forgeessentials.serverNetwork.server.packets.bidirectional.CloseSessionPacket;
 import com.forgeessentials.serverNetwork.server.packets.clientTypes.ClientPasswordPacket;
 import com.forgeessentials.serverNetwork.server.packets.serverTypes.ServerPasswordResponcePacket;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public class FeNetworkServer
 {
@@ -23,6 +30,8 @@ public class FeNetworkServer
     private final int remoteServerPort;
     private ServerSocket serverSocket;
     private List<Session> sessions;
+    private Thread serverThread;
+    private boolean serverRunning = false;;
     private int numConenctionsTotal =0;
 
     public FeNetworkServer(String remoteServerHost, int remoteServerPort) {
@@ -31,32 +40,119 @@ public class FeNetworkServer
         sessions = new ArrayList<>();
     }
 
-    public void startServer() {
+    public int startServer() {
+        if(serverRunning) {
+            return 1;
+        }
         try {
             serverSocket = new ServerSocket();
             serverSocket.bind(new InetSocketAddress(remoteServerHost, remoteServerPort));
             System.out.println("Server started on " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort());
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                numConenctionsTotal+=1;
-                Thread connectionThread = new Thread(() -> handleConnection(socket), "FeServerListening"+numConenctionsTotal);
-                connectionThread.start();
+            serverThread = new Thread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    serverRunning=true;
+                    while (serverRunning) {
+                        try
+                        {
+                            Socket socket = serverSocket.accept();
+
+                            // Validate the connection before further processing
+                            if (!validateConnection(socket)) {
+                                socket.close();
+                                continue;
+                            }
+
+                            numConenctionsTotal+=1;
+                            Thread connectionThread = new Thread(() -> handleConnection(socket), "FeServerListening"+numConenctionsTotal);
+                            connectionThread.start();
+                        } catch (SocketException ex) {
+                            if (serverRunning) {
+                                LoggingHandler.felog.fatal("Protocol error. Ignoring packet");
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            ex.printStackTrace();
+                            LoggingHandler.felog.fatal("Exception caught while receiving a FEnetwork packet");
+                        }
+                    }
+
+                }
+            }, "FEServerNetworkThread");
+            serverThread.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 1;
+        }
+        return 0;
+    }
+
+    private boolean validateConnection(Socket socket) {
+        try {
+            // Read the initial bytes from the socket and perform protocol verification
+            byte[] buffer = new byte[13];
+            InputStream inputStream = socket.getInputStream();
+            inputStream.read(buffer);
+
+            // Perform protocol verification based on the read bytes
+            // Check if the first 9 bytes represent the channel name and the next 4 bytes represent the channel version
+            String channelName = new String(buffer, 0, 9);
+            int channelVersion = ByteBuffer.wrap(buffer, 9, 4).getInt();
+
+            // Ensure that the random integer is within the 4-byte range
+            //randomInt = randomInt & 0xFFFFFFFF;
+            
+            // Perform checks on the channel name and version
+            if(channelName.equals("FENetwork")) {
+                if(channelVersion==ModuleNetworking.channelVersion) {
+                    System.out.println("Valid connection detected, Continuing.");
+                    return true;
+                }
+                System.out.println("Client tried joining with mismatched channel version! Closing connection.");
+                return false;
             }
+            handleInvalidConnection(socket);
+            System.out.println("Invalid connection detected! Closing connection.");
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void handleInvalidConnection(Socket socket) {
+        try {
+            String errorMessage = "Invalid protocol detected trying to access this ForgeEssentials Server Network!\n"
+                    + "This protocol can only be used for connecting between two servers running ForgeEssentials 16.0.0+";
+            byte[] errorBytes = errorMessage.getBytes(StandardCharsets.UTF_8);
+
+            // Create an OutputStream from the socket
+            OutputStream outputStream = socket.getOutputStream();
+
+            // Send the error message as a response
+            outputStream.write(errorBytes);
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void stopServer() {
+    public int stopServer() {
         try {
             closeAllSessions();
             if (serverSocket != null) {
+                serverRunning=false;
                 serverSocket.close();
                 System.out.println("Server stopped");
+                return 0;
             }
+            return 1;
         } catch (IOException e) {
             e.printStackTrace();
+            return 1;
         }
     }
 
@@ -66,7 +162,16 @@ public class FeNetworkServer
 
             // Read the packet type identifier
             int packetTypeOrdinal = inputStream.readInt();
-            PacketType packetType = PacketType.values()[packetTypeOrdinal];
+            PacketType packetType = null;
+            if (packetTypeOrdinal >= 0 && packetTypeOrdinal < PacketType.values().length) {
+                packetType = PacketType.values()[packetTypeOrdinal];
+            } else {
+                // Handle invalid packet type here
+                // For example, you can close the connection or send an error response
+                System.out.println("Invalid packet type received. Closing connection.");
+                socket.close();
+                return;
+            }
 
             Session session = null;
 

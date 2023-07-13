@@ -295,7 +295,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         // thread in waiting mode
         if (thread != null && thread.isAlive())
             return;
-        thread = new Thread(this, "Playerlogger");
+        thread = new Thread(this, "FEPlayerlogger");
         thread.start();
     }
 

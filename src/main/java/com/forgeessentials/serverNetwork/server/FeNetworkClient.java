@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.server.packets.CustomPacket;
 import com.forgeessentials.serverNetwork.server.packets.DataPacket;
 import com.forgeessentials.serverNetwork.server.packets.Packet;
@@ -12,6 +13,7 @@ import com.forgeessentials.serverNetwork.server.packets.PacketDirection;
 import com.forgeessentials.serverNetwork.server.packets.PacketType;
 import com.forgeessentials.serverNetwork.server.packets.bidirectional.CloseSessionPacket;
 import com.forgeessentials.serverNetwork.server.packets.clientTypes.ClientPasswordPacket;
+import com.forgeessentials.serverNetwork.server.packets.clientTypes.ClientValidationPacket;
 import com.forgeessentials.serverNetwork.server.packets.serverTypes.ServerPasswordResponcePacket;
 
 public class FeNetworkClient{
@@ -37,13 +39,34 @@ public class FeNetworkClient{
                 outputStream = new DataOutputStream(socket.getOutputStream());
                 System.out.println("Connected to server: " + serverHost + ":" + serverPort);
 
+                // Perform validation by sending the validation packet to the server
+                sendValidationPacket();
+
                 // Start listening for server responses
                 listenForResponses();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, "ClientNetworkThread");
+        }, "FEClientNetworkThread");
         clientThread.start();
+    }
+
+    private void sendValidationPacket() {
+        // Create a custom packet with the validation string and int values
+        ClientValidationPacket validationPacket = new ClientValidationPacket("FENetwork", ModuleNetworking.channelVersion);
+
+        // Send the validation packet to the server
+        try {
+        // Encode the packet and write the packet data
+        byte[] packetData = validationPacket.encode();
+        outputStream.writeInt(packetData.length);
+        outputStream.write(packetData);
+
+        // Flush the output stream to ensure the data is sent immediately
+        outputStream.flush();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     }
 
     public void disconnect() {

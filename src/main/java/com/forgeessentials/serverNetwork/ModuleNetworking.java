@@ -32,6 +32,7 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     private static final String CONFIG_CAT = "Networking";
 
+    public static final int channelVersion = 123456;
 
     public static final char[] PASSKEY_CHARS;
 
@@ -96,7 +97,7 @@ public class ModuleNetworking extends ConfigLoaderBase
         //APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
         //loadPasskeys();
-        //startServer();
+        startServer();
         mcServerStarted = true;
     }
 
@@ -155,32 +156,35 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Starts up the networking server
      */
-    public void startServer()
+    public int startServer()
     {
         if (server != null)
-            return;
+            return 1;
         try
         {
             String bindAddress = localhostOnly ? "localhost" : "0.0.0.0";
             server = new FeNetworkServer(bindAddress, port);
-            server.startServer();
+            return server.startServer();
         }
         catch (Exception e1)
         {
             LoggingHandler.felog.error("[FEnetworking] Unable to start server: " + e1.getMessage());
+            return 1;
         }
     }
 
     /**
      * Stops the networking server
      */
-    public void stopServer()
+    public int stopServer()
     {
         if (server != null)
         {
             server.stopServer();
             server = null;
+            return 0;
         }
+        return 1;
     }
 
     /* ------------------------------------------------------------ */

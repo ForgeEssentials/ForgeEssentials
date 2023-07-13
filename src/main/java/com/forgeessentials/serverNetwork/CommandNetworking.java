@@ -1,6 +1,7 @@
 package com.forgeessentials.serverNetwork;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -46,15 +47,19 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopclient")){
-            ModuleNetworking.instance.stopClient();;
+            ModuleNetworking.instance.stopClient();
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("startserver")){
-            ModuleNetworking.instance.startServer();;
+            if(ModuleNetworking.instance.startServer()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to start server or server is already running!");
+            }
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopserver")){
-            ModuleNetworking.instance.stopServer();;
+            if(ModuleNetworking.instance.stopServer()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
+            }
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
