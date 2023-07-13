@@ -104,6 +104,8 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getParseResults().getContext().getSource().getEntity()))
             return;
+        if (event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         CommandInfo info = CommandUtils.getCommandInfo(event);
         PlayerEntity player = (PlayerEntity) info.getSource().getEntity();
         if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(info))
