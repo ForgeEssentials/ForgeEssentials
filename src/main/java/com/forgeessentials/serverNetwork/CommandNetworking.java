@@ -1,6 +1,7 @@
 package com.forgeessentials.serverNetwork;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.serverNetwork.server.packets.DataPacket;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -36,30 +37,54 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("startserver")
                         .executes(CommandContext -> execute(CommandContext, "startserver")))
                 .then(Commands.literal("stopserver")
-                        .executes(CommandContext -> execute(CommandContext, "stopserver")));
+                        .executes(CommandContext -> execute(CommandContext, "stopserver")))
+                .then(Commands.literal("clientmessage")
+                        .executes(CommandContext -> execute(CommandContext, "clientmessage")))
+                .then(Commands.literal("servermessage")
+                        .executes(CommandContext -> execute(CommandContext, "servermessage")));
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if(params.equals("startclient")){
-            ModuleNetworking.instance.startClient();
+            if(ModuleNetworking.instance.startClient()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client or client is already running!");
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started client!");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopclient")){
-            ModuleNetworking.instance.stopClient();
+            if(ModuleNetworking.instance.stopClient(true)!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop client or client is already stopped!");
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped client!");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("startserver")){
             if(ModuleNetworking.instance.startServer()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to start server or server is already running!");
+                return Command.SINGLE_SUCCESS;
             }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started server!");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopserver")){
-            if(ModuleNetworking.instance.stopServer()!=0){
+            if(ModuleNetworking.instance.stopServer(true)!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
+                return Command.SINGLE_SUCCESS;
             }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped server!");
+            return Command.SINGLE_SUCCESS;
+        }
+        if(params.equals("clientmessage")){
+            ModuleNetworking.instance.getClient().sendPacket(new DataPacket("Client Message"));
+            return Command.SINGLE_SUCCESS;
+        }
+        if(params.equals("servermessage")){
+            ModuleNetworking.instance.getServer().sendPacketToAllSessions(new DataPacket("Client Message"));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

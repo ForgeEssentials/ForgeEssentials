@@ -67,8 +67,6 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     protected int port;
 
-    protected String hostname;
-
     protected boolean localhostOnly;
 
     protected FeNetworkServer server;
@@ -107,8 +105,13 @@ public class ModuleNetworking extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStopping(FEModuleServerStoppingEvent event)
     {
-        stopClient();
-        stopServer();
+        if(getServer()!=null&&getClient()!=null) {
+            stopClient(false);
+            stopServer(false);
+        }else {
+            stopClient(true);
+            stopServer(true);
+        }
         mcServerStarted = false;
     }
 
@@ -121,8 +124,6 @@ public class ModuleNetworking extends ConfigLoaderBase
     {
         BUILDER.push(CONFIG_CAT);
         FElocalhostOnly = BUILDER.comment("Allow connections from the web").define("localhostOnly", true);
-        FEhostname = BUILDER.comment("Hostname of your server.").define("hostname",
-                "localhost");
         FEport = BUILDER.comment("Port to connect remotes to").defineInRange("port", 27020, 0, 65535);
         BUILDER.pop();
     }
@@ -131,7 +132,6 @@ public class ModuleNetworking extends ConfigLoaderBase
     public void bakeConfig(boolean reload)
     {
         localhostOnly = FElocalhostOnly.get();
-        hostname = FEhostname.get();
         port = FEport.get();
         if (mcServerStarted)
             startServer();
@@ -176,13 +176,14 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public int stopServer()
+    public int stopServer(boolean sendClosePacket)
     {
         if (server != null)
         {
-            server.stopServer();
+            int flag;
+            flag = server.stopServer(sendClosePacket);
             server = null;
-            return 0;
+            return flag;
         }
         return 1;
     }
@@ -200,31 +201,35 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Starts up the networking client
      */
-    public void startClient()
+    public int startClient()
     {
         if (client != null)
-            return;
+            return 1;
         try
         {
             client = new FeNetworkClient("localhost", port);
-            client.connect();;
+            return client.connect();
         }
         catch (Exception e1)
         {
             LoggingHandler.felog.error("[FEnetworking] Unable to start server: " + e1.getMessage());
+            return 1;
         }
     }
 
     /**
      * Stops the networking server
      */
-    public void stopClient()
+    public int stopClient(boolean sendClosePacket)
     {
         if (client != null)
         {
-            client.disconnect();;
+            int flag;
+            flag = client.disconnect(sendClosePacket);
             client = null;
+            return flag;
         }
+        return 1;
     }
 
 //    /* ------------------------------------------------------------ */

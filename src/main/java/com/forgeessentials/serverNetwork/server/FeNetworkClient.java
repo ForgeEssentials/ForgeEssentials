@@ -2,8 +2,10 @@ package com.forgeessentials.serverNetwork.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.server.packets.CustomPacket;
@@ -15,6 +17,7 @@ import com.forgeessentials.serverNetwork.server.packets.bidirectional.CloseSessi
 import com.forgeessentials.serverNetwork.server.packets.clientTypes.ClientPasswordPacket;
 import com.forgeessentials.serverNetwork.server.packets.clientTypes.ClientValidationPacket;
 import com.forgeessentials.serverNetwork.server.packets.serverTypes.ServerPasswordResponcePacket;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public class FeNetworkClient{
     private final String serverHost;
@@ -24,6 +27,7 @@ public class FeNetworkClient{
     private DataOutputStream outputStream;
     private Thread clientThread;
     private boolean authenticated;
+    private boolean clientRunning = false;
 
     public FeNetworkClient(String serverHost, int serverPort) {
         this.serverHost = serverHost;
@@ -31,17 +35,33 @@ public class FeNetworkClient{
     }
 
 
-    public void connect() {
+    public int connect() {
+        if(clientRunning) {
+            return 1;
+        }
         clientThread = new Thread(() -> {
+            clientRunning=true;
             try {
                 socket = new Socket(serverHost, serverPort);
-                inputStream = new DataInputStream(socket.getInputStream());
+                // Disable automatic closing of the streams on socket close
+                socket.setSoLinger(false, 0);
+
+                // Wrap the streams with FilterInputStream and FilterOutputStream
+                FilterInputStream filterInputStream = new FilterInputStream(socket.getInputStream()) {
+                    @Override
+                    public void close() throws IOException {
+                        // Do not close the underlying input stream
+                    }
+                };
+
+                // Use the wrapped streams for reading/writing operations
+                inputStream = new DataInputStream(filterInputStream);
                 outputStream = new DataOutputStream(socket.getOutputStream());
                 System.out.println("Connected to server: " + serverHost + ":" + serverPort);
 
                 // Perform validation by sending the validation packet to the server
                 sendValidationPacket();
-
+                sendPacket0(new ClientPasswordPacket("password123"));
                 // Start listening for server responses
                 listenForResponses();
             } catch (IOException e) {
@@ -49,6 +69,7 @@ public class FeNetworkClient{
             }
         }, "FEClientNetworkThread");
         clientThread.start();
+        return 0;
     }
 
     private void sendValidationPacket() {
@@ -59,7 +80,6 @@ public class FeNetworkClient{
         try {
         // Encode the packet and write the packet data
         byte[] packetData = validationPacket.encode();
-        outputStream.writeInt(packetData.length);
         outputStream.write(packetData);
 
         // Flush the output stream to ensure the data is sent immediately
@@ -69,21 +89,30 @@ public class FeNetworkClient{
     }
     }
 
-    public void disconnect() {
+    public int disconnect(boolean sendClosePacket) {
         try {
             if (socket != null) {
+                clientRunning=false;
+                if(sendClosePacket) {sendPacket(new CloseSessionPacket());}
                 socket.close();
                 System.out.println("Disconnected from server");
+                return 0;
             }
+            return 1;
         } catch (IOException e) {
             e.printStackTrace();
+            return 1;
         }
     }
 
     public void sendPacket(Packet packet) {
         if(!authenticated) {
-            sendPacket(new ClientPasswordPacket("password123"));
+            System.out.println("Can't Send Packet since client is not authenticated with server!");
+            return;
         }
+        sendPacket0(packet);
+    }
+    private void sendPacket0(Packet packet) {
         try {
             // Write the packet type identifier
             int packetTypeOrdinal = packet.getType().ordinal();
@@ -98,12 +127,19 @@ public class FeNetworkClient{
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            disconnect(false);
         }
     }
 
     private void listenForResponses() {
         try {
-            while (true) {
+            while (clientRunning) {
+             // Check if there is data available to be read
+                while (inputStream.available() <= 0) {
+                    // Wait for a short duration before checking again
+                    Thread.sleep(100);
+                }
+
                 // Read the packet type identifier
                 int packetTypeOrdinal = inputStream.readInt();
                 PacketType packetType = PacketType.values()[packetTypeOrdinal];
@@ -121,10 +157,19 @@ public class FeNetworkClient{
                 // Process the received packet
                 handlePacket(packet);
             }
+        } catch (SocketException ex) {
+            if (clientRunning) {
+                ex.printStackTrace();
+                LoggingHandler.felog.fatal("Protocol error. Ignoring packet");
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
         } finally {
-            disconnect();
+            disconnect(false);
         }
     }
 
@@ -132,7 +177,7 @@ public class FeNetworkClient{
         if(packet.getDirection().equals(PacketDirection.Client_To_Server)) {
             System.out.println("Invalid packet received from server. Closing session.");
             sendPacket(new CloseSessionPacket());
-            disconnect();
+            disconnect(true);
             return;
         }
         if (packet instanceof DataPacket) {
@@ -153,18 +198,19 @@ public class FeNetworkClient{
             // ...
         } else if (packet instanceof CloseSessionPacket) {
             System.out.println("Received close session packet");
-            disconnect();
+            disconnect(false);
         } else if (packet instanceof ServerPasswordResponcePacket) {
             System.out.println("Received Server Password Responce Packet");
             ServerPasswordResponcePacket passpacket = (ServerPasswordResponcePacket) packet;
             if(!passpacket.isAuthenticated()) {
                 System.out.println("Authentication failed. Closing connection.");
-                disconnect();
+                disconnect(false);
             }
+            authenticated=true;
             System.out.println("Authentication succeeded!");
         } else {
             System.out.println("Received unknown packet type. Closing connection.");
-            disconnect(); // Close the connection when an unknown packet is received
+            disconnect(true); // Close the connection when an unknown packet is received
         }
     }
 

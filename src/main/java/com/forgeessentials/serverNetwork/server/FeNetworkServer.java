@@ -2,8 +2,8 @@ package com.forgeessentials.serverNetwork.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -31,7 +31,7 @@ public class FeNetworkServer
     private ServerSocket serverSocket;
     private List<Session> sessions;
     private Thread serverThread;
-    private boolean serverRunning = false;;
+    private boolean serverRunning = false;
     private int numConenctionsTotal =0;
 
     public FeNetworkServer(String remoteServerHost, int remoteServerPort) {
@@ -58,15 +58,28 @@ public class FeNetworkServer
                         try
                         {
                             Socket socket = serverSocket.accept();
+                            // Disable automatic closing of the streams on socket close
+                            socket.setSoLinger(false, 0);
 
+
+                            // Wrap the streams with FilterInputStream and FilterOutputStream
+                            FilterInputStream filterInputStream = new FilterInputStream(socket.getInputStream()) {
+                                @Override
+                                public void close() throws IOException {
+                                    // Do not close the underlying input stream
+                                }
+                            };
+
+                            // Use the wrapped streams for reading/writing operations
+                            DataInputStream dataInputStream = new DataInputStream(filterInputStream);
                             // Validate the connection before further processing
-                            if (!validateConnection(socket)) {
+                            if (!validateConnection(socket, dataInputStream)) {
                                 socket.close();
                                 continue;
                             }
 
                             numConenctionsTotal+=1;
-                            Thread connectionThread = new Thread(() -> handleConnection(socket), "FeServerListening"+numConenctionsTotal);
+                            Thread connectionThread = new Thread(() -> handleConnection(socket, dataInputStream), "FeServerListening"+numConenctionsTotal);
                             connectionThread.start();
                         } catch (SocketException ex) {
                             if (serverRunning) {
@@ -90,18 +103,17 @@ public class FeNetworkServer
         return 0;
     }
 
-    private boolean validateConnection(Socket socket) {
+    private boolean validateConnection(Socket socket, DataInputStream dataInputStream) {
         try {
             // Read the initial bytes from the socket and perform protocol verification
             byte[] buffer = new byte[13];
-            InputStream inputStream = socket.getInputStream();
-            inputStream.read(buffer);
+            dataInputStream.read(buffer);
 
             // Perform protocol verification based on the read bytes
             // Check if the first 9 bytes represent the channel name and the next 4 bytes represent the channel version
             String channelName = new String(buffer, 0, 9);
             int channelVersion = ByteBuffer.wrap(buffer, 9, 4).getInt();
-
+            //System.out.println("Recieved client with channel: "+channelName+", version: "+channelVersion);
             // Ensure that the random integer is within the 4-byte range
             //randomInt = randomInt & 0xFFFFFFFF;
             
@@ -140,9 +152,9 @@ public class FeNetworkServer
         }
     }
 
-    public int stopServer() {
+    public int stopServer(boolean sendClosePacket) {
         try {
-            closeAllSessions();
+            closeAllSessions(sendClosePacket);
             if (serverSocket != null) {
                 serverRunning=false;
                 serverSocket.close();
@@ -156,12 +168,17 @@ public class FeNetworkServer
         }
     }
 
-    private void handleConnection(Socket socket) {
-        try (DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
+    private void handleConnection(Socket socket, DataInputStream dataInputStream) {
+        try {
 
+            // Check if there is data available to be read
+            while (dataInputStream.available() <= 0) {
+                // Wait for a short duration before checking again
+                Thread.sleep(100);
+            }
+            
             // Read the packet type identifier
-            int packetTypeOrdinal = inputStream.readInt();
+            int packetTypeOrdinal = dataInputStream.readInt();
             PacketType packetType = null;
             if (packetTypeOrdinal >= 0 && packetTypeOrdinal < PacketType.values().length) {
                 packetType = PacketType.values()[packetTypeOrdinal];
@@ -176,10 +193,10 @@ public class FeNetworkServer
             Session session = null;
 
             if (packetType != PacketType.PASSWORD) {
-                if(packetType.equals(PacketType.CLOSE_SESSION)) {
-                    socket.close();
-                    return;
-                }
+                //if(packetType.equals(PacketType.CLOSE_SESSION)) {
+                //    socket.close();
+                //    return;
+                //}
                 // Check if the session is authenticated
                 session = findSessionBySocket(socket);
                 if (session == null || !isSessionAuthenticated(session)) {
@@ -190,11 +207,11 @@ public class FeNetworkServer
                 }
             } else {
                 // Read the packet data length
-                int packetDataLength = inputStream.readInt();
+                int packetDataLength = dataInputStream.readInt();
 
                 // Read the packet data
                 byte[] packetData = new byte[packetDataLength];
-                inputStream.readFully(packetData);
+                dataInputStream.read(packetData);
 
                 // Read the password packet
                 ClientPasswordPacket passwordPacket = new ClientPasswordPacket(null).decode(packetData);
@@ -214,12 +231,24 @@ public class FeNetworkServer
                 sessions.add(session);
                 System.out.println("New session created: " + session);
                 sendPacketToSession(session, new ServerPasswordResponcePacket(true));
-
             }
 
             while (sessions.contains(session)) {
+                // Check if there is data available to be read
+                if(socket.isClosed()) {
+                    System.out.println("Socket was closed1.");
+                    return;
+                }
+                while (!socket.isClosed()&&dataInputStream.available() <= 0) {
+                    // Wait for a short duration before checking again
+                    Thread.sleep(100);
+                }
+                if(socket.isClosed()) {
+                    System.out.println("Socket was closed2.");
+                    return;
+                }
                 // Read the packet type identifier
-                packetTypeOrdinal = inputStream.readInt();
+                packetTypeOrdinal = dataInputStream.readInt();
                 packetType = PacketType.values()[packetTypeOrdinal];
 
                 if (!isSessionAuthenticated(session)) {
@@ -230,11 +259,11 @@ public class FeNetworkServer
                 }
 
                 // Read the packet data length
-                int packetDataLength = inputStream.readInt();
+                int packetDataLength = dataInputStream.readInt();
 
                 // Read the packet data
                 byte[] packetData = new byte[packetDataLength];
-                inputStream.readFully(packetData);
+                dataInputStream.readFully(packetData);
 
                 // Construct the packet object
                 Packet packet = PacketType.decodePacket(packetType, packetData);
@@ -245,13 +274,12 @@ public class FeNetworkServer
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
         } finally {
-            try {
-                closeSession(findSessionBySocket(socket));
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            closeSession(findSessionBySocket(socket), socket, false);
         }
     }
 
@@ -264,8 +292,7 @@ public class FeNetworkServer
     private void handlePacket(Packet packet, Socket socket) {
         if(packet.getDirection().equals(PacketDirection.Server_To_Client)) {
             System.out.println("Invalid packet received from client. Closing session.");
-            sendPacketToSocket(socket, new CloseSessionPacket());
-            closeSession(findSessionBySocket(socket));
+            closeSession(findSessionBySocket(socket), socket, true);
             return;
         }
         if (packet instanceof DataPacket) {
@@ -277,10 +304,11 @@ public class FeNetworkServer
         } else if (packet instanceof ClientPasswordPacket) {
             // Ignore password packet, as it should only be received initially for authentication
         } else if (packet instanceof CloseSessionPacket) {
-            closeSession(findSessionBySocket(socket));
+            System.out.println("Received CloseSessionPacket");
+            closeSession(findSessionBySocket(socket), socket, false);
         } else {
             System.out.println("Invalid packet received. Closing session.");
-            closeSession(findSessionBySocket(socket));
+            closeSession(findSessionBySocket(socket), socket, true);
         }
     }
 
@@ -300,22 +328,39 @@ public class FeNetworkServer
         return null;
     }
 
-    private void closeAllSessions() {
+    private void closeAllSessions(boolean sendClosePacket) {
+        for(Session s : sessions) {
+            try{
+                System.out.println("Socket Close1.");
+                if(sendClosePacket) {sendPacketToSocket(s.getSocket(), new CloseSessionPacket());}
+                s.getSocket().close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
         sessions.clear();
     }
-    private void closeSession(Session session) {
+    private void closeSession(Session session, Socket fallBackSocket, boolean sendClosePacket) {
         if (session != null) {
             try {
                 try {
                     sessions.remove(session);
                 }catch(Exception e) {}
+                if(sendClosePacket) {sendPacketToSocket(session.getSocket(), new CloseSessionPacket());}
                 session.getSocket().close();
-                System.out.println("Closed session: " + session);
+                System.out.println("Closed session: " + session.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("FeNetwork Session not found. Cannot close session.");
+            try {
+                if(sendClosePacket) {sendPacketToSocket(fallBackSocket, new CloseSessionPacket());}
+                fallBackSocket.close();
+                System.out.println("Closed socket: " + fallBackSocket.getInetAddress().getHostAddress() + ":" + fallBackSocket.getPort());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("FeNetwork Session and socket not found. Cannot close socket.");
+            }
         }
     }
     private void sendPacketToSocket(Socket socket, Packet packet) {
@@ -337,5 +382,11 @@ public class FeNetworkServer
     }
     public void sendPacketToSession(Session session, Packet packet) {
         sendPacketToSocket(session.getSocket(), packet);
+    }
+    public void sendPacketToAllSessions(Packet packet) {
+        for(Session s : sessions) {
+            sendPacketToSession(s, packet);
+
+        }
     }
 }
