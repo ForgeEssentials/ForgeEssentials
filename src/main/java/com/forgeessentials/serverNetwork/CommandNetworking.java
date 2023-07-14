@@ -55,7 +55,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopclient")){
-            if(ModuleNetworking.instance.stopClient(true)!=0){
+            if(ModuleNetworking.instance.stopClient()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop client or client is already stopped!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -71,7 +71,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopserver")){
-            if(ModuleNetworking.instance.stopServer(true)!=0){
+            if(ModuleNetworking.instance.stopServer()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
                 return Command.SINGLE_SUCCESS;
             }
