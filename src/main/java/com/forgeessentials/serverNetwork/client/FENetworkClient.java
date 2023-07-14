@@ -42,6 +42,9 @@ public class FENetworkClient {
         reset();
         LoggingHandler.felog.info("FENetworkClient Connecting to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
 
+        packetManager = new FEPacketManager(new ClientPacketHandler());
+        nioSocketChannel = new NioSocketChannel();
+        nioEventLoopGroup = new NioEventLoopGroup(1);
         bootstrap = new Bootstrap();
         bootstrap.group(nioEventLoopGroup);
         bootstrap.channel(NioSocketChannel.class);
@@ -64,6 +67,7 @@ public class FENetworkClient {
         } catch(Exception e) {
             e.printStackTrace();
             LoggingHandler.felog.error("FENetworkClient Failed to connect to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
+            disconnect();
             return 1;
         }
         return 0;
@@ -85,6 +89,10 @@ public class FENetworkClient {
             return 1;
         }
         return 0;
+    }
+
+    public boolean isChannelOpen() {
+        return channelFuture != null && channelFuture.channel().isOpen();
     }
 
     public void sendPacket(FEPacket packet) {
@@ -113,11 +121,11 @@ public class FENetworkClient {
     }
 
     public void reset() {
-        bootstrap = new Bootstrap();
-        nioSocketChannel = new NioSocketChannel();
+        bootstrap = null;
+        nioSocketChannel = null;
+        nioEventLoopGroup = null;
+        packetManager = null;
         channelFuture = null;
-        nioEventLoopGroup = new NioEventLoopGroup(1);
-        packetManager = new FEPacketManager(new ClientPacketHandler());
     }
 
     public Bootstrap getBootstrap() {

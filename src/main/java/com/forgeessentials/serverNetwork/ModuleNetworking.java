@@ -203,7 +203,7 @@ public class ModuleNetworking extends ConfigLoaderBase
      */
     public int startServer()
     {
-        if (server != null)
+        if (server != null && server.isChannelOpen())
             return 1;
         try
         {
@@ -245,7 +245,7 @@ public class ModuleNetworking extends ConfigLoaderBase
      */
     public int startClient()
     {
-        if (client != null)
+        if (client != null && client.isChannelOpen())
             return 1;
         try
         {

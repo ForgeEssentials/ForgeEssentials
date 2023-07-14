@@ -55,6 +55,8 @@ public class FENetworkServer
         cleanConnection();
         LoggingHandler.felog.info("FENetworkServer Starting at " + remoteServerHost + ":" + remoteServerPort);
 
+        packetManager = new FEPacketManager(new ServerPacketHandler());
+        nioEventLoopGroup = new NioEventLoopGroup(1);
         bootstrap = new ServerBootstrap();
         bootstrap.group(nioEventLoopGroup);
         bootstrap.channel(NioServerSocketChannel.class);
@@ -76,6 +78,7 @@ public class FENetworkServer
         } catch(Exception e) {
             e.printStackTrace();
             LoggingHandler.felog.error("FENetworkServer Failed to start on " + remoteServerHost + ":" + remoteServerPort);
+            stopServer();
             return 1;
         }
         return 0;
@@ -102,6 +105,11 @@ public class FENetworkServer
         }
         return 0;
     }
+
+    public boolean isChannelOpen() {
+        return channelFuture != null && channelFuture.channel().isOpen();
+    }
+
     /**
      * {@link Boolean} represents if the connected channel was validated 
      */
@@ -116,11 +124,12 @@ public class FENetworkServer
 
     private void cleanConnection()
     {
-        nioEventLoopGroup = new NioEventLoopGroup(1);
+        bootstrap = null;
+        nioEventLoopGroup = null;
+        packetManager = null;
+        channelFuture = null;
         connectedChannels = new HashMap<>();
         blockedChannels = new ArrayList<>();
-        bootstrap = null;
-        packetManager = new FEPacketManager(new ServerPacketHandler());
     }
 
     public void sendPacket(FEPacket packet) {
