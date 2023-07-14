@@ -46,7 +46,7 @@ public class ServerPacketHandler implements PacketHandler
     {
         if(!ModuleNetworking.getClients().containsKey(newClientData.getClientId())) {
             ConnectedClientData data = new ConnectedClientData(newClientData.getClientId());
-            String privateKey = EncryptionUtils.generatePasskey(ModuleNetworking.getInstance().getPasskeyLength());
+            String privateKey = EncryptionUtils.generatePrivateKey();
             data.setPrivateKey(privateKey);
             ModuleNetworking.getClients().put(newClientData.getClientId(), data);
             LoggingHandler.felog.info("FENetworkServer Connected a new client: "+ newClientData.getClientId());
