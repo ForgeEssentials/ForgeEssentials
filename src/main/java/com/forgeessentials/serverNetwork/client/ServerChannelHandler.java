@@ -55,12 +55,6 @@ public class ServerChannelHandler extends ChannelInitializer<NioSocketChannel> {
             Channel channel = ctx.channel();
             LoggingHandler.felog.info("FENetworkClient Channel unregistered: " + channel);
         }
-        @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            super.channelInactive(ctx);
-            Channel channel = ctx.channel();
-            LoggingHandler.felog.info("FENetworkClient Inactive Channel: " + channel);
-        }
 
         @Override
         protected void channelRead0(ChannelHandlerContext channel, Object object) throws Exception {
