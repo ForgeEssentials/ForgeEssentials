@@ -6,7 +6,9 @@ import com.forgeessentials.serverNetwork.packetbase.handlers.ClientPacketDecoder
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketEncoder;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketPrepender;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketSplitter;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -40,7 +42,20 @@ public class ServerChannelHandler extends ChannelInitializer<NioSocketChannel> {
     
     public class ChannelReader extends SimpleChannelInboundHandler<Object> {
 
+        @Override
+        public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+            super.channelRegistered(ctx);
+            Channel channel = ctx.channel();
+            LoggingHandler.felog.info("FENetworkClient New channel registered: " + channel);
+        }
 
+        @Override
+        public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+            super.channelUnregistered(ctx);
+            Channel channel = ctx.channel();
+            LoggingHandler.felog.info("FENetworkClient Channel unregistered: " + channel);
+            feClient.disconnect();
+        }
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
             super.channelInactive(ctx);
