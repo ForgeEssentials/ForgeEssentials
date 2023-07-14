@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import java.util.Objects;
@@ -49,7 +53,7 @@ public class FENetworkServer
 
     public final int startServer() {
         cleanConnection();
-        LoggingHandler.felog.info("Starting FENetworkServer at " + remoteServerHost + ":" + remoteServerPort);
+        LoggingHandler.felog.info("FENetworkServer Starting at " + remoteServerHost + ":" + remoteServerPort);
 
         bootstrap = new ServerBootstrap();
         bootstrap.group(nioEventLoopGroup);
@@ -66,12 +70,12 @@ public class FENetworkServer
             channelFuture = bootstrap.localAddress(remoteServerHost, remoteServerPort).bind().syncUninterruptibly();
 
             if(channelFuture.isSuccess())
-                LoggingHandler.felog.info("Server started successfully");
+                LoggingHandler.felog.info("FENetworkServer started successfully");
             else
                 return 1;
         } catch(Exception e) {
             e.printStackTrace();
-            LoggingHandler.felog.error("Failed to start FENetworkServer on " + remoteServerHost + ":" + remoteServerPort);
+            LoggingHandler.felog.error("FENetworkServer Failed to start on " + remoteServerHost + ":" + remoteServerPort);
             return 1;
         }
         return 0;
@@ -98,6 +102,9 @@ public class FENetworkServer
         }
         return 0;
     }
+    /**
+     * {@link Boolean} represents if the connected channel was validated 
+     */
     public Map<Channel, Boolean> getConnectedChannels()
     {
         return connectedChannels;
@@ -119,12 +126,13 @@ public class FENetworkServer
     public void sendPacket(FEPacket packet) {
         Objects.requireNonNull(packet, "Packet cannot be null");
 
-        LoggingHandler.felog.debug("[OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
+        LoggingHandler.felog.debug("FENetworkServer [OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
 
         for (Entry<Channel, Boolean> channel : getConnectedChannels().entrySet()) {
             if(!channel.getKey().isOpen())
                 continue;
             if(channel.getValue()) {
+                if(!canSendPacket(channel.getKey(), packet)) {return;}
                 channel.getKey().writeAndFlush(packet).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture channelFuture) throws Exception {
@@ -141,7 +149,8 @@ public class FENetworkServer
         Objects.requireNonNull(packet, "Packet cannot be null");
         Objects.requireNonNull(channel, "Channel cannot be null");
 
-        LoggingHandler.felog.debug("[OUT] " + packet.getID() + " " + packet.getClass().getSimpleName());
+        if(!canSendPacket(channel, packet)) {return;}
+        LoggingHandler.felog.debug("FENetworkServer [OUT] " + packet.getID() + " " + packet.getClass().getSimpleName());
 
         if(!channel.isOpen())
             return;
@@ -156,6 +165,28 @@ public class FENetworkServer
                 }
             });
         }
+    }
+    public boolean canSendPacket(Channel channel, FEPacket packet) {
+        if(packet instanceof Packet1ServerValidationResponce||packet instanceof Packet4ServerPasswordResponce) {
+            return true;
+        }
+        boolean isValid=false;
+        for (Entry<String, ConnectedClientData> data : ModuleNetworking.getClients().entrySet()) {
+            if(data.getValue().getCurrentChannel()!=null) {
+                if(data.getValue().getCurrentChannel().equals(channel)) {
+                    if(data.getValue().isAuthenticated()) {
+                        isValid =true;
+                    }
+                    break;
+                }
+            }
+        }
+        if(!isValid) {
+            LoggingHandler.felog.info("FENetworkServer can't send packet "+packet.getClass().getSimpleName()
+                    +" bacause client is not authenticated");
+            return false;
+        }
+        return true;
     }
 
     public static FENetworkServer getInstance()

@@ -2,6 +2,9 @@ package com.forgeessentials.serverNetwork.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -44,5 +47,25 @@ public class EncryptionUtils {
 
         // Convert the decrypted bytes to a string
         return new String(decryptedBytes, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Generates a new random passkey
+     */
+    public static String generatePasskey(int length)
+    {
+        StringBuilder passkey = new StringBuilder();
+        Random rnd;
+        try
+        {
+            rnd = SecureRandom.getInstanceStrong();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            rnd = new SecureRandom();
+        }
+        for (int i = 0; i < length; i++)
+            passkey.append(StringCleaning.PASSKEY_CHARS[rnd.nextInt(StringCleaning.PASSKEY_CHARS.length)]);
+        return passkey.toString();
     }
 }

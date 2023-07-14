@@ -14,6 +14,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
+import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
+import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
+import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalServerData;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -42,55 +45,6 @@ public class ModuleNetworking extends ConfigLoaderBase
     @ModuleDir
     public static File moduleDir;
 
-    /**
-     * Data for this local instance of FENetworkServer
-     * {@link String} localServerId is the unique UUID of this FENetworkServer
-     * @author maximuslotro
-     */
-    public static class LocalServerData
-    {
-        final String localServerId;
-        
-        LocalServerData(String localServerId){
-            this.localServerId = localServerId;
-        }
-    }
-    /**
-     * Data class for each FENetworkClient connected to this FENetworkServer
-     * {@link String} remoteClientId is the unique UUID of the connected client
-     * {@link String} privateKey is the unique preGenerated privateKey for this client to connect to this FENetworkServer
-     * {@link Integer} numberTimesConnected is the number of times the client has connected
-     * {@link Integer} permissionLevel is the level of permission the client has, range from 0-3
-     * @author maximuslotro
-     */
-    public static class ConnectedClientData
-    {
-        final String remoteClientId;
-        String privateKey="notSet";
-        int numberTimesConnected=0;
-        int permissionLevel=1;
-        
-        ConnectedClientData(String remoteClientId){
-            this.remoteClientId = remoteClientId;
-        }
-    }
-    /**
-     * Data for this local instance of FENetworkClient connected to a remote server
-     * {@link String} localClientId is the unique UUID of this local instance of FENetworkClient
-     * {@link String} remoteServerId is the unique UUID of the previously connected FENetworkServer
-     * {@link String} privateKey is the unique preGenerated privateKey for this client to connect to a certain FENetworkServer
-     * @author maximuslotro
-     */
-    public static class LocalClientData
-    {
-        final String localClientId;
-        String remoteServerId = "notSet";
-        String privatekey="notSet";
-        
-        LocalClientData(String localClientId){
-            this.localClientId = localClientId;
-        }
-    }
     private static Map<String, ConnectedClientData> clients  = new HashMap<>();
     private static LocalClientData localClient;
     private static LocalServerData localServer;
@@ -108,6 +62,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     @FEModule.Instance
     protected static ModuleNetworking instance;
 
+    protected int passkeyLength;
     protected boolean localhostOnly;
     protected boolean enableAutoStartServer;
     protected int serverPort;
@@ -172,6 +127,24 @@ public class ModuleNetworking extends ConfigLoaderBase
         mcServerStarted = false;
     }
 
+    public static ModuleNetworking getInstance() {
+        return instance;
+    }
+
+    public static LocalClientData getLocalClient() {
+        return localClient;
+    }
+
+    public static LocalServerData getLocalServer() {
+        return localServer;
+    }
+
+    public static Map<String, ConnectedClientData> getClients()
+    {
+        return clients;
+    }
+
+    static ForgeConfigSpec.IntValue FEpasskeyLength;
     static ForgeConfigSpec.BooleanValue FElocalhostOnly;
     static ForgeConfigSpec.BooleanValue FEenableServer;
     static ForgeConfigSpec.IntValue FEport;
@@ -182,6 +155,9 @@ public class ModuleNetworking extends ConfigLoaderBase
     @Override
     public void load(Builder BUILDER, boolean isReload)
     {
+        BUILDER.push(CONFIG_CAT);
+        FEpasskeyLength = BUILDER.comment("Length of the randomly generated privateKeys").defineInRange("passkey_length", 6, 1, 256);
+        BUILDER.pop();
         BUILDER.push(CONFIG_CAT+".Server");
         FEenableServer = BUILDER.comment("Enable autoStartup of this FENetworkServer?").define("enable", false);
         FElocalhostOnly = BUILDER.comment("Disallow connections to this FENetworkServer from the web").define("localhostOnly", true);
@@ -197,6 +173,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     @Override
     public void bakeConfig(boolean reload)
     {
+        passkeyLength = FEpasskeyLength.get();
         enableAutoStartServer = FEenableServer.get();
         localhostOnly = FElocalhostOnly.get();
         serverPort = FEport.get();
@@ -332,6 +309,11 @@ public class ModuleNetworking extends ConfigLoaderBase
         if(localServer!=null) {
             DataManager.save(localServer, getLocalServerDataFile());
         }
+    }
+
+    public int getPasskeyLength()
+    {
+        return passkeyLength;
     }
     
 }

@@ -5,28 +5,28 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Packet2ClientPassword extends FEPacket {
+public class Packet4ServerPasswordResponce extends FEPacket {
 
-    private String password;
+    private boolean authenticated;
 
-    public Packet2ClientPassword() {}
+    public Packet4ServerPasswordResponce() {}
 
-    public Packet2ClientPassword(String password) {
-        this.password = password;
+    public Packet4ServerPasswordResponce(boolean authenticated) {
+        this.authenticated = authenticated;
     }
     
-    public String getPassword() {
-        return password;
+    public boolean isAuthenticated() {
+        return authenticated;
     }
     
     @Override
     public void encode(PacketBuffer buf) {
-        buf.writeUtf(password);
+        buf.writeBoolean(authenticated);
     }
 
     @Override
     public void decode(PacketBuffer buf) {
-        password = buf.readUtf();
+        authenticated = buf.readBoolean();
     }
 
     @Override
@@ -36,6 +36,6 @@ public class Packet2ClientPassword extends FEPacket {
 
     @Override
     public int getID() {
-        return 2;
+        return 4;
     }
 }

@@ -1,11 +1,17 @@
 package com.forgeessentials.serverNetwork.server;
 
+import com.forgeessentials.serverNetwork.ModuleNetworking;
+import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientPassword;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ServerPasswordResponce;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet4SharedCloseSession;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet5SharedCloseSession;
+import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -21,12 +27,12 @@ public class ServerPacketHandler implements PacketHandler
             if(responcePacket.getChannelVersion()==FENetworkServer.getInstance().getChannelVersionM()) {
                 // Connection is valid, send Validation packet
                 FENetworkServer.getInstance().getConnectedChannels().replace(responcePacket.getChannel(), true);
-                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet1ServerValidationResponce());
+                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet1ServerValidationResponce(ModuleNetworking.getLocalServer().getLocalServerId()));
                 return;
             }
-            System.out.println("Client tried joining with mismatched channel version! Closing connection.");
+            LoggingHandler.felog.error("FENetworkServer Client tried joining with mismatched channel version! Closing connection.");
         }
-        System.out.println("Invalid connection detected! Closing connection.");
+        LoggingHandler.felog.error("FENetworkServer Invalid connection detected! Closing connection.");
         String errorMessage = "Invalid protocol detected trying to access this ForgeEssentials Server Network!\n"
                 + "This protocol can only be used for connecting between two servers running ForgeEssentials 16.0.0+";
         ByteBuf errorBuffer = Unpooled.copiedBuffer(errorMessage, CharsetUtil.UTF_8);
@@ -37,18 +43,63 @@ public class ServerPacketHandler implements PacketHandler
     }
  
     @Override
-    public void handle(Packet2ClientPassword passwordPacket)
+    public void handle(Packet2ClientNewConnectionData newClientData)
     {
-        if(passwordPacket.getPassword().equals("password")) {
-            FENetworkServer.getInstance().sendPacketFor(passwordPacket.getChannel(), new Packet3ServerPasswordResponce(true));
-            return;
+        if(!ModuleNetworking.getClients().containsKey(newClientData.getClientId())) {
+            ConnectedClientData data = new ConnectedClientData(newClientData.getClientId());
+            String privateKey = EncryptionUtils.generatePasskey(ModuleNetworking.getInstance().getPasskeyLength());
+            data.setPrivateKey(privateKey);
+            ModuleNetworking.getClients().put(newClientData.getClientId(), data);
+            LoggingHandler.felog.info("FENetworkServer Connected a new client: "+ newClientData.getClientId());
+            LoggingHandler.felog.info("FENetworkServer Copy the privateKey from RemoteFENetworkClientData.json into the client/other server's LocalFENetworkClientData.json");
+            newClientData.getChannel().close();
         }
-        FENetworkServer.getInstance().sendPacketFor(passwordPacket.getChannel(), new Packet3ServerPasswordResponce(false));
+        else {
+            LoggingHandler.felog.error("FENetworkServer new client tried joining with alredy known clientId: "+ newClientData.getClientId());
+            LoggingHandler.felog.error("FENetworkServer kicking client");
+            newClientData.getChannel().close();
+        }
     }
 
     @Override
-    public void handle(Packet4SharedCloseSession closeSession)
+    public void handle(Packet3ClientConnectionData clientData)
     {
-        System.out.println("Received close orders");
+        ConnectedClientData data = ModuleNetworking.getClients().getOrDefault(clientData.getClientId(), null);
+        if(data==null) {
+            LoggingHandler.felog.error("FENetworkServer failed to find a client with the clientId: "+ clientData.getClientId());
+            LoggingHandler.felog.error("FENetworkServer kicking client");
+            clientData.getChannel().close();
+            return;
+        }
+        if(data.getPassword().equals("notSet")) {
+            LoggingHandler.felog.error("FENetworkServer You need to manualy enter the password of FENetworkClient: " + clientData.getClientId()
+            +" into the RemoteFENetworkClientData.json file before you can connect!");
+            clientData.getChannel().close();
+            LoggingHandler.felog.debug("FENetworkServer Needs to add FENetworkClient password");
+            return;
+        }
+        data.setCurrentChannel(clientData.getChannel());
+        try
+        {
+            if(EncryptionUtils.decryptString(clientData.getEncryptedPassword(), data.getPrivateKey()).equals(data.getPassword())) {
+                FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(true));
+                data.setAuthenticated(true);
+                return;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            LoggingHandler.felog.error("FENetworkServer Failed to send PasswordResponce FENetworkServer!");
+            FENetworkClient.getInstance().disconnect();
+            return;
+        }
+        data.setAuthenticated(false);
+        FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(false));
+    }
+
+    @Override
+    public void handle(Packet5SharedCloseSession closeSession)
+    {
+        System.out.println("FENetworkServer Received close orders");
     }
 }
