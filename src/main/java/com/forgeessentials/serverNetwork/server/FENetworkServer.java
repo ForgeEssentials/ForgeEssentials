@@ -105,7 +105,7 @@ public class FENetworkServer
             LoggingHandler.felog.error("FENetworkServer failed during stopping");
             return 1;
         }
-        LoggingHandler.felog.debug("FENetworkServer disconnected successfully");
+        LoggingHandler.felog.debug("FENetworkServer stopped successfully");
         return 0;
     }
 

@@ -91,6 +91,7 @@ public class FENetworkClient {
             return 1;
         }
         LoggingHandler.felog.debug("FENetworkClient disconnected successfully");
+        Thread.currentThread().getStackTrace();
         return 0;
     }
 

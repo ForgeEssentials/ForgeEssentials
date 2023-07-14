@@ -223,7 +223,7 @@ public class ModuleNetworking extends ConfigLoaderBase
      */
     public int stopServer()
     {
-        if (server != null)
+        if (server != null && server.isChannelOpen())
         {
             return server.stopServer();
         }
@@ -264,7 +264,7 @@ public class ModuleNetworking extends ConfigLoaderBase
      */
     public int stopClient()
     {
-        if (client != null)
+        if (client != null && client.isChannelOpen())
         {
             return client.disconnect();
         }

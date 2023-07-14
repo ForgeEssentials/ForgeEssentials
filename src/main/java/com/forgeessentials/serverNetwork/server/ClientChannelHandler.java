@@ -60,8 +60,9 @@ public class ClientChannelHandler extends ChannelInitializer<NioSocketChannel> {
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
             super.channelInactive(ctx);
-            feServer.getConnectedChannels().remove(ctx.channel());
-            feServer.getBlockedChannels().remove(ctx.channel());
+            Channel channel = ctx.channel();
+            LoggingHandler.felog.info("FENetworkServer Inactive Channel: " + channel);
+
         }
 
         @Override

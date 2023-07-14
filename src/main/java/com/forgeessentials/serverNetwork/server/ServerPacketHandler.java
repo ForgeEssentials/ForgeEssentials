@@ -84,13 +84,14 @@ public class ServerPacketHandler implements PacketHandler
             if(EncryptionUtils.decryptString(clientData.getEncryptedPassword(), data.getPrivateKey()).equals(data.getPassword())) {
                 FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(true));
                 data.setAuthenticated(true);
+                data.incrementNumberTimesConnected();
                 return;
             }
         }
         catch (Exception e) {
             e.printStackTrace();
             LoggingHandler.felog.error("FENetworkServer Failed to send PasswordResponce FENetworkServer!");
-            FENetworkClient.getInstance().disconnect();
+            clientData.getChannel().close();
             return;
         }
         data.setAuthenticated(false);

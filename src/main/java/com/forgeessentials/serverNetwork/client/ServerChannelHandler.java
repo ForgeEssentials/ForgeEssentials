@@ -54,12 +54,12 @@ public class ServerChannelHandler extends ChannelInitializer<NioSocketChannel> {
             super.channelUnregistered(ctx);
             Channel channel = ctx.channel();
             LoggingHandler.felog.info("FENetworkClient Channel unregistered: " + channel);
-            feClient.disconnect();
         }
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
             super.channelInactive(ctx);
-            feClient.disconnect();
+            Channel channel = ctx.channel();
+            LoggingHandler.felog.info("FENetworkClient Inactive Channel: " + channel);
         }
 
         @Override
