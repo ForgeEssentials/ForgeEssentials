@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketEncoder;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketPrepender;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketSplitter;
+import com.forgeessentials.serverNetwork.packetbase.handlers.ServerPacketDecoder;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,7 +45,7 @@ public class ClientChannelHandler extends ChannelInitializer<NioSocketChannel> {
         public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
             super.channelRegistered(ctx);
             Channel channel = ctx.channel();
-            System.out.println("New channel registered: " + channel);
+            LoggingHandler.felog.info("New channel registered: " + channel);
         }
         
         @Override
@@ -52,7 +54,7 @@ public class ClientChannelHandler extends ChannelInitializer<NioSocketChannel> {
             Channel channel = ctx.channel();
             feServer.getConnectedChannels().remove(channel);
             feServer.getBlockedChannels().remove(channel);
-            System.out.println("Channel unregistered: " + channel);
+            LoggingHandler.felog.info("Channel unregistered: " + channel);
         }
         
         @Override

@@ -6,6 +6,7 @@ import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientPasswor
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ServerPasswordResponce;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet4SharedCloseSession;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.channel.Channel;
 
@@ -20,7 +21,7 @@ public interface PacketHandler {
             if(FENetworkServer.getInstance().getConnectedChannels().get(channel)){
                 throw new IllegalArgumentException("The received object is not a packet! Object Type: " + obj.getClass().getName());
             }
-            System.out.println("Skipped unValidated non packet");
+            LoggingHandler.felog.error("Skipped unValidated non packet");
         }
     }
     default void handle(Object obj) {
@@ -32,23 +33,23 @@ public interface PacketHandler {
     }
 
     default void handle(Packet0ClientValidation responcePacket) {
-        System.out.println("Packet0ClientValidation unhandled");
+        LoggingHandler.felog.error("Packet0ClientValidation unhandled");
     }
 
     default void handle(Packet1ServerValidationResponce passwordPacket) {
-        System.out.println("Packet1ServerValidationResponce unhandled");
+        LoggingHandler.felog.error("Packet1ServerValidationResponce unhandled");
     };
 
     default void handle(Packet2ClientPassword passwordPacket) {
-        System.out.println("Packet2ClientPassword unhandled");
+        LoggingHandler.felog.error("Packet2ClientPassword unhandled");
     };
     
     default void handle(Packet3ServerPasswordResponce responcePacket) {
-        System.out.println("Packet3ServerPasswordResponce unhandled");
+        LoggingHandler.felog.error("Packet3ServerPasswordResponce unhandled");
     }
 
     default void handle(Packet4SharedCloseSession closePacket) {
-        System.out.println("Packet4SharedCloseSession unhandled");
+        LoggingHandler.felog.error("Packet4SharedCloseSession unhandled");
     };
 
 }

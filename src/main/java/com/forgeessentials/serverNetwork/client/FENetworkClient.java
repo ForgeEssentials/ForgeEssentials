@@ -3,6 +3,7 @@ package com.forgeessentials.serverNetwork.client;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -36,7 +37,7 @@ public class FENetworkClient {
 
     public int connect() {
         reset();
-        System.out.println("Connecting to " + remoteServerHost + ":" + remoteServerPort);
+        LoggingHandler.felog.info("Connecting to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
 
         bootstrap = new Bootstrap();
         bootstrap.group(nioEventLoopGroup);
@@ -53,14 +54,13 @@ public class FENetworkClient {
             channelFuture = bootstrap.connect(remoteServerHost, remoteServerPort).syncUninterruptibly();
 
             if(channelFuture.isSuccess()) {
-                System.out.println("Connected successfully");
+                LoggingHandler.felog.info("Connection successful");
                 sendPacket(new Packet0ClientValidation(channelNameM, channelVersionM));
             } else
                 return 1;
         } catch(Exception e) {
             e.printStackTrace();
-            System.err.println("Could not connect to " + remoteServerHost + ":" + remoteServerPort);
-
+            LoggingHandler.felog.error("Failed to connect to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
             return 1;
         }
         return 0;
@@ -88,7 +88,7 @@ public class FENetworkClient {
         if (packet == null)
             throw new NullPointerException("Packet cannot be null");
 
-        System.out.println("[OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
+        LoggingHandler.felog.debug("[OUT] " + packet.getID() + " " + packet.getClass().getSimpleName());
 
         nioSocketChannel.writeAndFlush(packet).addListener(new ChannelFutureListener() {
             @Override

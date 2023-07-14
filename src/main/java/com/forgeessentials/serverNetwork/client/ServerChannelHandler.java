@@ -2,6 +2,7 @@ package com.forgeessentials.serverNetwork.client;
 
 import java.util.concurrent.TimeUnit;
 
+import com.forgeessentials.serverNetwork.packetbase.handlers.ClientPacketDecoder;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketEncoder;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketPrepender;
 import com.forgeessentials.serverNetwork.packetbase.handlers.PacketSplitter;

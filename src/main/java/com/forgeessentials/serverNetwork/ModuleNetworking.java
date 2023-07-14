@@ -107,11 +107,11 @@ public class ModuleNetworking extends ConfigLoaderBase
     public void serverStopping(FEModuleServerStoppingEvent event)
     {
         if(getServer()!=null&&getClient()!=null) {
-            stopClient(false);
             stopServer(false);
+            stopClient(false);
         }else {
-            stopClient(true);
             stopServer(true);
+            stopClient(true);
         }
         mcServerStarted = false;
     }

@@ -12,7 +12,7 @@ public class ClientPacketHandler implements PacketHandler
     @Override
     public void handle(Packet1ServerValidationResponce validationResponce)
     {
-        FENetworkClient.getInstance().sendPacket(new Packet2ClientPassword("passowrd"));
+        FENetworkClient.getInstance().sendPacket(new Packet2ClientPassword("password"));
     }
 
     @Override

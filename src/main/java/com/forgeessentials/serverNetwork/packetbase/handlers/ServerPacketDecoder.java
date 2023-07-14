@@ -1,11 +1,12 @@
-package com.forgeessentials.serverNetwork.server;
+package com.forgeessentials.serverNetwork.packetbase.handlers;
 
 import java.io.IOException;
 import java.util.List;
 
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
-import com.forgeessentials.serverNetwork.packetbase.handlers.PacketSplitter;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.server.FENetworkServer;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -29,7 +30,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
             flag = FENetworkServer.getInstance().getConnectedChannels().get(channelHandlerContext.channel());
         }catch(NullPointerException e) {
             channelHandlerContext.channel().close();
-            System.out.println("Closing null type channel");
+            LoggingHandler.felog.error("Closing null type channel");
             return;
         }
         if(!flag) {
@@ -37,7 +38,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
                 packetID = packetBuffer.readVarInt();
             }catch(IllegalReferenceCountException e) {
                 channelHandlerContext.channel().close();
-                System.out.println("Closing invalid type packet channel");
+                LoggingHandler.felog.error("Closing invalid type packet channel");
                 return;
             }
         }
@@ -45,7 +46,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
             packetID = packetBuffer.readVarInt();
         }
         if(packetID!=(new Packet0ClientValidation()).getID()&&!flag) {
-            System.out.println("Recieved a packet before recieving validation packet from client");
+            LoggingHandler.felog.error("Recieved a packet before recieving validation packet from client");
             channelHandlerContext.pipeline().remove(ServerPacketDecoder.class);
             channelHandlerContext.pipeline().remove(PacketSplitter.class);
             FENetworkServer.getInstance().getBlockedChannels().add(channelHandlerContext.channel());
@@ -55,7 +56,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
         }
         FEPacket packet = FENetworkServer.getInstance().getPacketManager().getPacket(packetID);
 
-        System.out.println("[IN] " + packetID + " " + packet.getClass().getSimpleName());
+        LoggingHandler.felog.debug("[IN] " + packetID + " " + packet.getClass().getSimpleName());
         packet.decode(packetBuffer);
 
         if (packetBuffer.readableBytes() > 0) {

@@ -1,9 +1,11 @@
-package com.forgeessentials.serverNetwork.client;
+package com.forgeessentials.serverNetwork.packetbase.handlers;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,7 +25,7 @@ public class ClientPacketDecoder extends ByteToMessageDecoder {
         int packetID = packetBuffer.readVarInt();
         FEPacket packet = FENetworkClient.getInstance().getPacketManager().getPacket(packetID);
 
-        System.out.println("[IN] " + packetID + " " + packet.getClass().getSimpleName());
+        LoggingHandler.felog.debug("[IN] " + packetID + " " + packet.getClass().getSimpleName());
         packet.decode(packetBuffer);
 
         if (packetBuffer.readableBytes() > 0) {

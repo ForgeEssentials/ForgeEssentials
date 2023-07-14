@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import java.util.Objects;
 
@@ -48,7 +49,7 @@ public class FENetworkServer
 
     public final int startServer() {
         cleanConnection();
-        System.out.println("Starting server on " + remoteServerHost + ":" + remoteServerPort);
+        LoggingHandler.felog.info("Starting FENetworkServer at " + remoteServerHost + ":" + remoteServerPort);
 
         bootstrap = new ServerBootstrap();
         bootstrap.group(nioEventLoopGroup);
@@ -65,12 +66,12 @@ public class FENetworkServer
             channelFuture = bootstrap.localAddress(remoteServerHost, remoteServerPort).bind().syncUninterruptibly();
 
             if(channelFuture.isSuccess())
-                System.out.println("Server started successfully");
+                LoggingHandler.felog.info("Server started successfully");
             else
                 return 1;
         } catch(Exception e) {
             e.printStackTrace();
-            System.err.println("Could not start server on " + remoteServerHost + ":" + remoteServerPort);
+            LoggingHandler.felog.error("Failed to start FENetworkServer on " + remoteServerHost + ":" + remoteServerPort);
             return 1;
         }
         return 0;
@@ -118,7 +119,7 @@ public class FENetworkServer
     public void sendPacket(FEPacket packet) {
         Objects.requireNonNull(packet, "Packet cannot be null");
 
-        System.out.println("[OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
+        LoggingHandler.felog.debug("[OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
 
         for (Entry<Channel, Boolean> channel : getConnectedChannels().entrySet()) {
             if(!channel.getKey().isOpen())
@@ -140,19 +141,21 @@ public class FENetworkServer
         Objects.requireNonNull(packet, "Packet cannot be null");
         Objects.requireNonNull(channel, "Channel cannot be null");
 
-        System.out.println("[OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
+        LoggingHandler.felog.debug("[OUT] " + packet.getID() + " " + packet.getClass().getSimpleName());
 
         if(!channel.isOpen())
             return;
 
-        channel.writeAndFlush(packet).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                if(!channelFuture.isSuccess()) {
-                    channelFuture.cause().printStackTrace();
+        if(getConnectedChannels().get(channel)) {
+            channel.writeAndFlush(packet).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if(!channelFuture.isSuccess()) {
+                        channelFuture.cause().printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public static FENetworkServer getInstance()

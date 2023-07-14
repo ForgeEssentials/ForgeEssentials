@@ -2,6 +2,7 @@ package com.forgeessentials.serverNetwork.server;
 
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientPassword;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ServerPasswordResponce;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet4SharedCloseSession;
@@ -18,9 +19,9 @@ public class ServerPacketHandler implements PacketHandler
      // Validate the connection
         if(responcePacket.getChannelName().equals(FENetworkServer.getInstance().getChannelNameM())) {
             if(responcePacket.getChannelVersion()==FENetworkServer.getInstance().getChannelVersionM()) {
-                System.out.println("Valid connection detected, Continuing.");
-                // Connection is valid, remove the decoder from the pipeline
+                // Connection is valid, send Validation packet
                 FENetworkServer.getInstance().getConnectedChannels().replace(responcePacket.getChannel(), true);
+                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet1ServerValidationResponce());
                 return;
             }
             System.out.println("Client tried joining with mismatched channel version! Closing connection.");
