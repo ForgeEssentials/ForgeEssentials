@@ -1,7 +1,8 @@
 package com.forgeessentials.serverNetwork;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -9,6 +10,8 @@ import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -24,7 +27,11 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@FEModule(name = "Networking", parentMod = ForgeEssentials.class, canDisable = true)
+@FEModule(name = "FENetworking", parentMod = ForgeEssentials.class, canDisable = true)
+/**
+ * Module for all FENetworking connectivity
+ * @author maximuslotro
+ */
 public class ModuleNetworking extends ConfigLoaderBase
 {
     private static ForgeConfigSpec NETWORKING_CONFIG;
@@ -32,43 +39,81 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     private static final String CONFIG_CAT = "Networking";
 
+    @ModuleDir
+    public static File moduleDir;
+
+    /**
+     * Data for this local instance of FENetworkServer
+     * {@link String} localServerId is the unique UUID of this FENetworkServer
+     * @author maximuslotro
+     */
+    public static class LocalServerData
+    {
+        final String localServerId;
+        
+        LocalServerData(String localServerId){
+            this.localServerId = localServerId;
+        }
+    }
+    /**
+     * Data class for each FENetworkClient connected to this FENetworkServer
+     * {@link String} remoteClientId is the unique UUID of the connected client
+     * {@link String} privateKey is the unique preGenerated privateKey for this client to connect to this FENetworkServer
+     * {@link Integer} numberTimesConnected is the number of times the client has connected
+     * {@link Integer} permissionLevel is the level of permission the client has, range from 0-3
+     * @author maximuslotro
+     */
+    public static class ConnectedClientData
+    {
+        final String remoteClientId;
+        String privateKey="notSet";
+        int numberTimesConnected=0;
+        int permissionLevel=1;
+        
+        ConnectedClientData(String remoteClientId){
+            this.remoteClientId = remoteClientId;
+        }
+    }
+    /**
+     * Data for this local instance of FENetworkClient connected to a remote server
+     * {@link String} localClientId is the unique UUID of this local instance of FENetworkClient
+     * {@link String} remoteServerId is the unique UUID of the previously connected FENetworkServer
+     * {@link String} privateKey is the unique preGenerated privateKey for this client to connect to a certain FENetworkServer
+     * @author maximuslotro
+     */
+    public static class LocalClientData
+    {
+        final String localClientId;
+        String remoteServerId = "notSet";
+        String privatekey="notSet";
+        
+        LocalClientData(String localClientId){
+            this.localClientId = localClientId;
+        }
+    }
+    private static Map<String, ConnectedClientData> clients  = new HashMap<>();
+    private static LocalClientData localClient;
+    private static LocalServerData localServer;
+
     private static final int channelVersion = 123456;
     private static final String channelName = "FENetwork";
-
-    public static final char[] PASSKEY_CHARS;
 
     public static final String PERM = "fe.networking";
     public static final String PERM_CONTROL = PERM + ".control";
 
     public static final GameProfile FAKEPLAYER = new GameProfile(new UUID(1451486139, 514649498), "$FE_NETWORK");
 
-    static
-    {
-        // Build a character set with only easily distinguishable characters
-        Set<Character> chars = new HashSet<Character>();
-        for (char c = 'a'; c <= 'z'; c++)
-            chars.add(c);
-        for (char c = 'A'; c <= 'Z'; c++)
-            chars.add(c);
-        for (char c = '0'; c <= '9'; c++)
-            chars.add(c);
-        chars.add('+');
-        chars.add('-');
-        chars.add(':');
-        PASSKEY_CHARS = new char[chars.size()];
-        int idx = 0;
-        for (Character c : chars)
-            PASSKEY_CHARS[idx++] = c;
-    }
-
     /* ------------------------------------------------------------ */
 
     @FEModule.Instance
     protected static ModuleNetworking instance;
 
-    protected int port;
-
     protected boolean localhostOnly;
+    protected boolean enableAutoStartServer;
+    protected int serverPort;
+    protected boolean enableAutoStartClient;
+    protected String clientHostname;
+    protected int clientPort;
 
     protected FENetworkServer server;
 
@@ -95,8 +140,19 @@ public class ModuleNetworking extends ConfigLoaderBase
     {
         //APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
-        //loadPasskeys();
-        startServer();
+        loadData();
+        if(localServer==null) {
+            localServer = new LocalServerData("ForgeEssentialsMainServer");
+        }
+        if(localClient==null) {
+            localClient = new LocalClientData("ForgeEssentialsClientServer");
+        }
+        if(enableAutoStartServer) {
+            startServer();
+        }
+        if(enableAutoStartClient) {
+            startClient();
+        }
         mcServerStarted = true;
     }
 
@@ -106,36 +162,47 @@ public class ModuleNetworking extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStopping(FEModuleServerStoppingEvent event)
     {
-        if(getServer()!=null&&getClient()!=null) {
-            stopServer(false);
-            stopClient(false);
-        }else {
-            stopServer(true);
-            stopClient(true);
+        saveData();
+        if(getServer()!=null) {
+            stopServer();
+        }
+        if(getClient()!=null) {
+            stopClient();
         }
         mcServerStarted = false;
     }
 
     static ForgeConfigSpec.BooleanValue FElocalhostOnly;
-    static ForgeConfigSpec.ConfigValue<String> FEhostname;
+    static ForgeConfigSpec.BooleanValue FEenableServer;
     static ForgeConfigSpec.IntValue FEport;
+    static ForgeConfigSpec.BooleanValue FEenableClient;
+    static ForgeConfigSpec.ConfigValue<String> FEclienthostname;
+    static ForgeConfigSpec.IntValue FEclientport;
 
     @Override
     public void load(Builder BUILDER, boolean isReload)
     {
-        BUILDER.push(CONFIG_CAT);
-        FElocalhostOnly = BUILDER.comment("Allow connections from the web").define("localhostOnly", true);
-        FEport = BUILDER.comment("Port to connect remotes to").defineInRange("port", 27020, 0, 65535);
+        BUILDER.push(CONFIG_CAT+".Server");
+        FEenableServer = BUILDER.comment("Enable autoStartup of this FENetworkServer?").define("enable", false);
+        FElocalhostOnly = BUILDER.comment("Disallow connections to this FENetworkServer from the web").define("localhostOnly", true);
+        FEport = BUILDER.comment("Port for FENetworkClient's to connect to").defineInRange("port", 27020, 0, 65535);
+        BUILDER.pop();
+        BUILDER.push(CONFIG_CAT+".Client");
+        FEenableClient = BUILDER.comment("Enable autoStartup of this FENetworkClient?").define("enable", false);
+        FEclienthostname = BUILDER.comment("Hostname fo this FENetworkClient to connect to").define("hostname-ip", "localhost");
+        FEclientport = BUILDER.comment("Port this FENetworkClient's to connect to").defineInRange("port", 27020, 0, 65535);
         BUILDER.pop();
     }
 
     @Override
     public void bakeConfig(boolean reload)
     {
+        enableAutoStartServer = FEenableServer.get();
         localhostOnly = FElocalhostOnly.get();
-        port = FEport.get();
-        if (mcServerStarted)
-            startServer();
+        serverPort = FEport.get();
+        enableAutoStartClient = FEenableClient.get();
+        clientHostname = FEclienthostname.get();
+        clientPort = FEclientport.get();
     }
 
     @Override
@@ -164,7 +231,7 @@ public class ModuleNetworking extends ConfigLoaderBase
         try
         {
             String bindAddress = localhostOnly ? "localhost" : "0.0.0.0";
-            server = new FENetworkServer(bindAddress, port, channelName, channelVersion);
+            server = new FENetworkServer(bindAddress, serverPort, channelName, channelVersion);
             return server.startServer();
         }
         catch (Exception e1)
@@ -177,7 +244,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public int stopServer(boolean sendClosePacket)
+    public int stopServer()
     {
         if (server != null)
         {
@@ -205,7 +272,7 @@ public class ModuleNetworking extends ConfigLoaderBase
             return 1;
         try
         {
-            client = new FENetworkClient("localhost", port, channelName, channelVersion);
+            client = new FENetworkClient(clientHostname, clientPort, channelName, channelVersion);
             return client.connect();
         }
         catch (Exception e1)
@@ -218,7 +285,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     /**
      * Stops the networking server
      */
-    public int stopClient(boolean sendClosePacket)
+    public int stopClient()
     {
         if (client != null)
         {
@@ -227,35 +294,44 @@ public class ModuleNetworking extends ConfigLoaderBase
         return 1;
     }
 
-//    /* ------------------------------------------------------------ */
-//
-//    /**
-//     * Tries to get the hostname
-//     */
-//    public String getHostName()
-//    {
-//        try
-//        {
-//            return InetAddress.getLocalHost().getHostName();
-//        }
-//        catch (UnknownHostException e)
-//        {
-//            return "localhost";
-//        }
-//    }
-//
-//    public static File getSaveFile()
-//    {
-//        return new File(DataManager.getInstance().getBasePath(), "FENetworkPasskeys.json");
-//    }
-//
-//    /**
-//     * Load the passkeys from data-backend
-//     */
-//    public void loadPasskeys()
-//    {
-//        passkeys = DataManager.load(ServerPasskeys.class, getSaveFile());
-//        if (passkeys == null)
-//            passkeys = new ServerPasskeys();
-//    }
+    /* ------------------------------------------------------------ */
+
+    public static File getRemoteClientDataFile()
+    {
+        return new File(moduleDir, "RemoteFENetworkClientData.json");
+    }
+    public static File getLocalClientDataFile()
+    {
+        return new File(moduleDir, "LocalFENetworkClientData.json");
+    }
+    public static File getLocalServerDataFile()
+    {
+        return new File(moduleDir, "LocalFENetworkServerData.json");
+    }
+
+    /**
+     * Load the clientData from data-backend
+     */
+    public void loadData()
+    {
+        clients = DataManager.loadAll(ConnectedClientData.class, getRemoteClientDataFile());
+        localClient = DataManager.load(LocalClientData.class, getLocalClientDataFile());
+        localServer = DataManager.load(LocalServerData.class, getLocalServerDataFile());
+    }
+    /**
+     * Save the clientData to data-backend
+     */
+    public void saveData()
+    {
+        if(!clients.isEmpty()) {
+            DataManager.save(clients, getRemoteClientDataFile());
+        }
+        if(localClient!=null) {
+            DataManager.save(localClient, getLocalClientDataFile());
+        }
+        if(localServer!=null) {
+            DataManager.save(localServer, getLocalServerDataFile());
+        }
+    }
+    
 }
