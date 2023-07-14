@@ -74,6 +74,7 @@ public class FENetworkClient {
     }
 
     public int disconnect() {
+        LoggingHandler.felog.debug("FENetworkClient disconnecting");
         try {
             if(nioSocketChannel != null && nioSocketChannel.isOpen())
                 nioSocketChannel.close();
@@ -86,8 +87,10 @@ public class FENetworkClient {
 
             reset();
         }catch(Exception e) {
+            LoggingHandler.felog.error("FENetworkClient failed during disconnecting");
             return 1;
         }
+        LoggingHandler.felog.debug("FENetworkClient disconnected successfully");
         return 0;
     }
 

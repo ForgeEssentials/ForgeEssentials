@@ -25,7 +25,7 @@ public class ClientPacketDecoder extends ByteToMessageDecoder {
         int packetID = packetBuffer.readVarInt();
         FEPacket packet = FENetworkClient.getInstance().getPacketManager().getPacket(packetID);
 
-        LoggingHandler.felog.debug("[IN] " + packetID + " " + packet.getClass().getSimpleName());
+        LoggingHandler.felog.debug("FENetworkClient [IN] " + packetID + " " + packet.getClass().getSimpleName());
         packet.decode(packetBuffer);
 
         if (packetBuffer.readableBytes() > 0) {

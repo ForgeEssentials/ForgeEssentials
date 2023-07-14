@@ -30,7 +30,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
             flag = FENetworkServer.getInstance().getConnectedChannels().get(channelHandlerContext.channel());
         }catch(NullPointerException e) {
             channelHandlerContext.channel().close();
-            LoggingHandler.felog.error("Closing null type channel");
+            LoggingHandler.felog.error("FENetworkServer Closing null type channel");
             return;
         }
         if(!flag) {
@@ -38,7 +38,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
                 packetID = packetBuffer.readVarInt();
             }catch(IllegalReferenceCountException e) {
                 channelHandlerContext.channel().close();
-                LoggingHandler.felog.error("Closing invalid type packet channel");
+                LoggingHandler.felog.error("FENetworkServer Closing invalid type packet channel");
                 return;
             }
         }
@@ -46,7 +46,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
             packetID = packetBuffer.readVarInt();
         }
         if(packetID!=(new Packet0ClientValidation()).getID()&&!flag) {
-            LoggingHandler.felog.error("Recieved a packet before recieving validation packet from client");
+            LoggingHandler.felog.error("FENetworkServer Recieved a packet before recieving validation packet from client");
             channelHandlerContext.pipeline().remove(ServerPacketDecoder.class);
             channelHandlerContext.pipeline().remove(PacketSplitter.class);
             FENetworkServer.getInstance().getBlockedChannels().add(channelHandlerContext.channel());
@@ -56,7 +56,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
         }
         FEPacket packet = FENetworkServer.getInstance().getPacketManager().getPacket(packetID);
 
-        LoggingHandler.felog.debug("[IN] " + packetID + " " + packet.getClass().getSimpleName());
+        LoggingHandler.felog.debug("FENetworkServer [IN] " + packetID + " " + packet.getClass().getSimpleName());
         packet.decode(packetBuffer);
 
         if (packetBuffer.readableBytes() > 0) {

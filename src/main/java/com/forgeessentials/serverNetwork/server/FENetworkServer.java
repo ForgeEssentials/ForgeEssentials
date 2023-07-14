@@ -85,6 +85,7 @@ public class FENetworkServer
     }
 
     public final int stopServer() {
+        LoggingHandler.felog.debug("FENetworkServer stopping");
         try {
             for (Channel channel : getConnectedChannels().keySet()) {
                 if(channel != null && channel.isOpen()) {
@@ -101,8 +102,10 @@ public class FENetworkServer
 
             cleanConnection();
         }catch(Exception e) {
+            LoggingHandler.felog.error("FENetworkServer failed during stopping");
             return 1;
         }
+        LoggingHandler.felog.debug("FENetworkServer disconnected successfully");
         return 0;
     }
 

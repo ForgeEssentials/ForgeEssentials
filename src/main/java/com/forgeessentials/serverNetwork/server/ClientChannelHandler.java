@@ -45,7 +45,7 @@ public class ClientChannelHandler extends ChannelInitializer<NioSocketChannel> {
         public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
             super.channelRegistered(ctx);
             Channel channel = ctx.channel();
-            LoggingHandler.felog.info("New channel registered: " + channel);
+            LoggingHandler.felog.info("FENetworkServer New channel registered: " + channel);
         }
         
         @Override
@@ -54,7 +54,7 @@ public class ClientChannelHandler extends ChannelInitializer<NioSocketChannel> {
             Channel channel = ctx.channel();
             feServer.getConnectedChannels().remove(channel);
             feServer.getBlockedChannels().remove(channel);
-            LoggingHandler.felog.info("Channel unregistered: " + channel);
+            LoggingHandler.felog.info("FENetworkServer Channel unregistered: " + channel);
         }
         
         @Override
