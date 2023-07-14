@@ -65,7 +65,7 @@ public class ModuleBackup extends ConfigLoaderBase
     public static final String PERM_NOTIFY = PERM + ".notify";
 
     public static final String CONFIG_CAT = "Backup";
-    public static final String CONFIG_CAT_WORLDS = CONFIG_CAT + ".Worlds";
+    public static final String CONFIG_CAT_WORLDS = CONFIG_CAT + "_Worlds";
 
     private static ForgeConfigSpec BACKUP_CONFIG;
     private static final ConfigData data = new ConfigData("Backup", BACKUP_CONFIG, new ForgeConfigSpec.Builder());

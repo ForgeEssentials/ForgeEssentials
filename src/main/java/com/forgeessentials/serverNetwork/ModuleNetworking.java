@@ -155,15 +155,15 @@ public class ModuleNetworking extends ConfigLoaderBase
     @Override
     public void load(Builder BUILDER, boolean isReload)
     {
-        BUILDER.push(CONFIG_CAT);
+        BUILDER.push(CONFIG_CAT+"_General");
         FEpasskeyLength = BUILDER.comment("Length of the randomly generated privateKeys").defineInRange("passkey_length", 6, 1, 256);
         BUILDER.pop();
-        BUILDER.push(CONFIG_CAT+".Server");
+        BUILDER.push(CONFIG_CAT+"_Server");
         FEenableServer = BUILDER.comment("Enable autoStartup of this FENetworkServer?").define("enable", false);
         FElocalhostOnly = BUILDER.comment("Disallow connections to this FENetworkServer from the web").define("localhostOnly", true);
         FEport = BUILDER.comment("Port for FENetworkClient's to connect to").defineInRange("port", 27020, 0, 65535);
         BUILDER.pop();
-        BUILDER.push(CONFIG_CAT+".Client");
+        BUILDER.push(CONFIG_CAT+"_Client");
         FEenableClient = BUILDER.comment("Enable autoStartup of this FENetworkClient?").define("enable", false);
         FEclienthostname = BUILDER.comment("Hostname fo this FENetworkClient to connect to").define("hostname-ip", "localhost");
         FEclientport = BUILDER.comment("Port this FENetworkClient's to connect to").defineInRange("port", 27020, 0, 65535);
