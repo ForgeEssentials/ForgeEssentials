@@ -1,9 +1,10 @@
-package com.forgeessentials.serverNetwork.packets;
+package com.forgeessentials.serverNetwork.packetbase;
 
 import java.util.ArrayList;
 
-import com.forgeessentials.serverNetwork.packets.client.ClientPasswordPacket;
-import com.forgeessentials.serverNetwork.packets.shared.CloseSessionPacket;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientPassword;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet4SharedCloseSession;
 
 public class FEPacketManager
 {
@@ -16,10 +17,11 @@ public class FEPacketManager
         this.packetHandler = packethandler;
         
         //Client packets
-        packetTypes.add(new ClientPasswordPacket());
+        packetTypes.add(new Packet2ClientPassword());
+        packetTypes.add(new Packet0ClientValidation());
         //Server packets
         //Shared Packets
-        packetTypes.add(new CloseSessionPacket());
+        packetTypes.add(new Packet4SharedCloseSession());
     }
     
     public int getPacketId(FEPacket packet) {

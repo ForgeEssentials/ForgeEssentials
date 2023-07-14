@@ -1,8 +1,8 @@
 package com.forgeessentials.serverNetwork.client;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
-import com.forgeessentials.serverNetwork.packets.FEPacketManager;
-import com.forgeessentials.serverNetwork.packets.client.ClientPasswordPacket;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -54,7 +54,7 @@ public class FENetworkClient {
 
             if(channelFuture.isSuccess()) {
                 System.out.println("Connected successfully");
-                sendPacket(new ClientPasswordPacket("HI!"));
+                sendPacket(new Packet0ClientValidation(channelNameM, channelVersionM));
             } else
                 return 1;
         } catch(Exception e) {

@@ -3,7 +3,7 @@ package com.forgeessentials.serverNetwork.client;
 import java.io.IOException;
 import java.util.List;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

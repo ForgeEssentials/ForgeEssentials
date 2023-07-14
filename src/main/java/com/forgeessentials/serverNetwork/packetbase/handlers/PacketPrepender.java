@@ -1,4 +1,4 @@
-package com.forgeessentials.serverNetwork.packets.handlers;
+package com.forgeessentials.serverNetwork.packetbase.handlers;
 
 import java.util.List;
 

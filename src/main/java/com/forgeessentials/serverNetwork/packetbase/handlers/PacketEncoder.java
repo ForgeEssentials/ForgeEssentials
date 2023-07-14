@@ -1,6 +1,6 @@
-package com.forgeessentials.serverNetwork.packets.handlers;
+package com.forgeessentials.serverNetwork.packetbase.handlers;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

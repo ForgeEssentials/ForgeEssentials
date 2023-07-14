@@ -1,17 +1,17 @@
-package com.forgeessentials.serverNetwork.packets.server;
+package com.forgeessentials.serverNetwork.packetbase.packets;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
-import com.forgeessentials.serverNetwork.packets.PacketHandler;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class ServerPasswordResponcePacket extends FEPacket {
+public class Packet3ServerPasswordResponce extends FEPacket {
 
     private boolean authenticated;
 
-    public ServerPasswordResponcePacket() {}
+    public Packet3ServerPasswordResponce() {}
 
-    public ServerPasswordResponcePacket(boolean authenticated) {
+    public Packet3ServerPasswordResponce(boolean authenticated) {
         this.authenticated = authenticated;
     }
     
@@ -36,6 +36,6 @@ public class ServerPasswordResponcePacket extends FEPacket {
 
     @Override
     public int getID() {
-        return 2;
+        return 3;
     }
 }

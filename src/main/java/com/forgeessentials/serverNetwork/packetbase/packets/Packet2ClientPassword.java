@@ -1,17 +1,17 @@
-package com.forgeessentials.serverNetwork.packets.client;
+package com.forgeessentials.serverNetwork.packetbase.packets;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
-import com.forgeessentials.serverNetwork.packets.PacketHandler;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class ClientPasswordPacket extends FEPacket {
+public class Packet2ClientPassword extends FEPacket {
 
     private String password;
 
-    public ClientPasswordPacket() {}
+    public Packet2ClientPassword() {}
 
-    public ClientPasswordPacket(String password) {
+    public Packet2ClientPassword(String password) {
         this.password = password;
     }
     
@@ -36,6 +36,6 @@ public class ClientPasswordPacket extends FEPacket {
 
     @Override
     public int getID() {
-        return 1;
+        return 2;
     }
 }

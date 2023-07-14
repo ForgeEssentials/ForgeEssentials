@@ -1,10 +1,14 @@
 package com.forgeessentials.serverNetwork.server;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
-import com.forgeessentials.serverNetwork.packets.FEPacketManager;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
+
+import java.util.Objects;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -31,7 +35,8 @@ public class FENetworkServer
     private ChannelFuture channelFuture;
     
     private FEPacketManager packetManager;
-    private ArrayList<Channel> connectedChannels;
+    private Map<Channel, Boolean> connectedChannels;
+    private ArrayList<Channel> blockedChannels;
 
     public FENetworkServer(String remoteServerHost, int remoteServerPort, String channelname, int channelversion) {
         instance = this;
@@ -73,8 +78,9 @@ public class FENetworkServer
 
     public final int stopServer() {
         try {
-            for (Channel channel : getConnectedChannels()) {
+            for (Channel channel : getConnectedChannels().keySet()) {
                 if(channel != null && channel.isOpen()) {
+                    channel.flush();
                     channel.close();
                 }
             }
@@ -91,15 +97,20 @@ public class FENetworkServer
         }
         return 0;
     }
-    public ArrayList<Channel> getConnectedChannels()
+    public Map<Channel, Boolean> getConnectedChannels()
     {
         return connectedChannels;
+    }
+    public ArrayList<Channel> getBlockedChannels()
+    {
+        return blockedChannels;
     }
 
     private void cleanConnection()
     {
         nioEventLoopGroup = new NioEventLoopGroup(1);
-        connectedChannels = new ArrayList<>();
+        connectedChannels = new HashMap<>();
+        blockedChannels = new ArrayList<>();
         bootstrap = null;
         packetManager = new FEPacketManager(new ServerPacketHandler());
     }
@@ -109,18 +120,19 @@ public class FENetworkServer
 
         System.out.println("[OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
 
-        for (Channel channel : getConnectedChannels()) {
-            if(!channel.isOpen())
+        for (Entry<Channel, Boolean> channel : getConnectedChannels().entrySet()) {
+            if(!channel.getKey().isOpen())
                 continue;
-
-            channel.writeAndFlush(packet).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if(!channelFuture.isSuccess()) {
-                        channelFuture.cause().printStackTrace();
+            if(channel.getValue()) {
+                channel.getKey().writeAndFlush(packet).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                        if(!channelFuture.isSuccess()) {
+                            channelFuture.cause().printStackTrace();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -161,6 +173,16 @@ public class FENetworkServer
     public FEPacketManager getPacketManager()
     {
         return packetManager;
+    }
+
+    public String getChannelNameM()
+    {
+        return channelNameM;
+    }
+
+    public int getChannelVersionM()
+    {
+        return channelVersionM;
     }
 
 }

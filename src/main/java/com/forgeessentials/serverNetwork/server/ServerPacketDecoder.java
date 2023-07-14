@@ -3,11 +3,14 @@ package com.forgeessentials.serverNetwork.server;
 import java.io.IOException;
 import java.util.List;
 
-import com.forgeessentials.serverNetwork.packets.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.FEPacket;
+import com.forgeessentials.serverNetwork.packetbase.handlers.PacketSplitter;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.util.IllegalReferenceCountException;
 import net.minecraft.network.PacketBuffer;
 
 public class ServerPacketDecoder extends ByteToMessageDecoder {
@@ -20,7 +23,36 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        int packetID = packetBuffer.readVarInt();
+        int packetID;
+        boolean flag;
+        try {
+            flag = FENetworkServer.getInstance().getConnectedChannels().get(channelHandlerContext.channel());
+        }catch(NullPointerException e) {
+            channelHandlerContext.channel().close();
+            System.out.println("Closing null type channel");
+            return;
+        }
+        if(!flag) {
+            try {
+                packetID = packetBuffer.readVarInt();
+            }catch(IllegalReferenceCountException e) {
+                channelHandlerContext.channel().close();
+                System.out.println("Closing invalid type packet channel");
+                return;
+            }
+        }
+        else {
+            packetID = packetBuffer.readVarInt();
+        }
+        if(packetID!=(new Packet0ClientValidation()).getID()&&!flag) {
+            System.out.println("Recieved a packet before recieving validation packet from client");
+            channelHandlerContext.pipeline().remove(ServerPacketDecoder.class);
+            channelHandlerContext.pipeline().remove(PacketSplitter.class);
+            FENetworkServer.getInstance().getBlockedChannels().add(channelHandlerContext.channel());
+            channelHandlerContext.flush();
+            channelHandlerContext.channel().close();
+            return;
+        }
         FEPacket packet = FENetworkServer.getInstance().getPacketManager().getPacket(packetID);
 
         System.out.println("[IN] " + packetID + " " + packet.getClass().getSimpleName());

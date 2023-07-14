@@ -1,7 +1,7 @@
 package com.forgeessentials.serverNetwork;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.serverNetwork.packets.client.ClientPasswordPacket;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientPassword;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -80,11 +80,11 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("clientmessage")){
-            ModuleNetworking.instance.getClient().sendPacket(new ClientPasswordPacket("Client Message"));
+            ModuleNetworking.instance.getClient().sendPacket(new Packet2ClientPassword("Client Message"));
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("servermessage")){
-            ModuleNetworking.instance.getServer().sendPacket(new ClientPasswordPacket("Client Message"));
+            ModuleNetworking.instance.getServer().sendPacket(new Packet2ClientPassword("Client Message"));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

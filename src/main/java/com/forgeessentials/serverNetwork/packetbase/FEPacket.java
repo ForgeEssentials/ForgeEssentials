@@ -1,4 +1,4 @@
-package com.forgeessentials.serverNetwork.packets;
+package com.forgeessentials.serverNetwork.packetbase;
 
 import net.minecraft.network.PacketBuffer;
 

@@ -2,9 +2,9 @@ package com.forgeessentials.serverNetwork.client;
 
 import java.util.concurrent.TimeUnit;
 
-import com.forgeessentials.serverNetwork.packets.handlers.PacketEncoder;
-import com.forgeessentials.serverNetwork.packets.handlers.PacketPrepender;
-import com.forgeessentials.serverNetwork.packets.handlers.PacketSplitter;
+import com.forgeessentials.serverNetwork.packetbase.handlers.PacketEncoder;
+import com.forgeessentials.serverNetwork.packetbase.handlers.PacketPrepender;
+import com.forgeessentials.serverNetwork.packetbase.handlers.PacketSplitter;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
