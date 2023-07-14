@@ -48,7 +48,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     {
         if(params.equals("startclient")){
             if(ModuleNetworking.instance.startClient()!=0){
-                ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client or client is already running!");
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client, connect to sever, or client is already running!");
                 return Command.SINGLE_SUCCESS;
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started client!");

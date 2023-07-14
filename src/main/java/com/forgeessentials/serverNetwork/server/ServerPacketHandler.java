@@ -1,7 +1,6 @@
 package com.forgeessentials.serverNetwork.server;
 
 import com.forgeessentials.serverNetwork.ModuleNetworking;
-import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;

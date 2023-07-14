@@ -73,8 +73,10 @@ public class FENetworkServer
 
             if(channelFuture.isSuccess())
                 LoggingHandler.felog.info("FENetworkServer started successfully");
-            else
+            else {
+                stopServer();
                 return 1;
+            }
         } catch(Exception e) {
             e.printStackTrace();
             LoggingHandler.felog.error("FENetworkServer Failed to start on " + remoteServerHost + ":" + remoteServerPort);

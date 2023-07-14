@@ -548,7 +548,7 @@ public class ForgeEssentials
 
     public boolean checkPerms(String commandPermissionNode, ServerPlayerEntity sender)
     {
-        LoggingHandler.felog.debug("Checking command perm: " + commandPermissionNode);
+        //LoggingHandler.felog.debug("Checking command perm: " + commandPermissionNode);
         return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandPermissionNode);
     }
 

@@ -1,5 +1,7 @@
 package com.forgeessentials.serverNetwork.client;
 
+import java.net.ConnectException;
+
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
@@ -65,6 +67,12 @@ public class FENetworkClient {
             } else
                 return 1;
         } catch(Exception e) {
+            if(e instanceof ConnectException) {
+                LoggingHandler.felog.error("FENetworkClient Failed to connect to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
+                LoggingHandler.felog.error("FENetworkClient coundn't find FENetworkServer");
+                disconnect();
+                return 1;
+            }
             e.printStackTrace();
             LoggingHandler.felog.error("FENetworkClient Failed to connect to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
             disconnect();
