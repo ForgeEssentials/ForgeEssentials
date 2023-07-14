@@ -31,7 +31,9 @@ public class ClientPacketHandler implements PacketHandler
                 LoggingHandler.felog.error("FENetworkClient You need to manualy enter the privateKey of FENetworkServer: " + validationResponce.getServerId()
                 +" into the LocalFENetworkClientData file before you can connect!");
                 LoggingHandler.felog.debug("FENetworkClient Needs to add privateKey");
-                FENetworkClient.getInstance().disconnect();
+                if(!FENetworkClient.getInstance().shutdown) {
+                    FENetworkClient.getInstance().disconnect();
+                }
                 return;
             }
             LoggingHandler.felog.info("FENetworkClient Connected to known FENetworkServer: " + validationResponce.getServerId());

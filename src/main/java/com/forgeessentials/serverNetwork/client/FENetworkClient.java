@@ -31,6 +31,8 @@ public class FENetworkClient {
     private NioEventLoopGroup nioEventLoopGroup;
 
     private FEPacketManager packetManager;
+    
+    public boolean shutdown =false;
 
     public FENetworkClient(String remoteServerHost, int remoteServerPort, String channelname, int channelversion) {
         instance = this;
@@ -82,6 +84,7 @@ public class FENetworkClient {
     }
 
     public int disconnect() {
+        shutdown=true;
         LoggingHandler.felog.debug("FENetworkClient disconnecting");
         try {
             if(nioSocketChannel != null && nioSocketChannel.isOpen())
