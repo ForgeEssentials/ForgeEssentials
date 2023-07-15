@@ -66,13 +66,29 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if(params.equals("startboth")){
-            execute(ctx, "startserver");
-            execute(ctx, "startclient");
+            if(ModuleNetworking.instance.startServer()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to start server or server is already running!");
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started server!");
+            if(ModuleNetworking.instance.startClient()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client, connect to sever, or client is already running!");
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started client!");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopboth")){
-            execute(ctx, "stopclient");
-            execute(ctx, "stopserver");
+            if(ModuleNetworking.instance.stopClient()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop client or client is already stopped!");
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped client!");
+            if(ModuleNetworking.instance.stopServer()!=0){
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped server!");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("startclient")){

@@ -84,6 +84,8 @@ public class ServerPacketHandler implements PacketHandler
                 FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(true));
                 data.setAuthenticated(true);
                 data.incrementNumberTimesConnected();
+                ModuleNetworking.getClients().put(clientData.getClientId(), data);
+                LoggingHandler.felog.debug("FENetworkServer Client authenticated");
                 return;
             }
         }
@@ -94,6 +96,7 @@ public class ServerPacketHandler implements PacketHandler
             return;
         }
         data.setAuthenticated(false);
+        ModuleNetworking.getClients().put(clientData.getClientId(), data);
         FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(false));
     }
 
