@@ -1,8 +1,11 @@
 package com.forgeessentials.serverNetwork.client;
 
 import com.forgeessentials.serverNetwork.ModuleNetworking;
+import com.forgeessentials.serverNetwork.NetworkParentSendingOnClientCommandSender;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
@@ -11,11 +14,13 @@ import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
 import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
 public class ClientPacketHandler implements PacketHandler
 {
 
     @Override
-    public void handle(Packet1ServerValidationResponce validationResponce)
+    public void handle(Packet1ServerValidationResponse validationResponce)
     {
         LocalClientData data = ModuleNetworking.getLocalClient();
         if(data.getRemoteServerId().equals("notSet")) {
@@ -36,7 +41,7 @@ public class ClientPacketHandler implements PacketHandler
                 }
                 return;
             }
-            LoggingHandler.felog.info("FENetworkClient Connected to known FENetworkServer: " + validationResponce.getServerId());
+            LoggingHandler.felog.debug("FENetworkClient Connected to known FENetworkServer: " + validationResponce.getServerId());
             try
             {
                 FENetworkClient.getInstance().sendPacket(new Packet3ClientConnectionData(data.getLocalClientId(), EncryptionUtils.encryptString(data.getPassword(), data.getPrivatekey())));
@@ -59,12 +64,26 @@ public class ClientPacketHandler implements PacketHandler
     public void handle(Packet4ServerPasswordResponce passwordPacket)
     {
         ModuleNetworking.getLocalClient().setAuthenticated(passwordPacket.isAuthenticated());
-        System.out.println("FENetworkClient authentication "+(passwordPacket.isAuthenticated() ?"Successful":"Failed"));
+        LoggingHandler.felog.debug("FENetworkClient authentication "+(passwordPacket.isAuthenticated() ?"Successful":"Failed"));
     }
 
     @Override
     public void handle(Packet5SharedCloseSession closeSession)
     {
         System.out.println("FENetworkClient Received close orders");
+    }
+
+    @Override
+    public void handle(Packet10SharedCommandSending commandPacket)
+    {
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
+                new NetworkParentSendingOnClientCommandSender(ModuleNetworking.getLocalClient().getRemoteServerId()).createCommandSourceStack(), 
+                commandPacket.getCommandToSend());
+    }
+
+    @Override
+    public void handle(Packet11SharedCommandResponse commandResponce)
+    {
+        LoggingHandler.felog.info("CommandResponse from server: "+commandResponce.getCommandResponse());
     }
 }

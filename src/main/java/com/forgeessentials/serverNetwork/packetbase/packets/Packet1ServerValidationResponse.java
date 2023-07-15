@@ -5,13 +5,13 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Packet1ServerValidationResponce extends FEPacket {
+public class Packet1ServerValidationResponse extends FEPacket {
 
     String serverId;
 
-    public Packet1ServerValidationResponce(){}
+    public Packet1ServerValidationResponse(){}
 
-    public Packet1ServerValidationResponce(String serverId){
+    public Packet1ServerValidationResponse(String serverId){
         this.serverId = serverId;
     }
     @Override

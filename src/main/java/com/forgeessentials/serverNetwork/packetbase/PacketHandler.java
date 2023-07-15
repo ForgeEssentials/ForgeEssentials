@@ -1,7 +1,9 @@
 package com.forgeessentials.serverNetwork.packetbase;
 
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
@@ -33,28 +35,40 @@ public interface PacketHandler {
             throw new IllegalArgumentException("The received object is not a packet! Object Type: " + obj.getClass().getName());
     }
 
-    default void handle(Packet0ClientValidation packet) {
-        LoggingHandler.felog.error("Packet0ClientValidation unhandled");
+    //TODO change to private void in java 9+
+    default void handleNoGet(FEPacket packet) {
+        LoggingHandler.felog.error(packet.getClass().getSimpleName()+" unhandled");
     }
 
-    default void handle(Packet1ServerValidationResponce packet) {
-        LoggingHandler.felog.error("Packet1ServerValidationResponce unhandled");
-    };
+    default void handle(Packet0ClientValidation packet) {
+        handleNoGet(packet);
+    }
+
+    default void handle(Packet1ServerValidationResponse packet) {
+        handleNoGet(packet);
+    }
 
     default void handle(Packet2ClientNewConnectionData packet) {
-        LoggingHandler.felog.error("Packet2ClientNewConnectionData unhandled");
-    };
+        handleNoGet(packet);
+    }
     
     default void handle(Packet3ClientConnectionData packet) {
-        LoggingHandler.felog.error("Packet3ClientPassword unhandled");
+        handleNoGet(packet);
     }
 
     default void handle(Packet4ServerPasswordResponce packet) {
-        LoggingHandler.felog.error("Packet4ServerPasswordResponce unhandled");
+        handleNoGet(packet);
     }
 
     default void handle(Packet5SharedCloseSession packet) {
-        LoggingHandler.felog.error("Packet5SharedCloseSession unhandled");
-    };
+        handleNoGet(packet);
+    }
 
+    default void handle(Packet10SharedCommandSending packet) {
+        handleNoGet(packet);
+    }
+
+    default void handle(Packet11SharedCommandResponse packet) {
+        handleNoGet(packet);
+    }
 }

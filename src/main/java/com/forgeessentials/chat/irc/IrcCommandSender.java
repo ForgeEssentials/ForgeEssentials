@@ -53,7 +53,7 @@ public class IrcCommandSender extends FakePlayer
     public void sendMessage(ITextComponent chatComponent, UUID senderUUID)
     {
         if (user.getBot().isConnected())
-            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
+            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.getString()));
     }
 
     @Override

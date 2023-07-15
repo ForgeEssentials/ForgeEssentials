@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -137,7 +137,7 @@ public class FENetworkServer
         blockedChannels = new ArrayList<>();
     }
 
-    public void sendPacket(FEPacket packet) {
+    public void sendAllPacket(FEPacket packet) {
         Objects.requireNonNull(packet, "Packet cannot be null");
 
         LoggingHandler.felog.debug("FENetworkServer [OUT] " + packet.getClass().getSimpleName() + " " + packet.getID());
@@ -181,7 +181,7 @@ public class FENetworkServer
         }
     }
     public boolean canSendPacket(Channel channel, FEPacket packet) {
-        if(packet instanceof Packet1ServerValidationResponce||packet instanceof Packet4ServerPasswordResponce) {
+        if(packet instanceof Packet1ServerValidationResponse||packet instanceof Packet4ServerPasswordResponce) {
             return true;
         }
         boolean isValid=false;

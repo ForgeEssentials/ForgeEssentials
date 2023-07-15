@@ -1,9 +1,14 @@
 package com.forgeessentials.serverNetwork.server;
 
+import java.util.Map.Entry;
+
 import com.forgeessentials.serverNetwork.ModuleNetworking;
+import com.forgeessentials.serverNetwork.NetworkClientSendingOnParentCommandSender;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
@@ -15,6 +20,7 @@ import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.CharsetUtil;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class ServerPacketHandler implements PacketHandler
 {
@@ -26,7 +32,7 @@ public class ServerPacketHandler implements PacketHandler
             if(responcePacket.getChannelVersion()==FENetworkServer.getInstance().getChannelVersionM()) {
                 // Connection is valid, send Validation packet
                 FENetworkServer.getInstance().getConnectedChannels().replace(responcePacket.getChannel(), true);
-                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet1ServerValidationResponce(ModuleNetworking.getLocalServer().getLocalServerId()));
+                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet1ServerValidationResponse(ModuleNetworking.getLocalServer().getLocalServerId()));
                 return;
             }
             LoggingHandler.felog.error("FENetworkServer Client tried joining with mismatched channel version! Closing connection.");
@@ -104,5 +110,36 @@ public class ServerPacketHandler implements PacketHandler
     public void handle(Packet5SharedCloseSession closeSession)
     {
         System.out.println("FENetworkServer Received close orders");
+    }
+
+    @Override
+    public void handle(Packet10SharedCommandSending commandPacket)
+    {
+        ConnectedClientData data1=null;
+        for (Entry<String, ConnectedClientData> data : ModuleNetworking.getClients().entrySet()) {
+            if(data.getValue().getCurrentChannel()!=null) {
+                if(data.getValue().getCurrentChannel().equals(commandPacket.getChannel())) {
+                    data1 = data.getValue();
+                    break;
+                }
+            }
+        }
+        if(data1==null) {
+            LoggingHandler.felog.error("FENetworkServer Failed to find client for command channel!");
+        }
+        if(data1.getPermissionLevel()>=2) {
+            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
+                    new NetworkClientSendingOnParentCommandSender(data1.getRemoteClientId()).createCommandSourceStack(), 
+                    commandPacket.getCommandToSend());
+        }
+        else {
+            LoggingHandler.felog.error("FENetworkServer client "+data1.getRemoteClientId()+" does not have permissions to send commands!");
+        }
+    }
+
+    @Override
+    public void handle(Packet11SharedCommandResponse commandResponce)
+    {
+        LoggingHandler.felog.info("CommandResponse from client: "+commandResponce.getCommandResponse());
     }
 }
