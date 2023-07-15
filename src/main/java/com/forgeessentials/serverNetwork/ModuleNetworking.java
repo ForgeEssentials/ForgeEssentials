@@ -3,6 +3,7 @@ package com.forgeessentials.serverNetwork;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -97,10 +98,10 @@ public class ModuleNetworking extends ConfigLoaderBase
         //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
         loadData();
         if(localServer==null) {
-            localServer = new LocalServerData("ForgeEssentialsMainServer");
+            localServer = new LocalServerData("ForgeEssentialsServer"+(new Random()).nextInt(100000));
         }
         if(localClient==null) {
-            localClient = new LocalClientData("ForgeEssentialsClientServer");
+            localClient = new LocalClientData("ForgeEssentialsClient"+(new Random()).nextInt(100000));
         }
         if(enableAutoStartServer) {
             startServer();
@@ -273,9 +274,9 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    public static File getRemoteClientDataFile()
+    public static File getRemoteClientDataFolder()
     {
-        return new File(moduleDir, "RemoteFENetworkClientData.json");
+        return new File(moduleDir, "RemoteFENetworkClientData");
     }
     public static File getLocalClientDataFile()
     {
@@ -291,7 +292,8 @@ public class ModuleNetworking extends ConfigLoaderBase
      */
     public void loadData()
     {
-        clients = DataManager.loadAll(ConnectedClientData.class, getRemoteClientDataFile());
+        getRemoteClientDataFolder().mkdirs();
+        clients = DataManager.loadAll(ConnectedClientData.class, getRemoteClientDataFolder());
         localClient = DataManager.load(LocalClientData.class, getLocalClientDataFile());
         localServer = DataManager.load(LocalServerData.class, getLocalServerDataFile());
     }
@@ -300,8 +302,9 @@ public class ModuleNetworking extends ConfigLoaderBase
      */
     public void saveData()
     {
+        getRemoteClientDataFolder().mkdirs();
         if(!clients.isEmpty()) {
-            DataManager.save(clients, getRemoteClientDataFile());
+            DataManager.saveAll(clients, getRemoteClientDataFolder());
         }
         if(localClient!=null) {
             DataManager.save(localClient, getLocalClientDataFile());

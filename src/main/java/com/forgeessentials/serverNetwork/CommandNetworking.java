@@ -29,23 +29,52 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.literal("startclient")
-                        .executes(CommandContext -> execute(CommandContext, "startclient")))
-                .then(Commands.literal("stopclient")
-                        .executes(CommandContext -> execute(CommandContext, "stopclient")))
-                .then(Commands.literal("startserver")
-                        .executes(CommandContext -> execute(CommandContext, "startserver")))
-                .then(Commands.literal("stopserver")
-                        .executes(CommandContext -> execute(CommandContext, "stopserver")))
-                .then(Commands.literal("clientmessage")
-                        .executes(CommandContext -> execute(CommandContext, "clientmessage")))
-                .then(Commands.literal("servermessage")
-                        .executes(CommandContext -> execute(CommandContext, "servermessage")));
+                .then(Commands.literal("start")
+                        .then(Commands.literal("server")
+                                .executes(CommandContext -> execute(CommandContext, "startserver"))
+                                )
+                        .then(Commands.literal("client")
+                                .executes(CommandContext -> execute(CommandContext, "startclient"))
+                                )
+                        .then(Commands.literal("both")
+                                .executes(CommandContext -> execute(CommandContext, "startboth"))
+                                )
+                        )
+                .then(Commands.literal("stop")
+                        .then(Commands.literal("server")
+                                .executes(CommandContext -> execute(CommandContext, "stopserver"))
+                                )
+                        .then(Commands.literal("client")
+                                .executes(CommandContext -> execute(CommandContext, "stopclient"))
+                                )
+                        .then(Commands.literal("both")
+                                .executes(CommandContext -> execute(CommandContext, "stopboth"))
+                                )
+                        )
+                .then(Commands.literal("reloadNetwork")
+                        .executes(CommandContext -> execute(CommandContext, "reload"))
+                        )
+                .then(Commands.literal("saveConnectionData")
+                        .executes(CommandContext -> execute(CommandContext, "save"))
+                        )
+                .then(Commands.literal("loadConnectionData")
+                        .executes(CommandContext -> execute(CommandContext, "load"))
+                );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
+        if(params.equals("startboth")){
+            execute(ctx, "startserver");
+            execute(ctx, "startclient");
+            return Command.SINGLE_SUCCESS;
+        }
+        if(params.equals("stopboth")){
+            execute(ctx, "stopclient");
+            execute(ctx, "stopserver");
+            return Command.SINGLE_SUCCESS;
+        }
         if(params.equals("startclient")){
             if(ModuleNetworking.instance.startClient()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client, connect to sever, or client is already running!");
@@ -78,12 +107,29 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped server!");
             return Command.SINGLE_SUCCESS;
         }
-        if(params.equals("clientmessage")){
-            //ModuleNetworking.instance.getClient().sendPacket(new Packet2ClientPassword("Client Message"));
+        if(params.equals("reload")){
+            boolean serverRunning = false;
+            boolean clientRunning = false;
+            if(ModuleNetworking.instance.getClient().isChannelOpen()){clientRunning=true;}
+            if(ModuleNetworking.instance.getServer().isChannelOpen()){serverRunning=true;}
+            ModuleNetworking.instance.stopClient();
+            ModuleNetworking.instance.stopServer();
+            ModuleNetworking.instance.saveData();
+            ModuleNetworking.instance.loadData();
+            if(clientRunning) {ModuleNetworking.instance.startClient();}
+            if(serverRunning) {ModuleNetworking.instance.startServer();}
             return Command.SINGLE_SUCCESS;
         }
-        if(params.equals("servermessage")){
-            //ModuleNetworking.instance.getServer().sendPacket(new Packet2ClientPassword("Client Message"));
+        if(params.equals("save")){
+            ModuleNetworking.instance.saveData();
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Saved Networking data");
+
+            return Command.SINGLE_SUCCESS;
+        }
+        if(params.equals("load")){
+            ModuleNetworking.instance.loadData();
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Load Networking data");
+
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

@@ -37,7 +37,7 @@ public class EncryptionUtils {
 
     public static String decryptString(String encryptedInput, String privateKey) throws Exception {
         // Decode the private key from Base64
-        byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
+        byte[] privateKeyBytes = privateKey.getBytes(StandardCharsets.UTF_8);
 
         // Create a secret key from the private key bytes
         SecretKey secretKey = new SecretKeySpec(privateKeyBytes, "AES");
