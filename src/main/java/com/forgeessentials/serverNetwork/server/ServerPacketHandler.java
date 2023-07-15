@@ -5,14 +5,14 @@ import java.util.Map.Entry;
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.NetworkClientSendingOnParentCommandSender;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet5SharedCloseSession;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
@@ -26,13 +26,13 @@ public class ServerPacketHandler implements PacketHandler
 {
 
     @Override
-    public void handle(Packet0ClientValidation responcePacket) {
+    public void handle(Packet00ClientValidation responcePacket) {
      // Validate the connection
         if(responcePacket.getChannelName().equals(FENetworkServer.getInstance().getChannelNameM())) {
             if(responcePacket.getChannelVersion()==FENetworkServer.getInstance().getChannelVersionM()) {
                 // Connection is valid, send Validation packet
                 FENetworkServer.getInstance().getConnectedChannels().replace(responcePacket.getChannel(), true);
-                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet1ServerValidationResponse(ModuleNetworking.getLocalServer().getLocalServerId()));
+                FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet01ServerValidationResponse(ModuleNetworking.getLocalServer().getLocalServerId()));
                 return;
             }
             LoggingHandler.felog.error("FENetworkServer Client tried joining with mismatched channel version! Closing connection.");
@@ -48,7 +48,7 @@ public class ServerPacketHandler implements PacketHandler
     }
  
     @Override
-    public void handle(Packet2ClientNewConnectionData newClientData)
+    public void handle(Packet02ClientNewConnectionData newClientData)
     {
         if(!ModuleNetworking.getClients().containsKey(newClientData.getClientId())) {
             ConnectedClientData data = new ConnectedClientData(newClientData.getClientId());
@@ -67,7 +67,7 @@ public class ServerPacketHandler implements PacketHandler
     }
 
     @Override
-    public void handle(Packet3ClientConnectionData clientData)
+    public void handle(Packet03ClientConnectionData clientData)
     {
         ConnectedClientData data = ModuleNetworking.getClients().getOrDefault(clientData.getClientId(), null);
         if(data==null) {
@@ -87,7 +87,7 @@ public class ServerPacketHandler implements PacketHandler
         try
         {
             if(EncryptionUtils.decryptString(clientData.getEncryptedPassword(), data.getPrivateKey()).equals(data.getPassword())) {
-                FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(true));
+                FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet04ServerPasswordResponce(true));
                 data.setAuthenticated(true);
                 data.incrementNumberTimesConnected();
                 ModuleNetworking.getClients().put(clientData.getClientId(), data);
@@ -103,11 +103,11 @@ public class ServerPacketHandler implements PacketHandler
         }
         data.setAuthenticated(false);
         ModuleNetworking.getClients().put(clientData.getClientId(), data);
-        FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet4ServerPasswordResponce(false));
+        FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet04ServerPasswordResponce(false));
     }
 
     @Override
-    public void handle(Packet5SharedCloseSession closeSession)
+    public void handle(Packet05SharedCloseSession closeSession)
     {
         System.out.println("FENetworkServer Received close orders");
     }

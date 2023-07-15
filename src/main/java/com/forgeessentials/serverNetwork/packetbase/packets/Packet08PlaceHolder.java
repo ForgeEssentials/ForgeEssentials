@@ -1,6 +1,6 @@
 package com.forgeessentials.serverNetwork.packetbase.packets;
 
-public class Packet8PlaceHolder
+public class Packet08PlaceHolder
 {
 
 }

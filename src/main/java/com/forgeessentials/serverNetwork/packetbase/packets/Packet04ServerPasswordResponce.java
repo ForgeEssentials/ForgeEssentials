@@ -5,25 +5,28 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Packet5SharedCloseSession extends FEPacket {
+public class Packet04ServerPasswordResponce extends FEPacket {
 
-    String reason;
-    
-    public Packet5SharedCloseSession() {
-        reason="";
+    private boolean authenticated;
+
+    public Packet04ServerPasswordResponce() {}
+
+    public Packet04ServerPasswordResponce(boolean authenticated) {
+        this.authenticated = authenticated;
     }
     
-    public Packet5SharedCloseSession(String reason) {
-        this.reason = reason;
+    public boolean isAuthenticated() {
+        return authenticated;
     }
+    
     @Override
     public void encode(PacketBuffer buf) {
-        buf.writeUtf(reason);
+        buf.writeBoolean(authenticated);
     }
 
     @Override
     public void decode(PacketBuffer buf) {
-        reason = buf.readUtf();
+        authenticated = buf.readBoolean();
     }
 
     @Override
@@ -33,11 +36,6 @@ public class Packet5SharedCloseSession extends FEPacket {
 
     @Override
     public int getID() {
-        return 5;
-    }
-
-    public String getReason()
-    {
-        return reason;
+        return 4;
     }
 }

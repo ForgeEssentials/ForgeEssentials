@@ -1,13 +1,13 @@
 package com.forgeessentials.serverNetwork.packetbase;
 
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet5SharedCloseSession;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
@@ -40,27 +40,27 @@ public interface PacketHandler {
         LoggingHandler.felog.error(packet.getClass().getSimpleName()+" unhandled");
     }
 
-    default void handle(Packet0ClientValidation packet) {
+    default void handle(Packet00ClientValidation packet) {
         handleNoGet(packet);
     }
 
-    default void handle(Packet1ServerValidationResponse packet) {
+    default void handle(Packet01ServerValidationResponse packet) {
         handleNoGet(packet);
     }
 
-    default void handle(Packet2ClientNewConnectionData packet) {
+    default void handle(Packet02ClientNewConnectionData packet) {
         handleNoGet(packet);
     }
     
-    default void handle(Packet3ClientConnectionData packet) {
+    default void handle(Packet03ClientConnectionData packet) {
         handleNoGet(packet);
     }
 
-    default void handle(Packet4ServerPasswordResponce packet) {
+    default void handle(Packet04ServerPasswordResponce packet) {
         handleNoGet(packet);
     }
 
-    default void handle(Packet5SharedCloseSession packet) {
+    default void handle(Packet05SharedCloseSession packet) {
         handleNoGet(packet);
     }
 

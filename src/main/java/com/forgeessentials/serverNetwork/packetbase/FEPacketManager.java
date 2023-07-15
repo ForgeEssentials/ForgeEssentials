@@ -2,14 +2,14 @@ package com.forgeessentials.serverNetwork.packetbase;
 
 import java.util.ArrayList;
 
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet1ServerValidationResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet4ServerPasswordResponce;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet5SharedCloseSession;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 
 public class FEPacketManager
 {
@@ -22,12 +22,12 @@ public class FEPacketManager
         this.packetHandler = packethandler;
         
         //Client packets
-        packetTypes.add(new Packet0ClientValidation());
-        packetTypes.add(new Packet1ServerValidationResponse());
-        packetTypes.add(new Packet2ClientNewConnectionData());
-        packetTypes.add(new Packet3ClientConnectionData());
-        packetTypes.add(new Packet4ServerPasswordResponce());
-        packetTypes.add(new Packet5SharedCloseSession());
+        packetTypes.add(new Packet00ClientValidation());
+        packetTypes.add(new Packet01ServerValidationResponse());
+        packetTypes.add(new Packet02ClientNewConnectionData());
+        packetTypes.add(new Packet03ClientConnectionData());
+        packetTypes.add(new Packet04ServerPasswordResponce());
+        packetTypes.add(new Packet05SharedCloseSession());
         //Placeholder for packets 6-9
         packetTypes.add(new Packet10SharedCommandSending());
         packetTypes.add(new Packet11SharedCommandResponse());

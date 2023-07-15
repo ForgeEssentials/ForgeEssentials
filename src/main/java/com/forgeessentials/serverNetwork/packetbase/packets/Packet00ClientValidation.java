@@ -5,14 +5,14 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Packet0ClientValidation extends FEPacket
+public class Packet00ClientValidation extends FEPacket
 {
     private String channelName;
     private int versionNumber;
 
-    public Packet0ClientValidation() {}
+    public Packet00ClientValidation() {}
 
-    public Packet0ClientValidation(String channelName, int versionNumber) {
+    public Packet00ClientValidation(String channelName, int versionNumber) {
         this.channelName = channelName;
         this.versionNumber = versionNumber;
     }

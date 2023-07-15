@@ -5,23 +5,28 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Packet1ServerValidationResponse extends FEPacket {
+public class Packet02ClientNewConnectionData extends FEPacket {
 
-    String serverId;
+    private String clientId;
 
-    public Packet1ServerValidationResponse(){}
+    public Packet02ClientNewConnectionData() {}
 
-    public Packet1ServerValidationResponse(String serverId){
-        this.serverId = serverId;
+    public Packet02ClientNewConnectionData(String clientId) {
+        this.clientId = clientId;
     }
+    
+    public String getClientId() {
+        return clientId;
+    }
+    
     @Override
     public void encode(PacketBuffer buf) {
-        buf.writeUtf(serverId);
+        buf.writeUtf(clientId);
     }
 
     @Override
     public void decode(PacketBuffer buf) {
-        serverId = buf.readUtf();
+        clientId = buf.readUtf();
     }
 
     @Override
@@ -31,11 +36,6 @@ public class Packet1ServerValidationResponse extends FEPacket {
 
     @Override
     public int getID() {
-        return 1;
-    }
-
-    public String getServerId()
-    {
-        return serverId;
+        return 2;
     }
 }

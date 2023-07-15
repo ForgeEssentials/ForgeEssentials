@@ -5,9 +5,9 @@ import java.net.ConnectException;
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet2ClientNewConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet3ClientConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.bootstrap.Bootstrap;
@@ -65,7 +65,7 @@ public class FENetworkClient {
 
             if(channelFuture.isSuccess()) {
                 LoggingHandler.felog.info("FENetworkClient Connection successful");
-                sendPacket(new Packet0ClientValidation(channelNameM, channelVersionM));
+                sendPacket(new Packet00ClientValidation(channelNameM, channelVersionM));
             } else
                 return 1;
         } catch(Exception e) {
@@ -114,9 +114,9 @@ public class FENetworkClient {
         if (packet == null)
             throw new NullPointerException("Packet cannot be null");
 
-        if(!(packet instanceof Packet0ClientValidation
-                || packet instanceof Packet2ClientNewConnectionData
-                || packet instanceof Packet3ClientConnectionData)) {
+        if(!(packet instanceof Packet00ClientValidation
+                || packet instanceof Packet02ClientNewConnectionData
+                || packet instanceof Packet03ClientConnectionData)) {
             if(!ModuleNetworking.getLocalClient().isAuthenticated()) {
                 LoggingHandler.felog.info("FENetworkClient can't send packet "+packet.getClass().getSimpleName()
                         +" bacause it is not authenticated");

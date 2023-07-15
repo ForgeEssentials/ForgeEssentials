@@ -5,14 +5,14 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Packet3ClientConnectionData extends FEPacket {
+public class Packet03ClientConnectionData extends FEPacket {
 
     private String clientId;
     private String encryptedPassword;
 
-    public Packet3ClientConnectionData() {}
+    public Packet03ClientConnectionData() {}
 
-    public Packet3ClientConnectionData(String clientId, String encryptedPassword) {
+    public Packet03ClientConnectionData(String clientId, String encryptedPassword) {
         this.clientId = clientId;
         this.encryptedPassword = encryptedPassword;
     }

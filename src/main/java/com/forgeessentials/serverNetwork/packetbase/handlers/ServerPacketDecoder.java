@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet0ClientValidation;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
@@ -45,7 +45,7 @@ public class ServerPacketDecoder extends ByteToMessageDecoder {
         else {
             packetID = packetBuffer.readVarInt();
         }
-        if(packetID!=(new Packet0ClientValidation()).getID()&&!flag) {
+        if(packetID!=(new Packet00ClientValidation()).getID()&&!flag) {
             LoggingHandler.felog.error("FENetworkServer Recieved a packet before recieving validation packet from client");
             channelHandlerContext.pipeline().remove(ServerPacketDecoder.class);
             channelHandlerContext.pipeline().remove(PacketSplitter.class);
