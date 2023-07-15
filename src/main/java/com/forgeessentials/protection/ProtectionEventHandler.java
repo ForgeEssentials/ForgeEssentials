@@ -18,7 +18,7 @@ import com.forgeessentials.api.permissions.PermissionEvent.User;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
@@ -262,7 +262,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 int blockId = Block.getId(blockState);
                 Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
-                NetworkUtils.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
+                NetworkUtils.sendTo(new Packet03PlayerPermissions(false, null, ids), ident.getPlayerMP());
             }
             return;
         }
@@ -519,7 +519,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 int itemId = Item.getId(stack.getItem());
                 Set<Integer> ids = new HashSet<>();
                 ids.add(itemId);
-                NetworkUtils.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
+                NetworkUtils.sendTo(new Packet03PlayerPermissions(false, ids, null), ident.getPlayerMP());
             }
         }
 
@@ -838,7 +838,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         ModulePermissions.permissionHelper.disableDebugMode(false);
 
-        NetworkUtils.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
+        NetworkUtils.sendTo(new Packet03PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
     }
 
     /* ------------------------------------------------------------ */

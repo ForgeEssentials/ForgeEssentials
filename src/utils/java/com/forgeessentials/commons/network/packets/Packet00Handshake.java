@@ -8,16 +8,16 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet0Handshake implements IFEPacket
+public class Packet00Handshake implements IFEPacket
 {
 
-    public Packet0Handshake()
+    public Packet00Handshake()
     {
     }
 
-    public static Packet0Handshake decode(PacketBuffer buf)
+    public static Packet00Handshake decode(PacketBuffer buf)
     {
-        return new Packet0Handshake();
+        return new Packet00Handshake();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class Packet0Handshake implements IFEPacket
         NetworkUtils.feletworklog.warn("Packet0Handshake was not handled properly");
     }
 
-    public static void handler(final Packet0Handshake message, Supplier<NetworkEvent.Context> ctx)
+    public static void handler(final Packet00Handshake message, Supplier<NetworkEvent.Context> ctx)
     {
         NetworkUtils.feletworklog.info("Recieved Packet0Handshake");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));

@@ -7,8 +7,8 @@ import java.util.UUID;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
-import com.forgeessentials.commons.network.packets.Packet9AuthRequest;
+import com.forgeessentials.commons.network.packets.Packet06AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet09AuthRequest;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -82,9 +82,9 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPacket(RegisterPacketEvent event)
     {
-        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::encode, Packet6AuthLogin::decode, Packet6AuthLogin::handler);
+        NetworkUtils.registerServerToClient(6, Packet06AuthLogin.class, Packet06AuthLogin::encode, Packet06AuthLogin::decode, Packet06AuthLogin::handler);
         NetworkUtils.registerClientToServer(8, AuthNetHandler.class, AuthNetHandler::encode, AuthNetHandler::decode, AuthNetHandler::handler);
-        NetworkUtils.registerServerToClient(9, Packet9AuthRequest.class, Packet9AuthRequest::encode, Packet9AuthRequest::decode, Packet9AuthRequest::handler);
+        NetworkUtils.registerServerToClient(9, Packet09AuthRequest.class, Packet09AuthRequest::encode, Packet09AuthRequest::decode, Packet09AuthRequest::handler);
     }
 
     @SubscribeEvent

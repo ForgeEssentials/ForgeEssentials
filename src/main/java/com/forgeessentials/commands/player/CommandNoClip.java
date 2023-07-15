@@ -2,7 +2,7 @@ package com.forgeessentials.commands.player;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet05Noclip;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
@@ -100,7 +100,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
             WorldUtil.placeInWorld(player);
         }
 
-        NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), player);
+        NetworkUtils.sendTo(new Packet05Noclip(pi.isNoClip()), player);
         ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
         return Command.SINGLE_SUCCESS;
     }
@@ -117,7 +117,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
                 WorldUtil.placeInWorld(player);
                 if (player.isControlledByLocalInstance())
                 {
-                    NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), (ServerPlayerEntity) player);
+                    NetworkUtils.sendTo(new Packet05Noclip(pi.isNoClip()), (ServerPlayerEntity) player);
                     ChatOutputHandler.chatNotification(player,
                             "NoClip auto-disabled: the targeted player is not flying");
                 }

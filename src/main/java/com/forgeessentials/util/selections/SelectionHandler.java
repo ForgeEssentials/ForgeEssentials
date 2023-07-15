@@ -1,7 +1,7 @@
 package com.forgeessentials.util.selections;
 
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
@@ -121,7 +121,7 @@ public class SelectionHandler extends ServerEventHandler
         {
             try
             {
-                NetworkUtils.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
+                NetworkUtils.sendTo(new Packet01SelectionUpdate(selectionProvider.getSelection(player)), player);
             }
             catch (NullPointerException e)
             {

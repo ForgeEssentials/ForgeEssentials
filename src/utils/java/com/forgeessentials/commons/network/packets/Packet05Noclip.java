@@ -8,18 +8,18 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet5Noclip implements IFEPacket
+public class Packet05Noclip implements IFEPacket
 {
     public boolean noclip;
 
-    public Packet5Noclip(boolean noclip)
+    public Packet05Noclip(boolean noclip)
     {
         this.noclip = noclip;
     }
 
-    public static Packet5Noclip decode(PacketBuffer buf)
+    public static Packet05Noclip decode(PacketBuffer buf)
     {
-        return new Packet5Noclip(buf.readBoolean());
+        return new Packet05Noclip(buf.readBoolean());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Packet5Noclip implements IFEPacket
         NetworkUtils.feletworklog.warn("Packet5Noclip was not handled properly");
     }
 
-    public static void handler(final Packet5Noclip message, Supplier<NetworkEvent.Context> ctx)
+    public static void handler(final Packet05Noclip message, Supplier<NetworkEvent.Context> ctx)
     {
         NetworkUtils.feletworklog.info("Recieved Packet5Noclip");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));

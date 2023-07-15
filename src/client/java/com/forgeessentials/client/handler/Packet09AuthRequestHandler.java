@@ -1,22 +1,22 @@
 package com.forgeessentials.client.handler;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.packets.Packet9AuthRequest;
+import com.forgeessentials.commons.network.packets.Packet09AuthRequest;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet9AuthRequestHandler extends Packet9AuthRequest
+public class Packet09AuthRequestHandler extends Packet09AuthRequest
 {
-    public Packet9AuthRequestHandler(String hash)
+    public Packet09AuthRequestHandler(String hash)
     {
         super(hash);
     }
 
-    public static Packet9AuthRequestHandler decode(PacketBuffer buf)
+    public static Packet09AuthRequestHandler decode(PacketBuffer buf)
     {
-        return new Packet9AuthRequestHandler(buf.readUtf());
+        return new Packet09AuthRequestHandler(buf.readUtf());
     }
 
     @Override

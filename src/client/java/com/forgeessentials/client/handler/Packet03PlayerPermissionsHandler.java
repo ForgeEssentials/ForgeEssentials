@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,15 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet3PlayerPermissionsHandler extends Packet3PlayerPermissions
+public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
 {
 
-    public Packet3PlayerPermissionsHandler(boolean reset, Set<Integer> placeIds, Set<Integer> breakeIds)
+    public Packet03PlayerPermissionsHandler(boolean reset, Set<Integer> placeIds, Set<Integer> breakeIds)
     {
         super(reset, placeIds, breakeIds);
     }
 
-    public static Packet3PlayerPermissionsHandler decode(PacketBuffer buf)
+    public static Packet03PlayerPermissionsHandler decode(PacketBuffer buf)
     {
         boolean reset1 = buf.readBoolean();
         Set<Integer> placeIds1 = new HashSet<Integer>();
@@ -33,7 +33,7 @@ public class Packet3PlayerPermissionsHandler extends Packet3PlayerPermissions
         count = buf.readShort();
         for (int i = 0; i < count; i++)
             breakIds1.add(buf.readInt());
-        return new Packet3PlayerPermissionsHandler(reset1, placeIds1, breakIds1);
+        return new Packet03PlayerPermissionsHandler(reset1, placeIds1, breakIds1);
     }
 
     @Override

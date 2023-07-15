@@ -28,9 +28,9 @@ public class QuestionerKeyHandler
     @SubscribeEvent
     public void onKeyPress(ClickInputEvent e)
     {
-        if (Packet7RemoteQRRenderer.qrCode != null)
+        if (Packet07RemoteQRRenderer.qrCode != null)
         {
-            Packet7RemoteQRRenderer.qrCode = null;
+            Packet07RemoteQRRenderer.qrCode = null;
         }
     }
 

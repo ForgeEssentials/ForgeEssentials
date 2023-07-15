@@ -8,18 +8,18 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet7Remote implements IFEPacket
+public class Packet07Remote implements IFEPacket
 {
     public String link;
 
-    public Packet7Remote(String link)
+    public Packet07Remote(String link)
     {
         this.link = link;
     }
 
-    public static Packet7Remote decode(PacketBuffer buf)
+    public static Packet07Remote decode(PacketBuffer buf)
     {
-        return new Packet7Remote(buf.readUtf());
+        return new Packet07Remote(buf.readUtf());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Packet7Remote implements IFEPacket
         NetworkUtils.feletworklog.warn("Packet7Remote was not handled properly");
     }
 
-    public static void handler(final Packet7Remote message, Supplier<NetworkEvent.Context> ctx)
+    public static void handler(final Packet07Remote message, Supplier<NetworkEvent.Context> ctx)
     {
         NetworkUtils.feletworklog.info("Recieved Packet7Remote");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));

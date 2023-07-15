@@ -8,21 +8,21 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet9AuthRequest implements IFEPacket
+public class Packet08AuthReply implements IFEPacket
 {
     /*
-     * request to put hash in client keystore
+     * reply from client with hash (empty if client does not have hash)
      */
     public String hash;
 
-    public Packet9AuthRequest(String hash)
+    public Packet08AuthReply(String hash)
     {
         this.hash = hash;
     }
 
-    public static Packet9AuthRequest decode(PacketBuffer buf)
+    public static Packet08AuthReply decode(PacketBuffer buf)
     {
-        return new Packet9AuthRequest(buf.readUtf());
+        return new Packet08AuthReply(buf.readUtf());
     }
 
     @Override
@@ -34,12 +34,12 @@ public class Packet9AuthRequest implements IFEPacket
     @Override
     public void handle(NetworkEvent.Context context)
     {
-        NetworkUtils.feletworklog.warn("Packet9AuthRequest was not handled properly");
+        NetworkUtils.feletworklog.warn("Packet8AuthReply was not handled properly");
     }
 
-    public static void handler(final Packet9AuthRequest message, Supplier<NetworkEvent.Context> ctx)
+    public static void handler(final Packet08AuthReply message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet9AuthRequest");
+        NetworkUtils.feletworklog.info("Recieved Packet8AuthReply");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

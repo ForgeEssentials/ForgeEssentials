@@ -3,7 +3,7 @@ package com.forgeessentials.client.handler;
 import org.lwjgl.opengl.GL11;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,18 +21,18 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class Packet3PlayerPermissionsOverlay extends AbstractGui
+public class Packet03PlayerPermissionsOverlay extends AbstractGui
 {
 
     protected ResourceLocation deniedPlaceTexture;
 
     protected ResourceLocation deniedBreakTexture;
 
-    protected Packet3PlayerPermissions permissions = new Packet3PlayerPermissions();
+    protected Packet03PlayerPermissions permissions = new Packet03PlayerPermissions();
 
     private int zLevel = 100;
 
-    public Packet3PlayerPermissionsOverlay()
+    public Packet03PlayerPermissionsOverlay()
     {
         deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(),
                 "textures/gui/denied_place.png");

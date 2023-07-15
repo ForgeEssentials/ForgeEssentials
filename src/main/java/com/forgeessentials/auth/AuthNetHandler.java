@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.network.packets.Packet8AuthReply;
+import com.forgeessentials.commons.network.packets.Packet08AuthReply;
 import com.forgeessentials.util.events.player.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.player.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -12,7 +12,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class AuthNetHandler extends Packet8AuthReply
+public class AuthNetHandler extends Packet08AuthReply
 {
     public AuthNetHandler(String hash)
     {

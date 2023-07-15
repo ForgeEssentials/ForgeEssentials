@@ -12,22 +12,22 @@ import com.forgeessentials.client.commands.CommandInit;
 import com.forgeessentials.client.config.ClientConfig;
 import com.forgeessentials.client.config.FEModConfig;
 import com.forgeessentials.client.config.IFEConfig;
-import com.forgeessentials.client.handler.Packet1SelectionUpdateCUIRenderrer;
-import com.forgeessentials.client.handler.Packet1SelectionUpdateHandler;
-import com.forgeessentials.client.handler.Packet3PlayerPermissionsHandler;
-import com.forgeessentials.client.handler.Packet3PlayerPermissionsOverlay;
-import com.forgeessentials.client.handler.Packet5NoClipHandler;
-import com.forgeessentials.client.handler.Packet6AuthLoginHandler;
-import com.forgeessentials.client.handler.Packet7RemoteHandler;
-import com.forgeessentials.client.handler.Packet7RemoteQRRenderer;
-import com.forgeessentials.client.handler.Packet9AuthRequestHandler;
+import com.forgeessentials.client.handler.Packet01SelectionUpdateCUIRenderrer;
+import com.forgeessentials.client.handler.Packet01SelectionUpdateHandler;
+import com.forgeessentials.client.handler.Packet03PlayerPermissionsHandler;
+import com.forgeessentials.client.handler.Packet03PlayerPermissionsOverlay;
+import com.forgeessentials.client.handler.Packet05NoClipHandler;
+import com.forgeessentials.client.handler.Packet06AuthLoginHandler;
+import com.forgeessentials.client.handler.Packet07RemoteHandler;
+import com.forgeessentials.client.handler.Packet07RemoteQRRenderer;
+import com.forgeessentials.client.handler.Packet09AuthRequestHandler;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
-import com.forgeessentials.commons.network.packets.Packet8AuthReply;
+import com.forgeessentials.commons.network.packets.Packet00Handshake;
+import com.forgeessentials.commons.network.packets.Packet08AuthReply;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
@@ -91,11 +91,11 @@ public class ForgeEssentialsClient
 
     public static AuthAutoLogin authDatabase = new AuthAutoLogin();
 
-    public static Packet1SelectionUpdateCUIRenderrer cuiRenderer = new Packet1SelectionUpdateCUIRenderrer();
+    public static Packet01SelectionUpdateCUIRenderrer cuiRenderer = new Packet01SelectionUpdateCUIRenderrer();
 
-    public static Packet3PlayerPermissionsOverlay permissionOverlay = new Packet3PlayerPermissionsOverlay();
+    public static Packet03PlayerPermissionsOverlay permissionOverlay = new Packet03PlayerPermissionsOverlay();
 
-    public static Packet7RemoteQRRenderer qrCodeRenderer = new Packet7RemoteQRRenderer();
+    public static Packet07RemoteQRRenderer qrCodeRenderer = new Packet07RemoteQRRenderer();
 
     /* ------------------------------------------------------------ */
 
@@ -209,22 +209,22 @@ public class ForgeEssentialsClient
     private static void registerNetworkMessages()
     {
         // Register network messages
-        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode, Packet0Handshake::handler);
-        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdateHandler.class, Packet1SelectionUpdateHandler::encode,
-                Packet1SelectionUpdateHandler::decode, Packet1SelectionUpdateHandler::handler);
+        NetworkUtils.registerClientToServer(0, Packet00Handshake.class, Packet00Handshake::encode, Packet00Handshake::decode, Packet00Handshake::handler);
+        NetworkUtils.registerServerToClient(1, Packet01SelectionUpdateHandler.class, Packet01SelectionUpdateHandler::encode,
+                Packet01SelectionUpdateHandler::decode, Packet01SelectionUpdateHandler::handler);
         // NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
-        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissionsHandler.class, Packet3PlayerPermissionsHandler::encode,
-                Packet3PlayerPermissionsHandler::decode, Packet3PlayerPermissionsHandler::handler);
+        NetworkUtils.registerServerToClient(3, Packet03PlayerPermissionsHandler.class, Packet03PlayerPermissionsHandler::encode,
+                Packet03PlayerPermissionsHandler::decode, Packet03PlayerPermissionsHandler::handler);
         // NetworkUtils.registerServerToClient(4, Packet4Economy.class, Packet4Economy::decode); //heck why not add something to space 4
-        NetworkUtils.registerServerToClient(5, Packet5NoClipHandler.class, Packet5NoClipHandler::encode, Packet5NoClipHandler::decode,
-                Packet5NoClipHandler::handler);
-        NetworkUtils.registerServerToClient(6, Packet6AuthLoginHandler.class, Packet6AuthLoginHandler::encode, Packet6AuthLoginHandler::decode,
-                Packet6AuthLoginHandler::handler);
-        NetworkUtils.registerServerToClient(7, Packet7RemoteHandler.class, Packet7RemoteHandler::encode, Packet7RemoteHandler::decode,
-                Packet7RemoteHandler::handler);
-        NetworkUtils.registerClientToServer(8, Packet8AuthReply.class, Packet8AuthReply::encode, Packet8AuthReply::decode, Packet8AuthReply::handler);
-        NetworkUtils.registerServerToClient(9, Packet9AuthRequestHandler.class, Packet9AuthRequestHandler::encode, Packet9AuthRequestHandler::decode,
-                Packet9AuthRequestHandler::handler);
+        NetworkUtils.registerServerToClient(5, Packet05NoClipHandler.class, Packet05NoClipHandler::encode, Packet05NoClipHandler::decode,
+                Packet05NoClipHandler::handler);
+        NetworkUtils.registerServerToClient(6, Packet06AuthLoginHandler.class, Packet06AuthLoginHandler::encode, Packet06AuthLoginHandler::decode,
+                Packet06AuthLoginHandler::handler);
+        NetworkUtils.registerServerToClient(7, Packet07RemoteHandler.class, Packet07RemoteHandler::encode, Packet07RemoteHandler::decode,
+                Packet07RemoteHandler::handler);
+        NetworkUtils.registerClientToServer(8, Packet08AuthReply.class, Packet08AuthReply::encode, Packet08AuthReply::decode, Packet08AuthReply::handler);
+        NetworkUtils.registerServerToClient(9, Packet09AuthRequestHandler.class, Packet09AuthRequestHandler::encode, Packet09AuthRequestHandler::decode,
+                Packet09AuthRequestHandler::handler);
 
     }
 
@@ -281,7 +281,7 @@ public class ForgeEssentialsClient
         {
             Minecraft instance = Minecraft.getInstance();
             sentHandshake = true;
-            NetworkUtils.sendToServer(new Packet0Handshake());
+            NetworkUtils.sendToServer(new Packet00Handshake());
             instance.gui.getChat().addMessage(new StringTextComponent("Force Sent handshake packet to server."));
             event.setCanceled(true);
         }
@@ -317,7 +317,7 @@ public class ForgeEssentialsClient
         {
             // Minecraft instance = Minecraft.getInstance();
             // instance.gui.getChat().addMessage(new StringTextComponent("Sending Handshake Packet to FE Server"));
-            NetworkUtils.sendToServer(new Packet0Handshake());
+            NetworkUtils.sendToServer(new Packet00Handshake());
         }
         else
         {

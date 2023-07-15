@@ -4,7 +4,7 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -81,7 +81,7 @@ public class FEClientCommand extends BaseCommand
             if (num == 3)
             {
                 ForgeEssentialsClient.sentHandshake();
-                NetworkUtils.sendToServer(new Packet0Handshake());
+                NetworkUtils.sendToServer(new Packet00Handshake());
                 instance.gui.getChat().addMessage(new StringTextComponent("Force Sent handshake packet to server."));
             }
         }

@@ -4,7 +4,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet07Remote;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
@@ -206,7 +206,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
                 String connectString = ModuleRemote.getInstance().getConnectString(getIdent(ctx.getSource()));
                 String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString)
                         .replaceAll("\\|", "%7C");
-                NetworkUtils.sendTo(new Packet7Remote(url), getIdent(ctx.getSource()).getPlayerMP());
+                NetworkUtils.sendTo(new Packet07Remote(url), getIdent(ctx.getSource()).getPlayerMP());
             }
             return Command.SINGLE_SUCCESS;
         }

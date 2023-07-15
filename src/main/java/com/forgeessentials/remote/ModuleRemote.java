@@ -31,7 +31,7 @@ import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet07Remote;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -147,8 +147,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @SubscribeEvent
     public void registerPacket(RegisterPacketEvent event)
     {
-        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode,
-                Packet7Remote::handler);
+        NetworkUtils.registerServerToClient(7, Packet07Remote.class, Packet07Remote::encode, Packet07Remote::decode,
+                Packet07Remote::handler);
     }
 
     /**

@@ -15,7 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class Packet1SelectionUpdateCUIRenderrer
+public class Packet01SelectionUpdateCUIRenderrer
 {
     private static final float ALPHA = .25f;
     public Selection selection;

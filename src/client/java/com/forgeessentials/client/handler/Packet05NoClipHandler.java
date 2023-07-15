@@ -1,22 +1,22 @@
 package com.forgeessentials.client.handler;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet05Noclip;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet5NoClipHandler extends Packet5Noclip
+public class Packet05NoClipHandler extends Packet05Noclip
 {
-    public Packet5NoClipHandler(boolean noclip)
+    public Packet05NoClipHandler(boolean noclip)
     {
         super(noclip);
     }
 
-    public static Packet5NoClipHandler decode(PacketBuffer buf)
+    public static Packet05NoClipHandler decode(PacketBuffer buf)
     {
-        return new Packet5NoClipHandler(buf.readBoolean());
+        return new Packet05NoClipHandler(buf.readBoolean());
     }
 
     @Override

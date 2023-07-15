@@ -9,7 +9,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet07Remote;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -21,16 +21,16 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet7RemoteHandler extends Packet7Remote
+public class Packet07RemoteHandler extends Packet07Remote
 {
-    Packet7RemoteHandler(String linkg)
+    Packet07RemoteHandler(String linkg)
     {
         super(linkg);
     }
 
-    public static Packet7RemoteHandler decode(PacketBuffer buf)
+    public static Packet07RemoteHandler decode(PacketBuffer buf)
     {
-        return new Packet7RemoteHandler(buf.readUtf());
+        return new Packet07RemoteHandler(buf.readUtf());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Packet7RemoteHandler extends Packet7Remote
             ImageIO.write(img, "png", baos);
             InputStream is = new ByteArrayInputStream(baos.toByteArray());
             DynamicTexture qrCodeTexture = new DynamicTexture(NativeImage.read(is));
-            Packet7RemoteQRRenderer.qrCode = instance.getTextureManager()
+            Packet07RemoteQRRenderer.qrCode = instance.getTextureManager()
                     .register("qr_code", qrCodeTexture);
 
             TextComponent qrLink = new StringTextComponent("[QR code]");

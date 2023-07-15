@@ -15,9 +15,9 @@ import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
-import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
+import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet05Noclip;
 import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -262,13 +262,13 @@ public class ForgeEssentials
         // Load network packages
         NetworkUtils.registerClientToServer(0, Packet0HandshakeHandler.class, Packet0HandshakeHandler::encode, Packet0HandshakeHandler::decode,
                 Packet0HandshakeHandler::handler);
-        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode,
-                Packet1SelectionUpdate::handler);
+        NetworkUtils.registerServerToClient(1, Packet01SelectionUpdate.class, Packet01SelectionUpdate::encode, Packet01SelectionUpdate::decode,
+                Packet01SelectionUpdate::handler);
         // NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode); old times
-        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode,
-                Packet3PlayerPermissions::handler);
+        NetworkUtils.registerServerToClient(3, Packet03PlayerPermissions.class, Packet03PlayerPermissions::encode, Packet03PlayerPermissions::decode,
+                Packet03PlayerPermissions::handler);
         // NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
-        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode, Packet5Noclip::handler);
+        NetworkUtils.registerServerToClient(5, Packet05Noclip.class, Packet05Noclip::encode, Packet05Noclip::decode, Packet05Noclip::handler);
         // Packet6AuthLogin is registered in the Auth Module
         // Packet7Remote is registered in the Remote Module
         MinecraftForge.EVENT_BUS.post(new RegisterPacketEvent());

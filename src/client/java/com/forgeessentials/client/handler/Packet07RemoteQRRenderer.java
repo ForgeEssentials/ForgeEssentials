@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class Packet7RemoteQRRenderer
+public class Packet07RemoteQRRenderer
 {
 
     public static ResourceLocation qrCode;

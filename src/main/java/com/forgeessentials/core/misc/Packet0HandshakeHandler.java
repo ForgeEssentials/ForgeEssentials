@@ -1,13 +1,13 @@
 package com.forgeessentials.core.misc;
 
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class Packet0HandshakeHandler extends Packet0Handshake
+public class Packet0HandshakeHandler extends Packet00Handshake
 {
     public Packet0HandshakeHandler()
     {

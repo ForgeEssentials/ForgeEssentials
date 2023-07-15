@@ -10,27 +10,27 @@ import com.forgeessentials.commons.selections.Selection;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class Packet1SelectionUpdate implements IFEPacket
+public class Packet01SelectionUpdate implements IFEPacket
 {
     protected Selection selection;
 
-    public Packet1SelectionUpdate()
+    public Packet01SelectionUpdate()
     {
     }
 
-    public Packet1SelectionUpdate(Selection sel)
+    public Packet01SelectionUpdate(Selection sel)
     {
         this.selection = sel;
     }
 
-    public static Packet1SelectionUpdate decode(PacketBuffer byteBuf)
+    public static Packet01SelectionUpdate decode(PacketBuffer byteBuf)
     {
         Selection selection = new Selection(byteBuf.readUtf(),
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble())
                         : null,
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble())
                         : null);
-        return new Packet1SelectionUpdate(selection);
+        return new Packet01SelectionUpdate(selection);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class Packet1SelectionUpdate implements IFEPacket
         NetworkUtils.feletworklog.warn("Packet1SelectionUpdate was not handled properly");
     }
 
-    public static void handler(final Packet1SelectionUpdate message, Supplier<NetworkEvent.Context> ctx)
+    public static void handler(final Packet01SelectionUpdate message, Supplier<NetworkEvent.Context> ctx)
     {
         NetworkUtils.feletworklog.info("Recieved Packet1SelectionUpdate");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
