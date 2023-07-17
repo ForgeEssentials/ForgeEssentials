@@ -3,16 +3,17 @@ package com.forgeessentials.core.misc.commandperms;
 import java.util.UUID;
 
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class CommandFaker implements ICommandSource
@@ -56,6 +57,6 @@ public class CommandFaker implements ICommandSource
         ServerWorld serverworld = server.overworld();
         return new CommandSource(this, Vector3d.ZERO, Vector2f.ZERO,
                 serverworld, level, "CommandFaker",
-                new StringTextComponent("CommandFaker"), server, (Entity) null);
+                new StringTextComponent("CommandFaker"), server, new FakePlayer(serverworld, new GameProfile(UUID.fromString("35763490-CD67-428C-9A29-4DED4429A483"), "FEPermissionChecker")));
     }
 }

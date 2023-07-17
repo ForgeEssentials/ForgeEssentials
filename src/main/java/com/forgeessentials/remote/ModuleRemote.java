@@ -59,7 +59,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
+@FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 {
     private static ForgeConfigSpec REMOTE_CONFIG;
