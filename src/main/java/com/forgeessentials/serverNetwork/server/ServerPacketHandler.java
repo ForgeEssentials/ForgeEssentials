@@ -35,7 +35,16 @@ public class ServerPacketHandler implements PacketHandler
                 FENetworkServer.getInstance().sendPacketFor(responcePacket.getChannel(), new Packet01ServerValidationResponse(ModuleNetworking.getLocalServer().getLocalServerId()));
                 return;
             }
-            LoggingHandler.felog.error("FENetworkServer Client tried joining with mismatched channel version! Closing connection.");
+            else if(responcePacket.getChannelVersion()<FENetworkServer.getInstance().getChannelVersionM()){
+                LoggingHandler.felog.error("FENetworkServer Client tried joining with an outdated channel version! Closing connection.");
+            }
+            else if(responcePacket.getChannelVersion()>FENetworkServer.getInstance().getChannelVersionM()) {
+                LoggingHandler.felog.error("FENetworkServer Client tried joining with a channel version from the future! Closing connection.");
+            }
+            else {
+                LoggingHandler.felog.error("FENetworkServer Client tried joining with mismatched channel version! Closing connection.");
+
+            }
         }
         LoggingHandler.felog.error("FENetworkServer Invalid connection detected! Closing connection.");
         String errorMessage = "Invalid protocol detected trying to access this ForgeEssentials Server Network!\n"

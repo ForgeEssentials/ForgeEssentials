@@ -55,7 +55,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     private static LocalClientData localClient;
     private static LocalServerData localServer;
 
-    private static final int channelVersion = 123456;
+    private static final int channelVersion = 123000;
     private static final String channelName = "FENetwork";
 
     public static final String PERM = "fe.networking";
