@@ -183,7 +183,16 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public void loadScripts(CommandSource sender)
     {
-        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true); it.hasNext();)
+        Iterator<File> it;
+        try {
+            it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true);
+        }catch(NullPointerException e) {
+            ChatOutputHandler.chatError(sender, "FE error loading all scripts");
+            ChatOutputHandler.chatError(sender, e.getMessage());
+            LoggingHandler.felog.error(String.format("FE error loading all scripts: %s", e.getMessage()));
+            return;
+        }
+        for (;it.hasNext();)
         {
             File file = it.next();
             String name = file.getName();
