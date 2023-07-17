@@ -68,6 +68,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     @FEModule.Instance
     protected static ModuleNetworking instance;
 
+    private boolean rootServer;
     private int passkeyLength;
     private boolean localhostOnly;
     private boolean enableAutoStartServer;
@@ -109,16 +110,16 @@ public class ModuleNetworking extends ConfigLoaderBase
         //APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
         loadData();
-        if(localServer==null) {
+        if(localServer==null&&rootServer) {
             localServer = new LocalServerData("ForgeEssentialsServer"+(new Random()).nextInt(100000));
         }
-        if(localClient==null) {
+        if(localClient==null&&!rootServer) {
             localClient = new LocalClientData("ForgeEssentialsClient"+(new Random()).nextInt(100000));
         }
-        if(enableAutoStartServer) {
+        if(enableAutoStartServer&&rootServer) {
             startServer();
         }
-        if(enableAutoStartClient) {
+        if(enableAutoStartClient&&!rootServer) {
             startClient();
         }
     }
@@ -155,6 +156,7 @@ public class ModuleNetworking extends ConfigLoaderBase
         return clients;
     }
 
+    static ForgeConfigSpec.BooleanValue FErootServer;
     static ForgeConfigSpec.IntValue FEpasskeyLength;
     static ForgeConfigSpec.BooleanValue FElocalhostOnly;
     static ForgeConfigSpec.BooleanValue FEenableServer;
@@ -168,6 +170,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     {
         BUILDER.push(CONFIG_CAT+"_General");
         FEpasskeyLength = BUILDER.comment("Length of the randomly generated privateKeys").defineInRange("passkey_length", 6, 1, 256);
+        FErootServer = BUILDER.comment("If true, sets this server as the root server and disables being a client server. If false, sets this server as a client server, and disables being a parent server.").define("enable", true);
         BUILDER.pop();
         BUILDER.push(CONFIG_CAT+"_Server");
         FEenableServer = BUILDER.comment("Enable autoStartup of this FENetworkServer?").define("enable", false);
@@ -185,6 +188,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     public void bakeConfig(boolean reload)
     {
         passkeyLength = FEpasskeyLength.get();
+        rootServer = FErootServer.get();
         enableAutoStartServer = FEenableServer.get();
         localhostOnly = FElocalhostOnly.get();
         serverPort = FEport.get();
@@ -215,6 +219,8 @@ public class ModuleNetworking extends ConfigLoaderBase
     public int startServer()
     {
         if (server != null && server.isChannelOpen())
+            return 1;
+        if(!rootServer)
             return 1;
         try
         {
@@ -257,6 +263,8 @@ public class ModuleNetworking extends ConfigLoaderBase
     public int startClient()
     {
         if (client != null && client.isChannelOpen())
+            return 1;
+        if(rootServer)
             return 1;
         try
         {
