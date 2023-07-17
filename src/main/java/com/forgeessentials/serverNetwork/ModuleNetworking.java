@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.forgeessentials.commons.events.RegisterPacketEvent;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -14,10 +17,12 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.serverNetwork.client.FENetworkClient;
+import com.forgeessentials.serverNetwork.commands.CommandNetworking;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalServerData;
+import com.forgeessentials.serverNetwork.utils.PlayerTransferManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -75,6 +80,7 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     private FENetworkClient client;
 
+    private PlayerTransferManager tranferManager;
 
     /* ------------------------------------------------------------ */
 
@@ -87,12 +93,19 @@ public class ModuleNetworking extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandNetworking(true), dispatcher);
     }
 
+    @SubscribeEvent
+    public void registerPacket(RegisterPacketEvent event)
+    {
+        NetworkUtils.registerServerToClient(10, Packet10ClientTransfer.class, Packet10ClientTransfer::encode, Packet10ClientTransfer::decode, Packet10ClientTransfer::handler);
+    }
+
     /**
      * Initialize passkeys, server and commands
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarting(FEModuleServerStartingEvent event)
     {
+        tranferManager = new PlayerTransferManager();
         //APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
         loadData();
@@ -314,6 +327,11 @@ public class ModuleNetworking extends ConfigLoaderBase
     public int getPasskeyLength()
     {
         return passkeyLength;
+    }
+
+    public PlayerTransferManager getTranferManager()
+    {
+        return tranferManager;
     }
     
 }
