@@ -1,10 +1,11 @@
-package com.forgeessentials.serverNetwork;
+package com.forgeessentials.serverNetwork.commands;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -105,12 +106,12 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if(params.equals("startboth")){
-            if(ModuleNetworking.instance.startServer()!=0){
+            if(ModuleNetworking.getInstance().startServer()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to start server or server is already running!");
                 return Command.SINGLE_SUCCESS;
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started server!");
-            if(ModuleNetworking.instance.startClient()!=0){
+            if(ModuleNetworking.getInstance().startClient()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client, connect to sever, or client is already running!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -118,12 +119,12 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopboth")){
-            if(ModuleNetworking.instance.stopClient()!=0){
+            if(ModuleNetworking.getInstance().stopClient()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop client or client is already stopped!");
                 return Command.SINGLE_SUCCESS;
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped client!");
-            if(ModuleNetworking.instance.stopServer()!=0){
+            if(ModuleNetworking.getInstance().stopServer()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -131,7 +132,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("startclient")){
-            if(ModuleNetworking.instance.startClient()!=0){
+            if(ModuleNetworking.getInstance().startClient()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to start client, connect to sever, or client is already running!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -139,7 +140,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopclient")){
-            if(ModuleNetworking.instance.stopClient()!=0){
+            if(ModuleNetworking.getInstance().stopClient()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop client or client is already stopped!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -147,7 +148,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("startserver")){
-            if(ModuleNetworking.instance.startServer()!=0){
+            if(ModuleNetworking.getInstance().startServer()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to start server or server is already running!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -155,7 +156,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("stopserver")){
-            if(ModuleNetworking.instance.stopServer()!=0){
+            if(ModuleNetworking.getInstance().stopServer()!=0){
                 ChatOutputHandler.chatError(ctx.getSource(), "Failed to stop server or server is already stopped!");
                 return Command.SINGLE_SUCCESS;
             }
@@ -165,24 +166,24 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
         if(params.equals("reload")){
             boolean serverRunning = false;
             boolean clientRunning = false;
-            if(ModuleNetworking.instance.getClient().isChannelOpen()){clientRunning=true;}
-            if(ModuleNetworking.instance.getServer().isChannelOpen()){serverRunning=true;}
-            ModuleNetworking.instance.stopClient();
-            ModuleNetworking.instance.stopServer();
-            ModuleNetworking.instance.saveData();
-            ModuleNetworking.instance.loadData();
-            if(clientRunning) {ModuleNetworking.instance.startClient();}
-            if(serverRunning) {ModuleNetworking.instance.startServer();}
+            if(ModuleNetworking.getInstance().getClient().isChannelOpen()){clientRunning=true;}
+            if(ModuleNetworking.getInstance().getServer().isChannelOpen()){serverRunning=true;}
+            ModuleNetworking.getInstance().stopClient();
+            ModuleNetworking.getInstance().stopServer();
+            ModuleNetworking.getInstance().saveData();
+            ModuleNetworking.getInstance().loadData();
+            if(clientRunning) {ModuleNetworking.getInstance().startClient();}
+            if(serverRunning) {ModuleNetworking.getInstance().startServer();}
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("save")){
-            ModuleNetworking.instance.saveData();
+            ModuleNetworking.getInstance().saveData();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Saved Networking data");
 
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("load")){
-            ModuleNetworking.instance.loadData();
+            ModuleNetworking.getInstance().loadData();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Load Networking data");
 
             return Command.SINGLE_SUCCESS;

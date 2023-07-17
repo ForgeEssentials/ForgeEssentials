@@ -63,19 +63,18 @@ public class ModuleNetworking extends ConfigLoaderBase
     @FEModule.Instance
     protected static ModuleNetworking instance;
 
-    protected int passkeyLength;
-    protected boolean localhostOnly;
-    protected boolean enableAutoStartServer;
-    protected int serverPort;
-    protected boolean enableAutoStartClient;
-    protected String clientHostname;
-    protected int clientPort;
+    private int passkeyLength;
+    private boolean localhostOnly;
+    private boolean enableAutoStartServer;
+    private int serverPort;
+    private boolean enableAutoStartClient;
+    private String clientHostname;
+    private int clientPort;
 
-    protected FENetworkServer server;
+    private FENetworkServer server;
 
-    protected FENetworkClient client;
+    private FENetworkClient client;
 
-    protected boolean mcServerStarted;
 
     /* ------------------------------------------------------------ */
 
@@ -109,7 +108,6 @@ public class ModuleNetworking extends ConfigLoaderBase
         if(enableAutoStartClient) {
             startClient();
         }
-        mcServerStarted = true;
     }
 
     /**
@@ -125,7 +123,6 @@ public class ModuleNetworking extends ConfigLoaderBase
         if(getClient()!=null) {
             stopClient();
         }
-        mcServerStarted = false;
     }
 
     public static ModuleNetworking getInstance() {
