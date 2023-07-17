@@ -509,7 +509,9 @@ public class PlayerInfo implements Loadable
     public void setHasFEClient(boolean status)
     {
         this.hasFEClient = status;
-        APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
+        if(status) {
+            APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
+        }
     }
 
     public boolean isNoClip()
