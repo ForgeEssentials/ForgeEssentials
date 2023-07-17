@@ -36,11 +36,11 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@FEModule(name = "FENetworking", parentMod = ForgeEssentials.class, canDisable = true)
 /**
  * Module for all FENetworking connectivity
  * @author maximuslotro
  */
+@FEModule(name = "FENetworking", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleNetworking extends ConfigLoaderBase
 {
     private static ForgeConfigSpec NETWORKING_CONFIG;

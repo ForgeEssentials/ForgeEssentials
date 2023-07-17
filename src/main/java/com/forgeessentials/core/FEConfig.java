@@ -17,8 +17,6 @@ public class FEConfig extends ConfigLoaderBase
     public static final String CONFIG_MAIN_CORE = "Core";
     public static final String CONFIG_MAIN_MISC = "Misc";
 
-    public static boolean mcStats;
-
     public static String modlistLocation = "modlist.txt";
 
     public static float majoritySleep;
@@ -68,7 +66,7 @@ public class FEConfig extends ConfigLoaderBase
                 "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
                 .define("modlistLocation", "modlist.txt");
         FEenableCommandAliases = BUILDER.comment("Enable Command Ailases for FE commands").define("enableAilases",
-                true);
+                false);
         BUILDER = ForgeEssentials.load(BUILDER, isReload);
         BUILDER.pop();
 
