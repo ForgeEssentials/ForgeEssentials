@@ -31,6 +31,5 @@ public class Packet06AuthLoginHandler extends Packet06AuthLogin
         }
         Minecraft mc = Minecraft.getInstance();
         NetworkUtils.sendToServer(new Packet08AuthReply(ForgeEssentialsClient.authDatabase.getKey(mc.getCurrentServer().ip)));
-        context.setPacketHandled(true);
     }
 }

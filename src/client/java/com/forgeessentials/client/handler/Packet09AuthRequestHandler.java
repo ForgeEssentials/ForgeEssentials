@@ -24,6 +24,5 @@ public class Packet09AuthRequestHandler extends Packet09AuthRequest
     {
         Minecraft mc = Minecraft.getInstance();
         ForgeEssentialsClient.authDatabase.setKey(mc.getCurrentServer().ip, hash);
-        context.setPacketHandled(true);
     }
 }

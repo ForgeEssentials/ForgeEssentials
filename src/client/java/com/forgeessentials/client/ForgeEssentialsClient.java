@@ -28,14 +28,23 @@ import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.forgeessentials.commons.network.packets.Packet08AuthReply;
+import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.ConnectingScreen;
+import net.minecraft.client.gui.screen.DirtMessageScreen;
+import net.minecraft.client.gui.screen.DisconnectedScreen;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.MultiplayerScreen;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -89,6 +98,21 @@ public class ForgeEssentialsClient
 
     /* ------------------------------------------------------------ */
 
+    public static String redirect = "";
+    public static String redirectName = "";
+    public static String fallback = "";
+    public static String fallbackName = "";
+    
+    public static boolean joinedServer = false;
+
+    public static boolean hasRedirect() {
+        return !redirect.equals("");
+    }
+    public static boolean hasFallback() {
+        return !fallback.equals("");
+    }
+    /* ------------------------------------------------------------ */
+
     public static AuthAutoLogin authDatabase = new AuthAutoLogin();
 
     public static Packet01SelectionUpdateCUIRenderrer cuiRenderer = new Packet01SelectionUpdateCUIRenderrer();
@@ -103,28 +127,8 @@ public class ForgeEssentialsClient
     {
         // Set mod as client side only
         MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
-        MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> "anything. i don't care", // if
-                                                                                                                       // i'm
-                                                                                                                       // actually
-                                                                                                                       // on
-                                                                                                                       // the
-                                                                                                                       // server,
-                                                                                                                       // this
-                                                                                                                       // string
-                                                                                                                       // is
-                                                                                                                       // sent
-                                                                                                                       // but
-                                                                                                                       // i'm
-                                                                                                                       // a
-                                                                                                                       // client
-                                                                                                                       // only
-                                                                                                                       // mod,
-                                                                                                                       // so
-                                                                                                                       // it
-                                                                                                                       // won't
-                                                                                                                       // be
-                (remoteversionstring, networkbool) -> networkbool));// i accept anything from the server, by returning
-                                                                    // true if it's asking about the server
+        MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> "anything. i don't care",
+                (remoteversionstring, networkbool) -> networkbool));
         // Get EventBus
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register Listeners
@@ -225,6 +229,8 @@ public class ForgeEssentialsClient
         NetworkUtils.registerClientToServer(8, Packet08AuthReply.class, Packet08AuthReply::encode, Packet08AuthReply::decode, Packet08AuthReply::handler);
         NetworkUtils.registerServerToClient(9, Packet09AuthRequestHandler.class, Packet09AuthRequestHandler::encode, Packet09AuthRequestHandler::decode,
                 Packet09AuthRequestHandler::handler);
+        NetworkUtils.registerServerToClient(10, Packet10ClientTransfer.class, Packet10ClientTransfer::encode, Packet10ClientTransfer::decode,
+                Packet10ClientTransfer::handler);
 
     }
 
@@ -285,6 +291,58 @@ public class ForgeEssentialsClient
             instance.gui.getChat().addMessage(new StringTextComponent("Force Sent handshake packet to server."));
             event.setCanceled(true);
         }
+    }
+    
+    @SubscribeEvent
+    public void tick(TickEvent.ClientTickEvent event) {
+        final Minecraft mc = Minecraft.getInstance();
+        if(joinedServer && mc.level != null) {
+            fallback = "";
+            fallbackName = "";
+            return;
+        }
+        if(!joinedServer && mc.level != null) {
+            joinedServer = true;
+            return;
+        }
+        if(joinedServer && mc.level == null) {
+            joinedServer = false;
+            return;
+        }
+        if(!joinedServer && mc.level == null) {
+            if(hasFallback()) {
+                if (mc.screen instanceof DisconnectedScreen) {
+                    String fall = fallback;
+                    String name = fallbackName;
+                    fallback = "";
+                    fallbackName = "";
+                    transfer(fall, name);
+                } else if (mc.screen instanceof MainMenuScreen || mc.screen instanceof MultiplayerScreen) {
+                    fallback = "";
+                    fallbackName = "";
+                }
+            }
+        }
+    }
+
+    public static void transfer(String destinationAddress, String destinationName) {
+        if (!Minecraft.getInstance().isSameThread()) {
+            throw new IllegalStateException("Not in the main thread");
+        }
+
+        feclientlog.info("Connecting to server: " + destinationName+":"+destinationAddress);
+
+        final Minecraft mc = Minecraft.getInstance();
+        if (mc.level != null) {
+            mc.level.disconnect();
+        }
+        if (mc.isLocalServer()) {
+            mc.clearLevel(new DirtMessageScreen(new TranslationTextComponent("menu.savingLevel")));
+        } else {
+            mc.clearLevel();
+        }
+        mc.setScreen(new MultiplayerScreen(new MainMenuScreen()));
+        mc.setScreen(new ConnectingScreen(mc.screen, mc, new ServerData(destinationName, destinationAddress, false)));
     }
     /* ------------------------------------------------------------ */
 
