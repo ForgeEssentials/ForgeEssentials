@@ -44,7 +44,7 @@ public class MixinNetHandlerPlayServer
             // target =
             // "Lnet/minecraft/network/play/client/CPacketUpdateSign(Lnet/minecraft/network/play/IServerPlayNetHandler);handle(Lnet/minecraft/network/play/client/CUpdateSignPacket)V"),
             require = 1, locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void getLines(CUpdateSignPacket p_244542_1_, CallbackInfo ci)
+    public void getLines(CUpdateSignPacket p_244542_1_, CallbackInfo ci)
     {
         ServerWorld serverworld = this.player.getLevel();
         BlockPos blockpos = p_244542_1_.getPos();

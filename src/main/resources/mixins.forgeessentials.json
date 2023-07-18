@@ -8,15 +8,11 @@
 		"block.MixinBlockPortal",
 		"block.MixinBlockFire",
 		"command.MixinCommands",
-		//"command.MixinICommandSender",
 		"entity.MixinEntity",
 		"entity.MixinItemFrameEntity",
 		"entity.player.MixinEntityPlayer",
-		//"item.crafting.MixinCraftingManager",
-		"network.MixinNetHandlerPlayServer"
-		//"network.MixinSimpleChannelHandlerWrapper"
-		//"MixinDimensionManager"
-		//"tileentity.MixinMobSpawnerBaseLogic"
+		"network.MixinNetHandlerPlayServer",
+		"network.MixinServerLoginNetHandler"
 	],
 	"injectors": {
 		"defaultRequire": 1

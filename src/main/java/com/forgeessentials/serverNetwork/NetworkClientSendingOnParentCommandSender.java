@@ -7,7 +7,6 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;

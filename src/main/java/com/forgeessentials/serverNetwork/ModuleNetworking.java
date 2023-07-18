@@ -18,11 +18,11 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.commands.CommandNetworking;
+import com.forgeessentials.serverNetwork.dataManagers.NetworkDataManager;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalServerData;
-import com.forgeessentials.serverNetwork.utils.PlayerTransferManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -81,7 +81,7 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     private FENetworkClient client;
 
-    private PlayerTransferManager tranferManager;
+    private NetworkDataManager tranferManager;
 
     /* ------------------------------------------------------------ */
 
@@ -106,7 +106,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarting(FEModuleServerStartingEvent event)
     {
-        tranferManager = new PlayerTransferManager();
+        tranferManager = new NetworkDataManager();
         //APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
         loadData();
@@ -337,7 +337,7 @@ public class ModuleNetworking extends ConfigLoaderBase
         return passkeyLength;
     }
 
-    public PlayerTransferManager getTranferManager()
+    public NetworkDataManager getTranferManager()
     {
         return tranferManager;
     }
