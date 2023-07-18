@@ -90,6 +90,12 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
                                                 )
                                         )
                                 )
+                        )
+                .then(Commands.literal("sendToClient")
+                        .executes(CommandContext -> execute(CommandContext, "sendToClient"))
+                        )
+                .then(Commands.literal("sendToServer")
+                        .executes(CommandContext -> execute(CommandContext, "sendToServer"))
                         );
     }
     public static final SuggestionProvider<CommandSource> SUGGEST_clients = (ctx, builder) -> {
@@ -182,6 +188,16 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
 
             return Command.SINGLE_SUCCESS;
         }
+        if(params.equals("sendToClient")){
+            ModuleNetworking.getInstance().getTranferManager().sendAllPlayersTo("localhost:25566", "ClientServer");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Transfering to cleint");
+            return Command.SINGLE_SUCCESS;
+        }
+        if(params.equals("sendToServer")){
+            ModuleNetworking.getInstance().getTranferManager().sendAllPlayersTo("localhost:25565", "ParentServer");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Transphering to server");
+            return Command.SINGLE_SUCCESS;
+        }
         if(params.equals("load")){
             ModuleNetworking.getInstance().loadData();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Load Networking data");
@@ -199,7 +215,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("commandtoclients")){
-            if(ModuleNetworking.getInstance().getClient()!=null &&ModuleNetworking.getInstance().getClient().isChannelOpen()) {
+            if(ModuleNetworking.getInstance().getServer()!=null &&ModuleNetworking.getInstance().getServer().isChannelOpen()) {
                 ModuleNetworking.getInstance().getServer().sendAllPacket(new Packet10SharedCommandSending(StringArgumentType.getString(ctx, "command")));
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Sent command to clients");
             }
@@ -209,7 +225,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("commandtoclient")){
-            if(ModuleNetworking.getInstance().getClient()!=null &&ModuleNetworking.getInstance().getClient().isChannelOpen()) {
+            if(ModuleNetworking.getInstance().getServer()!=null &&ModuleNetworking.getInstance().getServer().isChannelOpen()) {
                 boolean found = false;
                 for(Entry<String, ConnectedClientData> data :ModuleNetworking.getClients().entrySet()) {
                     if(data.getKey().equals(StringArgumentType.getString(ctx, "client"))) {

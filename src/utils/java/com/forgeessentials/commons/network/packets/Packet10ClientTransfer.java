@@ -11,8 +11,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 public class Packet10ClientTransfer implements IFEPacket
 {
     public String destinationAddress;
-    public String fallbackAddress;
     public String destinationAddressName;
+    public String fallbackAddress;
     public String fallbackAddressName;
     public boolean sendNow;
 

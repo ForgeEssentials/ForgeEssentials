@@ -8,7 +8,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet10TransferHandler extends Packet10ClientTransfer
 {
-    public Packet10TransferHandler(String destinationAddress, String fallbackAddress, String destinationAddressName, String fallbackAddressName, boolean sendNow)
+    public Packet10TransferHandler(String destinationAddress, String destinationAddressName, String fallbackAddress, String fallbackAddressName, boolean sendNow)
     {
         super(destinationAddress, destinationAddressName, fallbackAddress, fallbackAddressName, sendNow);
     }
@@ -26,10 +26,10 @@ public class Packet10TransferHandler extends Packet10ClientTransfer
             ForgeEssentialsClient.fallbackName=fallbackAddressName;
         }
         if(!destinationAddress.equals("blank")) {
-            ForgeEssentialsClient.fallback=fallbackAddress;
-            ForgeEssentialsClient.fallbackName=fallbackAddressName;
+            ForgeEssentialsClient.redirect=destinationAddress;
+            ForgeEssentialsClient.redirectName=destinationAddressName;
         }
-        if(sendNow&&!ForgeEssentialsClient.hasRedirect()) {
+        if(sendNow&&ForgeEssentialsClient.hasRedirect()) {
             ForgeEssentialsClient.transfer(ForgeEssentialsClient.redirect, ForgeEssentialsClient.redirectName);
         }
     }

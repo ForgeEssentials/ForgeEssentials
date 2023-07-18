@@ -21,6 +21,7 @@ import com.forgeessentials.client.handler.Packet06AuthLoginHandler;
 import com.forgeessentials.client.handler.Packet07RemoteHandler;
 import com.forgeessentials.client.handler.Packet07RemoteQRRenderer;
 import com.forgeessentials.client.handler.Packet09AuthRequestHandler;
+import com.forgeessentials.client.handler.Packet10TransferHandler;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
@@ -28,7 +29,6 @@ import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.forgeessentials.commons.network.packets.Packet08AuthReply;
-import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ConnectingScreen;
@@ -229,8 +229,8 @@ public class ForgeEssentialsClient
         NetworkUtils.registerClientToServer(8, Packet08AuthReply.class, Packet08AuthReply::encode, Packet08AuthReply::decode, Packet08AuthReply::handler);
         NetworkUtils.registerServerToClient(9, Packet09AuthRequestHandler.class, Packet09AuthRequestHandler::encode, Packet09AuthRequestHandler::decode,
                 Packet09AuthRequestHandler::handler);
-        NetworkUtils.registerServerToClient(10, Packet10ClientTransfer.class, Packet10ClientTransfer::encode, Packet10ClientTransfer::decode,
-                Packet10ClientTransfer::handler);
+        NetworkUtils.registerServerToClient(10, Packet10TransferHandler.class, Packet10TransferHandler::encode, Packet10TransferHandler::decode,
+                Packet10TransferHandler::handler);
 
     }
 
