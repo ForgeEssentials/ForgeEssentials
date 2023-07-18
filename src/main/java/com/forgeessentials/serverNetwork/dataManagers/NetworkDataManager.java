@@ -1,6 +1,5 @@
 package com.forgeessentials.serverNetwork.dataManagers;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -8,6 +7,7 @@ import java.util.UUID;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
@@ -20,13 +20,12 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class NetworkDataManager extends ServerEventHandler
 {
-    protected final Set<UUID> onlinePlayers = Collections.synchronizedSet(new HashSet<>());
-    @Override
-    @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerAboutToStartEvent event)
+    protected final Set<UUID> onlinePlayers = new HashSet<>();
+    protected final Set<UUID> transferingPlayers = new HashSet<>();
+
+    public NetworkDataManager(FEModuleServerAboutToStartEvent event)
     {
         super.serverAboutToStart(event);
-        onlinePlayers.add(UUID.fromString("1a49648e-4a73-4aee-8368-b6f5cf7dcc5f"));
     }
 
     @Override
@@ -41,13 +40,25 @@ public class NetworkDataManager extends ServerEventHandler
         //onlinePlayers.remove(event.getPlayer().getUUID());
     }
 
-    public void sendPlayerTo(PlayerEntity player, String server) {
-        NetworkUtils.sendTo(new Packet10ClientTransfer(server,server), (ServerPlayerEntity) player);
+    public void sendPlayerTo(PlayerEntity player, String server, String serverName) {
+        if(PlayerInfo.get(player).getHasFEClient()) {
+            NetworkUtils.sendTo(new Packet10ClientTransfer(server, serverName, null, null, true), (ServerPlayerEntity) player);
+        }
     }
-    
-    public void sendAllPlayersTo(String server) {
+    public void sendAllPlayersTo(String server, String serverName) {
         for(PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            sendPlayerTo(p, server);
+            sendPlayerTo(p, server, serverName);
+        }
+    }
+
+    public void sendPlayerFallback(PlayerEntity player, String serverFallback, String serverFallbackName) {
+        if(PlayerInfo.get(player).getHasFEClient()) {
+            NetworkUtils.sendTo(new Packet10ClientTransfer(null, null, serverFallback, serverFallbackName, false), (ServerPlayerEntity) player);
+        }
+    }
+    public void sendAllPlayersFallback(String serverFallback, String serverFallbackName) {
+        for(PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+            sendPlayerFallback(p, serverFallback, serverFallbackName);
         }
     }
 

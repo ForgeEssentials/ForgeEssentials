@@ -9,12 +9,15 @@ public class ConnectionData
     /**
      * Data for this local instance of FENetworkServer
      * {@link String} localServerId is the unique UUID of this FENetworkServer
+     * {@link Boolean} should players only connect to client servers through this server?
      * @author maximuslotro
      */
     public static class LocalServerData
     {
         @Expose(serialize = true, deserialize = true)
         final String localServerId;
+        @Expose(serialize = true, deserialize = true)
+        boolean disableClientOnlyConnections=true;
 
         public LocalServerData(String localServerId){
             this.localServerId = localServerId;
@@ -23,6 +26,16 @@ public class ConnectionData
         public String getLocalServerId()
         {
             return localServerId;
+        }
+
+        public boolean isDisableClientOnlyConnections()
+        {
+            return disableClientOnlyConnections;
+        }
+
+        public void setDisableClientOnlyConnections(boolean disableClientOnlyConnections)
+        {
+            this.disableClientOnlyConnections = disableClientOnlyConnections;
         }
     }
     /**
@@ -131,6 +144,7 @@ public class ConnectionData
      * {@link String} password is the unique password of this local instance of FENetworkClient
      * {@link String} privateKey is the unique preGenerated privateKey for this client to connect to a certain FENetworkServer
      * {@link Boolean} authenticated shows if FENetworkClient authentication validation from the connected FENetworkServer
+     * {@link Boolean} should players only connect to this client from paretn server?
      * @author maximuslotro
      */
     public static class LocalClientData
@@ -145,6 +159,8 @@ public class ConnectionData
         String privatekey="notSet";
         @Expose(serialize = false, deserialize = false)
         boolean authenticated = false;
+        @Expose(serialize = false, deserialize = false)
+        boolean disableClientOnlyConnections=true;
         
         public LocalClientData(String localClientId){
             this.localClientId = localClientId;
@@ -188,6 +204,16 @@ public class ConnectionData
         public void setAuthenticated(boolean authenticated)
         {
             this.authenticated = authenticated;
+        }
+
+        public boolean isDisableClientOnlyConnections()
+        {
+            return disableClientOnlyConnections;
+        }
+
+        public void setDisableClientOnlyConnections(boolean disableClientOnlyConnections)
+        {
+            this.disableClientOnlyConnections = disableClientOnlyConnections;
         }
         
     }

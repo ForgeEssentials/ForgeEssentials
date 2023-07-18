@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
@@ -23,6 +24,8 @@ import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalServerData;
+import com.forgeessentials.serverNetwork.utils.ServerType;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -35,14 +38,16 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 /**
  * Module for all FENetworking connectivity
  * @author maximuslotro
  */
-@FEModule(name = "FENetworking", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
+@FEModule(name = ModuleNetworking.networkModule, parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleNetworking extends ConfigLoaderBase
 {
+    public static final String networkModule = "FENetworking";
     private static ForgeConfigSpec NETWORKING_CONFIG;
     private static final ConfigData data = new ConfigData("Networking", NETWORKING_CONFIG, new ForgeConfigSpec.Builder());
 
@@ -83,6 +88,7 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     private NetworkDataManager tranferManager;
 
+    private ServerType serverType = ServerType.NONE;
     /* ------------------------------------------------------------ */
 
     public ModuleNetworking(){}
@@ -100,15 +106,20 @@ public class ModuleNetworking extends ConfigLoaderBase
         NetworkUtils.registerServerToClient(10, Packet10ClientTransfer.class, Packet10ClientTransfer::encode, Packet10ClientTransfer::decode, Packet10ClientTransfer::handler);
     }
 
+    @SubscribeEvent
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent event)
+    {
+        tranferManager = new NetworkDataManager(event);
+    }
+
     /**
      * Initialize passkeys, server and commands
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarting(FEModuleServerStartingEvent event)
     {
-        tranferManager = new NetworkDataManager();
-        //APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
-        //APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Unused");
+        APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP, "Unused");
         loadData();
         if(localServer==null&&rootServer) {
             localServer = new LocalServerData("ForgeEssentialsServer"+(new Random()).nextInt(100000));
@@ -117,9 +128,11 @@ public class ModuleNetworking extends ConfigLoaderBase
             localClient = new LocalClientData("ForgeEssentialsClient"+(new Random()).nextInt(100000));
         }
         if(enableAutoStartServer&&rootServer) {
+            serverType = ServerType.ROOTSERVER;
             startServer();
         }
         if(enableAutoStartClient&&!rootServer) {
+            serverType = ServerType.CLIENTSERVER;
             startClient();
         }
     }
@@ -340,6 +353,11 @@ public class ModuleNetworking extends ConfigLoaderBase
     public NetworkDataManager getTranferManager()
     {
         return tranferManager;
+    }
+
+    public ServerType getServerType()
+    {
+        return serverType;
     }
     
 }
