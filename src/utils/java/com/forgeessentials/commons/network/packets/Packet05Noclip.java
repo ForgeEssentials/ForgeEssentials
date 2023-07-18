@@ -34,14 +34,13 @@ public class Packet05Noclip implements IFEPacket
     }
 
     @Override
-    public void handle(NetworkEvent.Context context)
-    {
-        NetworkUtils.feletworklog.warn("Packet5Noclip was not handled properly");
+    public void handle(NetworkEvent.Context context){
+        NetworkUtils.handleNotHandled(this);
     }
 
     public static void handler(final Packet05Noclip message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet5Noclip");
+        NetworkUtils.handleGetLog(message);
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

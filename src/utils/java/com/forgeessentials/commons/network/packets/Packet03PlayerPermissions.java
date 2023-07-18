@@ -70,14 +70,13 @@ public class Packet03PlayerPermissions implements IFEPacket
     }
 
     @Override
-    public void handle(NetworkEvent.Context context)
-    {
-        NetworkUtils.feletworklog.warn("Packet3PlayerPermissions was not handled properly");
+    public void handle(NetworkEvent.Context context){
+        NetworkUtils.handleNotHandled(this);
     }
 
     public static void handler(final Packet03PlayerPermissions message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet3PlayerPermissions");
+        NetworkUtils.handleGetLog(message);
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

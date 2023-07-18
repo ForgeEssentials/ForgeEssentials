@@ -29,14 +29,13 @@ public class Packet07Remote implements IFEPacket
     }
 
     @Override
-    public void handle(NetworkEvent.Context context)
-    {
-        NetworkUtils.feletworklog.warn("Packet7Remote was not handled properly");
+    public void handle(NetworkEvent.Context context){
+        NetworkUtils.handleNotHandled(this);
     }
 
     public static void handler(final Packet07Remote message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet7Remote");
+        NetworkUtils.handleGetLog(message);
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

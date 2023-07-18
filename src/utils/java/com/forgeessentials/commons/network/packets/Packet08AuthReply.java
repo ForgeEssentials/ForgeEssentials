@@ -32,14 +32,13 @@ public class Packet08AuthReply implements IFEPacket
     }
 
     @Override
-    public void handle(NetworkEvent.Context context)
-    {
-        NetworkUtils.feletworklog.warn("Packet8AuthReply was not handled properly");
+    public void handle(NetworkEvent.Context context){
+        NetworkUtils.handleNotHandled(this);
     }
 
     public static void handler(final Packet08AuthReply message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet8AuthReply");
+        NetworkUtils.handleGetLog(message);
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

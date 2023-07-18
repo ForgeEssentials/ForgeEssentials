@@ -14,10 +14,6 @@ public class Packet01SelectionUpdate implements IFEPacket
 {
     protected Selection selection;
 
-    public Packet01SelectionUpdate()
-    {
-    }
-
     public Packet01SelectionUpdate(Selection sel)
     {
         this.selection = sel;
@@ -75,14 +71,13 @@ public class Packet01SelectionUpdate implements IFEPacket
     }
 
     @Override
-    public void handle(NetworkEvent.Context context)
-    {
-        NetworkUtils.feletworklog.warn("Packet1SelectionUpdate was not handled properly");
+    public void handle(NetworkEvent.Context context){
+        NetworkUtils.handleNotHandled(this);
     }
 
     public static void handler(final Packet01SelectionUpdate message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet1SelectionUpdate");
+        NetworkUtils.handleGetLog(message);
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

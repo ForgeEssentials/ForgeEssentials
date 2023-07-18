@@ -112,4 +112,12 @@ public class NetworkUtils
             INSTANCE.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
         }
     }
+
+    public static void handleGetLog(IFEPacket packet) {
+        feletworklog.info("Recieved "+packet.getClass().getSimpleName());
+    }
+
+    public static void handleNotHandled(IFEPacket packet) {
+        feletworklog.warn(packet.getClass().getSimpleName()+" was not handled properly");
+    }
 }

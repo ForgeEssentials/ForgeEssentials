@@ -14,10 +14,6 @@ public class Packet06AuthLogin implements IFEPacket
      * request to get hash from client
      */
 
-    public Packet06AuthLogin()
-    {
-    }
-
     public static Packet06AuthLogin decode(PacketBuffer buf)
     {
         return new Packet06AuthLogin();
@@ -29,14 +25,13 @@ public class Packet06AuthLogin implements IFEPacket
     }
 
     @Override
-    public void handle(NetworkEvent.Context context)
-    {
-        NetworkUtils.feletworklog.warn("Packet6AuthLogin was not handled properly");
+    public void handle(NetworkEvent.Context context){
+        NetworkUtils.handleNotHandled(this);
     }
 
     public static void handler(final Packet06AuthLogin message, Supplier<NetworkEvent.Context> ctx)
     {
-        NetworkUtils.feletworklog.info("Recieved Packet6AuthLogin");
+        NetworkUtils.handleGetLog(message);
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }
