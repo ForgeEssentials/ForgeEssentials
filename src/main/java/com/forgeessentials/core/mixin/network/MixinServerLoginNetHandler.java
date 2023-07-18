@@ -44,7 +44,8 @@ public class MixinServerLoginNetHandler
             if(ModuleNetworking.getInstance().getServerType()!=ServerType.NONE&&
                     ModuleNetworking.getInstance().getServerType()!=ServerType.ROOTSERVER&&
                     ModuleNetworking.getLocalClient().isDisableClientOnlyConnections()) {
-                
+                //disconnect((new StringTextComponent("Can't login into client server without coming from root server")).withStyle(TextFormatting.RED));
+                //ci.cancel();
             }
         }
     }
