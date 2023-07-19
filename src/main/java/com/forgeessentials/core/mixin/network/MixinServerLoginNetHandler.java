@@ -43,19 +43,24 @@ public class MixinServerLoginNetHandler
                 ModuleNetworking.getLocalClient().isDisableConnectionsIfServerNotFound()){
             disconnect((new StringTextComponent("Disconnected ServerHead")).withStyle(TextFormatting.RED));
             ci.cancel();
+            return;
         }
         //Fix for joining client servers without joining root server if option enabled
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER&&
                 ModuleNetworking.getLocalClient().isDisableClientOnlyConnections()){
-            if(!ModuleNetworking.getInstance().getTranferManager().getIncommongPlayers().containsKey(gameProfile.getId())) {
+            if(!ModuleNetworking.getInstance().getTranferManager().incommongPlayers.contains(gameProfile.getId())) {
                 disconnect((new StringTextComponent("Must join from root server")).withStyle(TextFormatting.RED));
                 ci.cancel();
+                return;
             }
+            ModuleNetworking.getInstance().getTranferManager().incommongPlayers.remove(gameProfile.getId());
+            return;
         }
         //Fix for double logging on server network
-        if(ModuleNetworking.getInstance().getTranferManager().getOnlinePlayers().contains(gameProfile.getId())){
+        if(ModuleNetworking.getInstance().getTranferManager().onlinePlayers.contains(gameProfile.getId())){
             disconnect((new StringTextComponent("Double Login")).withStyle(TextFormatting.RED));
             ci.cancel();
+            return;
         }
     }
 }

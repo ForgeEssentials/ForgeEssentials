@@ -8,6 +8,8 @@ import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet12ServerPlayerSync;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet14ClientPlayerSync;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
@@ -155,5 +157,21 @@ public class ServerPacketHandler implements PacketHandler
     public void handle(Packet11SharedCommandResponse commandResponce)
     {
         LoggingHandler.felog.info("CommandResponse from client: "+commandResponce.getCommandResponse());
+    }
+
+    @Override
+    public void handle(Packet14ClientPlayerSync sync)
+    {
+        if(sync.loggedIn()) {
+            ModuleNetworking.getInstance().getTranferManager().onlinePlayers.add(sync.getPlayerUuid());
+        }
+        else {
+            ModuleNetworking.getInstance().getTranferManager().onlinePlayers.remove(sync.getPlayerUuid());
+        }
+        for (Entry<String, ConnectedClientData> data : ModuleNetworking.getClients().entrySet()) {
+            if(data.getValue().getCurrentChannel()!=sync.getChannel()&&data.getValue().isAuthenticated()) {
+                ModuleNetworking.getInstance().getServer().sendPacketFor(data.getValue().getCurrentChannel(), new Packet12ServerPlayerSync(ModuleNetworking.getInstance().getTranferManager().onlinePlayers));
+            }
+        }
     }
 }

@@ -3,6 +3,9 @@ package com.forgeessentials.serverNetwork.packetbase;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet00ClientValidation;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet12ServerPlayerSync;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet13SharedPlayerTransfer;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet14ClientPlayerSync;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
@@ -69,6 +72,18 @@ public interface PacketHandler {
     }
 
     default void handle(Packet11SharedCommandResponse packet) {
+        handleNoGet(packet);
+    }
+
+    default void handle(Packet12ServerPlayerSync packet) {
+        handleNoGet(packet);
+    }
+
+    default void handle(Packet13SharedPlayerTransfer packet) {
+        handleNoGet(packet);
+    }
+
+    default void handle(Packet14ClientPlayerSync packet) {
         handleNoGet(packet);
     }
 }

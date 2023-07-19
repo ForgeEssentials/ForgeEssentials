@@ -1,8 +1,6 @@
 package com.forgeessentials.serverNetwork.dataManagers;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -10,6 +8,9 @@ import java.util.Map.Entry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 import com.forgeessentials.serverNetwork.ModuleNetworking;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet12ServerPlayerSync;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet13SharedPlayerTransfer;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet14ClientPlayerSync;
 import com.forgeessentials.serverNetwork.utils.ServerType;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -26,9 +27,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class NetworkDataManager extends ServerEventHandler
 {
-    protected final Set<UUID> onlinePlayers = new HashSet<>();
-    protected final Map<UUID, String> incommongPlayers = new HashMap<>();
-    protected final Map<UUID, String> outgoingPlayers = new HashMap<>();
+    public Set<UUID> onlinePlayers = new HashSet<>();
+    public Set<UUID> incommongPlayers = new HashSet<>();
 
     public NetworkDataManager(FEModuleServerAboutToStartEvent event)
     {
@@ -42,13 +42,27 @@ public class NetworkDataManager extends ServerEventHandler
         super.serverStopped(e);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedInEvent event) {
-        //onlinePlayers.remove(event.getPlayer().getUUID());
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
+            onlinePlayers.add(event.getPlayer().getUUID());
+            syncPlayerList();
+        }
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
+            onlinePlayers.add(event.getPlayer().getUUID());
+            sendClientEventToServer(event.getPlayer().getUUID(), true);
+        }
     }
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        //onlinePlayers.remove(event.getPlayer().getUUID());
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
+            onlinePlayers.remove(event.getPlayer().getUUID());
+            syncPlayerList();
+        }
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
+            onlinePlayers.remove(event.getPlayer().getUUID());
+            sendClientEventToServer(event.getPlayer().getUUID(), false);
+        }
     }
 
     public void sendPlayerToServer(PlayerEntity player, String serverName) {
@@ -56,6 +70,7 @@ public class NetworkDataManager extends ServerEventHandler
             for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
             {
                 if(arg.getKey().equals(serverName)&&arg.getValue().isAuthenticated()) {
+                    ModuleNetworking.getInstance().getServer().sendPacketFor(arg.getValue().getCurrentChannel(), new Packet13SharedPlayerTransfer(player.getGameProfile().getId()));
                     sendPlayerToAddress(player, arg.getValue().getAddressNameAndPort(), serverName);
                 }
             }
@@ -88,18 +103,11 @@ public class NetworkDataManager extends ServerEventHandler
         }
     }
 
-    public Map<UUID, String> getIncommongPlayers()
-    {
-        return incommongPlayers;
+    public static void syncPlayerList() {
+        ModuleNetworking.getInstance().getServer().sendAllPacket(new Packet12ServerPlayerSync(ModuleNetworking.getInstance().getTranferManager().onlinePlayers));
     }
 
-    public Map<UUID, String> getOutgoingPlayers()
-    {
-        return outgoingPlayers;
-    }
-
-    public Set<UUID> getOnlinePlayers()
-    {
-        return onlinePlayers;
+    public static void sendClientEventToServer(UUID player, boolean loggedIn) {
+        ModuleNetworking.getInstance().getClient().sendPacket(new Packet14ClientPlayerSync(player, loggedIn));
     }
 }

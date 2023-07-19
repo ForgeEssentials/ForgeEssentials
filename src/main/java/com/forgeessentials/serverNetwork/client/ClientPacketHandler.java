@@ -5,6 +5,8 @@ import com.forgeessentials.serverNetwork.NetworkParentSendingOnClientCommandSend
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet10SharedCommandSending;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet12ServerPlayerSync;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet13SharedPlayerTransfer;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
@@ -96,5 +98,16 @@ public class ClientPacketHandler implements PacketHandler
     public void handle(Packet11SharedCommandResponse commandResponce)
     {
         LoggingHandler.felog.info("CommandResponse from server: "+commandResponce.getCommandResponse());
+    }
+
+    @Override
+    public void handle(Packet12ServerPlayerSync sync)
+    {
+        ModuleNetworking.getInstance().getTranferManager().onlinePlayers=sync.getUuids();
+    }
+    @Override
+    public void handle(Packet13SharedPlayerTransfer sync)
+    {
+        ModuleNetworking.getInstance().getTranferManager().incommongPlayers.add(sync.getPlayerUuid());
     }
 }
