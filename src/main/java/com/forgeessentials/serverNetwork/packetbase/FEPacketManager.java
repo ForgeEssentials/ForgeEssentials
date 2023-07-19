@@ -8,7 +8,7 @@ import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedComman
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 
 public class FEPacketManager
@@ -26,7 +26,7 @@ public class FEPacketManager
         packetTypes.add(new Packet01ServerValidationResponse());
         packetTypes.add(new Packet02ClientNewConnectionData());
         packetTypes.add(new Packet03ClientConnectionData());
-        packetTypes.add(new Packet04ServerPasswordResponce());
+        packetTypes.add(new Packet04ServerConnectionData());
         packetTypes.add(new Packet05SharedCloseSession());
         //Placeholder for packets 6-9
         packetTypes.add(new Packet10SharedCommandSending());

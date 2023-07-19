@@ -9,7 +9,7 @@ import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerConnectionData;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
@@ -181,7 +181,7 @@ public class FENetworkServer
         }
     }
     public boolean canSendPacket(Channel channel, FEPacket packet) {
-        if(packet instanceof Packet01ServerValidationResponse||packet instanceof Packet04ServerPasswordResponce) {
+        if(packet instanceof Packet01ServerValidationResponse||packet instanceof Packet04ServerConnectionData) {
             return true;
         }
         boolean isValid=false;

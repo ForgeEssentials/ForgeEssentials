@@ -6,7 +6,7 @@ import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedComman
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -56,7 +56,7 @@ public interface PacketHandler {
         handleNoGet(packet);
     }
 
-    default void handle(Packet04ServerPasswordResponce packet) {
+    default void handle(Packet04ServerConnectionData packet) {
         handleNoGet(packet);
     }
 

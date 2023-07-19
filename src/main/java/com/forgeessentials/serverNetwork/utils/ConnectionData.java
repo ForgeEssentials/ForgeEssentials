@@ -9,7 +9,8 @@ public class ConnectionData
     /**
      * Data for this local instance of FENetworkServer
      * {@link String} localServerId is the unique UUID of this FENetworkServer
-     * {@link Boolean} should players only connect to client servers through this server?
+     * {@link Boolean} disableClientOnlyConnections should players only connect to client servers through this server?
+     * {@link String} addressNameAndPort address of current server
      * @author maximuslotro
      */
     public static class LocalServerData
@@ -18,6 +19,8 @@ public class ConnectionData
         final String localServerId;
         @Expose(serialize = true, deserialize = true)
         boolean disableClientOnlyConnections=true;
+        @Expose(serialize = true, deserialize = true)
+        String addressNameAndPort="notSet";
 
         public LocalServerData(String localServerId){
             this.localServerId = localServerId;
@@ -36,6 +39,11 @@ public class ConnectionData
         public void setDisableClientOnlyConnections(boolean disableClientOnlyConnections)
         {
             this.disableClientOnlyConnections = disableClientOnlyConnections;
+        }
+
+        public String getAddressNameAndPort()
+        {
+            return addressNameAndPort;
         }
     }
     /**
@@ -59,6 +67,7 @@ public class ConnectionData
      * -ServerToClient all permissions
      * {@link Boolean} authenticated shows if the client is connected and authenticated
      * {@link Channel} is the current channel this client is connect from
+     * {@link String} addressNameAndPort address of connected client server
      * @author maximuslotro
      */
     public static class ConnectedClientData
@@ -77,6 +86,8 @@ public class ConnectionData
         boolean authenticated = false;
         @Expose(serialize = false, deserialize = false)
         Channel currentChannel;
+        @Expose(serialize = false, deserialize = false)
+        String addressNameAndPort="notSet";
         
         public ConnectedClientData(String remoteClientId){
             this.remoteClientId = remoteClientId;
@@ -136,6 +147,16 @@ public class ConnectionData
         {
             this.currentChannel = currentChannel;
         }
+
+        public String getAddressNameAndPort()
+        {
+            return addressNameAndPort;
+        }
+
+        public void setAddressNameAndPort(String addressNameAndPort)
+        {
+            this.addressNameAndPort = addressNameAndPort;
+        }
     }
     /**
      * Data for this local instance of FENetworkClient connected to a remote server
@@ -144,7 +165,10 @@ public class ConnectionData
      * {@link String} password is the unique password of this local instance of FENetworkClient
      * {@link String} privateKey is the unique preGenerated privateKey for this client to connect to a certain FENetworkServer
      * {@link Boolean} authenticated shows if FENetworkClient authentication validation from the connected FENetworkServer
-     * {@link Boolean} should players only connect to this client from paretn server?
+     * {@link Boolean} disableClientOnlyConnections should players only connect to this client from parent server?
+     * {@link Boolean} disableConnectionsIfServerNotFound should block connections if client can't find server
+     * {@link String} addressNameAndPort address of current client
+     * {@link String} remoteServerAddressNameAndPort address of remote server
      * @author maximuslotro
      */
     public static class LocalClientData
@@ -161,6 +185,12 @@ public class ConnectionData
         boolean authenticated = false;
         @Expose(serialize = false, deserialize = false)
         boolean disableClientOnlyConnections=true;
+        @Expose(serialize = true, deserialize = true)
+        boolean disableConnectionsIfServerNotFound=true;
+        @Expose(serialize = true, deserialize = true)
+        String addressNameAndPort="notSet";
+        @Expose(serialize = false, deserialize = false)
+        String remoteServerAddressNameAndPort="notSet";
         
         public LocalClientData(String localClientId){
             this.localClientId = localClientId;
@@ -214,6 +244,26 @@ public class ConnectionData
         public void setDisableClientOnlyConnections(boolean disableClientOnlyConnections)
         {
             this.disableClientOnlyConnections = disableClientOnlyConnections;
+        }
+
+        public boolean isDisableConnectionsIfServerNotFound()
+        {
+            return disableConnectionsIfServerNotFound;
+        }
+
+        public String getAddressNameAndPort()
+        {
+            return addressNameAndPort;
+        }
+
+        public String getRemoteServerAddressNameAndPort()
+        {
+            return remoteServerAddressNameAndPort;
+        }
+
+        public void setRemoteServerAddressNameAndPort(String remoteServerAddressNameAndPort)
+        {
+            this.remoteServerAddressNameAndPort = remoteServerAddressNameAndPort;
         }
         
     }

@@ -8,7 +8,7 @@ import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedComman
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
 import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
@@ -44,7 +44,14 @@ public class ClientPacketHandler implements PacketHandler
             LoggingHandler.felog.debug("FENetworkClient Connected to known FENetworkServer: " + validationResponce.getServerId());
             try
             {
-                FENetworkClient.getInstance().sendPacket(new Packet03ClientConnectionData(data.getLocalClientId(), EncryptionUtils.encryptString(data.getPassword(), data.getPrivatekey())));
+                if(data.getAddressNameAndPort().equals("notSet")) {
+                    LoggingHandler.felog.error("FENetworkClient client public ip/hostname and port are not set!");
+                    LoggingHandler.felog.error("FENetworkClient set this in the format \"hostname:port\"");
+                    FENetworkClient.getInstance().disconnect();
+                    return;
+                }
+                FENetworkClient.getInstance().sendPacket(new Packet03ClientConnectionData(data.getLocalClientId(), EncryptionUtils.encryptString(data.getPassword(), data.getPrivatekey()), data.getAddressNameAndPort()));
+                return;
             }
             catch (Exception e)
             {
@@ -61,9 +68,13 @@ public class ClientPacketHandler implements PacketHandler
     }
 
     @Override
-    public void handle(Packet04ServerPasswordResponce passwordPacket)
+    public void handle(Packet04ServerConnectionData passwordPacket)
     {
         ModuleNetworking.getLocalClient().setAuthenticated(passwordPacket.isAuthenticated());
+        if(passwordPacket.isAuthenticated()) {
+            ModuleNetworking.getLocalClient().setDisableClientOnlyConnections(passwordPacket.isDisableClientOnlyConnections());
+            ModuleNetworking.getLocalClient().setRemoteServerAddressNameAndPort(passwordPacket.getAddress());
+        }
         LoggingHandler.felog.debug("FENetworkClient authentication "+(passwordPacket.isAuthenticated() ?"Successful":"Failed"));
     }
 

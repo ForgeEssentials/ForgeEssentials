@@ -34,19 +34,28 @@ public class MixinServerLoginNetHandler
             cancellable = true)
     public void handlePlayerjoin(CallbackInfo ci)
     {
-        //Fix for double logging on server network
-        if(ModuleNetworking.getInstance().getTranferManager().getOnlineplayers().contains(gameProfile.getId())){
-            disconnect((new StringTextComponent("Double Login")).withStyle(TextFormatting.RED));
+        if(!ModuleLauncher.getModuleList().contains(ModuleNetworking.networkModule)) {
+            return;
+        }
+        //Fix for joining disconnected client server
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER&&
+                !ModuleNetworking.getInstance().getClient().isChannelOpen()&&
+                ModuleNetworking.getLocalClient().isDisableConnectionsIfServerNotFound()){
+            disconnect((new StringTextComponent("Disconnected ServerHead")).withStyle(TextFormatting.RED));
             ci.cancel();
         }
         //Fix for joining client servers without joining root server if option enabled
-        if(ModuleLauncher.getModuleList().contains(ModuleNetworking.networkModule)) {
-            if(ModuleNetworking.getInstance().getServerType()!=ServerType.NONE&&
-                    ModuleNetworking.getInstance().getServerType()!=ServerType.ROOTSERVER&&
-                    ModuleNetworking.getLocalClient().isDisableClientOnlyConnections()) {
-                //disconnect((new StringTextComponent("Can't login into client server without coming from root server")).withStyle(TextFormatting.RED));
-                //ci.cancel();
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER&&
+                ModuleNetworking.getLocalClient().isDisableClientOnlyConnections()){
+            if(!ModuleNetworking.getInstance().getTranferManager().getIncommongPlayers().containsKey(gameProfile.getId())) {
+                disconnect((new StringTextComponent("Must join from root server")).withStyle(TextFormatting.RED));
+                ci.cancel();
             }
+        }
+        //Fix for double logging on server network
+        if(ModuleNetworking.getInstance().getTranferManager().getOnlinePlayers().contains(gameProfile.getId())){
+            disconnect((new StringTextComponent("Double Login")).withStyle(TextFormatting.RED));
+            ci.cancel();
         }
     }
 }

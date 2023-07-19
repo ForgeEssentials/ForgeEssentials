@@ -19,6 +19,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.serverNetwork.client.FENetworkClient;
 import com.forgeessentials.serverNetwork.commands.CommandNetworking;
+import com.forgeessentials.serverNetwork.commands.CommandTransferServer;
 import com.forgeessentials.serverNetwork.dataManagers.NetworkDataManager;
 import com.forgeessentials.serverNetwork.server.FENetworkServer;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
@@ -98,6 +99,7 @@ public class ModuleNetworking extends ConfigLoaderBase
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandNetworking(true), dispatcher);
+        FECommandManager.registerCommand(new CommandTransferServer(true), dispatcher);
     }
 
     @SubscribeEvent
@@ -237,6 +239,7 @@ public class ModuleNetworking extends ConfigLoaderBase
             return 1;
         try
         {
+            serverType = ServerType.ROOTSERVER;
             String bindAddress = localhostOnly ? "localhost" : "0.0.0.0";
             server = new FENetworkServer(bindAddress, serverPort, channelName, channelVersion);
             return server.startServer();
@@ -281,6 +284,7 @@ public class ModuleNetworking extends ConfigLoaderBase
             return 1;
         try
         {
+            serverType = ServerType.CLIENTSERVER;
             client = new FENetworkClient(clientHostname, clientPort, channelName, channelVersion);
             return client.connect();
         }
@@ -305,15 +309,15 @@ public class ModuleNetworking extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    public static File getRemoteClientDataFolder()
+    private static File getRemoteClientDataFolder()
     {
         return new File(moduleDir, "RemoteFENetworkClientData");
     }
-    public static File getLocalClientDataFile()
+    private static File getLocalClientDataFile()
     {
         return new File(moduleDir, "LocalFENetworkClientData.json");
     }
-    public static File getLocalServerDataFile()
+    private static File getLocalServerDataFile()
     {
         return new File(moduleDir, "LocalFENetworkServerData.json");
     }

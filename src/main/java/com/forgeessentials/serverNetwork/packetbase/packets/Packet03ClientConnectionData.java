@@ -9,12 +9,14 @@ public class Packet03ClientConnectionData extends FEPacket {
 
     private String clientId;
     private String encryptedPassword;
+    private String address;
 
     public Packet03ClientConnectionData() {}
 
-    public Packet03ClientConnectionData(String clientId, String encryptedPassword) {
+    public Packet03ClientConnectionData(String clientId, String encryptedPassword, String address) {
         this.clientId = clientId;
         this.encryptedPassword = encryptedPassword;
+        this.address = address;
     }
     
     public String getClientId() {
@@ -25,16 +27,22 @@ public class Packet03ClientConnectionData extends FEPacket {
         return encryptedPassword;
     }
 
+    public String getAddress(){
+        return address;
+    }
+
     @Override
     public void encode(PacketBuffer buf) {
         buf.writeUtf(clientId);
         buf.writeUtf(encryptedPassword);
+        buf.writeUtf(address);
     }
 
     @Override
     public void decode(PacketBuffer buf) {
         clientId = buf.readUtf();
         encryptedPassword = buf.readUtf();
+        address = buf.readUtf();
     }
 
     @Override

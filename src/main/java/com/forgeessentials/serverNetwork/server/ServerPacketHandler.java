@@ -11,7 +11,7 @@ import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedComman
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet01ServerValidationResponse;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet02ClientNewConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet03ClientConnectionData;
-import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerPasswordResponce;
+import com.forgeessentials.serverNetwork.packetbase.packets.Packet04ServerConnectionData;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet05SharedCloseSession;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -96,9 +96,16 @@ public class ServerPacketHandler implements PacketHandler
         try
         {
             if(EncryptionUtils.decryptString(clientData.getEncryptedPassword(), data.getPrivateKey()).equals(data.getPassword())) {
-                FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet04ServerPasswordResponce(true));
+                if(ModuleNetworking.getLocalServer().getAddressNameAndPort().equals("notSet")) {
+                    LoggingHandler.felog.error("FENetworkServer server public ip/hostname and port are not set!");
+                    LoggingHandler.felog.error("FENetworkServer set this in the format \"hostname:port\"");
+                    clientData.getChannel().close();
+                    return;
+                }
+                FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet04ServerConnectionData(true, ModuleNetworking.getLocalServer().isDisableClientOnlyConnections(), ModuleNetworking.getLocalServer().getAddressNameAndPort()));
                 data.setAuthenticated(true);
                 data.incrementNumberTimesConnected();
+                data.setAddressNameAndPort(clientData.getAddress());
                 ModuleNetworking.getClients().put(clientData.getClientId(), data);
                 LoggingHandler.felog.debug("FENetworkServer Client authenticated");
                 return;
@@ -110,9 +117,7 @@ public class ServerPacketHandler implements PacketHandler
             clientData.getChannel().close();
             return;
         }
-        data.setAuthenticated(false);
-        ModuleNetworking.getClients().put(clientData.getClientId(), data);
-        FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet04ServerPasswordResponce(false));
+        FENetworkServer.getInstance().sendPacketFor(clientData.getChannel(), new Packet04ServerConnectionData(false, true, "notSet"));
     }
 
     @Override

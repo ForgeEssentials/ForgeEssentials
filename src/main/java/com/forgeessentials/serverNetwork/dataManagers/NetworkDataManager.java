@@ -1,11 +1,17 @@
 package com.forgeessentials.serverNetwork.dataManagers;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
+import com.forgeessentials.serverNetwork.ModuleNetworking;
+import com.forgeessentials.serverNetwork.utils.ServerType;
+import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
@@ -21,7 +27,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class NetworkDataManager extends ServerEventHandler
 {
     protected final Set<UUID> onlinePlayers = new HashSet<>();
-    protected final Set<UUID> transferingPlayers = new HashSet<>();
+    protected final Map<UUID, String> incommongPlayers = new HashMap<>();
+    protected final Map<UUID, String> outgoingPlayers = new HashMap<>();
 
     public NetworkDataManager(FEModuleServerAboutToStartEvent event)
     {
@@ -36,18 +43,37 @@ public class NetworkDataManager extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedInEvent event) {
+        //onlinePlayers.remove(event.getPlayer().getUUID());
+    }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         //onlinePlayers.remove(event.getPlayer().getUUID());
     }
 
-    public void sendPlayerTo(PlayerEntity player, String server, String serverName) {
+    public void sendPlayerToServer(PlayerEntity player, String serverName) {
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
+            for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
+            {
+                if(arg.getKey().equals(serverName)&&arg.getValue().isAuthenticated()) {
+                    sendPlayerToAddress(player, arg.getValue().getAddressNameAndPort(), serverName);
+                }
+            }
+        }
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
+            if(ModuleNetworking.getLocalClient().isAuthenticated()&&ModuleNetworking.getLocalClient().getRemoteServerId().equals(serverName)) {
+                sendPlayerToAddress(player, ModuleNetworking.getLocalClient().getRemoteServerAddressNameAndPort(), serverName);
+            }
+        }
+    }
+    public void sendPlayerToAddress(PlayerEntity player, String server, String serverName) {
         if(PlayerInfo.get(player).getHasFEClient()) {
             NetworkUtils.sendTo(new Packet10ClientTransfer(server, serverName, null, null, true), (ServerPlayerEntity) player);
         }
     }
-    public void sendAllPlayersTo(String server, String serverName) {
+    public void sendAllPlayersToAddress(String server, String serverName) {
         for(PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            sendPlayerTo(p, server, serverName);
+            sendPlayerToAddress(p, server, serverName);
         }
     }
 
@@ -62,7 +88,17 @@ public class NetworkDataManager extends ServerEventHandler
         }
     }
 
-    public Set<UUID> getOnlineplayers()
+    public Map<UUID, String> getIncommongPlayers()
+    {
+        return incommongPlayers;
+    }
+
+    public Map<UUID, String> getOutgoingPlayers()
+    {
+        return outgoingPlayers;
+    }
+
+    public Set<UUID> getOnlinePlayers()
     {
         return onlinePlayers;
     }

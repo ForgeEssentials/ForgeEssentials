@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.utils.ConnectionData.ConnectedClientData;
+import com.forgeessentials.serverNetwork.utils.ServerType;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -30,7 +31,7 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
     @Override
     public boolean canConsoleUseCommand()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -55,35 +56,35 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-        		.then(Commands.literal("sendCommandToClient")
-                        .then(Commands.argument("client", StringArgumentType.word())
-                                .suggests(SUGGEST_servers)
-                                .then(Commands.argument("command", StringArgumentType.greedyString())
-                                        .executes(CommandContext -> execute(CommandContext, "commandtoclient")
-                                                )
-                                        )
+                .then(Commands.argument("serverId", StringArgumentType.word())
+                        .suggests(SUGGEST_servers)
+                        .executes(CommandContext -> execute(CommandContext, "connectToServer")
                                 )
                         );
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_servers = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>();
-        for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
-        {
-            if(arg.getValue().isAuthenticated()) {
-                listArgs.add(arg.getKey());
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
+            for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
+            {
+                if(arg.getValue().isAuthenticated()) {
+                    listArgs.add(arg.getKey());
+                }
             }
         }
-        if(ModuleNetworking.getLocalClient().isAuthenticated()) {
-        	listArgs.add(ModuleNetworking.getLocalClient().getRemoteServerId());
+        if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
+            if(ModuleNetworking.getLocalClient().isAuthenticated()) {
+                listArgs.add(ModuleNetworking.getLocalClient().getRemoteServerId());
+            }
         }
         return ISuggestionProvider.suggest(listArgs, builder);
     };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-    	ModuleNetworking.getInstance().getTranferManager();
+    	ModuleNetworking.getInstance().getTranferManager().sendPlayerToServer(getServerPlayer(ctx.getSource()), StringArgumentType.getString(ctx, "serverId"));
     	return Command.SINGLE_SUCCESS;
     }
 

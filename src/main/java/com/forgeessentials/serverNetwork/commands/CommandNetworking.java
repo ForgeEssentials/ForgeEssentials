@@ -90,12 +90,6 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
                                                 )
                                         )
                                 )
-                        )
-                .then(Commands.literal("sendToClient")
-                        .executes(CommandContext -> execute(CommandContext, "sendToClient"))
-                        )
-                .then(Commands.literal("sendToServer")
-                        .executes(CommandContext -> execute(CommandContext, "sendToServer"))
                         );
     }
     public static final SuggestionProvider<CommandSource> SUGGEST_clients = (ctx, builder) -> {
@@ -186,16 +180,6 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
             ModuleNetworking.getInstance().saveData();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Saved Networking data");
 
-            return Command.SINGLE_SUCCESS;
-        }
-        if(params.equals("sendToClient")){
-            ModuleNetworking.getInstance().getTranferManager().sendAllPlayersTo("localhost:25566", "ClientServer");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Transfering to cleint");
-            return Command.SINGLE_SUCCESS;
-        }
-        if(params.equals("sendToServer")){
-            ModuleNetworking.getInstance().getTranferManager().sendAllPlayersTo("localhost:25565", "ParentServer");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Transphering to server");
             return Command.SINGLE_SUCCESS;
         }
         if(params.equals("load")){
