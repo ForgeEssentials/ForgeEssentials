@@ -375,7 +375,11 @@ public class ForgeEssentialsClient
         {
             // Minecraft instance = Minecraft.getInstance();
             // instance.gui.getChat().addMessage(new StringTextComponent("Sending Handshake Packet to FE Server"));
-            NetworkUtils.sendToServer(new Packet00Handshake());
+            try {
+                NetworkUtils.sendToServer(new Packet00Handshake());
+            }catch(NullPointerException e) {
+                ForgeEssentialsClient.feclientlog.warn("Failed to send initialization Packet");
+            }
         }
         else
         {
