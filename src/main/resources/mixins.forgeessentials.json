@@ -12,7 +12,8 @@
 		"entity.MixinItemFrameEntity",
 		"entity.player.MixinEntityPlayer",
 		"network.MixinNetHandlerPlayServer",
-		"network.MixinServerLoginNetHandler"
+		"network.MixinServerLoginNetHandler",
+		"network.MixinMinecraftServer"
 	],
 	"injectors": {
 		"defaultRequire": 1
