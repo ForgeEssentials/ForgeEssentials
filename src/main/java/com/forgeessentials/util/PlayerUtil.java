@@ -49,7 +49,7 @@ public abstract class PlayerUtil
         if (entityitem != null)
         {
             entityitem.setNoPickUpDelay();
-            entityitem.setOwner(player.getUUID());
+            entityitem.setOwner(player.getGameProfile().getId());
         }
     }
 

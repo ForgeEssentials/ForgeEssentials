@@ -228,7 +228,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled())
             return;
-        if (!ModuleAuth.isRegistered(event.getPlayer().getUUID()))
+        if (!ModuleAuth.isRegistered(event.getPlayer().getGameProfile().getId()))
         {
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
                     "Registration required. Try /auth help.");
@@ -250,7 +250,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        ModuleAuth.deauthenticate(event.getPlayer().getUUID());
+        ModuleAuth.deauthenticate(event.getPlayer().getGameProfile().getId());
     }
 
     // autologin
@@ -260,7 +260,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled())
             return;
-        if (ModuleAuth.isRegistered(e.getPlayer().getUUID()) && !ModuleAuth.isAuthenticated(e.getPlayer()))
+        if (ModuleAuth.isRegistered(e.getPlayer().getGameProfile().getId()) && !ModuleAuth.isAuthenticated(e.getPlayer()))
         {
             NetworkUtils.sendTo(new Packet06AuthLogin(), (ServerPlayerEntity) e.getPlayer());
         }
@@ -273,7 +273,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             UUID token = UUID.randomUUID();
             NetworkUtils.sendTo(new Packet09AuthRequest(token.toString()), (ServerPlayerEntity) e.getPlayer());
-            PasswordManager.addSession(e.getPlayer().getUUID(), token);
+            PasswordManager.addSession(e.getPlayer().getGameProfile().getId(), token);
             ChatOutputHandler.chatConfirmation(e.getPlayer(), "AutoAuth Login Successful.");
         }
         APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer().createCommandSourceStack());

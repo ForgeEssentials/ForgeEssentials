@@ -90,7 +90,7 @@ public class RespawnHandler
         if (e.getEntityLiving() instanceof ServerPlayerEntity)
         {
             ServerPlayerEntity player = (ServerPlayerEntity) e.getEntityLiving();
-            PlayerInfo pi = PlayerInfo.get(player.getUUID());
+            PlayerInfo pi = PlayerInfo.get(player.getGameProfile().getId());
             pi.setLastDeathLocation(new WarpPoint(player));
             pi.setLastTeleportOrigin(pi.getLastDeathLocation());
         }
@@ -134,7 +134,7 @@ public class RespawnHandler
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         player.connection.player = player;
 
-        WarpPoint lastDeathLocation = PlayerInfo.get(player.getUUID()).getLastDeathLocation();
+        WarpPoint lastDeathLocation = PlayerInfo.get(player.getGameProfile().getId()).getLastDeathLocation();
         if (lastDeathLocation == null)
             lastDeathLocation = new WarpPoint(player);
 

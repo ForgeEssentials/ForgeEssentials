@@ -68,7 +68,7 @@ public class Kit
     {
         if (!APIRegistry.perms.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN))
         {
-            PlayerInfo pi = PlayerInfo.get(player.getUUID());
+            PlayerInfo pi = PlayerInfo.get(player.getGameProfile().getId());
             long timeout = pi.getRemainingTimeout("KIT_" + name);
             if (timeout > 0)
             {

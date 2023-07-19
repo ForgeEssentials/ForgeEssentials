@@ -65,7 +65,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
     {
         if (params.equals("goHome"))
         {
-            WarpPoint home = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID()).getHome();
+            WarpPoint home = PlayerInfo.get(getServerPlayer(ctx.getSource()).getGameProfile().getId()).getHome();
             if (home == null)
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "No home set. Use \"/home set\" first.");
@@ -85,7 +85,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
             }
 
             WarpPoint p = new WarpPoint(player);
-            PlayerInfo info = PlayerInfo.get(player.getUUID());
+            PlayerInfo info = PlayerInfo.get(player.getGameProfile().getId());
             info.setHome(p);
             info.save();
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
@@ -103,7 +103,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
             }
 
             WarpPoint p = new WarpPoint(player);
-            PlayerInfo info = PlayerInfo.get(player.getUUID());
+            PlayerInfo info = PlayerInfo.get(player.getGameProfile().getId());
             info.setHome(p);
             info.save();
             ChatOutputHandler.chatConfirmation(ctx.getSource(),

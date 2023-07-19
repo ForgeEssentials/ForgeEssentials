@@ -40,7 +40,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID());
+        PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         info.setSel1(null);
         info.setSel2(null);
         SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));

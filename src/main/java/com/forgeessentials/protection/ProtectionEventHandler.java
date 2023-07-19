@@ -938,7 +938,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        zoneEffects.remove(event.getPlayer().getUUID());
+        zoneEffects.remove(event.getPlayer().getGameProfile().getId());
     }
 
     @SubscribeEvent

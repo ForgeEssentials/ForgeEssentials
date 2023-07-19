@@ -190,7 +190,7 @@ public class PlayerInfo implements Loadable
 
     public static PlayerInfo get(PlayerEntity player)
     {
-        return get(player.getUUID(), player.getDisplayName().getString());
+        return get(player.getGameProfile().getId(), player.getDisplayName().getString());
     }
 
     public static PlayerInfo get(UserIdent ident)

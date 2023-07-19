@@ -179,7 +179,7 @@ public class ModuleServerVote extends ConfigLoaderBase
                     .broadcastAll(new SChatPacket(
                             new StringTextComponent(ChatOutputHandler.formatColors(ConfigServerVote.msgAll
                                     .replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))),
-                            ChatType.CHAT, player.getUUID()));
+                            ChatType.CHAT, player.getGameProfile().getId()));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))

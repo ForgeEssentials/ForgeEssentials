@@ -106,7 +106,7 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
             e.printStackTrace();
             StringTextComponent msg = new StringTextComponent(e.getCause() + e.getMessage());
             msg.withStyle(TextFormatting.RED);
-            event.getPlayer().sendMessage(msg, event.getPlayer().getUUID());
+            event.getPlayer().sendMessage(msg, event.getPlayer().getGameProfile().getId());
         }
     }
 

@@ -288,16 +288,16 @@ public class UserIdent
         if (player instanceof FakePlayer)
         {
             return getNpc(player.getDisplayName().getString(),
-                    ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getUUID());
+                    ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getGameProfile().getId());
         }
 
-        UserIdent ident = byUuid.get(player.getUUID());
+        UserIdent ident = byUuid.get(player.getGameProfile().getId());
         if (ident == null)
         {
             ident = byUsername.get(player.getDisplayName().getString());
             if (ident != null)
             {
-                ident.uuid = player.getUUID();
+                ident.uuid = player.getGameProfile().getId();
                 byUuid.put(ident.uuid, ident);
             }
             else
@@ -457,7 +457,7 @@ public class UserIdent
 
     public static synchronized void login(PlayerEntity player)
     {
-        UserIdent ident = byUuid.get(player.getUUID());
+        UserIdent ident = byUuid.get(player.getGameProfile().getId());
         UserIdent usernameIdent = byUsername.get(player.getDisplayName().getString());
 
         if (ident == null)
@@ -467,12 +467,12 @@ public class UserIdent
             else
             {
                 ident = usernameIdent;
-                byUuid.put(player.getUUID(), ident);
+                byUuid.put(player.getGameProfile().getId(), ident);
             }
         }
         ident.player = new WeakReference<PlayerEntity>(player);
         ident.username = player.getDisplayName().getString();
-        ident.uuid = player.getUUID();
+        ident.uuid = player.getGameProfile().getId();
 
         if (usernameIdent != null && usernameIdent != ident)
         {
@@ -710,7 +710,7 @@ public class UserIdent
         }
         else if (other instanceof PlayerEntity)
         {
-            return ((PlayerEntity) other).getUUID().equals(uuid);
+            return ((PlayerEntity) other).getGameProfile().getId().equals(uuid);
         }
         else
         {
@@ -760,7 +760,7 @@ public class UserIdent
     public static PlayerEntity getPlayerByUuid(UUID uuid)
     {
         for (PlayerEntity player : ServerUtil.getPlayerList())
-            if (player.getUUID().equals(uuid))
+            if (player.getGameProfile().getId().equals(uuid))
                 return player;
         return null;
     }

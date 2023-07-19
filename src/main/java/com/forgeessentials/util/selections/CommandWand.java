@@ -70,7 +70,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
             wandId = "hands";
         }
 
-        PlayerInfo info = PlayerInfo.get(player.getUUID());
+        PlayerInfo info = PlayerInfo.get(player.getGameProfile().getId());
 
         // Check for unbind
         if ((params.equals("unbind")) && ((info.isWandEnabled() && info.getWandID().equals(wandId))))

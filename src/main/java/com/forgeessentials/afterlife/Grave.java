@@ -100,7 +100,7 @@ public class Grave implements Loadable
     public Grave(PlayerEntity player, Collection<ItemEntity> drops, int xp)
     {
         this.xp = xp;
-        this.owner = player.getUUID();
+        this.owner = player.getGameProfile().getId();
         this.hasFencePost = APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
         this.lastTick = System.currentTimeMillis();
         this.protTime = ServerUtil.parseIntDefault(
@@ -200,7 +200,7 @@ public class Grave implements Loadable
             return false;
         if (!isProtected)
             return true;
-        if (player.getUUID().equals(owner))
+        if (player.getGameProfile().getId().equals(owner))
             return true;
         if (APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
             return true;

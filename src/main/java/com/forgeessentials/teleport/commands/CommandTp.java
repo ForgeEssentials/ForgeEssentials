@@ -77,7 +77,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
 
                 if (!target.hasDisconnected())
                 {
-                    PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
+                    PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     WarpPoint point = new WarpPoint(target);
                     TeleportHelper.teleport(player, point);
@@ -100,7 +100,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
-            PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
+            PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
         }
@@ -121,7 +121,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
 
                 if (!target.hasDisconnected())
                 {
-                    PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
+                    PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     WarpPoint point = new WarpPoint(target);
                     TeleportHelper.teleport(player, point);
@@ -145,7 +145,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             ;
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
-            PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
+            PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
         }

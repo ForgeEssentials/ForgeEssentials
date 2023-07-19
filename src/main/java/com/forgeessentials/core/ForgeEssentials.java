@@ -455,10 +455,10 @@ public class ForgeEssentials
         {
             ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
             UserIdent.login(player);
-            PlayerInfo.login(player.getUUID());
+            PlayerInfo.login(player.getGameProfile().getId());
             try
             {
-                PlayerInfo.login(player.getUUID());
+                PlayerInfo.login(player.getGameProfile().getId());
             }
             catch (JsonParseException e)
             {
@@ -500,7 +500,7 @@ public class ForgeEssentials
     {
         if (event.getEntity() instanceof PlayerEntity)
         {
-            PlayerInfo.logout(event.getEntity().getUUID());
+            PlayerInfo.logout(event.getPlayer().getGameProfile().getId());
             UserIdent.logout((PlayerEntity) event.getPlayer());
         }
     }

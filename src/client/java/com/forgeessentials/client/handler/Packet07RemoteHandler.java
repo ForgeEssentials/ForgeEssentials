@@ -56,13 +56,13 @@ public class Packet07RemoteHandler extends Packet07Remote
             qrLink.withStyle(TextFormatting.UNDERLINE);
             TextComponent msg = new StringTextComponent("Click in-game with mouse to close qrCode");
             qrLink.append(msg);
-            instance.player.sendMessage(qrLink, instance.player.getUUID());
+            instance.player.sendMessage(qrLink, instance.player.getGameProfile().getId());
         }
         catch (IOException e)
         {
             TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
             cmsg.withStyle(TextFormatting.RED);
-            instance.player.sendMessage(cmsg, instance.player.getUUID());
+            instance.player.sendMessage(cmsg, instance.player.getGameProfile().getId());
             e.printStackTrace();
         }
     }

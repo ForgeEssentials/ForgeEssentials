@@ -151,7 +151,7 @@ public final class ChatOutputHandler
         for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT,
-                    p.getUUID());
+                    p.getGameProfile().getId());
         }
 
         if (sendToDiscord && ModuleChat.instance != null)
@@ -184,7 +184,7 @@ public final class ChatOutputHandler
         for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT,
-                    p.getUUID());
+                    p.getGameProfile().getId());
         }
 
         if (sendToDiscord && ModuleChat.instance != null)

@@ -25,7 +25,7 @@ public class PlayerPositionEventFactory extends ServerEventHandler
         if (e.side != LogicalSide.SERVER || e.phase == ServerTickEvent.Phase.START)
             return;
         PlayerEntity player = (PlayerEntity) e.player;
-        WarpPoint before = lastPlayerPosition.get(player.getUUID());
+        WarpPoint before = lastPlayerPosition.get(player.getGameProfile().getId());
         WarpPoint current = new WarpPoint(e.player);
 
         if (before != null && !player.isDeadOrDying() && player.level != null && !before.equals(current))
@@ -40,13 +40,13 @@ public class PlayerPositionEventFactory extends ServerEventHandler
                     TeleportHelper.doTeleport(player, before);
             }
         }
-        lastPlayerPosition.put(player.getUUID(), new WarpPoint(e.player));
+        lastPlayerPosition.put(player.getGameProfile().getId(), new WarpPoint(e.player));
     }
 
     @SubscribeEvent
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        lastPlayerPosition.remove(e.getPlayer().getUUID());
+        lastPlayerPosition.remove(e.getPlayer().getGameProfile().getId());
     }
 
 }

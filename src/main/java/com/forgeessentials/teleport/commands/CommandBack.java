@@ -57,7 +57,7 @@ public class CommandBack extends ForgeEssentialsCommandBuilder
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
-        PlayerInfo pi = PlayerInfo.get(player.getUUID());
+        PlayerInfo pi = PlayerInfo.get(player.getGameProfile().getId());
         WarpPoint point = null;
         if (hasPermission(player.createCommandSourceStack(), TeleportModule.PERM_BACK_ONDEATH))
             point = pi.getLastDeathLocation();

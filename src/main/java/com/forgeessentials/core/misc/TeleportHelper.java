@@ -170,7 +170,7 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Setup timed teleport
-        tpInfos.put(player.getUUID(), new TeleportInfo(player, point, teleportWarmup * 1000));
+        tpInfos.put(player.getGameProfile().getId(), new TeleportInfo(player, point, teleportWarmup * 1000));
         ChatOutputHandler.chatNotification(player, Translator.format("Teleporting. Please stand still for %s.",
                 ChatOutputHandler.formatTimeDurationReadable(teleportWarmup, true)));
     }

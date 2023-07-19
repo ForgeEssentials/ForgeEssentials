@@ -228,7 +228,7 @@ public class JsServer
 
             for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
-                server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getUUID());
+                server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getGameProfile().getId());
             }
         }
         catch (JsonParseException jsonparseexception)

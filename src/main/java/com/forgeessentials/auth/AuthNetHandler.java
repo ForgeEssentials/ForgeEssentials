@@ -33,7 +33,7 @@ public class AuthNetHandler extends Packet08AuthReply
             {
                 if (PasswordManager.hasSession(UserIdent.get(context.getSender()).getUuid(), UUID.fromString(hash)))
                 {
-                    ModuleAuth.authenticate(context.getSender().getUUID());
+                    ModuleAuth.authenticate(context.getSender().getGameProfile().getId());
                     APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
                     ChatOutputHandler.chatConfirmation(context.getSender(), "AutoAuth Login Successful.");
                 }

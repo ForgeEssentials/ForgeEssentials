@@ -128,7 +128,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
             Integer amount = IntegerArgumentType.getInteger(ctx, "timeout");
             if (arg[1].equals("P"))
             {
-                UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
+                UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getGameProfile().getId().toString(), true);
                 APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, amount.toString());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
                         Translator.format("Set player %s's timeout to %d", applyTo.getUsername(), amount));
@@ -149,7 +149,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
             Boolean amount = BoolArgumentType.getBool(ctx, "yn");
             if (arg[1].equals("P"))
             {
-                UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
+                UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getGameProfile().getId().toString(), true);
                 APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, amount.toString());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
                         Translator.format("Toggled player %s's timeout to %b", applyTo.getUsername(), amount));

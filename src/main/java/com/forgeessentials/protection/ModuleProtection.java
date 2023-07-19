@@ -382,21 +382,21 @@ public class ModuleProtection
     public static void setDebugMode(PlayerEntity player, String commandBase)
     {
         if (commandBase != null)
-            debugModePlayers.put(player.getUUID(), commandBase);
+            debugModePlayers.put(player.getGameProfile().getId(), commandBase);
         else
-            debugModePlayers.remove(player.getUUID());
+            debugModePlayers.remove(player.getGameProfile().getId());
     }
 
     public static boolean isDebugMode(PlayerEntity player)
     {
-        return debugModePlayers.containsKey(player.getUUID());
+        return debugModePlayers.containsKey(player.getGameProfile().getId());
     }
 
     public static void debugPermission(PlayerEntity player, String permission)
     {
         if (player == null)
             return;
-        String cmdBase = debugModePlayers.get(player.getUUID());
+        String cmdBase = debugModePlayers.get(player.getGameProfile().getId());
         if (cmdBase == null)
             return;
 

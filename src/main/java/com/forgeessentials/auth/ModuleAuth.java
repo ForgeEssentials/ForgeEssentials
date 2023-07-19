@@ -157,7 +157,7 @@ public class ModuleAuth extends ConfigLoaderBase
         {
             return true;
         }
-        return isAuthenticated(player.getUUID());
+        return isAuthenticated(player.getGameProfile().getId());
     }
 
     // public static boolean isAllowedMethod(IPacket<?> msg) {

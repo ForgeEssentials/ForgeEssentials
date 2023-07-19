@@ -245,7 +245,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         if (e.getEntity() instanceof ServerPlayerEntity)
         {
-            UserIdent ident = UserIdent.get(e.getEntity().getUUID());
+            UserIdent ident = UserIdent.get(e.getPlayer().getGameProfile().getId());
             double xpMultiplier = ServerUtil
                     .parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
             if (xpMultiplier <= 0)

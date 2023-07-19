@@ -100,7 +100,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
 
-            PlayerInfo.get(player.getUUID()).setLastTeleportOrigin(new WarpPoint(player));
+            PlayerInfo.get(player.getGameProfile().getId()).setLastTeleportOrigin(new WarpPoint(player));
             ChatOutputHandler.chatConfirmation(player, "Teleporting to spawn.");
             TeleportHelper.teleport(player, point);
         }

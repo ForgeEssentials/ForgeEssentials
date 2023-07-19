@@ -85,7 +85,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
     public static PersonalWarp getWarps(ServerPlayerEntity player)
     {
-        PersonalWarp warps = DataManager.getInstance().load(PersonalWarp.class, player.getUUID().toString());
+        PersonalWarp warps = DataManager.getInstance().load(PersonalWarp.class, player.getGameProfile().getId().toString());
         if (warps == null)
             warps = new PersonalWarp();
         return warps;

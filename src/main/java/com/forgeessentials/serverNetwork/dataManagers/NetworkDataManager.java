@@ -45,23 +45,23 @@ public class NetworkDataManager extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedInEvent event) {
         if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
-            onlinePlayers.add(event.getPlayer().getUUID());
+            onlinePlayers.add(event.getPlayer().getGameProfile().getId());
             syncPlayerList();
         }
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
-            onlinePlayers.add(event.getPlayer().getUUID());
-            sendClientEventToServer(event.getPlayer().getUUID(), true);
+            onlinePlayers.add(event.getPlayer().getGameProfile().getId());
+            sendClientEventToServer(event.getPlayer().getGameProfile().getId(), true);
         }
     }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
-            onlinePlayers.remove(event.getPlayer().getUUID());
+            onlinePlayers.remove(event.getPlayer().getGameProfile().getId());
             syncPlayerList();
         }
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
-            onlinePlayers.remove(event.getPlayer().getUUID());
-            sendClientEventToServer(event.getPlayer().getUUID(), false);
+            onlinePlayers.remove(event.getPlayer().getGameProfile().getId());
+            sendClientEventToServer(event.getPlayer().getGameProfile().getId(), false);
         }
     }
 

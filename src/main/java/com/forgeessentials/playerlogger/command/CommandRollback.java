@@ -142,7 +142,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        if (rollbacks.containsKey(getServerPlayer(ctx.getSource()).getUUID()))
+        if (rollbacks.containsKey(getServerPlayer(ctx.getSource()).getGameProfile().getId()))
             cancelRollback(ctx);
 
         Selection area = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
@@ -172,7 +172,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         }
 
         RollbackInfo rb = new RollbackInfo(getServerPlayer(ctx.getSource()), area);
-        rollbacks.put(getServerPlayer(ctx.getSource()).getUUID(), rb);
+        rollbacks.put(getServerPlayer(ctx.getSource()).getGameProfile().getId(), rb);
         rb.step(step);
         rb.previewChanges();
 
@@ -198,7 +198,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
+        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
@@ -219,7 +219,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getUUID());
+        RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
@@ -232,7 +232,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void cancelRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getUUID());
+        RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress.");
@@ -258,8 +258,8 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         if (Math.abs(speed) > 10)
             speed = (int) (Math.signum(speed) * 10);
 
-        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
-        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getUUID());
+        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
+        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
@@ -293,8 +293,8 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
-        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getUUID());
+        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
+        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
 
         if (playbackTimer != null)
         {
