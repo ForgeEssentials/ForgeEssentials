@@ -2,6 +2,7 @@ package com.forgeessentials.serverNetwork.client;
 
 import java.net.ConnectException;
 
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.FEPacketManager;
@@ -33,6 +34,16 @@ public class FENetworkClient {
     private FEPacketManager packetManager;
     
     public boolean shutdown =false;
+
+    private boolean reconectorRunning = false;
+    private Runnable serverConnector = new Runnable() {
+        @Override
+        public void run()
+        {
+            LoggingHandler.felog.info("FENetworkClient trying to reconnect to FENetworkServer");
+            connect();
+        }
+    };
 
     public FENetworkClient(String remoteServerHost, int remoteServerPort, String channelname, int channelversion) {
         instance = this;
@@ -73,6 +84,11 @@ public class FENetworkClient {
                 LoggingHandler.felog.error("FENetworkClient Failed to connect to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
                 LoggingHandler.felog.error("FENetworkClient coundn't find FENetworkServer");
                 disconnect();
+                if(!reconectorRunning) {
+                    reconectorRunning=true;
+                    TaskRegistry.remove(serverConnector);
+                    TaskRegistry.scheduleRepeated(serverConnector, 1000 * 20);
+                }
                 return 1;
             }
             e.printStackTrace();
@@ -80,6 +96,8 @@ public class FENetworkClient {
             disconnect();
             return 1;
         }
+        TaskRegistry.remove(serverConnector);
+        reconectorRunning=false;
         return 0;
     }
 
