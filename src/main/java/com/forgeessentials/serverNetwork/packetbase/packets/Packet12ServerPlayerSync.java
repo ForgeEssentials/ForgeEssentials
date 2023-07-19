@@ -16,7 +16,10 @@ public class Packet12ServerPlayerSync extends FEPacket
     public Packet12ServerPlayerSync() {}
     
     public Packet12ServerPlayerSync(Set<UUID> ids){
+        uuids = new HashSet<String>();
         for(UUID id : ids) {
+            if(id==null)
+                continue;
             uuids.add(id.toString());
         }
     }
