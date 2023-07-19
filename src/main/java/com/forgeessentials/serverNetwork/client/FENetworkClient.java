@@ -55,6 +55,7 @@ public class FENetworkClient {
 
     public int connect() {
         reset();
+        shutdown=false;
         LoggingHandler.felog.info("FENetworkClient Connecting to FENetworkServer " + remoteServerHost + ":" + remoteServerPort);
 
         packetManager = new FEPacketManager(new ClientPacketHandler());
