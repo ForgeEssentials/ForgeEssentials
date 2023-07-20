@@ -10,7 +10,7 @@ public class StringCleaning
     static
     {
         // Build a character set to filter problematic characters
-        Set<Character> chars = new HashSet<Character>();
+        Set<Character> chars = new HashSet<>();
         for (char c = 'a'; c <= 'z'; c++)
             chars.add(c);
         for (char c = 'A'; c <= 'Z'; c++)

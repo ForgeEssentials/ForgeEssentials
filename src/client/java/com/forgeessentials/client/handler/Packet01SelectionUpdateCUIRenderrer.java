@@ -29,7 +29,7 @@ public class Packet01SelectionUpdateCUIRenderrer
             return;
 
         if (selection == null
-                || selection.getDimension() != instance.player.clientLevel.dimension().location().toString())
+                || !selection.getDimension().equals(instance.player.clientLevel.dimension().location().toString()))
             return;
 
         double renderPosX = TileEntityRendererDispatcher.instance.camera.getBlockPosition().getX();

@@ -14,6 +14,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandSpeed extends ForgeEssentialsCommandBuilder
 {
@@ -24,7 +25,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "speed";
     }

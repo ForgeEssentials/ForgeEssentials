@@ -40,9 +40,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandSellprice extends ForgeEssentialsCommandBuilder
 {
@@ -58,7 +60,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     public static List<String> woodTypes = Arrays.asList("oak", "spruce", "birch", "jungle", "acacia", "dark_oak");
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "sellprice";
     }
@@ -163,8 +165,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             {
                 try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
                 {
-                    Collection<IRecipe<?>> recpies = ServerLifecycleHooks.getCurrentServer().overworld()
-                            .getRecipeManager().getRecipes();
+                    RecipeManager manager= ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager();
+                    Collection<IRecipe<?>> recpies = manager.getRecipes();
                     for (IRecipe<?> recipe : recpies)
                     {
                         if (recipe.getResultItem() == ItemStack.EMPTY)
@@ -237,8 +239,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                     do
                     {
                         changedPrice = false;
-                        Collection<IRecipe<?>> recpies = ServerLifecycleHooks.getCurrentServer().overworld()
-                                .getRecipeManager().getRecipes();
+                        RecipeManager manager= ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager();
+                        Collection<IRecipe<?>> recpies = manager.getRecipes();
                         for (IRecipe<?> recipe : recpies)
                         {
                             if (recipe.getResultItem() == ItemStack.EMPTY)
@@ -368,7 +370,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         try
         {
             // get current values on disc
-            Map<String, Integer> items = new HashMap<String, Integer>();
+            Map<String, Integer> items = new HashMap<>();
             if (!ModuleEconomy.itemTables.isEmpty())
             {
                 for (Map.Entry<String, Integer> entry : ModuleEconomy.itemTables.entrySet())
@@ -386,7 +388,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 }
             }
             // save new prices to disc
-            Set<String> toWrite = new HashSet<String>();
+            Set<String> toWrite = new HashSet<>();
             for (Map.Entry<String, Integer> entry : items.entrySet())
             {
                 toWrite.add(entry.getKey() + "=" + Integer.toString(entry.getValue()));

@@ -21,6 +21,7 @@ import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandSell extends ForgeEssentialsCommandBuilder
 {
@@ -31,7 +32,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "sell";
     }
@@ -118,7 +119,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatError(ctx.getSource(), "Sale request timed out");
                     return;
                 }
-                else if (response == false)
+                else if (!response)
                 {
                     ChatOutputHandler.chatError(ctx.getSource(), "Sale canceled");
                     return;

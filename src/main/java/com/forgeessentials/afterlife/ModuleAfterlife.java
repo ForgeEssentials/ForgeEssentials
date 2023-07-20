@@ -156,7 +156,7 @@ public class ModuleAfterlife extends ServerEventHandler
             return;
         if (ServerLifecycleHooks.getCurrentServer().getWorldData().overworldData().getGameTime() % 20 == 0)
         {
-            for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
+            for (Grave grave : new ArrayList<>(Grave.graves.values()))
                 grave.updateBlocks();
         }
     }

@@ -14,6 +14,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandExpand extends ForgeEssentialsCommandBuilder
 {
@@ -24,7 +25,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "SELexpand";
     }
@@ -142,83 +143,61 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         int expandby = IntegerArgumentType.getInteger(ctx, "expand");
-        if (params.equals("north"))
-        {
-            if (sel.getStart().getZ() < sel.getEnd().getZ())
-            {
-                SelectionHandler.setStart(player,
-                        new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
-            }
-            else
-            {
-                SelectionHandler.setEnd(player,
-                        new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
-            }
-        }
-        else if (params.equals("east"))
-        {
-            if (sel.getStart().getX() > sel.getEnd().getX())
-            {
-                SelectionHandler.setStart(player,
-                        new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
-            }
-            else
-            {
-                SelectionHandler.setEnd(player,
-                        new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
-            }
-        }
-        else if (params.equals("south"))
-        {
-            if (sel.getStart().getZ() > sel.getEnd().getZ())
-            {
-                SelectionHandler.setStart(player,
-                        new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
-            }
-            else
-            {
-                SelectionHandler.setEnd(player,
-                        new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
-            }
-        }
-        else if (params.equals("west"))
-        {
-            if (sel.getStart().getX() < sel.getEnd().getX())
-            {
-                SelectionHandler.setStart(player,
-                        new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
-            }
-            else
-            {
-                SelectionHandler.setEnd(player,
-                        new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
-            }
-        }
-        else if (params.equals("up"))
-        {
-            if (sel.getStart().getZ() > sel.getEnd().getZ())
-            {
-                SelectionHandler.setStart(player,
-                        new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
-            }
-            else
-            {
-                SelectionHandler.setEnd(player,
-                        new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
-            }
-        }
-        else if (params.equals("down"))
-        {
-            if (sel.getStart().getY() < sel.getEnd().getY())
-            {
-                SelectionHandler.setStart(player,
-                        new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
-            }
-            else
-            {
-                SelectionHandler.setEnd(player,
-                        new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
-            }
+        switch (params) {
+            case "north":
+                if (sel.getStart().getZ() < sel.getEnd().getZ()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
+                }
+                break;
+            case "east":
+                if (sel.getStart().getX() > sel.getEnd().getX()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                }
+                break;
+            case "south":
+                if (sel.getStart().getZ() > sel.getEnd().getZ()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
+                }
+                break;
+            case "west":
+                if (sel.getStart().getX() < sel.getEnd().getX()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                }
+                break;
+            case "up":
+                if (sel.getStart().getZ() > sel.getEnd().getZ()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
+                }
+                break;
+            case "down":
+                if (sel.getStart().getY() < sel.getEnd().getY()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
+                }
+                break;
         }
 
         ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);

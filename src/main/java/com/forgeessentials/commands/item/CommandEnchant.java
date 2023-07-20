@@ -19,6 +19,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandEnchant extends ForgeEssentialsCommandBuilder
 {
@@ -30,7 +31,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
     private static final String PERM = ModuleCommands.PERM + ".enchant";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "enchant";
     }

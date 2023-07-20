@@ -207,7 +207,7 @@ public class ModuleCommands implements ConfigLoader
 
         BUILDER.comment("Configure ForgeEssentials Help Command.").push("CommandHelp Settings");
         FEHmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
-                .defineList("custom_help", new ArrayList<String>(), ConfigBase.stringValidator);
+                .defineList("custom_help", new ArrayList<>(), ConfigBase.stringValidator);
         FEHentriesPerPage = BUILDER.comment("Amount to commands to show per help page").defineInRange("commandPerPage",
                 8, 1, 50);
         FEHcommandColor = BUILDER

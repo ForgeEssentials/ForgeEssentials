@@ -161,10 +161,8 @@ public class CommandButcherTickTask implements TickTask
                 return true;
             if (entity instanceof SlimeEntity && ((SlimeEntity) entity).getSize() > 0)
                 return true;
-            if (MobTypeRegistry.getCollectionForMobType(EnumMobType.HOSTILE).contains(className))
-                return true;
-            return false;
-        case PASSIVE:
+            return MobTypeRegistry.getCollectionForMobType(EnumMobType.HOSTILE).contains(className);
+            case PASSIVE:
             // Filter out tamed creatures
             if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
                 return false;
@@ -174,30 +172,20 @@ public class CommandButcherTickTask implements TickTask
             // Check for other creatures
             if (entity instanceof AnimalEntity || entity instanceof AmbientEntity || entity instanceof SquidEntity)
                 return true;
-            if (MobTypeRegistry.getCollectionForMobType(EnumMobType.PASSIVE).contains(className))
-                return true;
-            return false;
-        case VILLAGER:
+                return MobTypeRegistry.getCollectionForMobType(EnumMobType.PASSIVE).contains(className);
+            case VILLAGER:
             if (entity instanceof VillagerEntity)
                 return true;
-            if (MobTypeRegistry.getCollectionForMobType(EnumMobType.VILLAGER).contains(className))
-                return true;
-            return false;
-        case TAMABLE:
-            if (entity instanceof TameableEntity)
-                return true;
-            return false;
-        case TAMED:
-            if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
-                return true;
-            return false;
-        case GOLEM:
+                return MobTypeRegistry.getCollectionForMobType(EnumMobType.VILLAGER).contains(className);
+            case TAMABLE:
+                return entity instanceof TameableEntity;
+            case TAMED:
+                return entity instanceof TameableEntity && ((TameableEntity) entity).isTame();
+            case GOLEM:
             if (entity instanceof GolemEntity)
                 return true;
-            if (MobTypeRegistry.getCollectionForMobType(EnumMobType.GOLEM).contains(className))
-                return true;
-            return false;
-        case BOSS:
+                return MobTypeRegistry.getCollectionForMobType(EnumMobType.GOLEM).contains(className);
+            case BOSS:
             if (entity instanceof EnderDragonEntity || entity instanceof WitherEntity)
                 return true;
             if (MobTypeRegistry.getCollectionForMobType(EnumMobType.BOSS).contains(className))

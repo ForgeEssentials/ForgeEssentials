@@ -257,9 +257,7 @@ public class CommandUtils
         if (sender.getEntity() != null && sender.getEntity() instanceof PlayerEntity)
             return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
         ICommandSource source = GetSource(sender);
-        if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
-            return true;
-        return false;
+        return source instanceof MinecraftServer || source instanceof CommandBlockLogic;
     }
 
     @Deprecated
@@ -301,8 +299,8 @@ public class CommandUtils
     /**
      * Parses a Time string in Minecraft time format.
      * 
-     * @return
-     * @throws CommandException
+     * @return Long
+     * @throws FECommandParsingException
      */
     public static Long mcParseTimeReadable(String mcTime) throws FECommandParsingException
     {

@@ -154,8 +154,7 @@ public class RollbackInfo
      * 
      * @param player
      * @param change
-     * @param newBlock
-     * @param newMeta
+     * @param newState
      */
     public static void sendBlockChange(ServerPlayerEntity player, Action01Block change, BlockState newState)
     {

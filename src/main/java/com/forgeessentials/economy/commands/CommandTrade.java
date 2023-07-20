@@ -24,6 +24,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTrade extends ForgeEssentialsCommandBuilder
 {
@@ -34,7 +35,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "trade";
     }
@@ -119,7 +120,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatError(ctx.getSource(), "Trade request timed out");
                     return;
                 }
-                else if (response == false)
+                else if (!response)
                 {
                     ChatOutputHandler.chatError(ctx.getSource(), "Canceled");
                     return;
@@ -133,7 +134,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                             ChatOutputHandler.chatError(ctx.getSource(), "Trade request timed out");
                             return;
                         }
-                        else if (response == false)
+                        else if (!response)
                         {
                             ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
                             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player %s declined the trade",

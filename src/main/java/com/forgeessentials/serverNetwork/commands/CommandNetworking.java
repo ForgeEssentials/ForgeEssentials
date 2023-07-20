@@ -20,6 +20,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandNetworking extends ForgeEssentialsCommandBuilder
 {
@@ -30,7 +31,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "fenetworking";
     }
@@ -165,8 +166,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
         }
         if(params.equals("reload")){
             boolean serverRunning = false;
-            boolean clientRunning = false;
-            if(ModuleNetworking.getInstance().getClient().isChannelOpen()){clientRunning=true;}
+            boolean clientRunning = ModuleNetworking.getInstance().getClient().isChannelOpen();
             if(ModuleNetworking.getInstance().getServer().isChannelOpen()){serverRunning=true;}
             ModuleNetworking.getInstance().stopClient();
             ModuleNetworking.getInstance().stopServer();

@@ -25,6 +25,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandWeather extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
@@ -96,7 +97,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     protected static Map<String, WeatherData> weatherStates = new HashMap<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "weather";
     }
@@ -173,7 +174,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         }
         String typeName = type.toString().toLowerCase();
 
-        if (args[1] == "info")
+        if (args[1].equals("info"))
         {
             WeatherState state = getWeatherState(dim, type);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is %s in world %s",
@@ -190,12 +191,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         switch (state)
         {
         case START:
-            if (type == WeatherType.RAIN)
-                world.setWeatherParameters(0, 0, true, false);
-            else
-            {
-                world.setWeatherParameters(0, 0, true, true);
-            }
+            world.setWeatherParameters(0, 0, true, type != WeatherType.RAIN);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started %s in world %s", typeName, dim);
             break;
         case STOP:

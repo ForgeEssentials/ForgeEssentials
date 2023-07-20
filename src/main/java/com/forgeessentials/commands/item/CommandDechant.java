@@ -1,7 +1,6 @@
 package com.forgeessentials.commands.item;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandDechant extends ForgeEssentialsCommandBuilder
 {
@@ -33,7 +33,7 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
     private static final String PERM = ModuleCommands.PERM + ".dechant";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "dechant";
     }
@@ -75,12 +75,8 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         List<Enchantment> validEnchantments = new ArrayList<>();
-        Iterator<Enchantment> itor = ForgeRegistries.ENCHANTMENTS.iterator();
-        while (itor.hasNext())
-        {
-            Enchantment enchantment = itor.next();
-            if (enchantment != null && enchantments.containsKey(enchantment))
-            {
+        for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS) {
+            if (enchantment != null && enchantments.containsKey(enchantment)) {
                 validEnchantments.add(enchantment);
             }
         }

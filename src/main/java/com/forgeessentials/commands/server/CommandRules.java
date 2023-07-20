@@ -36,6 +36,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandRules extends ForgeEssentialsCommandBuilder
 {
@@ -46,7 +47,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     public static final String[] autocomargs = { "add", "remove", "move", "change", "book" };
-    public static ArrayList<String> rules = new ArrayList<String>();
+    public static ArrayList<String> rules = new ArrayList<>();
     public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
     public static ArrayList<String> loadRules()
@@ -135,7 +136,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "rules";
     }
@@ -193,57 +194,47 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     {
         System.out.println("Found root node");
         ServerPlayerEntity Splayer = getServerPlayer(ctx.getSource());
-        if (params.equals("blank"))
-        {
-            for (String rule : rules)
-            {
-                ChatOutputHandler.chatNotification(ctx.getSource(), rule);
-            }
-            return Command.SINGLE_SUCCESS;
-        }
-        else if (params.equals("book"))
-        {
-            ListNBT pages = new ListNBT();
-            ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        switch (params) {
+            case "blank":
+                for (String rule : rules) {
+                    ChatOutputHandler.chatNotification(ctx.getSource(), rule);
+                }
+                return Command.SINGLE_SUCCESS;
+            case "book":
+                ListNBT pages = new ListNBT();
+                ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
 
-            HashMap<String, String> map = new HashMap<>();
+                HashMap<String, String> map = new HashMap<>();
 
-            for (int i = 0; i < rules.size(); i++)
-            {
-                map.put(TextFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n",
-                        TextFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
-            }
+                for (int i = 0; i < rules.size(); i++) {
+                    map.put(TextFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n",
+                            TextFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
+                }
 
-            SortedSet<String> keys = new TreeSet<>(map.keySet());
-            for (String name : keys)
-            {
-                pages.add(StringNBT.valueOf(name + map.get(name)));
-            }
+                SortedSet<String> keys = new TreeSet<>(map.keySet());
+                for (String name : keys) {
+                    pages.add(StringNBT.valueOf(name + map.get(name)));
+                }
 
-            is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
-            is.addTagElement("title", StringNBT.valueOf("Rule Book"));
+                is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+                is.addTagElement("title", StringNBT.valueOf("Rule Book"));
 
-            is.addTagElement("pages", pages);
-            Splayer.inventory.add(is);
-            return Command.SINGLE_SUCCESS;
-        }
-        else if (params.equals("help"))
-        {
-            ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");
-            if (hasPermission(Splayer.createCommandSourceStack(), getPermissionNode() + ".edit"))
-            {
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules <#> [changedRule]");
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules add <newRule>");
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules remove <#>");
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules move <#> <#>");
-            }
-            return Command.SINGLE_SUCCESS;
-        }
-        else if (params.equals("page"))
-        {
-            ChatOutputHandler.chatNotification(ctx.getSource(),
-                    rules.get(parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size()) - 1));
-            return Command.SINGLE_SUCCESS;
+                is.addTagElement("pages", pages);
+                Splayer.inventory.add(is);
+                return Command.SINGLE_SUCCESS;
+            case "help":
+                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");
+                if (hasPermission(Splayer.createCommandSourceStack(), getPermissionNode() + ".edit")) {
+                    ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules <#> [changedRule]");
+                    ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules add <newRule>");
+                    ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules remove <#>");
+                    ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules move <#> <#>");
+                }
+                return Command.SINGLE_SUCCESS;
+            case "page":
+                ChatOutputHandler.chatNotification(ctx.getSource(),
+                        rules.get(parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size()) - 1));
+                return Command.SINGLE_SUCCESS;
         }
 
         if (!hasPermission(ctx.getSource(), getPermissionNode() + ".edit"))
@@ -255,51 +246,48 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
 
         int index;
 
-        if (params.equals("remove"))
-        {
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
+        switch (params) {
+            case "remove":
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
-            rules.remove(index - 1);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
-        }
-        else if (params.equals("add"))
-        {
-            String newRule = StringArgumentType.getString(ctx, "newRule");
-            newRule = ChatOutputHandler.formatColors(newRule);
-            rules.add(newRule);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "newRule")));
-        }
-        else if (params.equals("move"))
-        {
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
-
-            String temp = rules.remove(index - 1);
-
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page2"), 1, Integer.MAX_VALUE);
-            if (index < rules.size())
-            {
-                rules.add(index - 1, temp);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %1$s moved to # %2$s",
-                        IntegerArgumentType.getInteger(ctx, "page1"), IntegerArgumentType.getInteger(ctx, "page2")));
+                rules.remove(index - 1);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
+                break;
+            case "add": {
+                String newRule = StringArgumentType.getString(ctx, "newRule");
+                newRule = ChatOutputHandler.formatColors(newRule);
+                rules.add(newRule);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "newRule")));
+                break;
             }
-            else
-            {
-                rules.add(temp);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator
-                        .format("Rule # %1$s moved to last position.", IntegerArgumentType.getInteger(ctx, "page1")));
-            }
-        }
-        else if (params.equals("change"))
-        {
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
+            case "move":
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
 
-            String newRule = StringArgumentType.getString(ctx, "rule");
-            newRule = ChatOutputHandler.formatColors(newRule);
-            rules.set(index - 1, newRule);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+                String temp = rules.remove(index - 1);
+
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page2"), 1, Integer.MAX_VALUE);
+                if (index < rules.size()) {
+                    rules.add(index - 1, temp);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %1$s moved to # %2$s",
+                            IntegerArgumentType.getInteger(ctx, "page1"), IntegerArgumentType.getInteger(ctx, "page2")));
+                } else {
+                    rules.add(temp);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator
+                            .format("Rule # %1$s moved to last position.", IntegerArgumentType.getInteger(ctx, "page1")));
+                }
+                break;
+            case "change": {
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
+
+                String newRule = StringArgumentType.getString(ctx, "rule");
+                newRule = ChatOutputHandler.formatColors(newRule);
+                rules.set(index - 1, newRule);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+                break;
+            }
         }
         saveRules();
         return Command.SINGLE_SUCCESS;
@@ -333,51 +321,48 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
         }
         int index;
 
-        if (params.equals("remove"))
-        {
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
+        switch (params) {
+            case "remove":
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
-            rules.remove(index - 1);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
-        }
-        else if (params.equals("add"))
-        {
-            String newRule = StringArgumentType.getString(ctx, "newRule");
-            newRule = ChatOutputHandler.formatColors(newRule);
-            rules.add(newRule);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "newRule")));
-        }
-        else if (params.equals("move"))
-        {
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
-
-            String temp = rules.remove(index - 1);
-
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page2"), 1, Integer.MAX_VALUE);
-            if (index < rules.size())
-            {
-                rules.add(index - 1, temp);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %1$s moved to # %2$s",
-                        IntegerArgumentType.getInteger(ctx, "page1"), IntegerArgumentType.getInteger(ctx, "page2")));
+                rules.remove(index - 1);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
+                break;
+            case "add": {
+                String newRule = StringArgumentType.getString(ctx, "newRule");
+                newRule = ChatOutputHandler.formatColors(newRule);
+                rules.add(newRule);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "newRule")));
+                break;
             }
-            else
-            {
-                rules.add(temp);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator
-                        .format("Rule # %1$s moved to last position.", IntegerArgumentType.getInteger(ctx, "page1")));
-            }
-        }
-        else if (params.equals("change"))
-        {
-            index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
+            case "move":
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
 
-            String newRule = StringArgumentType.getString(ctx, "rule");
-            newRule = ChatOutputHandler.formatColors(newRule);
-            rules.set(index - 1, newRule);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+                String temp = rules.remove(index - 1);
+
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page2"), 1, Integer.MAX_VALUE);
+                if (index < rules.size()) {
+                    rules.add(index - 1, temp);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %1$s moved to # %2$s",
+                            IntegerArgumentType.getInteger(ctx, "page1"), IntegerArgumentType.getInteger(ctx, "page2")));
+                } else {
+                    rules.add(temp);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator
+                            .format("Rule # %1$s moved to last position.", IntegerArgumentType.getInteger(ctx, "page1")));
+                }
+                break;
+            case "change": {
+                index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
+
+                String newRule = StringArgumentType.getString(ctx, "rule");
+                newRule = ChatOutputHandler.formatColors(newRule);
+                rules.set(index - 1, newRule);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+                break;
+            }
         }
         saveRules();
         return Command.SINGLE_SUCCESS;

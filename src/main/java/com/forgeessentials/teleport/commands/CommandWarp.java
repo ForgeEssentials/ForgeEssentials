@@ -27,6 +27,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandWarp extends ForgeEssentialsCommandBuilder
 {
@@ -51,7 +52,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
     private static final String PERM_WARP = PERM + ".warp";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "warp";
     }
@@ -107,9 +108,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> {
-        return ISuggestionProvider.suggest(new ArrayList<String>(getWarps().keySet()), builder);
-    };
+    public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> ISuggestionProvider.suggest(new ArrayList<>(getWarps().keySet()), builder);
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException

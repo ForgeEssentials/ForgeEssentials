@@ -24,6 +24,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandHelp extends ForgeEssentialsCommandBuilder
 {
@@ -52,13 +53,13 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
     public HelpFixer fixer;
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "help";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "?" };
     }
@@ -113,14 +114,14 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
     {
         if (messages == null || messages.size() == 0)
             showHelpPage(ctx, 1);
-        for (int i = 0; i < messages.size(); i++)
+        for (String message : messages)
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    ScriptArguments.processSafe(messages.get(i), ctx.getSource()));
+                    ScriptArguments.processSafe(message, ctx.getSource()));
     }
 
     public void showHelpPage(CommandContext<CommandSource> ctx, int page) throws CommandException
     {
-        List<String> scmds = new ArrayList<String>();
+        List<String> scmds = new ArrayList<>();
         Map<CommandNode<CommandSource>, String> map = dispatcher.getSmartUsage(dispatcher.getRoot(), ctx.getSource());
         for (String s : map.values())
         {

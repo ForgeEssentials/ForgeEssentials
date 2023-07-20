@@ -477,7 +477,7 @@ public class ForgeEssentials
                     String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!",
                             event.getPlayer().getDisplayName().getString());
                     Entity entity = event.getEntity();
-                    if (entity instanceof ServerPlayerEntity == false)
+                    if (!(entity instanceof ServerPlayerEntity))
                     {
                         return;
                     }

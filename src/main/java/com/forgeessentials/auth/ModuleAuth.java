@@ -66,9 +66,7 @@ public class ModuleAuth extends ConfigLoaderBase
     @Preconditions
     public boolean preInit()
     {
-        if (FMLEnvironment.dist.isClient())
-            return false;
-        return true;
+        return !FMLEnvironment.dist.isClient();
     }
 
     @SubscribeEvent

@@ -138,7 +138,7 @@ public class Questioner extends ServerEventHandler
                 {
                     question.getValue().doAnswer(null);
                 }
-                catch (CommandException e)
+                catch (CommandException ignored)
                 {
                 }
 

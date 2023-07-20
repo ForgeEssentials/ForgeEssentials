@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.shop;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +73,7 @@ public class ShopData
     {
         this.pos = point;
         this.itemFrameId = frame.getUUID();
-        this.itemFrame = new WeakReference<ItemFrameEntity>(frame);
+        this.itemFrame = new WeakReference<>(frame);
         this.stock = 0;
     }
 
@@ -142,7 +141,6 @@ public class ShopData
                     return;
                 }
                 amount = ServerUtil.parseIntDefault(matcher.group(1), 1);
-                continue;
             }
         }
 
@@ -191,7 +189,7 @@ public class ShopData
                 if (entityItemFrame.getUUID().equals(itemFrameId))
                 {
                     frame = entityItemFrame;
-                    itemFrame = new WeakReference<ItemFrameEntity>(frame);
+                    itemFrame = new WeakReference<>(frame);
                     break;
                 }
             }
@@ -209,10 +207,9 @@ public class ShopData
             return entities.get(0);
 
         final Vector3d offset = new Vector3d(p.getX(), p.getY() + 0.5, p.getZ());
-        Collections.sort(entities, new Comparator<ItemFrameEntity>() {
+        entities.sort(new Comparator<ItemFrameEntity>() {
             @Override
-            public int compare(ItemFrameEntity o1, ItemFrameEntity o2)
-            {
+            public int compare(ItemFrameEntity o1, ItemFrameEntity o2) {
                 Vector3d v1 = new Vector3d(o1.position().x, o1.position().y, o1.position().z);
                 Vector3d v2 = new Vector3d(o2.position().x, o2.position().y, o2.position().z);
                 return (int) Math.signum(offset.distanceTo(v1) - offset.distanceTo(v2));

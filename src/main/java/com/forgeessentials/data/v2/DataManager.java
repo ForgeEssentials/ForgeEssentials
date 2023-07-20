@@ -353,10 +353,7 @@ public class DataManager
                         return true;
 
                     SerializationGroup groupAnnot = f.getAnnotation(SerializationGroup.class);
-                    if (groupAnnot != null && !serializationGroups.contains(groupAnnot.name()))
-                        return true;
-
-                    return false;
+                    return groupAnnot != null && !serializationGroups.contains(groupAnnot.name());
                 }
 
                 @Override

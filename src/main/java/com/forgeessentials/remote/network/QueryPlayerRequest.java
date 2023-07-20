@@ -18,9 +18,8 @@ public class QueryPlayerRequest
     public QueryPlayerRequest(String name, String... flags)
     {
         this.name = name;
-        for (int i = 0; i < flags.length; i++)
-        {
-            this.flags.add(flags[i]);
+        for (String flag : flags) {
+            this.flags.add(flag);
         }
     }
 

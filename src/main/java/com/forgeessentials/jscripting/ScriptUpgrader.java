@@ -79,14 +79,7 @@ public class ScriptUpgrader
                             e.printStackTrace();
                         }
                     }
-                }
-                catch (IOException e)
-                {
-                    String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
-                    LoggingHandler.felog.error(msg);
-                    ChatOutputHandler.chatError(sender, msg);
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
                     LoggingHandler.felog.error(msg);

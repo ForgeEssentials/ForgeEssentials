@@ -19,7 +19,7 @@ public class QueueLogAppender extends AbstractAppender
 
     private int maxCapacity = 500;
 
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
 
     public QueueLogAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions,
             int maxCapacity)

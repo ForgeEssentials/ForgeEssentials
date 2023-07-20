@@ -33,8 +33,8 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.playerlogger.PersistenceProviders.HibernatePersistenceUnitInfo;
-import com.forgeessentials.playerlogger.PersistenceProviders.PersistenceSelector;
+import com.forgeessentials.playerlogger.persistenceProviders.HibernatePersistenceUnitInfo;
+import com.forgeessentials.playerlogger.persistenceProviders.PersistenceSelector;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action02Command;
@@ -519,7 +519,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
             TileEntity entity = teClazz.newInstance();
             entity.deserializeNBT(nbt);
-            ;
             return entity;
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)

@@ -22,7 +22,7 @@ package com.forgeessentials.permissions.ftbu_compat;
 
 public enum FTBURankConfigHandler // implements IRankConfigHandler
 {
-    INSTANCE;
+    INSTANCE
     /*
      * @SubscribeEvent public static void registerRankConfigHandler(RegisterRankConfigHandlerEvent event) { LoggingHandler.felog.debug("registerRankConfigHandler()"); if
      * (INSTANCE.isFTBURanksActive()) { LoggingHandler.felog.info("Ranks are active...  Not registering configs!"); } else { event.setHandler(INSTANCE); } }

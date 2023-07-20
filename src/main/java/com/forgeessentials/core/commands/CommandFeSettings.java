@@ -34,6 +34,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandFeSettings extends ForgeEssentialsCommandBuilder
 {
@@ -57,7 +58,7 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder
         public synchronized Enumeration<Object> keys()
         {
 
-            return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+            return Collections.enumeration(new TreeSet<>(super.keySet()));
         }
 
     };
@@ -75,13 +76,13 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "fesettings";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "feconfig" };
     }

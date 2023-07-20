@@ -28,6 +28,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
@@ -67,7 +68,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     /* ------------------------------------------------------------ */
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "time";
     }
@@ -169,7 +170,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     public static void parseFreeze(CommandContext<CommandSource> ctx, String arg) throws CommandSyntaxException
     {
 
-        if (arg == "all")
+        if (arg.equals("all"))
         {
             boolean freeze = getTimeData(ServerWorld.OVERWORLD).frozenTime == null;
             for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
@@ -199,7 +200,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
             throws CommandSyntaxException
     {
         long time;
-        if (arg[1] == "time")
+        if (arg[1].equals("time"))
         {
             try
             {
@@ -242,7 +243,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
             }
         }
 
-        if (arg[2] == "all")
+        if (arg[2].equals("all"))
         {
             for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
             {

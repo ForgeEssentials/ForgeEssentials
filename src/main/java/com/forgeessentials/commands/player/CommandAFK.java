@@ -24,6 +24,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandAFK extends ForgeEssentialsCommandBuilder
 {
@@ -44,7 +45,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
     public static final String PERM_AUTOKICK = PERM + ".autokick";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "afk";
     }

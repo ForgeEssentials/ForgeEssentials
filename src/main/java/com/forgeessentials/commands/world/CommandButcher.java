@@ -30,6 +30,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandButcher extends ForgeEssentialsCommandBuilder
 {
@@ -42,13 +43,13 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
     public static List<String> typeList = ButcherMobType.getNames();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "butcher";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "butcher" };
     }
@@ -91,9 +92,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "help"));
     }
 
-    public static final SuggestionProvider<CommandSource> mob_types = (ctx, builder) -> {
-        return ISuggestionProvider.suggest(typeList, builder);
-    };
+    public static final SuggestionProvider<CommandSource> mob_types = (ctx, builder) -> ISuggestionProvider.suggest(typeList, builder);
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
@@ -103,7 +102,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Use /butcher <radius> [type] [x y z] [world]");
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&")));
+        List<String> args = new ArrayList<>(Arrays.asList(params.split("&&")));
 
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
         int radius = -1;
@@ -162,7 +161,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         double z = 0;
         ServerWorld world = ServerLifecycleHooks.getCurrentServer().overworld();
         String mobType = ButcherMobType.HOSTILE.toString();
-        List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&")));
+        List<String> args = new ArrayList<>(Arrays.asList(params.split("&&")));
 
         if (!args.isEmpty())
         {

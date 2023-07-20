@@ -46,17 +46,14 @@ public abstract class BookUtil
                         savefile.createNewFile();
                         try (BufferedWriter out = new BufferedWriter(new FileWriter(savefile)))
                         {
-                            for (int c = 0; c < pages.size(); c++)
-                            {
-                                String line = pages.get(c).toString();
-                                while (line.contains("\n"))
-                                {
+                            for (net.minecraft.nbt.INBT page : pages) {
+                                String line = page.toString();
+                                while (line.contains("\n")) {
                                     out.write(line.substring(0, line.indexOf("\n")));
                                     out.newLine();
                                     line = line.substring(line.indexOf("\n") + 1);
                                 }
-                                if (line.length() > 0)
-                                {
+                                if (line.length() > 0) {
                                     out.write(line);
                                 }
                             }
@@ -75,12 +72,12 @@ public abstract class BookUtil
     {
         ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
                     lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
@@ -131,7 +128,7 @@ public abstract class BookUtil
         }
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
             pages.add(StringNBT.valueOf(name + map.get(name)));
@@ -149,12 +146,12 @@ public abstract class BookUtil
     {
         ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
                     lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
@@ -204,7 +201,7 @@ public abstract class BookUtil
         }
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
             pages.add(StringNBT.valueOf(name + map.get(name)));
@@ -222,12 +219,12 @@ public abstract class BookUtil
     {
         ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
@@ -258,7 +255,7 @@ public abstract class BookUtil
         }
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
             pages.add(StringNBT.valueOf(name + map.get(name)));
@@ -276,12 +273,12 @@ public abstract class BookUtil
     {
         ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
@@ -312,7 +309,7 @@ public abstract class BookUtil
         }
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
             pages.add(StringNBT.valueOf(name + map.get(name)));
@@ -330,7 +327,7 @@ public abstract class BookUtil
     {
         ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         File[] listOfFiles = folder.listFiles();
 
@@ -340,7 +337,7 @@ public abstract class BookUtil
             {
                 if (file.getName().contains(".txt"))
                 {
-                    List<String> lines = new ArrayList<String>();
+                    List<String> lines = new ArrayList<>();
                     try
                     {
                         lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
@@ -393,7 +390,7 @@ public abstract class BookUtil
         }
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
             pages.add(StringNBT.valueOf(name + map.get(name)));
@@ -411,7 +408,7 @@ public abstract class BookUtil
     {
         ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         File[] listOfFiles = folder.listFiles();
 
@@ -421,7 +418,7 @@ public abstract class BookUtil
             {
                 if (file.getName().contains(".txt"))
                 {
-                    List<String> lines = new ArrayList<String>();
+                    List<String> lines = new ArrayList<>();
                     try
                     {
                         lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
@@ -474,7 +471,7 @@ public abstract class BookUtil
         }
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
             pages.add(StringNBT.valueOf(name + map.get(name)));

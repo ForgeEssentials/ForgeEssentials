@@ -129,7 +129,6 @@ public final class ChatOutputHandler
     public static void broadcast(String message)
     {
         broadcast(message, true);
-        ;
     }
 
     public static void broadcast(String message, boolean sendToDiscord)
@@ -216,7 +215,7 @@ public final class ChatOutputHandler
     }
 
     /**
-     * Utility method to set {@link IChatComponent} color
+     * Utility method to set {@link TextComponent} color
      *
      * @param message
      * @param color
@@ -365,7 +364,7 @@ public final class ChatOutputHandler
 
     public static final Pattern FORMAT_CODE_PATTERN;
 
-    public static final char FORMAT_CHARACTERS[] = new char[TextFormatting.values().length];
+    public static final char[] FORMAT_CHARACTERS = new char[TextFormatting.values().length];
 
     static
     {
@@ -386,7 +385,7 @@ public final class ChatOutputHandler
     }
 
     /**
-     * Apply a set of {@link EnumChatFormatting} to a {@link ChatStyle}
+     * Apply a set of {@link TextFormatting} to a {@link Style}
      * 
      * @param chatStyle
      * @param formattings
@@ -398,7 +397,7 @@ public final class ChatOutputHandler
     }
 
     /**
-     * Apply an {@link EnumChatFormatting} to a {@link ChatStyle}
+     * Apply an {@link TextFormatting} to a {@link Style}
      * 
      * @param chatStyle
      * @param formatting
@@ -431,14 +430,14 @@ public final class ChatOutputHandler
     }
 
     /**
-     * Take a string of chat format codes (without \u00a7) and return them as {@link EnumChatFormatting} collection
+     * Take a string of chat format codes (without \u00a7) and return them as {@link TextFormatting} collection
      * 
      * @param textFormats
      * @return
      */
     public static Collection<TextFormatting> enumChatFormattings(String textFormats)
     {
-        List<TextFormatting> result = new ArrayList<TextFormatting>();
+        List<TextFormatting> result = new ArrayList<>();
         for (int i = 0; i < textFormats.length(); i++)
         {
             char formatChar = textFormats.charAt(i);

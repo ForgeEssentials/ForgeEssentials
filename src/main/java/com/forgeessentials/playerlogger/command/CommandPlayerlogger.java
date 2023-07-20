@@ -41,6 +41,7 @@ import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
 {
@@ -51,7 +52,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "pl";
     }
@@ -231,7 +232,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             else
                 fc = FilterConfig.globalConfig;
             // setup config parser
-            List<String> arg1 = new ArrayList<String>(Arrays.asList(subCmd));
+            List<String> arg1 = new ArrayList<>(Arrays.asList(subCmd));
             arg1.remove(0);
             fc.parse(ctx, arg1);
             // save config is personal
@@ -377,7 +378,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             break;
         default:
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd.toString());
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, Arrays.toString(subCmd));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

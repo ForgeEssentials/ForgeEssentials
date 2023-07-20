@@ -20,6 +20,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandAuth extends ForgeEssentialsCommandBuilder
 {
@@ -29,7 +30,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "auth";
     }
@@ -327,11 +328,9 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // parse ./auth kick
         if (params.equals("kick"))
         {
-            if (!isLogged)
-            {
+            if (!isLogged) {
                 ChatOutputHandler.chatError(player.createCommandSourceStack(),
                         Translator.format("Player %s is not logged in", player.getDisplayName().getString()));
-                return Command.SINGLE_SUCCESS;
             }
             else
             {
@@ -341,8 +340,8 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
                                 player.getDisplayName().getString()));
                 ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
                         "You have been logged out from the authentication service. Please login again.");
-                return Command.SINGLE_SUCCESS;
             }
+            return Command.SINGLE_SUCCESS;
         }
 
         if (params.equals("unregister"))

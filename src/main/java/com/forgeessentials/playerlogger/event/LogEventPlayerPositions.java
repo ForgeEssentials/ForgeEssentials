@@ -1,7 +1,6 @@
 package com.forgeessentials.playerlogger.event;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -26,10 +25,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
         List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         date = new Date();
 
-        for (Iterator<ServerPlayerEntity> it = players.iterator(); it.hasNext();)
-        {
-            ServerPlayerEntity player = it.next();
-
+        for (ServerPlayerEntity player : players) {
             // Action03PlayerEvent action = new Action03PlayerEvent();
             // action.type = PlayerEventType.MOVE;
             Action04PlayerPosition action = new Action04PlayerPosition();

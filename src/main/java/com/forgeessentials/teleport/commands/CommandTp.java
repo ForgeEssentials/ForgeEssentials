@@ -23,6 +23,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTp extends ForgeEssentialsCommandBuilder
 {
@@ -35,7 +36,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     /**
      * Spawn point for each dimension
      */
-    public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+    public static HashMap<Integer, Point> spawnPoints = new HashMap<>();
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
@@ -143,7 +144,6 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         else if (params.equals("pos"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            ;
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
             PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -157,7 +157,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "tp";
     }

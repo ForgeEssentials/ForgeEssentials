@@ -68,7 +68,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public static class PasskeyMap extends HashMap<UserIdent, String>
     {
         private static final long serialVersionUID = -8268113844467318789L; /* default */
-    };
+    }
 
     private static final String CONFIG_CAT = "Remote";
 
@@ -87,7 +87,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     static
     {
         // Build a character set with only easily distinguishable characters
-        Set<Character> chars = new HashSet<Character>();
+        Set<Character> chars = new HashSet<>();
         for (char c = 'a'; c <= 'z'; c++)
             chars.add(c);
         for (char c = 'A'; c <= 'Z'; c++)
@@ -184,22 +184,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             {
                 LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClass());
             }
-            catch (IllegalArgumentException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (InvocationTargetException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (NoSuchMethodException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (SecurityException e)
+            catch (IllegalArgumentException | SecurityException | NoSuchMethodException | InvocationTargetException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

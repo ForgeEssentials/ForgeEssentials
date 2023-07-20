@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
@@ -28,6 +29,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandZone extends ForgeEssentialsCommandBuilder
 {
@@ -46,13 +48,13 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     public static final String PERM_SETTINGS = PERM_NODE + ".settings";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "area";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "zone" };
     }
@@ -184,7 +186,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             parseEntryExitMessage(ctx, false, params);
             break;
         default:
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg.toString());
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, Arrays.toString(arg));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
@@ -195,7 +197,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         try
         {
             Zone z = APIRegistry.perms.getZoneById(arg);
-            if (z != null && z instanceof AreaZone)
+            if (z instanceof AreaZone)
                 return (AreaZone) z;
         }
         catch (NumberFormatException e)
@@ -215,7 +217,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         String[] arg = params.split("-");
         final int PAGE_SIZE = 12;
         int limit = 1;
-        if (arg[1] == "Zones")
+        if (arg[1].equals("Zones"))
         {
             limit = IntegerArgumentType.getInteger(ctx, "pageLimit");
         }

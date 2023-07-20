@@ -23,6 +23,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTPA extends ForgeEssentialsCommandBuilder
 {
@@ -36,7 +37,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
     public static final String PERM_LOCATION = TeleportModule.PERM_TPA + ".loc";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "tpa";
     }
@@ -113,7 +114,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                             {
                                 if (response == null)
                                     ChatOutputHandler.chatError(ctx.getSource(), "TPA request timed out");
-                                else if (response == false)
+                                else if (!response)
                                     ChatOutputHandler.chatError(ctx.getSource(), "TPA declined");
                                 else
                                     try
@@ -170,7 +171,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                         {
                             if (response == null)
                                 ChatOutputHandler.chatError(ctx.getSource(), "TPA request timed out");
-                            else if (response == false)
+                            else if (!response)
                                 ChatOutputHandler.chatError(ctx.getSource(), "TPA declined");
                             else
                                 try

@@ -26,6 +26,7 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandRemote extends ForgeEssentialsCommandBuilder
 {
@@ -36,7 +37,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "remote";
     }
@@ -215,9 +216,9 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
     }
 
     /**
-     * @param sender
-     * @param args
+     * @param source
      * @param ident
+     * @param hideKey
      */
     public void showPasskey(CommandSource source, UserIdent ident, boolean hideKey)
     {
@@ -232,16 +233,12 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
         {
             ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr");
-            qrLink.withStyle((style) -> {
-                return style.withClickEvent(click);
-            });
+            qrLink.withStyle((style) -> style.withClickEvent(click));
         }
         else
         {
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            qrLink.withStyle((style) -> {
-                return style.withClickEvent(click);
-            });
+            qrLink.withStyle((style) -> style.withClickEvent(click));
         }
         qrLink.withStyle(TextFormatting.RED);
         qrLink.withStyle(TextFormatting.UNDERLINE);

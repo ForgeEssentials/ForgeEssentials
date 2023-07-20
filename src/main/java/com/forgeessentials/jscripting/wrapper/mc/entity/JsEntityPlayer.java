@@ -201,7 +201,6 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
         case FAIL:
             return false;
         case CONSUME:
-            break;
         default:
             break;
         }
@@ -223,7 +222,6 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     public void destroyCurrentEquippedItem()
     {
         that.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
-        ;
     }
 
     /**

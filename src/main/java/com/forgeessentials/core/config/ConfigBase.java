@@ -105,7 +105,6 @@ public class ConfigBase
             if (builtLoaders.contains(loader))
             {
                 LoggingHandler.felog.error("Configuration file: " + loader.returnData().getName() + " is alredy built");
-                continue;
             }
             else
             {

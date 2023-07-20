@@ -19,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandReply extends ForgeEssentialsCommandBuilder
 {
@@ -32,7 +33,7 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
 
     public static void messageSent(PlayerEntity argFrom, PlayerEntity argTo)
     {
-        replyMap.put(argTo, new WeakReference<PlayerEntity>(argFrom));
+        replyMap.put(argTo, new WeakReference<>(argFrom));
     }
 
     public static PlayerEntity getReplyTarget(PlayerEntity sender)
@@ -46,13 +47,13 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     /* ------------------------------------------------------------ */
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "reply";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "r" };
     }

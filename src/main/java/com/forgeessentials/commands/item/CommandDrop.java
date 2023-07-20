@@ -15,7 +15,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandDrop extends ForgeEssentialsCommandBuilder
 {
@@ -36,7 +36,7 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "drop";
     }
@@ -79,7 +79,7 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
 
         if (ctx.getSource().getEntity() instanceof ServerPlayerEntity)
         {
-            world = ((Entity) ctx.getSource().getEntity()).level;
+            world = ctx.getSource().getEntity().level;
         }
         else
         {

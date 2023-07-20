@@ -27,6 +27,7 @@ import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPermissions extends ForgeEssentialsCommandBuilder
 {
@@ -36,13 +37,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public final String getPrimaryAlias()
+    public final @NotNull String getPrimaryAlias()
     {
         return "perm";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "fep", "p" };
     }
@@ -607,12 +608,12 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         {
             listzones.add(z.getName());
         }
+        if(listzones.contains("_ROOT_")) {
+            listzones.remove("_ROOT_");
+        }
         for (int index = 0; index < listzones.size(); index++)
         {
-            if(listzones.get(index).contains("_ROOT_")) {
-                listzones.remove(index);
-            }
-            else if (listzones.get(index).contains(":"))
+            if (listzones.get(index).contains(":"))
             {
                 listzones.set(index, listzones.get(index).replace(":", "-"));
             }
@@ -710,7 +711,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                 listclear.add(z);
             }
         }
-        catch (FECommandParsingException e){}
+        catch (FECommandParsingException ignored){}
         for (int index = 0; index < listclear.size(); index++)
         {
             if (listclear.get(index).contains("*"))
@@ -731,7 +732,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                             + ": Displays help for the subcommands");
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&")));
+        List<String> args = new ArrayList<>(Arrays.asList(params.split("&&")));
         PermissionCommandParser.parseMain(ctx, args);
         return Command.SINGLE_SUCCESS;
     }

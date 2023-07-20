@@ -12,6 +12,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandIrcBot extends ForgeEssentialsCommandBuilder
 {
@@ -22,7 +23,7 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "ircbot";
     }
@@ -58,10 +59,6 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.equals("connect"))
-        {
-            // IDK this was empty in the 1.12.2 code
-        }
         if (params.equals("reconnect"))
         {
             IrcHandler.getInstance().connect();

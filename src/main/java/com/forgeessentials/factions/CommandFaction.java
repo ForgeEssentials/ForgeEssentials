@@ -29,6 +29,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandFaction extends ForgeEssentialsCommandBuilder
 {
@@ -45,13 +46,13 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
     public static final String MSG_LEFT_FACTION = "Left faction \"%s\"";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "faction";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "f", "factions" };
     }
@@ -528,10 +529,6 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
                 if (response == null)
                 {
                     return;
-                }
-                else if (!response)
-                {
-
                 }
                 String factionGroup = ModuleFactions.getFactionGroup(faction);
                 for (Entry<UserIdent, Set<String>> player : APIRegistry.perms.getServerZone().getPlayerGroups()

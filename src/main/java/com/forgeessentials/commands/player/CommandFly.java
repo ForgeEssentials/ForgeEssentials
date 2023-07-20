@@ -14,6 +14,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandFly extends ForgeEssentialsCommandBuilder
 {
@@ -23,7 +24,7 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "fly";
     }
@@ -60,10 +61,7 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
         if (params.equals("toggle"))
         {
-            if (!player.abilities.mayfly)
-                player.abilities.mayfly = true;
-            else
-                player.abilities.mayfly = false;
+            player.abilities.mayfly = !player.abilities.mayfly;
         }
         else
         {

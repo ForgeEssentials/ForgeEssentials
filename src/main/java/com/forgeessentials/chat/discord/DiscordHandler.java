@@ -88,7 +88,7 @@ public class DiscordHandler
                 add("#someChannelName");
             }
         }, ConfigBase.stringValidator);
-        FEadmins = BUILDER.comment(ADMINS_HELP).defineList("admins", new ArrayList<String>(),
+        FEadmins = BUILDER.comment(ADMINS_HELP).defineList("admins", new ArrayList<>(),
                 ConfigBase.stringValidator);
 
         FEtoken = BUILDER.comment("Discord Token for bot login").define("token", "");

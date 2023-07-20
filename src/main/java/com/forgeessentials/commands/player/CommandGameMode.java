@@ -18,6 +18,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.GameType;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandGameMode extends ForgeEssentialsCommandBuilder
 {
@@ -27,13 +28,13 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "gamemode";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "gm" };
     }
@@ -53,7 +54,6 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
                         .executes(CommandContext -> execute(CommandContext, "blank"));
             }
         }
-        ;
         return baseBuilder;
     }
 

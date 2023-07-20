@@ -96,7 +96,7 @@ public class RemoteCommandSender extends DoAsCommandSender
                 // TODO: Add second message WITH formatting
                 ChatResponse msg = new ChatResponse(null,
                         ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
-                session.sendMessage(new RemoteResponse<ChatResponse>(RemoteMessageID.CHAT, msg));
+                session.sendMessage(new RemoteResponse<>(RemoteMessageID.CHAT, msg));
             }
             catch (IOException e)
             {

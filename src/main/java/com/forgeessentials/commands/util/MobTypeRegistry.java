@@ -14,14 +14,14 @@ import net.minecraft.entity.passive.TameableEntity;
 public class MobTypeRegistry
 {
     private static final HashMultimap<EnumMobType, String> MobTypeRegistry = HashMultimap.create();
-    private static final HashMap<String, String> tameableChecks = new HashMap<String, String>();
+    private static final HashMap<String, String> tameableChecks = new HashMap<>();
 
-    public static final void addMob(EnumMobType type, String className)
+    public static void addMob(EnumMobType type, String className)
     {
         MobTypeRegistry.put(type, className);
     }
 
-    public static final void addMob(EnumMobType type, String className, String tameableCheckObject)
+    public static void addMob(EnumMobType type, String className, String tameableCheckObject)
     {
         tameableChecks.put(className, tameableCheckObject);
         MobTypeRegistry.put(type, className);

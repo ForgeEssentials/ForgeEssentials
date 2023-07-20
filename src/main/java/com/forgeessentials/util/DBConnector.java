@@ -50,8 +50,8 @@ public class DBConnector
         this.defaultType = type = activeType = defaultType;
         this.dbDefault = dbDefault;
         this.dbFileDefault = dbFileDefault;
-        data = new HashMap<EnumDBType, DBConnectorData>();
-        dataStatic = new HashMap<EnumDBType, DBConnectorDataStatic>();
+        data = new HashMap<>();
+        dataStatic = new HashMap<>();
         useParent = useFallback;
     }
 
@@ -105,9 +105,8 @@ public class DBConnector
     /**
      * Loads the the connector from the config for use. config load method is not called.
      *
-     * @param config
-     * @param category
-     *            the category where everything regarding this connector will be.
+     * @param BUILDER
+     * @param cat the category where everything regarding this connector will be.
      */
     public void loadOrGenerate(Builder BUILDER, String cat)
     {
@@ -221,7 +220,6 @@ public class DBConnector
                 type.loadClass();
                 String connect = type.getConnectionString(host, port, database);
                 con = DriverManager.getConnection(connect, user, pass);
-                return con;
             }
             else
             {
@@ -229,8 +227,8 @@ public class DBConnector
                 String database = props.getDatabase();
                 String connect = type.getConnectionString(database);
                 con = DriverManager.getConnection(connect);
-                return con;
             }
+            return con;
         }
         catch (Exception e)
         {

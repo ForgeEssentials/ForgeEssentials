@@ -402,9 +402,7 @@ public class ModuleProtection
 
         TextComponent msg = new StringTextComponent(permission);
         ClickEvent click = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission);
-        msg.withStyle((style) -> {
-            return style.withClickEvent(click);
-        });
+        msg.withStyle((style) -> style.withClickEvent(click));
         msg.withStyle(TextFormatting.UNDERLINE);
         msg.withStyle(ChatOutputHandler.chatNotificationColor);
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), msg);

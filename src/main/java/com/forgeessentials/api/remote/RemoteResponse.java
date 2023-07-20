@@ -61,7 +61,7 @@ public class RemoteResponse<T>
 
     public static RemoteResponse<String> error(String id, int rid, String message)
     {
-        return new RemoteResponse<String>(id, rid, false, message);
+        return new RemoteResponse<>(id, rid, false, message);
     }
 
     public static RemoteResponse<String> error(RemoteRequest<?> request, String message)
@@ -71,7 +71,7 @@ public class RemoteResponse<T>
 
     public static RemoteResponse<?> success(String id, int rid, String message)
     {
-        return new RemoteResponse<Object>(id, rid, true, message);
+        return new RemoteResponse<>(id, rid, true, message);
     }
 
     public static RemoteResponse<?> success(RemoteRequest<?> request, String message)
@@ -91,7 +91,7 @@ public class RemoteResponse<T>
 
     public static <T> RemoteResponse<T> transform(RemoteResponse<?> response, T newData)
     {
-        return new RemoteResponse<T>(response.id, response.rid, response.success, response.message, newData);
+        return new RemoteResponse<>(response.id, response.rid, response.success, response.message, newData);
     }
 
     public static class JsonRemoteResponse extends RemoteResponse<JsonElement>

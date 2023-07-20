@@ -1,4 +1,4 @@
-package com.forgeessentials.playerlogger.PersistenceProviders;
+package com.forgeessentials.playerlogger.persistenceProviders;
 
 import java.util.Properties;
 

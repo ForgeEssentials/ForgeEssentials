@@ -18,6 +18,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandDiscord extends ForgeEssentialsCommandBuilder
 {
@@ -28,7 +29,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "discord";
     }
@@ -78,13 +79,12 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
             {
                 ModuleChat.instance.discordHandler.selectedChannel = channel;
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Channel #%s selected!"));
-                return Command.SINGLE_SUCCESS;
             }
             else
             {
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Unknown Channel: %s", channel));
-                return Command.SINGLE_SUCCESS;
             }
+            return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }

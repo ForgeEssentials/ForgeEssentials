@@ -77,7 +77,7 @@ public class FilterConfig
         {
             globalConfig.parse(null, null);
         }
-        catch (CommandException e)
+        catch (CommandException ignored)
         {
 
         }

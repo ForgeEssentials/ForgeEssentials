@@ -36,7 +36,7 @@ public class ModuleLauncher
 
     public static ModuleLauncher instance;
 
-    private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
+    private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<>();
 
     private static final Type MOD = Type.getType(FEModule.class);
 

@@ -27,7 +27,7 @@ import net.minecraftforge.forgespi.language.ModFileScanData;
 public class ModuleContainer implements Comparable<Object>
 {
 
-    protected static HashSet<Class<?>> modClasses = new HashSet<Class<?>>();
+    protected static HashSet<Class<?>> modClasses = new HashSet<>();
 
     public Object module, mod;
 
@@ -126,17 +126,7 @@ public class ModuleContainer implements Comparable<Object>
                     LoggingHandler.felog.error(
                             String.format("Exception Raised when testing preconditions for module: %s", name), e);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                catch (NoSuchMethodException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                catch (SecurityException e)
+                catch (IllegalArgumentException | NoSuchMethodException | SecurityException e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

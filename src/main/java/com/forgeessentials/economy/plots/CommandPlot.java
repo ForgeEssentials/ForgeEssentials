@@ -50,6 +50,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPlot extends ForgeEssentialsCommandBuilder
 {
@@ -94,7 +95,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "plot";
     }
@@ -233,7 +234,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     "/plot buy [amount]: Buy the plot you are standing in. Owner needs to approve the transaction if plot is not up for sale"));
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = new ArrayList<String>(Arrays.asList(params.split("-")));
+        List<String> args = new ArrayList<>(Arrays.asList(params.split("-")));
         switch (args.remove(0))
         {
         case "define":
@@ -379,7 +380,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatError(ctx.getSource(), "Claim request timed out");
                     return;
                 }
-                if (response == false)
+                if (!response)
                 {
                     ChatOutputHandler.chatError(ctx.getSource(), "Canceled");
                     return;
@@ -510,17 +511,13 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                         ((ServerPlayerEntity) ctx.getSource().getEntity()).blockPosition().getX(), 0,
                         ((ServerPlayerEntity) ctx.getSource().getEntity()).blockPosition().getZ())
                 : new WorldPoint(ServerWorld.OVERWORLD.location().toString(), 0, 0, 0);
-        SortedSet<Plot> plots = new TreeSet<Plot>(new Comparator<Plot>() {
+        SortedSet<Plot> plots = new TreeSet<>(new Comparator<Plot>() {
             @Override
-            public int compare(Plot a, Plot b)
-            {
-                if (!a.getDimension().equals(playerRef.getDimension()))
-                {
+            public int compare(Plot a, Plot b) {
+                if (!a.getDimension().equals(playerRef.getDimension())) {
                     if (b.getDimension().equals(playerRef.getDimension()))
                         return 1;
-                }
-                else
-                {
+                } else {
                     if (!b.getDimension().equals(playerRef.getDimension()))
                         return -1;
                 }
@@ -1015,7 +1012,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatError(ctx.getSource(), "Buy request timed out");
                     return;
                 }
-                if (response == false)
+                if (!response)
                 {
                     ChatOutputHandler.chatError(ctx.getSource(), "Canceled");
                     return;
@@ -1047,7 +1044,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                                         "%s did not respond to your buy request", plot.getOwner().getUsernameOrUuid()));
                                 return;
                             }
-                            else if (response == false)
+                            else if (!response)
                             {
                                 ChatOutputHandler.chatError(plot.getOwner().getPlayerMP(),
                                         Translator.translate("Trade declined"));

@@ -18,6 +18,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTempBan extends ForgeEssentialsCommandBuilder
 {
@@ -30,7 +31,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
     public static final String PERM_BAN_REASON = "tempban.reason";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "tempban";
     }

@@ -23,7 +23,7 @@ public class QueryRegisteredPermissionsHandler extends GenericRemoteHandler<Json
     @Override
     protected RemoteResponse<Collection<String>> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
     {
-        return new RemoteResponse<Collection<String>>(request,
+        return new RemoteResponse<>(request,
                 APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 

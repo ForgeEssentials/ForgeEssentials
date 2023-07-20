@@ -21,8 +21,8 @@ public class Packet03PlayerPermissions implements IFEPacket
 
     public Packet03PlayerPermissions()
     {
-        placeIds = new HashSet<Integer>();
-        breakIds = new HashSet<Integer>();
+        placeIds = new HashSet<>();
+        breakIds = new HashSet<>();
     }
 
     public Packet03PlayerPermissions(boolean reset, Set<Integer> placeIds, Set<Integer> breakeIds)
@@ -35,8 +35,8 @@ public class Packet03PlayerPermissions implements IFEPacket
     public static Packet03PlayerPermissions decode(PacketBuffer buf)
     {
         boolean reset1 = buf.readBoolean();
-        Set<Integer> placeIds1 = new HashSet<Integer>();
-        Set<Integer> breakIds1 = new HashSet<Integer>();
+        Set<Integer> placeIds1 = new HashSet<>();
+        Set<Integer> breakIds1 = new HashSet<>();
         int count = buf.readShort();
         for (int i = 0; i < count; i++)
             placeIds1.add(buf.readInt());

@@ -125,8 +125,7 @@ public class JsFEServer
         if (e.phase == Phase.START)
         {
             Iterator<CORoutine> iterator = coRoutineHashSet.iterator();
-            for (; iterator.hasNext();)
-            {
+            while (iterator.hasNext()) {
                 CORoutine c = iterator.next();
                 try
                 {

@@ -26,6 +26,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTicket extends ForgeEssentialsCommandBuilder
 {
@@ -35,13 +36,13 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "ticket";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "tickets" };
     }
@@ -73,9 +74,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_category = (ctx, builder) -> {
-        return ISuggestionProvider.suggest(ModuleTickets.categories, builder);
-    };
+    public static final SuggestionProvider<CommandSource> SUGGEST_category = (ctx, builder) -> ISuggestionProvider.suggest(ModuleTickets.categories, builder);
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
@@ -217,7 +216,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
 
     public List<String> getTicketList()
     {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (Ticket t : ModuleTickets.ticketList)
         {
             list.add("" + t.id);

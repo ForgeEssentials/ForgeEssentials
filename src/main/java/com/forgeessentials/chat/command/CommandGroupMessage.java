@@ -17,6 +17,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
 {
@@ -29,7 +30,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
     public static final String PERM = "fe.chat.groupmessage";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "gmsg";
     }

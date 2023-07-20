@@ -15,6 +15,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandHeal extends ForgeEssentialsCommandBuilder
 {
@@ -25,7 +26,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "heal";
     }
@@ -135,7 +136,6 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
         float toHealBy = target.getMaxHealth() - target.getHealth();
         target.heal(toHealBy);
         target.clearFire();
-        ;
         target.getFoodData().eat(20, 1.0F);
         ChatOutputHandler.chatConfirmation(target, "You were healed.");
     }

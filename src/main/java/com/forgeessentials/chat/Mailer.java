@@ -61,7 +61,7 @@ public class Mailer extends ServerEventHandler
 
         public UserIdent user;
 
-        public List<Mail> mails = new ArrayList<Mail>();
+        public List<Mail> mails = new ArrayList<>();
 
         public Mails(UserIdent user)
         {

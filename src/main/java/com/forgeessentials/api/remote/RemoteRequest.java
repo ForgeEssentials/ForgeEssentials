@@ -36,7 +36,7 @@ public class RemoteRequest<T>
 
     public static <T> RemoteRequest<T> transform(RemoteRequest<?> request, T newData)
     {
-        return new RemoteRequest<T>(request.id, request.rid, request.auth, newData);
+        return new RemoteRequest<>(request.id, request.rid, request.auth, newData);
     }
 
     public static class JsonRemoteRequest extends RemoteRequest<JsonElement>

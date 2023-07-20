@@ -32,7 +32,7 @@ public class QueryLogResponse<T extends Action>
         this.result = data;
 
         // Set<WorldData> worldSet = new HashSet<WorldData>();
-        Set<PlayerData> playerSet = new HashSet<PlayerData>();
+        Set<PlayerData> playerSet = new HashSet<>();
         Set<BlockData> blockSet = null;
         for (T action : data)
         {
@@ -41,7 +41,7 @@ public class QueryLogResponse<T extends Action>
             if (action instanceof Action01Block)
             {
                 if (blockSet == null)
-                    blockSet = new HashSet<BlockData>();
+                    blockSet = new HashSet<>();
                 blockSet.add(((Action01Block) action).block);
             }
         }

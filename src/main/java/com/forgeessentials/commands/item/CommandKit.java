@@ -34,6 +34,7 @@ import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -56,7 +57,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     public static Map<String, Kit> kits = new HashMap<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "kit";
     }

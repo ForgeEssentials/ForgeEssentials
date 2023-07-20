@@ -38,6 +38,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandVanish extends ForgeEssentialsCommandBuilder
 {
@@ -54,7 +55,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
     private static Set<UserIdent> vanishedPlayers = new HashSet<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "vanish";
     }

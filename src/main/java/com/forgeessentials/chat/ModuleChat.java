@@ -361,9 +361,7 @@ public class ModuleChat implements ConfigSaver
     {
         TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
         ClickEvent click = new ClickEvent(action, uri);
-        component.withStyle((style) -> {
-            return style.withClickEvent(click);
-        });
+        component.withStyle((style) -> style.withClickEvent(click));
         return component;
     }
 
@@ -437,9 +435,7 @@ public class ModuleChat implements ConfigSaver
 
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.withStyle((style) -> {
-                return style.withClickEvent(click);
-            });
+            link.withStyle((style) -> style.withClickEvent(click));
             ichat.append(link);
         }
         // Append the rest of the message.
@@ -548,9 +544,7 @@ public class ModuleChat implements ConfigSaver
     public static boolean doesPlayerHaveNickname(PlayerEntity player)
     {
         String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
-        if (nickname == null || nickname.isEmpty())
-            return false;
-        return true;
+        return nickname != null && !nickname.isEmpty();
     }
     /* ------------------------------------------------------------ */
 

@@ -18,6 +18,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandWallet extends ForgeEssentialsCommandBuilder
 {
@@ -32,7 +33,7 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
     public static final String PERM_MODIFY = PERM + ".modify";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "wallet";
     }

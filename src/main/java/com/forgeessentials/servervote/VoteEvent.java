@@ -27,7 +27,7 @@ public class VoteEvent extends Event
     public String serviceName;
     public String ip;
     public String timeStamp;
-    List<String> feedback = new ArrayList<String>();
+    List<String> feedback = new ArrayList<>();
     private boolean sane = false;
 
     public VoteEvent(String player, String serviceName, String ip, String timeStamp)

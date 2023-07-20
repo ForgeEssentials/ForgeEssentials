@@ -11,6 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPing extends ForgeEssentialsCommandBuilder
 {
@@ -22,7 +23,7 @@ public class CommandPing extends ForgeEssentialsCommandBuilder
     public static String response = "Pong! %time";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "ping";
     }

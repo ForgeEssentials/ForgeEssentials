@@ -18,7 +18,7 @@ public class RingBuffer<T> implements List<T>, Queue<T>
     {
         if (size < 1)
             throw new IllegalArgumentException();
-        data = new ArrayList<T>(size);
+        data = new ArrayList<>(size);
         for (int i = 0; i < size; i++)
             data.add(null);
     }
@@ -45,7 +45,7 @@ public class RingBuffer<T> implements List<T>, Queue<T>
 
     public ArrayList<T> getOrderedList(int maxElements)
     {
-        ArrayList<T> list = new ArrayList<T>(data.size());
+        ArrayList<T> list = new ArrayList<>(data.size());
         int index = position;
         for (int i = 0; i < data.size(); i++)
         {

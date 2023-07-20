@@ -50,7 +50,7 @@ public class FECommandManager
         FECommandData command = null;
         for (FECommandData cmd : loadedFEcommands)
         {
-            if (cmd.getData().getName() == name)
+            if (cmd.getData().getName().equals(name))
             {
                 command = cmd;
                 break;

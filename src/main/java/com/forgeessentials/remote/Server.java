@@ -28,8 +28,7 @@ public class Server implements Runnable
     private Set<Session> sessions = new HashSet<>();
 
     /**
-     * @param port
-     * @param hostname
+     * @param socket
      */
     public Server(ServerSocket socket)
     {

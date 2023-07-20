@@ -84,7 +84,7 @@ public class JsServer
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
                 .parse(cmd, server.createCommandSourceStack());
-        if (command.getReader().canRead() != true)
+        if (!command.getReader().canRead())
         {
             script.chatError("Command \"" + cmd + "\" not found");
             return;

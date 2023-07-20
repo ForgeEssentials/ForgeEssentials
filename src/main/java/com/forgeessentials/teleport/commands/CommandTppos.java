@@ -20,6 +20,7 @@ import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTppos extends ForgeEssentialsCommandBuilder
 {
@@ -35,7 +36,7 @@ public class CommandTppos extends ForgeEssentialsCommandBuilder
     public static HashMap<Integer, Point> spawnPoints = new HashMap<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "tppos";
     }

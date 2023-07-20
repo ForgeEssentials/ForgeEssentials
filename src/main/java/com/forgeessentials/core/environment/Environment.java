@@ -30,14 +30,7 @@ public class Environment
     {
         CrashReportExtender.registerCrashCallable(new FECrashCallable());
         // Check if dedicated or integrated server
-        if (FMLEnvironment.dist == Dist.CLIENT)
-        {
-            isClient = true;
-        }
-        else
-        {
-            isClient = false;
-        }
+        isClient = FMLEnvironment.dist == Dist.CLIENT;
 
         if (ModList.get().isLoaded("worldedit"))
         {

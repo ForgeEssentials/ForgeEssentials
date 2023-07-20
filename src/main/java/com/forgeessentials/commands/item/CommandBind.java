@@ -27,6 +27,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandBind extends ForgeEssentialsCommandBuilder
 {
@@ -41,7 +42,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     public static final String LORE_TEXT_TAG = TextFormatting.RESET.toString() + TextFormatting.AQUA;
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "bind";
     }

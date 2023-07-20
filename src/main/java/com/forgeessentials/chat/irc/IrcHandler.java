@@ -290,7 +290,7 @@ public class IrcHandler extends ListenerAdapter
                 add("#someChannelName");
             }
         }, ConfigBase.stringValidator);
-        FEadmins = BUILDER.comment(ADMINS_HELP).defineList("admins", new ArrayList<String>(),
+        FEadmins = BUILDER.comment(ADMINS_HELP).defineList("admins", new ArrayList<>(),
                 ConfigBase.stringValidator);
         FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
         BUILDER.pop();
@@ -380,7 +380,6 @@ public class IrcHandler extends ListenerAdapter
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
-    @SuppressWarnings("resource")
     public CommandSource getIrcUser(String username)
     {
         if (!isConnected())
@@ -440,7 +439,7 @@ public class IrcHandler extends ListenerAdapter
 
         ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
                 .parse(commandName, sender.createCommandSourceStack());
-        if (command.getReader().canRead() != true)
+        if (!command.getReader().canRead())
         {
             ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
             return;

@@ -675,7 +675,7 @@ public class PermissionCommandParser extends CommandUtils
             }
             else
             {
-                String groups[] = params.remove(0).split(",");
+                String[] groups = params.remove(0).split(",");
                 for (String group : groups)
                     if (!APIRegistry.perms.groupExists(group))
                     {
@@ -1261,9 +1261,7 @@ public class PermissionCommandParser extends CommandUtils
 
             Zone zone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx).getLevel())
                     .getAreaZone(zoneId);
-            if (zone != null)
-                return zone;
-            return null;
+            return zone;
         }
     }
 

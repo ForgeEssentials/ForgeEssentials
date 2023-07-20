@@ -15,6 +15,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandRename extends ForgeEssentialsCommandBuilder
 {
@@ -25,7 +26,7 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "rename";
     }

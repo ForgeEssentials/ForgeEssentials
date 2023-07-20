@@ -27,7 +27,7 @@ public class RespawnHandler
 {
 
     protected Set<ServerPlayerEntity> respawnPlayers = Collections
-            .newSetFromMap(new WeakHashMap<ServerPlayerEntity, Boolean>());
+            .newSetFromMap(new WeakHashMap<>());
 
     public RespawnHandler()
     {

@@ -5,5 +5,5 @@ public enum ServerType
     ROOTSERVER,
     CLIENTSERVER,
     MIXEDSERVER,
-    NONE;
+    NONE
 }

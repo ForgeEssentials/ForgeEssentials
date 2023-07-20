@@ -24,6 +24,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Opens other player inventory.
@@ -37,7 +38,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "invsee";
     }
@@ -94,14 +95,14 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
         source.openMenu(new INamedContainerProvider() {
 
             @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity victim)
+            public Container createMenu(int id, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity victim)
             {
                 return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory,
                         new SeeablePlayerInventory(victim), 5);
             }
 
             @Override
-            public ITextComponent getDisplayName()
+            public @NotNull ITextComponent getDisplayName()
             {
                 return new StringTextComponent(victim.getDisplayName().getString() + "'s inventory");
             }

@@ -16,7 +16,7 @@ public class Packet12ServerPlayerSync extends FEPacket
     public Packet12ServerPlayerSync() {}
     
     public Packet12ServerPlayerSync(Set<UUID> ids){
-        uuids = new HashSet<String>();
+        uuids = new HashSet<>();
         for(UUID id : ids) {
             if(id==null)
                 continue;
@@ -39,7 +39,7 @@ public class Packet12ServerPlayerSync extends FEPacket
     @Override
     public void decode(PacketBuffer buf)
     {
-        uuids = new HashSet<String>();
+        uuids = new HashSet<>();
         int count = buf.readShort();
         for (int i = 0; i < count; i++)
             uuids.add(buf.readUtf());
@@ -59,7 +59,7 @@ public class Packet12ServerPlayerSync extends FEPacket
 
     public Set<UUID> getUuids()
     {
-        Set<UUID> uuid = new HashSet<UUID>();
+        Set<UUID> uuid = new HashSet<>();
         for(String st : uuids) {
             uuid.add(UUID.fromString(st));
         }

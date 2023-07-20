@@ -11,6 +11,7 @@ import com.forgeessentials.util.CommandUtils.CommandInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -56,7 +57,8 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         else
         {
             action.player = getPlayer(UserIdent.getVirtualPlayer("console"));
-            action.world = ServerLifecycleHooks.getCurrentServer().overworld().dimension().location().toString();
+            ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
+            action.world = overworld.dimension().location().toString();
             BlockPos pos = new BlockPos(0, 0, 0);
             action.x = pos.getX();
             action.y = pos.getY();

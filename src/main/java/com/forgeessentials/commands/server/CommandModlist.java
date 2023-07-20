@@ -16,6 +16,7 @@ import net.minecraft.command.Commands;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandModlist extends ForgeEssentialsCommandBuilder
 {
@@ -26,7 +27,7 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "modlist";
     }
@@ -69,7 +70,7 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
         int size = ModList.get().size();
         int perPage = 7;
         int pages = (int) Math.ceil(size / (float) perPage);
-        int page = num == 0 ? 0 : (num > pages ? pages : num) - 1;
+        int page = num == 0 ? 0 : (Math.min(num, pages)) - 1;
         int min = Math.min(page * perPage, size);
 
         ChatOutputHandler.chatNotification(ctx.getSource(),

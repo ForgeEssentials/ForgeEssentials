@@ -25,6 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPotion extends ForgeEssentialsCommandBuilder
 {
@@ -73,7 +74,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "potion";
     }
@@ -263,7 +264,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed all effects from all target(s)");
             return Command.SINGLE_SUCCESS;
         }
-        if (params.equals("clear-target"))
+        if (params.equals("clear-effect"))
         {
             for (Entity entity : EntityArgument.getEntities(ctx, "targets"))
             {

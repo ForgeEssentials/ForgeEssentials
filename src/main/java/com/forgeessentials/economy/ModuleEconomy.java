@@ -381,14 +381,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     }
 
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> FEitemTables;
-    public static Map<String, Integer> itemTables = new HashMap<String, Integer>();
+    public static Map<String, Integer> itemTables = new HashMap<>();
 
     @Override
     public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push(CONFIG_CATEGORY);
         FEitemTables = BUILDER.comment("Itemprices for the economy module").defineList("Itemprices",
-                new ArrayList<String>(), ConfigBase.stringValidator);
+                new ArrayList<>(), ConfigBase.stringValidator);
         BUILDER.pop();
         ShopManager.load(BUILDER, isReload);
     }

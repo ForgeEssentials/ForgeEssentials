@@ -18,6 +18,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 {
@@ -28,7 +29,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "itemperm";
     }
@@ -80,7 +81,6 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
                                     .executes(CommandContext -> execute(CommandContext, type + "-clear-all")))
                             .executes(CommandContext -> execute(CommandContext, type + "-clear-noall"))));
         }
-        ;
         return baseBuilder;
     }
 
@@ -132,7 +132,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 
         String permStart = ModuleProtection.BASE_PERM + '.';
         String permEnd;
-        if (para[2] == "all")
+        if (para[2].equals("all"))
         {
             permEnd = '.' + ModuleProtection.getItemPermission(stack) + ".*";
         }

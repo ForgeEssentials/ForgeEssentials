@@ -3,6 +3,7 @@ package com.forgeessentials.permissions.commands;
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
@@ -28,6 +29,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 {
@@ -38,7 +40,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "permitem";
     }
@@ -82,7 +84,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
-        List<String> completeList = new ArrayList<String>();
+        List<String> completeList = new ArrayList<>();
         for (String group : APIRegistry.perms.getServerZone().getGroups())
             completeList.add(group);
         return ISuggestionProvider.suggest(completeList, builder);
@@ -142,7 +144,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted permission item settings");
             break;
         default:
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd.toString());
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, Arrays.toString(subCmd));
         }
         return Command.SINGLE_SUCCESS;
     }

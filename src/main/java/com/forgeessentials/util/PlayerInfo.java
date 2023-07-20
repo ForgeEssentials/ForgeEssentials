@@ -28,7 +28,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class PlayerInfo implements Loadable
 {
 
-    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
+    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<>();
 
     /* ------------------------------------------------------------ */
     /* General */
@@ -94,7 +94,7 @@ public class PlayerInfo implements Loadable
     @Expose(serialize = false)
     private long lastActivity = System.currentTimeMillis();
 
-    private HashMap<String, Date> namedTimeout = new HashMap<String, Date>();
+    private HashMap<String, Date> namedTimeout = new HashMap<>();
 
     @Expose(serialize = false)
     private boolean noClip = false;
@@ -110,7 +110,7 @@ public class PlayerInfo implements Loadable
     public void afterLoad()
     {
         if (namedTimeout == null)
-            namedTimeout = new HashMap<String, Date>();
+            namedTimeout = new HashMap<>();
         lastActivity = System.currentTimeMillis();
         if (activeInventoryGroup == null || activeInventoryGroup.isEmpty())
             activeInventoryGroup = "default";
@@ -228,9 +228,7 @@ public class PlayerInfo implements Loadable
     {
         if (playerInfoMap.containsKey(uuid))
             return true;
-        if (DataManager.getInstance().exists(PlayerInfo.class, uuid.toString()))
-            return true;
-        return false;
+        return DataManager.getInstance().exists(PlayerInfo.class, uuid.toString());
     }
 
     /**

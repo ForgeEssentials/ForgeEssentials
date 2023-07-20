@@ -103,7 +103,7 @@ public class PermissionEvent extends Event
 
             public static enum Action
             {
-                ADD, REMOVE;
+                ADD, REMOVE
             }
 
             public Action action;

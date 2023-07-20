@@ -38,9 +38,9 @@ public class CommandHandler extends GenericRemoteHandler<String>
         String commandName = request.data;
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
+        final ParseResults<CommandSource> command = server.getCommands().getDispatcher()
                 .parse(commandName, server.createCommandSourceStack());
-        if (command.getReader().canRead() != true)
+        if (!command.getReader().canRead())
             error(String.format("Command \"/%s\" not found", commandName));
 
         checkPermission(session, command.getReader().getString().substring(1));

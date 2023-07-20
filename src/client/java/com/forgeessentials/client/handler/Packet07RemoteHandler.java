@@ -49,9 +49,7 @@ public class Packet07RemoteHandler extends Packet07Remote
 
             TextComponent qrLink = new StringTextComponent("[QR code]");
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
-            qrLink.withStyle((style) -> {
-                return style.withClickEvent(click);
-            });
+            qrLink.withStyle((style) -> style.withClickEvent(click));
             qrLink.withStyle(TextFormatting.RED);
             qrLink.withStyle(TextFormatting.UNDERLINE);
             TextComponent msg = new StringTextComponent("Click in-game with mouse to close qrCode");

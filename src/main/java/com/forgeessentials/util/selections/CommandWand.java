@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandWand extends ForgeEssentialsCommandBuilder
 {
@@ -28,7 +29,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "SELwand";
     }
@@ -79,7 +80,6 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
                     TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
 
-            return Command.SINGLE_SUCCESS;
         }
         else
         {
@@ -95,8 +95,8 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
             info.setWandID(wandId);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), wandId);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Wand bound to " + wandName);
-            return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override

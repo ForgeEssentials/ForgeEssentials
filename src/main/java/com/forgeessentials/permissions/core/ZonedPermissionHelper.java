@@ -105,7 +105,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     private boolean disableDebug;
 
-    public Set<PlayerEntity> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<PlayerEntity, Boolean>());
+    public Set<PlayerEntity> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<>());
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 

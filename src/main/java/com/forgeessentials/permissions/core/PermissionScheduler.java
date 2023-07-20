@@ -18,6 +18,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.TickEvent;
@@ -64,7 +65,7 @@ public class PermissionScheduler extends ServerEventHandler
 
         public String offMessage;
 
-        public List<Integer> times = new ArrayList<Integer>();
+        public List<Integer> times = new ArrayList<>();
 
         public Map<String, PermissionEntry> permissions = new HashMap<>();
 
@@ -113,10 +114,11 @@ public class PermissionScheduler extends ServerEventHandler
             }
             else
             {
+                ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
                 if (schedule.isDelay)
-                    time = ServerLifecycleHooks.getCurrentServer().overworld().getGameTime();
+                    time = overworld.getGameTime();
                 else
-                    time = ServerLifecycleHooks.getCurrentServer().overworld().getDayTime();
+                    time = overworld.getDayTime();
             }
 
             if (schedule.isDelay)

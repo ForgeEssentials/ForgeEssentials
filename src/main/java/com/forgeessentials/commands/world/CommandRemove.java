@@ -21,6 +21,7 @@ import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandRemove extends ForgeEssentialsCommandBuilder
 {
@@ -31,13 +32,13 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "remove";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "clearGroundItems" };
     }
@@ -88,9 +89,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
                         centerY + radius + 1, centerZ + radius + 1));
 
         int counter = 0;
-        for (int i = 0; i < entityList.size(); i++)
-        {
-            ItemEntity entity = entityList.get(i);
+        for (ItemEntity entity : entityList) {
             counter += entity.getItem().getCount();
             entity.remove();
         }
@@ -120,9 +119,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
                         center.getX() + radius + 1, center.getY() + radius + 1, center.getZ() + radius + 1));
 
         int counter = 0;
-        for (int i = 0; i < entityList.size(); i++)
-        {
-            ItemEntity entity = entityList.get(i);
+        for (ItemEntity entity : entityList) {
             counter += entity.getItem().getCount();
             entity.remove();
         }

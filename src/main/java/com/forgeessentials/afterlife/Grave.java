@@ -40,13 +40,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class Grave implements Loadable
 {
 
-    protected static Map<Point, Grave> graves = new HashMap<Point, Grave>();
+    protected static Map<Point, Grave> graves = new HashMap<>();
 
     protected WorldPoint point;
 
     protected UUID owner;
 
-    protected List<ItemStack> inventory = new ArrayList<ItemStack>();
+    protected List<ItemStack> inventory = new ArrayList<>();
 
     protected int xp;
 
@@ -107,9 +107,8 @@ public class Grave implements Loadable
                 APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
         if (protTime <= 0)
             isProtected = false;
-        List<ItemEntity> newList = drops.stream().collect(toList());
-        for (int i = 0; i < newList.size(); i++)
-            inventory.add(newList.get(i).getItem().copy());
+        List<ItemEntity> newList = new ArrayList<>(drops);
+        for (ItemEntity itemEntity : newList) inventory.add(itemEntity.getItem().copy());
 
         // Get grave block
         String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
@@ -202,9 +201,7 @@ public class Grave implements Loadable
             return true;
         if (player.getGameProfile().getId().equals(owner))
             return true;
-        if (APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
-            return true;
-        return false;
+        return APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS);
     }
 
     public void setOpen(boolean openT)

@@ -35,9 +35,9 @@ public class ModuleTickets implements ConfigSaver
 
     public static final String PERMBASE = "fe.tickets";
 
-    public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+    public static ArrayList<Ticket> ticketList = new ArrayList<>();
 
-    public static List<String> categories = new ArrayList<String>();
+    public static List<String> categories = new ArrayList<>();
 
     public static int currentID;
 

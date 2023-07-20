@@ -30,8 +30,6 @@ public class Packet03PlayerPermissionsOverlay extends AbstractGui
 
     protected Packet03PlayerPermissions permissions = new Packet03PlayerPermissions();
 
-    private int zLevel = 100;
-
     public Packet03PlayerPermissionsOverlay()
     {
         deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(),
@@ -92,6 +90,7 @@ public class Packet03PlayerPermissionsOverlay extends AbstractGui
     {
         BufferBuilder wr = Tessellator.getInstance().getBuilder();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        int zLevel = 100;
         wr.vertex(xPos, yPos + height, zLevel).uv(0, 1).endVertex();
         wr.vertex(xPos + width, yPos + height, zLevel).uv(1, 1).endVertex();
         wr.vertex(xPos + width, yPos, zLevel).uv(1, 0).endVertex();

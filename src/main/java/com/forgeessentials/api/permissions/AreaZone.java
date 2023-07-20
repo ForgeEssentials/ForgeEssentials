@@ -168,8 +168,6 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
         Point areaSize = otherArea.getArea().getSize();
         Point thisSize = this.getArea().getSize();
         cmp = (thisSize.getX() * thisSize.getY()) - (areaSize.getX() * areaSize.getY());
-        if (cmp != 0)
-            return cmp;
 
         return cmp;
     }

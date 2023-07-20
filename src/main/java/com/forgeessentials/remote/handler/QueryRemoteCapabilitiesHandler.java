@@ -40,7 +40,7 @@ public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonEle
             if (p == null || APIRegistry.perms.checkUserPermission(session.getUserIdent(), p))
                 response.handlers.add(handler.getKey());
         }
-        return new RemoteResponse<QueryRemoteCapabilitiesHandler.Response>(request, response);
+        return new RemoteResponse<>(request, response);
     }
 
     public static class Response

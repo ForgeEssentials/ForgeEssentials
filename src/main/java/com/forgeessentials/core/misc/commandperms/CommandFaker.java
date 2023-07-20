@@ -15,12 +15,13 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandFaker implements ICommandSource
 {
 
     @Override
-    public void sendMessage(ITextComponent p_145747_1_, UUID p_145747_2_)
+    public void sendMessage(ITextComponent p_145747_1_, @NotNull UUID p_145747_2_)
     {
         LoggingHandler.felog.info("CommandFaker: " + p_145747_1_.getString());
     }

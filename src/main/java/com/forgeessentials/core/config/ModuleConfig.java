@@ -16,7 +16,7 @@ import com.forgeessentials.core.ForgeEssentials;
 
 public class ModuleConfig
 {
-    private TreeMap<String, Boolean> modules = new TreeMap<String, Boolean>();
+    private TreeMap<String, Boolean> modules = new TreeMap<>();
 
     private Boolean fileNotFound;
     private Boolean needsSaving;
@@ -29,7 +29,7 @@ public class ModuleConfig
         public synchronized Enumeration<Object> keys()
         {
 
-            return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+            return Collections.enumeration(new TreeSet<>(super.keySet()));
         }
 
     };

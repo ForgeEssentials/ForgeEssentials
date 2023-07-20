@@ -230,7 +230,6 @@ public class ModuleBackup extends ConfigLoaderBase
             if (parts[1].toLowerCase().equals("false"))
             {
                 backupOverrides.put(parts[0], false);
-                continue;
             }
         }
 
@@ -263,17 +262,15 @@ public class ModuleBackup extends ConfigLoaderBase
         FEbaseFolder = BUILDER.comment("Folder to store the backups in. Can be anywhere writable in the file system.")
                 .define("base_folder", moduleDir.getPath());
         FEexludePatternValues = BUILDER.comment("Define file patterns (regex) that should be excluded from each backup")
-                .define("exclude_patterns", new ArrayList<String>(Arrays.asList(DEFAULT_EXCLUDE_PATTERNS)));
+                .define("exclude_patterns", new ArrayList<>(Arrays.asList(DEFAULT_EXCLUDE_PATTERNS)));
         BUILDER.pop();
         BUILDER.comment("World Overide Config").push(CONFIG_CAT_WORLDS);
-        List<String> worlds = new ArrayList<String>();
-        for (Iterator<Entry<String, Boolean>> it = new HashMap<String, Boolean>() {
+        List<String> worlds = new ArrayList<>();
+        for (Entry<String, Boolean> world : new HashMap<String, Boolean>() {
             {
                 put("overworld", true);
             }
-        }.entrySet().iterator();it.hasNext();)
-        {
-            Entry<String, Boolean> world = it.next();
+        }.entrySet()) {
             worlds.add(new String(world.getKey() + "-" + String.valueOf(world.getValue())));
         }
         FEbackupOverrides = BUILDER.comment(WORLDS_HELP).defineList("backupOverrides", worlds,
@@ -388,8 +385,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
 
         // Save files
-        try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
-                ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
+        try (FileOutputStream fileStream = new FileOutputStream(backupFile); ZipOutputStream zipStream = new ZipOutputStream(fileStream))
         {
             LoggingHandler.felog.debug(
                     String.format("Listing files for backup of world %s", world.dimension().location().toString()));

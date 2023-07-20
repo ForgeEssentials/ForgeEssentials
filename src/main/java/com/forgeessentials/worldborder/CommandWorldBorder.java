@@ -22,6 +22,7 @@ import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.command.arguments.PotionArgument;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
 {
@@ -32,13 +33,13 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "worldborder";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "wb" };
     }

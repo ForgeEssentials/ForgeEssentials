@@ -26,6 +26,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 {
@@ -45,13 +46,13 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
     private static final String PERM_LIMIT = PERM + ".max";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "pwarp";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "pw", "personalwarp" };
     }

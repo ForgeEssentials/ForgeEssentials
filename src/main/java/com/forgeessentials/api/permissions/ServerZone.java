@@ -38,16 +38,16 @@ public class ServerZone extends Zone implements Loadable
     private RootZone rootZone;
 
     @Expose(serialize = false)
-    private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
+    private Map<Integer, Zone> zones = new HashMap<>();
 
-    private Map<String, WorldZone> worldZones = new HashMap<String, WorldZone>();
+    private Map<String, WorldZone> worldZones = new HashMap<>();
 
-    private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
+    private Map<UserIdent, Set<String>> playerGroups = new HashMap<>();
 
     private int maxZoneID;
 
     @Expose(serialize = false)
-    private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
+    private Set<UserIdent> knownPlayers = new HashSet<>();
 
     // ------------------------------------------------------------
 
@@ -260,12 +260,7 @@ public class ServerZone extends Zone implements Loadable
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        Set<String> groupSet = playerGroups.get(ident);
-        if (groupSet == null)
-        {
-            groupSet = new HashSet<String>();
-            playerGroups.put(ident, groupSet);
-        }
+        Set<String> groupSet = playerGroups.computeIfAbsent(ident, k -> new HashSet<>());
         if (!groupSet.contains(group))
         {
             if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident,
@@ -299,17 +294,12 @@ public class ServerZone extends Zone implements Loadable
 
     public Map<String, Set<UserIdent>> getGroupPlayers()
     {
-        Map<String, Set<UserIdent>> groupPlayers = new HashMap<String, Set<UserIdent>>();
+        Map<String, Set<UserIdent>> groupPlayers = new HashMap<>();
         for (Entry<UserIdent, Set<String>> player : playerGroups.entrySet())
         {
             for (String group : player.getValue())
             {
-                Set<UserIdent> players = groupPlayers.get(group);
-                if (players == null)
-                {
-                    players = new HashSet<UserIdent>();
-                    groupPlayers.put(group, players);
-                }
+                Set<UserIdent> players = groupPlayers.computeIfAbsent(group, k -> new HashSet<>());
                 players.add(player.getKey());
             }
         }
@@ -321,7 +311,7 @@ public class ServerZone extends Zone implements Loadable
     {
         registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
-        SortedSet<GroupEntry> result = new TreeSet<GroupEntry>();
+        SortedSet<GroupEntry> result = new TreeSet<>();
         if (pgs != null)
             for (String group : pgs)
                 result.add(new GroupEntry(this, group));
@@ -382,7 +372,7 @@ public class ServerZone extends Zone implements Loadable
         do
         {
             addedGroup = false;
-            for (GroupEntry existingGroup : new ArrayList<GroupEntry>(groups))
+            for (GroupEntry existingGroup : new ArrayList<>(groups))
             {
                 // Check if group was already checked for inclusion
                 if (!checkedGroups.add(existingGroup.getGroup()))
@@ -473,7 +463,7 @@ public class ServerZone extends Zone implements Loadable
     public List<Zone> getZonesAt(WorldPoint worldPoint)
     {
         WorldZone w = getWorldZone(worldPoint.getDimension());
-        List<Zone> result = new ArrayList<Zone>();
+        List<Zone> result = new ArrayList<>();
         for (AreaZone zone : w.getAreaZones())
         {
             if (zone.isInZone(worldPoint))
@@ -514,7 +504,7 @@ public class ServerZone extends Zone implements Loadable
     public List<AreaZone> getAreaZonesAt(WorldPoint worldPoint)
     {
         WorldZone w = getWorldZone(worldPoint.getDimension());
-        List<AreaZone> result = new ArrayList<AreaZone>();
+        List<AreaZone> result = new ArrayList<>();
         for (AreaZone zone : w.getAreaZones())
             if (zone.isInZone(worldPoint))
                 result.add(zone);
@@ -550,7 +540,7 @@ public class ServerZone extends Zone implements Loadable
             WorldPoint point)
     {
         // Build node list
-        List<String> nodes = new ArrayList<String>();
+        List<String> nodes = new ArrayList<>();
         nodes.add(permissionNode);
         String[] nodeParts = permissionNode.split("\\.");
         for (int i = nodeParts.length; i > 0; i--)

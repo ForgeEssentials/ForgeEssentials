@@ -135,7 +135,7 @@ public class ConnectionData
 
         public void incrementNumberTimesConnected()
         {
-            this.numberTimesConnected += 1;;
+            this.numberTimesConnected += 1;
         }
 
         public Channel getCurrentChannel()

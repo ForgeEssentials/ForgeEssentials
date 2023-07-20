@@ -18,6 +18,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandNickname extends ForgeEssentialsCommandBuilder
 {
@@ -32,13 +33,13 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     public static final String PERM_OTHERS = PERM + ".others";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "nickname";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "nick" };
     }

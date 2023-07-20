@@ -16,7 +16,7 @@ public abstract class StatTracker<T> extends TimerTask
     public StatTracker(int intervalSeconds, int bufferSeconds)
     {
         this.interval = intervalSeconds;
-        this.buffer = new RingBuffer<T>(bufferSeconds / intervalSeconds);
+        this.buffer = new RingBuffer<>(bufferSeconds / intervalSeconds);
     }
 
     public RingBuffer<T> getBuffer()

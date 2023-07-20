@@ -50,7 +50,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
         @Override
         public synchronized Enumeration<Object> keys()
         {
-            TreeSet<Object> keys = new TreeSet<Object>(Zone.permissionComparator);
+            TreeSet<Object> keys = new TreeSet<>(Zone.permissionComparator);
             keys.addAll(super.keySet());
             return Collections.enumeration(keys);
         }

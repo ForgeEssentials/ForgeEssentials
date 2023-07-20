@@ -49,7 +49,7 @@ public class MemoryWatchdog extends TimerTask
                         ChatOutputHandler.chatNotification(player.createCommandSourceStack(),
                                 "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
         }

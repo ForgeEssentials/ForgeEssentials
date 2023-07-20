@@ -123,7 +123,7 @@ public class UserIdent
             identUsername = null;
 
         UserIdent oldIdent = null;
-        player = identPlayer == null ? null : new WeakReference<PlayerEntity>(identPlayer);
+        player = identPlayer == null ? null : new WeakReference<>(identPlayer);
         if (identPlayer != null)
         {
             uuid = identPlayer.getUUID();
@@ -314,7 +314,7 @@ public class UserIdent
             }
         }
         if (ident.player == null || ident.player.get() != player)
-            ident.player = new WeakReference<PlayerEntity>(player);
+            ident.player = new WeakReference<>(player);
         return ident;
     }
 
@@ -410,7 +410,7 @@ public class UserIdent
         if (ident == null)
             ident = byUsername.get(username);
 
-        if (ident == null || !(ident instanceof ServerUserIdent))
+        if (!(ident instanceof ServerUserIdent))
             ident = new ServerUserIdent(_uuid, username);
 
         return (ServerUserIdent) ident;
@@ -470,7 +470,7 @@ public class UserIdent
                 byUuid.put(player.getGameProfile().getId(), ident);
             }
         }
-        ident.player = new WeakReference<PlayerEntity>(player);
+        ident.player = new WeakReference<>(player);
         ident.username = player.getDisplayName().getString();
         ident.uuid = player.getGameProfile().getId();
 
@@ -479,7 +479,7 @@ public class UserIdent
             APIRegistry.getFEEventBus().post(new UserIdentInvalidatedEvent(usernameIdent, ident));
 
             // Change data for already existing references to old UserIdent
-            usernameIdent.player = new WeakReference<PlayerEntity>(player);
+            usernameIdent.player = new WeakReference<>(player);
             usernameIdent.username = player.getDisplayName().getString();
 
             // Replace entry in username map by the one from uuid map
@@ -509,9 +509,7 @@ public class UserIdent
     public boolean hasPlayer()
     {
         PlayerEntity player = getPlayer();
-        if (player == null || player instanceof FakePlayer)
-            return false;
-        return true;
+        return player != null && !(player instanceof FakePlayer);
         // return ServerUtil.getPlayerList().contains(player);
     }
 
@@ -560,7 +558,7 @@ public class UserIdent
     public void refreshPlayer()
     {
         PlayerEntity player = UserIdent.getPlayerByUuid(uuid);
-        this.player = player == null ? null : new WeakReference<PlayerEntity>(player);
+        this.player = player == null ? null : new WeakReference<>(player);
     }
 
     public PlayerEntity getPlayer()
@@ -702,7 +700,7 @@ public class UserIdent
                     // The string was a username and not a UUID
                 }
             }
-            return username == null ? false : this.username.equalsIgnoreCase((String) other);
+            return username != null && this.username.equalsIgnoreCase((String) other);
         }
         else if (other instanceof UUID)
         {

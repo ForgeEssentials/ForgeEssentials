@@ -24,8 +24,8 @@ public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
     public static Packet03PlayerPermissionsHandler decode(PacketBuffer buf)
     {
         boolean reset1 = buf.readBoolean();
-        Set<Integer> placeIds1 = new HashSet<Integer>();
-        Set<Integer> breakIds1 = new HashSet<Integer>();
+        Set<Integer> placeIds1 = new HashSet<>();
+        Set<Integer> breakIds1 = new HashSet<>();
         int count = buf.readShort();
         for (int i = 0; i < count; i++)
             placeIds1.add(buf.readInt());
@@ -60,7 +60,6 @@ public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
                     if (itemId == id)
                     {
                         player.stopUsingItem();
-                        ;
                         break;
                     }
             }

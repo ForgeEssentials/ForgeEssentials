@@ -20,6 +20,7 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandCraft extends ForgeEssentialsCommandBuilder
 {
@@ -32,7 +33,7 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "craft";
     }
@@ -58,7 +59,7 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
     @SubscribeEvent
     public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (event.getContainer().stillValid(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer())
+        if (!event.getContainer().stillValid(event.getPlayer()) && lastPlayer.get() == event.getPlayer())
         {
             event.setResult(Result.ALLOW);
         }
@@ -78,7 +79,7 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
                 .openMenu(new SimpleNamedContainerProvider(
                         (i, playerInventory, playerEntity) -> new WorkbenchContainer(i, playerInventory,
                                 IWorldPosCallable.create(player.getCommandSenderWorld(), player.blockPosition())) {
-                            public boolean stillValid(PlayerEntity p_75145_1_)
+                            public boolean stillValid(@NotNull PlayerEntity p_75145_1_)
                             {
                                 return true;
                             }

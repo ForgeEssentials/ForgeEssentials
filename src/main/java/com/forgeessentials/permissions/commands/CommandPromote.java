@@ -23,6 +23,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPromote extends ForgeEssentialsCommandBuilder
 {
@@ -35,7 +36,7 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
     public static final String PERM_NODE = "fe.perm.promote";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "promote";
     }
@@ -69,7 +70,7 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
-        List<String> completeList = new ArrayList<String>();
+        List<String> completeList = new ArrayList<>();
         for (String group : APIRegistry.perms.getServerZone().getGroups())
             completeList.add(group);
         return ISuggestionProvider.suggest(completeList, builder);

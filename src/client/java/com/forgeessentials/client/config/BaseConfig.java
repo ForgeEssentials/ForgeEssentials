@@ -3,8 +3,8 @@ package com.forgeessentials.client.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.client.config.ValuesCached.ValueCachedPrimitive;
-import com.forgeessentials.client.config.ValuesCached.ValueCachedResolvableConfig;
+import com.forgeessentials.client.config.valuesCached.ValueCachedPrimitive;
+import com.forgeessentials.client.config.valuesCached.ValueCachedResolvableConfig;
 
 public abstract class BaseConfig implements IFEConfig
 {

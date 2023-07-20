@@ -184,7 +184,7 @@ public class ScriptInstance
         lastModified = file.lastModified();
     }
 
-    public void checkIfModified() throws IOException, FileNotFoundException, ScriptException
+    public void checkIfModified() throws IOException, ScriptException
     {
         if (file.exists() && file.lastModified() != lastModified)
             compileScript();

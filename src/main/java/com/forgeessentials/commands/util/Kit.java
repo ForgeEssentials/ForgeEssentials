@@ -30,7 +30,7 @@ public class Kit
         this.cooldown = cooldown;
         this.name = name;
 
-        List<ItemStack> collapsedInventory = new ArrayList<ItemStack>();
+        List<ItemStack> collapsedInventory = new ArrayList<>();
         for (int i = 0; i < player.inventory.items.size(); i++)
             if (player.inventory.items.get(i) != ItemStack.EMPTY)
             {

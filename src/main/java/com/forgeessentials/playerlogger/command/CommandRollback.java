@@ -28,6 +28,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandRollback extends ForgeEssentialsCommandBuilder
 {
@@ -46,13 +47,13 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     static private Map<UUID, Timer> playbackTimers = new HashMap<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "rollback";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "rb" };
     }

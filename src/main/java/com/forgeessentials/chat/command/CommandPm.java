@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPm extends ForgeEssentialsCommandBuilder
 {
@@ -34,7 +35,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
 
     public static void setTarget(PlayerEntity sender, PlayerEntity target)
     {
-        targetMap.put(sender, new WeakReference<PlayerEntity>(target));
+        targetMap.put(sender, new WeakReference<>(target));
     }
 
     public static void clearTarget(PlayerEntity sender)
@@ -53,7 +54,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
     /* ------------------------------------------------------------ */
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "pm";
     }
@@ -132,13 +133,12 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             }
             setTarget(getServerPlayer(ctx.getSource()), player.getPlayer());
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set PM target to %s", player.getUsernameOrUuid());
-            return Command.SINGLE_SUCCESS;
         }
         else
         {
             TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message-or-target"));
             ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
-            return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 }

@@ -201,7 +201,6 @@ public abstract class ServerUtil
      * Returns working directory or minecraft data-directory on client side. <br>
      * <b>Please use module directory instead!</b>
      */
-    @SuppressWarnings("resource")
     public static File getBaseDir()
     {
         if (ServerLifecycleHooks.getCurrentServer().isSingleplayer())
@@ -211,7 +210,7 @@ public abstract class ServerUtil
     }
 
     /**
-     * Get's the directory where the world is saved
+     * Get the directory where the world is saved
      * 
      * @return
      */
@@ -240,7 +239,7 @@ public abstract class ServerUtil
     /**
      * Get tps per world.
      *
-     * @param dimID
+     * @param World
      * @return -1 if error
      */
     public static double getWorldTPS(RegistryKey<World> World)
@@ -248,9 +247,8 @@ public abstract class ServerUtil
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
         long[] ticks = server.getTickTime(World);
-        for (int i = 0; i < ticks.length; ++i)
-        {
-            sum += ticks[i];
+        for (long tick : ticks) {
+            sum += tick;
         }
         double tps = (double) sum / (double) ticks.length * 1.0E-6D;
         if (tps < 50)
@@ -327,7 +325,7 @@ public abstract class ServerUtil
     public static void copyNbt(CompoundNBT nbt, CompoundNBT data)
     {
         // Clear old data
-        for (String key : new HashSet<String>(nbt.getAllKeys()))
+        for (String key : new HashSet<>(nbt.getAllKeys()))
             nbt.remove(key);
 
         // Write new data

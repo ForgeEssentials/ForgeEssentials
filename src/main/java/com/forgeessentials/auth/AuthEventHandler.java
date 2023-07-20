@@ -64,7 +64,7 @@ public class AuthEventHandler extends ServerEventHandler
 
     private static boolean notPlayer(Object player)
     {
-        return player == null || !(player instanceof PlayerEntity) || player instanceof FakePlayer;
+        return !(player instanceof PlayerEntity) || player instanceof FakePlayer;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

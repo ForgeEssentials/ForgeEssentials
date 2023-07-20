@@ -192,8 +192,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             LoggingHandler.felog.error(String.format("FE error loading all scripts: %s", e.getMessage()));
             return;
         }
-        for (;it.hasNext();)
-        {
+        while (it.hasNext()) {
             File file = it.next();
             String name = file.getName();
             if (!name.endsWith("d.ts") && name.endsWith("ts"))

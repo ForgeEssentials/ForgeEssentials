@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -28,7 +29,7 @@ public final class Translator
             + "You can put translations after the \"=\" beind each entry.\n"
             + "FE is NOT responsible for translations and we do NOT guarantee that all texts can be translated.";
 
-    public static final TreeMap<String, String> translations = new TreeMap<String, String>();
+    public static final TreeMap<String, String> translations = new TreeMap<>();
 
     public static String format(String text, Object... args)
     {
@@ -59,10 +60,10 @@ public final class Translator
     {
         String translated = translations.get(text);
         if (translated != null)
-            return new StringTextComponent(translated + args.toString());
+            return new StringTextComponent(translated + Arrays.toString(args));
         translations.put(text, null);
         save();
-        return new StringTextComponent(text + args.toString());
+        return new StringTextComponent(text + Arrays.toString(args));
     }
 
     public static void save()

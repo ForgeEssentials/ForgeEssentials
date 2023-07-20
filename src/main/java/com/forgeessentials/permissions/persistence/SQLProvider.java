@@ -584,7 +584,7 @@ public class SQLProvider extends ZonePersistenceProvider
             {
                 serverZone.setMaxZoneId(Integer.parseInt(infoData.get(INFO_MAX_ZONE_ID)));
             }
-            catch (NumberFormatException e)
+            catch (NumberFormatException ignored)
             {
             }
 

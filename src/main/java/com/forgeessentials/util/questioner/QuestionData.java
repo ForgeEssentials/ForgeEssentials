@@ -46,17 +46,13 @@ public class QuestionData
     {
         TextComponent yesMessage = new StringTextComponent("/feyes");
         ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feyes");
-        yesMessage.withStyle((style) -> {
-            return style.withClickEvent(click);
-        });
+        yesMessage.withStyle((style) -> style.withClickEvent(click));
         yesMessage.withStyle(TextFormatting.RED);
         yesMessage.withStyle(TextFormatting.UNDERLINE);
 
         TextComponent noMessage = new StringTextComponent("/feno");
         ClickEvent click1 = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feno");
-        noMessage.withStyle((style) -> {
-            return style.withClickEvent(click1);
-        });
+        noMessage.withStyle((style) -> style.withClickEvent(click1));
         noMessage.withStyle(TextFormatting.RED);
         noMessage.withStyle(TextFormatting.UNDERLINE);
 

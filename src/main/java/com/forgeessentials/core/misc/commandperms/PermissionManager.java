@@ -75,7 +75,6 @@ public class PermissionManager
         case ALL:
             return 0;
         case OP:
-            return 4;
         default:
             return 4;
         }
@@ -105,7 +104,7 @@ public class PermissionManager
     /**
      * Strip a commandNode string from beginning to the index of a $ character
      *
-     * @param commandNode
+     * @param node
      */
     public static String stripNode(String node)
     {
@@ -120,17 +119,12 @@ public class PermissionManager
 
     /**
      * Gets all possible command nodes following the given node.
-     * 
-     * @param node
-     *            target node to get child usage strings for
-     * @param source
-     *            a custom "source" object, usually representing the originator of this command
      * @return array of full usage strings under the target node
      */
     public static Map<String, DefaultPermissionLevel> getAllUsage()
     {
         CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
-        final TreeMap<String, DefaultPermissionLevel> result = new TreeMap<String, DefaultPermissionLevel>();
+        final TreeMap<String, DefaultPermissionLevel> result = new TreeMap<>();
         getAllUsage(dispatcher.getRoot(), result, "", dispatcher, DefaultPermissionLevel.ALL);
         return result;
     }
@@ -143,7 +137,7 @@ public class PermissionManager
             // LoggingHandler.felog.debug("Found Command Argument: "+ node.getUsageText()+ " For Command: "+ prefix.replace(' ', '.'));
             return;
         }
-        if (prefix != "")
+        if (!prefix.equals(""))
         {
             if (parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node) == DefaultPermissionLevel.OP)
             {

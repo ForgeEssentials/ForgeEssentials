@@ -125,12 +125,7 @@ public class WorldBorder implements Loadable
 
     public Set<WorldBorderEffect> getOrCreateActiveEffects(PlayerEntity player)
     {
-        Set<WorldBorderEffect> effects = activeEffects.get(player);
-        if (effects == null)
-        {
-            effects = new HashSet<WorldBorderEffect>();
-            activeEffects.put(player, effects);
-        }
+        Set<WorldBorderEffect> effects = activeEffects.computeIfAbsent(player, k -> new HashSet<>());
         return effects;
     }
 

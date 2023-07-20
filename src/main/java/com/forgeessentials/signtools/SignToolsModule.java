@@ -193,7 +193,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
     public boolean SIGNS(Item item)
     {
-        ArrayList<Item> signs = new ArrayList<Item>(4);
+        ArrayList<Item> signs = new ArrayList<>(4);
         signs.add(Items.ACACIA_SIGN);
         signs.add(Items.BIRCH_SIGN);
         signs.add(Items.CRIMSON_SIGN);
@@ -202,10 +202,6 @@ public class SignToolsModule extends ConfigLoaderBase
         signs.add(Items.OAK_SIGN);
         signs.add(Items.SPRUCE_SIGN);
         signs.add(Items.WARPED_SIGN);
-        if (signs.contains(item))
-        {
-            return true;
-        }
-        return false;
+        return signs.contains(item);
     }
 }

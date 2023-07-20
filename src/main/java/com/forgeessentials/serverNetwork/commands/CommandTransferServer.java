@@ -19,6 +19,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTransferServer extends ForgeEssentialsCommandBuilder
 {
@@ -47,7 +48,7 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    protected String getPrimaryAlias()
+    protected @NotNull String getPrimaryAlias()
     {
         return "servertransfer";
     }

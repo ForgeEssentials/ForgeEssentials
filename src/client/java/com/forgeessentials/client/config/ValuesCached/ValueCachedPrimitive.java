@@ -1,4 +1,4 @@
-package com.forgeessentials.client.config.ValuesCached;
+package com.forgeessentials.client.config.valuesCached;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -56,9 +56,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
         if (sender.getEntity() != null && sender.getEntity() instanceof PlayerEntity)
             return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
         ICommandSource source = GetSource(sender);
-        if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
-            return true;
-        return false;
+        return source instanceof MinecraftServer || source instanceof CommandBlockLogic;
     }
 
     public abstract boolean canConsoleUseCommand();

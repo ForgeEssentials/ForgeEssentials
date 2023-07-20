@@ -41,7 +41,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
- * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier I only changed the init code and the event stuff.
+ * Like 90% copied from Votifier github: <a href="https://github.com/vexsoftware/votifier">...</a> I only changed the init code and the event stuff.
  *
  * @author Dries007
  */

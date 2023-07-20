@@ -18,6 +18,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
 {
@@ -32,7 +33,7 @@ public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
     public boolean place;
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "testpl";
     }

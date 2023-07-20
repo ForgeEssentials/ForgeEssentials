@@ -152,7 +152,7 @@ public class ModuleFactions
 
     public static List<String> getFaction(UserIdent ident)
     {
-        List<String> factions = new ArrayList<String>();
+        List<String> factions = new ArrayList<>();
         SortedSet<GroupEntry> groups = APIRegistry.perms.getStoredPlayerGroups(ident);
         for (GroupEntry groupEntry : groups)
             if (isGroupFaction(groupEntry.getGroup()))
@@ -172,7 +172,7 @@ public class ModuleFactions
 
     public static List<String> getFactions()
     {
-        List<String> factions = new ArrayList<String>();
+        List<String> factions = new ArrayList<>();
         for (String group : APIRegistry.perms.getServerZone().getGroups())
             if (group.startsWith(GROUP_PREFIX) && isGroupFaction(group))
                 factions.add(group.substring(GROUP_PREFIX.length()));

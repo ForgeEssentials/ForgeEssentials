@@ -18,6 +18,7 @@ import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandPos1 extends ForgeEssentialsCommandBuilder
 {
@@ -27,7 +28,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "SELfepos1";
     }

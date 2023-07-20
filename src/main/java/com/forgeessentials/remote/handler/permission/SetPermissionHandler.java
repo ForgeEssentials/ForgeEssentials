@@ -50,7 +50,7 @@ public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionRequ
             zone.setGroupPermissionProperty(request.data.group, request.data.permission, request.data.value);
         }
 
-        return new RemoteResponse<Object>(request, null);
+        return new RemoteResponse<>(request, null);
     }
 
 }

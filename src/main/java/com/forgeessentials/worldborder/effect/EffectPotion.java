@@ -47,9 +47,6 @@ public class EffectPotion extends WorldBorderEffect
     @Override
     public void activate(WorldBorder border, ServerPlayerEntity player)
     {
-        if (interval <= 0)
-        {
-        }
         player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
     }
 

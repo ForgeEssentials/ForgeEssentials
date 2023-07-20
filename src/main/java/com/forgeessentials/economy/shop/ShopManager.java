@@ -397,7 +397,7 @@ public class ShopManager extends ServerEventHandler
     {
         BUILDER.push(CONFIG_FILE);
         FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
-        List<String> aList = new ArrayList<String>(shopTags.size());
+        List<String> aList = new ArrayList<>(shopTags.size());
         for (String x : shopTags)
         {
             aList.add(x);

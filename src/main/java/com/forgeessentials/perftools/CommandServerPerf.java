@@ -13,6 +13,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandServerPerf extends ForgeEssentialsCommandBuilder
 {
@@ -25,7 +26,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "perfstats";
     }
@@ -78,9 +79,8 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
     {
         long i = 0L;
 
-        for (int j = 0; j < p_120035_1_.length; ++j)
-        {
-            i += p_120035_1_[j];
+        for (long l : p_120035_1_) {
+            i += l;
         }
 
         return (double) i / (double) p_120035_1_.length;

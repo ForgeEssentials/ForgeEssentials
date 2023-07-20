@@ -42,7 +42,7 @@ public class CommandEffect extends ZoneEffect
                     .getDispatcher();
             for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren())
             {
-                if (cmdName == commandNode.getUsageText().substring(1))
+                if (cmdName.equals(commandNode.getUsageText().substring(1)))
                 {
                     cmdExists = true;
                     break;
@@ -50,7 +50,7 @@ public class CommandEffect extends ZoneEffect
             }
             ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(),
                     String.join(" ", args));
-            if (cmdExists == false)
+            if (!cmdExists)
             {
                 LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: %s", command));
                 return;

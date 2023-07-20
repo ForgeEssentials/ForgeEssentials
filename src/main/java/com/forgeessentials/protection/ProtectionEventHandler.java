@@ -430,7 +430,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         Entity exploder = event.getExplosion().getExploder();
         if (exploder instanceof PlayerEntity)
             ident = UserIdent.get((PlayerEntity) exploder);
-        else if (exploder instanceof PlayerEntity)
+        else if (exploder instanceof LivingEntity)
             ident = APIRegistry.IDENT_NPC;
 
         List<BlockPos> positions = event.getExplosion().getToBlow();
