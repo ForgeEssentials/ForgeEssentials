@@ -46,8 +46,6 @@ sonarqube {
     }
 }
 
-//Clear repositories since spongepowered plugin is inserting an extra repo with http!
-repositories.clear() //still needed?
 // Set up FE required repositories
 repositories {
     flatDir {
@@ -401,7 +399,7 @@ task clientshadowJar(type: ShadowJar) {
 
 task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
 	archiveClassifier = "client"
-	arcguveAppendix = project.minecraftVersion
+	archiveAppendix = project.minecraftVersion
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
