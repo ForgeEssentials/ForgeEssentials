@@ -114,6 +114,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 //java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println('Running Tasks: ' +project.gradle.startParameter.taskNames)
 
 ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_version.$buildNumber-server.jar")
 
@@ -298,7 +299,9 @@ sourceSets {
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 	utils {
-		compileClasspath = files(sourceSets.main.compileClasspath)
+		if(!project.gradle.startParameter.taskNames.contains("build")) {
+			compileClasspath = files(sourceSets.main.compileClasspath)
+		}
 	}
 }
 import org.apache.tools.ant.filters.ReplaceTokens
