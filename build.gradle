@@ -275,21 +275,19 @@ dependencies {
 sourceSets {
     def deps = [
 		configurations.minecraft,
+        configurations.compile,
         configurations.compileClasspath,
         configurations.runtimeClasspath
 	]
 	utils {
-		compileClasspath = files(configurations.compile)
-		compileClasspath += files deps
+		compileClasspath = files(deps)
 	}
 	main {
-		compileClasspath = files(configurations.compile, sourceSets.utils.output)
-		compileClasspath += files deps
+		compileClasspath += files(sourceSets.utils.compileClasspath, sourceSets.utils.output)
         refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
-		compileClasspath = files(configurations.compile, sourceSets.utils.output)
-		compileClasspath += files deps
+		compileClasspath += files(sourceSets.main.compileClasspath)
         refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 
