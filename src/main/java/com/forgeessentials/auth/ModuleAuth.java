@@ -177,7 +177,7 @@ public class ModuleAuth extends ConfigLoaderBase
     /**
      * Check, if unauthenticated users are allowed to use this command
      * 
-     * @param command
+     * @param info
      * @return
      */
     public static boolean isGuestCommand(CommandInfo info)
