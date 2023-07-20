@@ -81,8 +81,7 @@ public class ModuleTickets implements ConfigSaver
     {
         Map<String, Ticket> loadedTickets = DataManager.getInstance().loadAll(Ticket.class);
         ticketList.clear();
-        for (Ticket ticket : loadedTickets.values())
-            ticketList.add(ticket);
+        ticketList.addAll(loadedTickets.values());
     }
 
     public static void saveAll()

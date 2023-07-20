@@ -122,10 +122,7 @@ public class DiscordHandler
         }
 
         admins.clear();
-        for (String admin : FEadmins.get())
-        {
-            admins.add(admin);
-        }
+        admins.addAll(FEadmins.get());
 
         String token = FEtoken.get();
 

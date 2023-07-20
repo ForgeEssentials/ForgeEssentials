@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +83,7 @@ public abstract class BookUtil
                 {
                     lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                     lines.add("");
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -115,14 +116,14 @@ public abstract class BookUtil
                 while (lines.size() != 0)
                 {
                     part++;
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
                     map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY
-                            + "\nPart " + part + " of " + parts + TextFormatting.BLACK + "\n\n", temp);
+                            + "\nPart " + part + " of " + parts + TextFormatting.BLACK + "\n\n", temp.toString());
                 }
             }
         }
@@ -156,7 +157,7 @@ public abstract class BookUtil
                 {
                     lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                     lines.add("");
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -188,14 +189,14 @@ public abstract class BookUtil
                 while (lines.size() != 0)
                 {
                     part++;
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
                     map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY
-                            + "\nPart " + part + " of " + parts + TextFormatting.BLACK + "\n\n", temp);
+                            + "\nPart " + part + " of " + parts + TextFormatting.BLACK + "\n\n", temp.toString());
                 }
             }
         }
@@ -227,7 +228,7 @@ public abstract class BookUtil
                 List<String> lines = new ArrayList<>();
                 try
                 {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -243,13 +244,13 @@ public abstract class BookUtil
                 }
                 while (lines.size() != 0)
                 {
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
-                    map.put("", temp);
+                    map.put("", temp.toString());
                 }
             }
         }
@@ -281,7 +282,7 @@ public abstract class BookUtil
                 List<String> lines = new ArrayList<>();
                 try
                 {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -297,13 +298,13 @@ public abstract class BookUtil
                 }
                 while (lines.size() != 0)
                 {
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
-                    map.put("", temp);
+                    map.put("", temp.toString());
                 }
             }
         }
@@ -343,7 +344,7 @@ public abstract class BookUtil
                         lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                         lines.add("");
                         try (BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(new FileInputStream(file))))
+                                new InputStreamReader(Files.newInputStream(file.toPath()))))
                         {
                             String line = reader.readLine();
                             while (line != null)
@@ -375,15 +376,15 @@ public abstract class BookUtil
                     while (lines.size() != 0)
                     {
                         part++;
-                        String temp = "";
+                        StringBuilder temp = new StringBuilder();
                         for (int i = 0; i < 10 && lines.size() > 0; i++)
                         {
-                            temp += lines.get(0) + "\n";
+                            temp.append(lines.get(0)).append("\n");
                             lines.remove(0);
                         }
                         map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename
                                 + TextFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + TextFormatting.BLACK
-                                + "\n\n", temp);
+                                + "\n\n", temp.toString());
                     }
                 }
             }
@@ -424,7 +425,7 @@ public abstract class BookUtil
                         lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                         lines.add("");
                         try (BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(new FileInputStream(file))))
+                                new InputStreamReader(Files.newInputStream(file.toPath()))))
                         {
                             String line = reader.readLine();
                             while (line != null)
@@ -456,15 +457,15 @@ public abstract class BookUtil
                     while (lines.size() != 0)
                     {
                         part++;
-                        String temp = "";
+                        StringBuilder temp = new StringBuilder();
                         for (int i = 0; i < 10 && lines.size() > 0; i++)
                         {
-                            temp += lines.get(0) + "\n";
+                            temp.append(lines.get(0)).append("\n");
                             lines.remove(0);
                         }
                         map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename
                                 + TextFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + TextFormatting.BLACK
-                                + "\n\n", temp);
+                                + "\n\n", temp.toString());
                     }
                 }
             }

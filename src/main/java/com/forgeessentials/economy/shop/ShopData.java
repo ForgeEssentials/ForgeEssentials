@@ -238,8 +238,7 @@ public class ShopData
         double y = p.getY() + 0.5;
         double z = p.getZ();
         double D = 1.4;
-        AxisAlignedBB aabb = new AxisAlignedBB(x - D, y - D, z - D, x + D, y + D, z + D);
-        return aabb;
+        return new AxisAlignedBB(x - D, y - D, z - D, x + D, y + D, z + D);
     }
 
     public int getStock()

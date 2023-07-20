@@ -3,6 +3,8 @@ package com.forgeessentials.remote;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -61,7 +63,7 @@ public class SSLContextHelper
     public void loadSSLCertificate(String filename, String storepass, String keypass)
             throws IOException, GeneralSecurityException
     {
-        loadSSLCertificate(new FileInputStream(filename), storepass, keypass);
+        loadSSLCertificate(Files.newInputStream(Paths.get(filename)), storepass, keypass);
     }
 
 }

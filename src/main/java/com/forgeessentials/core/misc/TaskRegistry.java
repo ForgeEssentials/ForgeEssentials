@@ -219,7 +219,7 @@ public class TaskRegistry extends ServerEventHandler
 
     public static long getMilliseconds(int h, int m, int s, int ms)
     {
-        return ((h * 60 + m) * 60 + s) * 1000 + ms;
+        return ((h * 60L + m) * 60 + s) * 1000 + ms;
     }
 
 }

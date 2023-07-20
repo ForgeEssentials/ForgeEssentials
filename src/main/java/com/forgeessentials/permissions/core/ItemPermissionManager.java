@@ -131,8 +131,7 @@ public class ItemPermissionManager extends ServerEventHandler
 
     public static ListNBT getSettingsTag(CompoundNBT tag)
     {
-        ListNBT settings = tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
-        return settings;
+        return tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
     }
 
     public static void check(PermissionCheckEvent event, ItemStack stack, boolean isEquipped)

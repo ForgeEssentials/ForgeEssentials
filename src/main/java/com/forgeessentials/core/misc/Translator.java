@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -69,7 +70,7 @@ public final class Translator
     public static void save()
     {
         File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);
-        try (OutputStreamWriter w = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)),
+        try (OutputStreamWriter w = new OutputStreamWriter(new BufferedOutputStream(Files.newOutputStream(file.toPath())),
                 Charsets.UTF_8))
         {
             for (String line : COMMENT.split("\n"))
@@ -96,7 +97,7 @@ public final class Translator
     public static void load()
     {
         File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), Charsets.UTF_8)))
         {
             String line;
             while ((line = r.readLine()) != null)

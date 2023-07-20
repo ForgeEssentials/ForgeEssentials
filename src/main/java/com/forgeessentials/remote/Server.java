@@ -85,29 +85,20 @@ public class Server implements Runnable
     @Override
     public void run()
     {
-        while (true)
-        {
-            try
-            {
+        do {
+            try {
                 cleanSessions();
                 Socket s = serverSocket.accept();
                 Session session = new Session(s);
-                synchronized (this)
-                {
+                synchronized (this) {
                     sessions.add(session);
                 }
-            }
-            catch (SocketException e)
-            {
+            } catch (SocketException e) {
                 /* socket probably closed */
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 /* some other error */
             }
-            if (serverSocket.isClosed() || !serverSocket.isBound())
-                break;
-        }
+        } while (!serverSocket.isClosed() && serverSocket.isBound());
     }
 
     public synchronized void cleanSessions()

@@ -44,7 +44,7 @@ public class EffectSmite extends WorldBorderEffect
         if (pi.checkTimeout(this.getClass().getName()))
         {
             doEffect(player);
-            pi.startTimeout(this.getClass().getName(), interval * 1000);
+            pi.startTimeout(this.getClass().getName(), interval * 1000L);
         }
     }
 

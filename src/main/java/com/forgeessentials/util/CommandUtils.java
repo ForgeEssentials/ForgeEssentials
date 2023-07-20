@@ -27,9 +27,8 @@ public class CommandUtils
 {
     public static ICommandSource GetSource(CommandSource source)
     {
-        ICommandSource isource = ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, source,
+        return ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, source,
                 "field_197041_c");
-        return isource;
     }
 
     public static UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline)
@@ -304,12 +303,11 @@ public class CommandUtils
      */
     public static Long mcParseTimeReadable(String mcTime) throws FECommandParsingException
     {
-        String timeStr = mcTime;
 
-        Matcher m = timeFormatPattern.matcher(timeStr);
+        Matcher m = timeFormatPattern.matcher(mcTime);
         if (!m.find())
         {
-            throw new FECommandParsingException("Invalid time format: %s", timeStr);
+            throw new FECommandParsingException("Invalid time format: %s", mcTime);
         }
 
         double resultPart = Double.parseDouble(m.group(1));
@@ -335,7 +333,7 @@ public class CommandUtils
                 resultPart *= mcHour;
                 break;
             default:
-                throw new FECommandParsingException("Invalid time format: %s", timeStr);
+                throw new FECommandParsingException("Invalid time format: %s", mcTime);
             }
         }
         return Math.round(resultPart);
@@ -343,11 +341,10 @@ public class CommandUtils
 
     public static long parseTimeReadable(String time) throws FECommandParsingException
     {
-        String value = time;
-        Matcher m = timeFormatPattern.matcher(value);
+        Matcher m = timeFormatPattern.matcher(time);
         if (!m.find())
         {
-            throw new FECommandParsingException("Invalid time format: %s", value);
+            throw new FECommandParsingException("Invalid time format: %s", time);
         }
 
         long result = 0;
@@ -391,7 +388,7 @@ public class CommandUtils
                     resultPart *= (long) 1000 * 60 * 60 * 24 * 30;
                     break;
                 default:
-                    throw new FECommandParsingException("Invalid time format: %s", value);
+                    throw new FECommandParsingException("Invalid time format: %s", time);
                 }
             }
 
@@ -404,17 +401,15 @@ public class CommandUtils
 
     public static UserIdent getIdent(ServerPlayerEntity senderPlayer)
     {
-        UserIdent ident = (senderPlayer == null) ? null : UserIdent.get(senderPlayer);
-        return ident;
+        return (senderPlayer == null) ? null : UserIdent.get(senderPlayer);
     }
 
     public static UserIdent getIdent(CommandSource sender)
     {
         ServerPlayerEntity senderPlayer = getServerPlayer(sender);
-        UserIdent ident = (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender
+        return (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender
                 ? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent()
                 : null) : UserIdent.get(senderPlayer);
-        return ident;
     }
 
     public WorldPoint getSenderPoint(CommandSource sender)

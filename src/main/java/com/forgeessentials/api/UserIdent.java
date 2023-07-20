@@ -765,8 +765,7 @@ public class UserIdent
 
     public static GameProfile getGameProfileByUuid(UUID uuid)
     {
-        GameProfile profile = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
-        return profile;
+        return ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
     }
 
     public static String join(Iterable<UserIdent> users, String glue)

@@ -60,10 +60,7 @@ public class DBConnector
 
     /**
      * Forcibly writes everything to the config. the config's save() method is not called.
-     *
-     * @param config
-     * @param category
-     *            the category where everything regarding this connector will be.
+     * @param cat the category where everything regarding this connector will be.
      */
     public void write(String cat)
     {

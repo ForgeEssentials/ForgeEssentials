@@ -121,11 +121,7 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_SETTINGS = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>();
-        for (String arg : aliases.keySet())
-        {
-            listArgs.add(arg);
-        }
+        List<String> listArgs = new ArrayList<>(aliases.keySet());
         return ISuggestionProvider.suggest(listArgs, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_VALUE = (ctx, builder) -> {

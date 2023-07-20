@@ -66,8 +66,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
         List<String> ircUsers = new ArrayList<>();
         if (IrcHandler.getInstance().getIrcUserNames() != null)
         {
-            for (String users : IrcHandler.getInstance().getIrcUserNames())
-                ircUsers.add(users);
+            ircUsers.addAll(IrcHandler.getInstance().getIrcUserNames());
         }
         return ISuggestionProvider.suggest(ircUsers, builder);
     };

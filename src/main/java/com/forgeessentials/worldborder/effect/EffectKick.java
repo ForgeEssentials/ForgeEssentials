@@ -39,7 +39,7 @@ public class EffectKick extends WorldBorderEffect
         ChatOutputHandler.chatError(player.createCommandSourceStack(), Translator
                 .format("You have %d seconds to return inside the world border, or you will get kicked!", timeout));
         PlayerInfo pi = PlayerInfo.get(player);
-        pi.startTimeout(this.getClass().getName(), timeout * 1000);
+        pi.startTimeout(this.getClass().getName(), timeout * 1000L);
     }
 
     @Override

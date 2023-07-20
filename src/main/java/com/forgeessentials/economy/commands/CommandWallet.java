@@ -113,7 +113,7 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        Long amount = LongArgumentType.getLong(ctx, "amount");
+        long amount = LongArgumentType.getLong(ctx, "amount");
 
         switch (params)
         {

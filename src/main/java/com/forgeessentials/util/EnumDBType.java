@@ -48,8 +48,7 @@ public enum EnumDBType
      */
     public String getConnectionString(Object... data) throws IllegalFormatException
     {
-        String formatted = String.format(connect, data);
-        return formatted;
+        return String.format(connect, data);
     }
 
     public boolean isRemote;

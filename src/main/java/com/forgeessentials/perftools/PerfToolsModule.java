@@ -47,7 +47,7 @@ public class PerfToolsModule extends ConfigLoaderBase
             watchdog = new MemoryWatchdog();
             APIRegistry.perms.registerNode(PERM_WARN, DefaultPermissionLevel.OP,
                     "Warn server ops when high server resource usage is detected");
-            TaskRegistry.scheduleRepeated(watchdog, checkInterval * 60 * 1000);
+            TaskRegistry.scheduleRepeated(watchdog, (long) checkInterval * 60 * 1000);
         }
     }
 

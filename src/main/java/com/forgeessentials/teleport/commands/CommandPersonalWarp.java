@@ -106,8 +106,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
     public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> {
         PersonalWarp warps = getWarps(getServerPlayer(ctx.getSource()));
 
-        Set<String> completeList = new HashSet<>();
-        completeList.addAll(warps.keySet());
+        Set<String> completeList = new HashSet<>(warps.keySet());
         return ISuggestionProvider.suggest(completeList, builder);
     };
 

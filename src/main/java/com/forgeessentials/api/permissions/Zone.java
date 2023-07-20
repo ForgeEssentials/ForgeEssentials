@@ -1,16 +1,7 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -437,8 +428,7 @@ public abstract class Zone
         Set<String> result = new HashSet<>();
         String groupsStr = getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
         if (groupsStr != null && !groupsStr.isEmpty())
-            for (String group : groupsStr.replace(" ", "").split(","))
-                result.add(group);
+            result.addAll(Arrays.asList(groupsStr.replace(" ", "").split(",")));
         return result;
     }
 

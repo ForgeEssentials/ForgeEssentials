@@ -162,10 +162,10 @@ public class ScriptUpgrader
         out.append("\n}");
         out.append("\n\t");
         out.append("\nFEServer.registerCommand({");
-        out.append("\n\tname: '" + cmd.name + "',");
-        out.append("\n\tusage: '" + cmd.usage + "',");
-        out.append("\n\tpermission: " + cmd.permission + ",");
-        out.append("\n\topOnly: " + (cmd.permissionLevel == DefaultPermissionLevel.OP ? "true" : "false") + ",");
+        out.append("\n\tname: '").append(cmd.name).append("',");
+        out.append("\n\tusage: '").append(cmd.usage).append("',");
+        out.append("\n\tpermission: ").append(cmd.permission).append(",");
+        out.append("\n\topOnly: ").append(cmd.permissionLevel == DefaultPermissionLevel.OP ? "true" : "false").append(",");
         out.append("\n\tprocessCommand: cmd,");
         // out.append("\n\ttabComplete: processCommand,");
         out.append("\n});");

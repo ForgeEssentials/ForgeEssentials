@@ -209,9 +209,8 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
 
         if (player instanceof LivingEntity)
         {
-            LivingEntity livingentity = (LivingEntity) player;
 
-            for (EffectInstance effectinstance : livingentity.getActiveEffects())
+            for (EffectInstance effectinstance : ((LivingEntity) player).getActiveEffects())
             {
                 p_219452_1_.accept(new SPlayEntityEffectPacket(player.getId(), effectinstance));
             }

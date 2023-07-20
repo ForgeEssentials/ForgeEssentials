@@ -9,15 +9,8 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
 
@@ -64,7 +57,7 @@ public class DataManager
 
     private static boolean formatsChanged;
 
-    private static Set<String> defaultSerializationGroups = new HashSet<>(Arrays.asList(DEFAULT_GROUP));
+    private static Set<String> defaultSerializationGroups = new HashSet<>(Collections.singletonList(DEFAULT_GROUP));
 
     private static Set<String> serializationGroups = defaultSerializationGroups;
 

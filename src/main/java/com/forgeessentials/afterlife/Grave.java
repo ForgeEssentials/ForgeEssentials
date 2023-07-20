@@ -1,7 +1,5 @@
 package com.forgeessentials.afterlife;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

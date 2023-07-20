@@ -43,11 +43,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_CHANNELS = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>();
-        for (String arg : ModuleChat.instance.discordHandler.channels)
-        {
-            listArgs.add(arg);
-        }
+        List<String> listArgs = new ArrayList<>(ModuleChat.instance.discordHandler.channels);
         return ISuggestionProvider.suggest(listArgs, builder);
     };
 

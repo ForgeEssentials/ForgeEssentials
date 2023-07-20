@@ -398,10 +398,7 @@ public class ShopManager extends ServerEventHandler
         BUILDER.push(CONFIG_FILE);
         FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
         List<String> aList = new ArrayList<>(shopTags.size());
-        for (String x : shopTags)
-        {
-            aList.add(x);
-        }
+        aList.addAll(shopTags);
         FEshopTags = BUILDER.defineList("shopTags", aList, ConfigBase.stringValidator);
         BUILDER.pop();
     }
@@ -411,7 +408,6 @@ public class ShopManager extends ServerEventHandler
 
         useStock = FEuseStock.get();
         shopTags.clear();
-        for (String tag : FEshopTags.get())
-            shopTags.add(tag);
+        shopTags.addAll(FEshopTags.get());
     }
 }

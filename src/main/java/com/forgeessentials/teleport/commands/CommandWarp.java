@@ -122,8 +122,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
         }
 
         Map<String, Warp> warps = getWarps();
-        Set<String> completeList = new HashSet<>();
-        completeList.addAll(warps.keySet());
+        Set<String> completeList = new HashSet<>(warps.keySet());
 
         if (params.equals("list"))
         {

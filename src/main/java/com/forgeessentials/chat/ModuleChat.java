@@ -314,13 +314,12 @@ public class ModuleChat implements ConfigSaver
         TextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND,
                 playerCmd);
         TextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        TextComponent header = new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
+        return new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
                 playerSuffix != null ? playerSuffix : "", //
                 groupSuffix != null ? groupSuffix : "");
-        return header;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

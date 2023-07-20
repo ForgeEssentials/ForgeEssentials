@@ -134,11 +134,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         return ISuggestionProvider.suggest(availableZones, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_AREATYPES = (ctx, builder) -> {
-        List<String> availableTypes = new ArrayList<>();
-        for (String name : AreaShape.valueNames())
-        {
-            availableTypes.add(name);
-        }
+        List<String> availableTypes = new ArrayList<>(Arrays.asList(AreaShape.valueNames()));
         return ISuggestionProvider.suggest(availableTypes, builder);
     };
 

@@ -1259,9 +1259,8 @@ public class PermissionCommandParser extends CommandUtils
                 return null;
             }
 
-            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx).getLevel())
+            return APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx).getLevel())
                     .getAreaZone(zoneId);
-            return zone;
         }
     }
 

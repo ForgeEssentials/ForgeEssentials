@@ -1,11 +1,6 @@
 package com.forgeessentials.economy.plots;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 
@@ -312,7 +307,7 @@ public class Plot
         zones.add(s.getWorldZone(world));
         zones.add(s);
         zones.add(s.getRootZone());
-        String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN, null);
+        String permValue = s.getPermissionProperty(zones, null, Collections.singletonList(GROUP_ALL), PERM_COLUMN, null);
         return APIRegistry.perms.checkBooleanPermission(permValue);
     }
 
@@ -324,8 +319,8 @@ public class Plot
     public static long getAccountedSize(WorldArea area)
     {
         boolean columnMode = isColumnMode(area.getDimension());
-        return columnMode ? area.getXLength() * area.getZLength()
-                : area.getXLength() * area.getYLength() * area.getZLength();
+        return columnMode ? (long) area.getXLength() * area.getZLength()
+                : (long) area.getXLength() * area.getYLength() * area.getZLength();
     }
 
     public static long getCalculatedPrice(WorldArea area)

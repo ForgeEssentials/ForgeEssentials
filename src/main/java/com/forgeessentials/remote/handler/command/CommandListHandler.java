@@ -30,16 +30,12 @@ public class CommandListHandler extends GenericRemoteHandler<String>
     @Override
     protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
     {
-        List<String> commands = new ArrayList<>();
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher()
                 .getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
 
-        for (String command : map.values())
-        {
-            commands.add(command);
-        }
+        List<String> commands = new ArrayList<>(map.values());
 
         return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, commands);
     }

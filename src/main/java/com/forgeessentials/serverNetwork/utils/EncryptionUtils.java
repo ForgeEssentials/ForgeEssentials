@@ -29,10 +29,9 @@ public class EncryptionUtils {
         byte[] encryptedBytes = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
 
         // Encode the encrypted bytes as Base64
-        String encryptedBase64 = Base64.getEncoder().encodeToString(encryptedBytes);
 
         // Return the encrypted string
-        return encryptedBase64;
+        return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
     public static String decryptString(String encryptedInput, String privateKey) throws Exception {
@@ -86,8 +85,7 @@ public class EncryptionUtils {
             gen.init(128); /* 128-bit AES */
             SecretKey secret = gen.generateKey();
             byte[] binary = secret.getEncoded();
-            String text = String.format("%032X", new BigInteger(+1, binary));
-            return text;
+            return String.format("%032X", new BigInteger(+1, binary));
         }
         catch (NoSuchAlgorithmException e)
         {

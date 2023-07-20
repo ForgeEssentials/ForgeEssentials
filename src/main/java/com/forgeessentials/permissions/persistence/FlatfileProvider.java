@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map.Entry;
@@ -122,7 +123,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
         p.setProperty("id", Integer.toString(serverZone.getId()));
         p.setProperty("maxZoneId", Integer.toString(serverZone.getMaxZoneID()));
 
-        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(path, "server.xml"))))
+        try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(new File(path, "server.xml").toPath())))
         {
             p.storeToXML(os, "Data of server");
         }
@@ -141,7 +142,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
         p.setProperty("id", Integer.toString(worldZone.getId()));
         p.setProperty("dimId", worldZone.getDimensionID());
 
-        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(path, "world.xml"))))
+        try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(new File(path, "world.xml").toPath())))
         {
             p.storeToXML(os, "Data of world " + worldZone.getName());
         }
@@ -167,7 +168,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
         p.setProperty("z2", Integer.toString(areaZone.getArea().getHighPoint().getZ()));
         p.setProperty("shape", areaZone.getShape().toString());
 
-        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(path, "area.xml"))))
+        try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(new File(path, "area.xml").toPath())))
         {
             p.storeToXML(os, "Data of area " + areaZone.getName());
         }
@@ -187,14 +188,14 @@ public class FlatfileProvider extends ZonePersistenceProvider
             String username = entry.getKey().getUsername() == null ? entry.getKey().getUuid().toString()
                     : entry.getKey().getUsername();
             UUID uuid = entry.getKey().getUuid();
-            String filename = username == null ? uuid.toString() : username;
+            StringBuilder filename = new StringBuilder(username == null ? uuid.toString() : username);
             String comment = "Permissions for user " + (username != null ? username : "<unknown-username>")
                     + " with UUID " + (uuid != null ? uuid.toString() : "<unknown-uuid>") + COMMENT_INFO;
-            filename = filename.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            filename = new StringBuilder(filename.toString().replaceAll("[^a-zA-Z0-9\\.\\-]", "_"));
 
             // prevent overwriting files with same playername
             while (new File(playersPath, filename + PERMISSION_FILE_EXT).exists())
-                filename = filename + "_";
+                filename.append("_");
 
             // Save permissions
             Properties p = permissionListToProperties(entry.getValue());
@@ -226,7 +227,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
     public static void saveProperties(Properties properties, File path, String filename, String comment)
     {
         path.mkdirs();
-        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(path, filename))))
+        try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(new File(path, filename).toPath())))
         {
             properties.store(os, comment);
         }
@@ -268,7 +269,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 if (!worldFile.exists())
                     continue;
                 Properties worldProperties = new Properties();
-                try (InputStream is = new BufferedInputStream(new FileInputStream(worldFile)))
+                try (InputStream is = new BufferedInputStream(Files.newInputStream(worldFile.toPath())))
                 {
                     worldProperties.loadFromXML(is);
                 }
@@ -294,7 +295,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                     if (!areaFile.exists())
                         continue;
                     Properties areaProperties = new Properties();
-                    try (InputStream is = new BufferedInputStream(new FileInputStream(areaFile)))
+                    try (InputStream is = new BufferedInputStream(Files.newInputStream(areaFile.toPath())))
                     {
                         areaProperties.loadFromXML(is);
                     }
@@ -335,7 +336,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 try
                 {
                     Properties serverProperties = new Properties();
-                    serverProperties.loadFromXML(new BufferedInputStream(new FileInputStream(serverFile)));
+                    serverProperties.loadFromXML(new BufferedInputStream(Files.newInputStream(serverFile.toPath())));
                     serverZone.setMaxZoneId(Integer.parseInt(serverProperties.getProperty("maxZoneId")));
                 }
                 catch (IllegalArgumentException | IOException e)
@@ -369,7 +370,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
             for (File file : playersPath.listFiles(permissionFilter))
             {
                 Properties p = new Properties();
-                try (InputStream is = new BufferedInputStream(new FileInputStream(file)))
+                try (InputStream is = new BufferedInputStream(Files.newInputStream(file.toPath())))
                 {
                     p.load(is);
                 }
@@ -406,7 +407,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
             for (File file : groupsPath.listFiles(permissionFilter))
             {
                 Properties p = new Properties();
-                try (InputStream is = new BufferedInputStream(new FileInputStream(file)))
+                try (InputStream is = new BufferedInputStream(Files.newInputStream(file.toPath())))
                 {
                     p.load(is);
                 }

@@ -62,9 +62,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
-        List<String> groups = new ArrayList<>();
-        for (String group : APIRegistry.perms.getServerZone().getGroups())
-            groups.add(group);
+        List<String> groups = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
         return ISuggestionProvider.suggest(groups, builder);
     };
 

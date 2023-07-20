@@ -63,7 +63,7 @@ public class CommandPay extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
-        Long amount = LongArgumentType.getLong(ctx, "amount");
+        long amount = LongArgumentType.getLong(ctx, "amount");
 
         Wallet sender = APIRegistry.economy.getWallet(getIdent(getServerPlayer(ctx.getSource())));
         if (!sender.withdraw(amount))

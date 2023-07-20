@@ -117,11 +117,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_FACTIONS = (ctx, builder) -> {
-        List<String> factions = new ArrayList<>();
-        for (String f : ModuleFactions.getFactions())
-        {
-            factions.add(f);
-        }
+        List<String> factions = new ArrayList<>(ModuleFactions.getFactions());
         return ISuggestionProvider.suggest(factions, builder);
     };
 

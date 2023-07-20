@@ -1,7 +1,7 @@
 package com.forgeessentials.chat.irc.command;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map.Entry;
 
 import com.forgeessentials.chat.irc.IrcCommand;
@@ -17,7 +17,7 @@ public class CommandHelp implements IrcCommand
     @Override
     public Collection<String> getCommandNames()
     {
-        return Arrays.asList("help");
+        return Collections.singletonList("help");
     }
 
     @Override

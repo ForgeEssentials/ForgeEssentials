@@ -70,13 +70,13 @@ public class APIRegistry
     /**
      * The FE internal event-bus
      */
-    @Deprecated
+
     public static final IEventBus FE_EVENTBUS = MinecraftForge.EVENT_BUS;
 
     /**
      * Gets the Mod event bus
      * 
-     * @deprecated The events fail to pick up a post if running on the mod event bus bus is being redirected to the FORGE EVENT_BUS.
+     * The events fail to pick up a post if running on the mod event bus is being redirected to the FORGE EVENT_BUS.
      */
     public static IEventBus getFEEventBus()
     {

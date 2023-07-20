@@ -3,12 +3,12 @@ package com.forgeessentials.jscripting;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -158,7 +158,7 @@ public class ScriptInstance
         illegalFunctions.clear();
         script = null;
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
+                new InputStreamReader(Files.newInputStream(file.toPath()), Charsets.UTF_8)))
         {
             // Load and compile script
             script = ModuleJScripting.getCompilable().compile(reader);

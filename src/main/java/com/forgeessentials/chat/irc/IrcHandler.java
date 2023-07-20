@@ -317,12 +317,10 @@ public class IrcHandler extends ListenerAdapter
         ModuleChat.instance.ircHandler.allowMcCommands = FEallowMcCommands.get();
 
         ModuleChat.instance.ircHandler.channels.clear();
-        for (String channel : FEchannels.get())
-            ModuleChat.instance.ircHandler.channels.add(channel);
+        ModuleChat.instance.ircHandler.channels.addAll(FEchannels.get());
 
         ModuleChat.instance.ircHandler.admins.clear();
-        for (String admin : FEadmins.get())
-            ModuleChat.instance.ircHandler.admins.add(admin);
+        ModuleChat.instance.ircHandler.admins.addAll(FEadmins.get());
 
         // mcHeader = config.get(CATEGORY, "mcFormat", "<%username> %message",
         // "String for formatting messages posted to the IRC channel by the

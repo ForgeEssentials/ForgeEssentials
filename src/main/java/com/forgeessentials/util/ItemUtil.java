@@ -21,9 +21,8 @@ public final class ItemUtil
 {
     public static ITextComponent[] getText(SignTileEntity sign)
     {
-        ITextComponent[] signT = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign,
+        return ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign,
                 "field_145915_a");
-        return signT;
     }
 
     public static void setText(SignTileEntity sign, ITextComponent[] text)
@@ -64,8 +63,7 @@ public final class ItemUtil
         if (te instanceof SignTileEntity)
         {
             SignTileEntity sign = (SignTileEntity) te;
-            ITextComponent[] imessage = ItemUtil.getText(sign);
-            return imessage;
+            return ItemUtil.getText(sign);
         }
         return null;
     }

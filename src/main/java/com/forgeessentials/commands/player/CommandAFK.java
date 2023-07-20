@@ -107,11 +107,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_group = (ctx, builder) -> {
-        List<String> listgroup = new ArrayList<>();
-        for (String z : APIRegistry.perms.getServerZone().getGroups())
-        {
-            listgroup.add(z);
-        }
+        List<String> listgroup = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
         return ISuggestionProvider.suggest(listgroup, builder);
     };
 
@@ -169,7 +165,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
         {
             int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
-            PlayerInfo.get(getServerPlayer(ctx.getSource())).setActive(autoTime * 1000 - warmup * 1000);
+            PlayerInfo.get(getServerPlayer(ctx.getSource())).setActive(autoTime * 1000L - warmup * 1000L);
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     Translator.format("Stand still for %d seconds.", warmup));
         }

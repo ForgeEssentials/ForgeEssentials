@@ -59,7 +59,7 @@ public class EffectPotion extends WorldBorderEffect
         if (pi.checkTimeout(this.getClass().getName()))
         {
             player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
-            pi.startTimeout(this.getClass().getName(), interval * 1000);
+            pi.startTimeout(this.getClass().getName(), interval * 1000L);
         }
     }
 

@@ -84,18 +84,12 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
-        List<String> completeList = new ArrayList<>();
-        for (String group : APIRegistry.perms.getServerZone().getGroups())
-            completeList.add(group);
+        List<String> completeList = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
         return ISuggestionProvider.suggest(completeList, builder);
     };
 
     public static final SuggestionProvider<CommandSource> SUGGEST_PERMS = (ctx, builder) -> {
-        List<String> listperm = new ArrayList<>();
-        for (String z : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
-        {
-            listperm.add(z);
-        }
+        List<String> listperm = new ArrayList<>(APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
         for (int index = 0; index < listperm.size(); index++)
         {
             if (listperm.get(index).contains("*"))

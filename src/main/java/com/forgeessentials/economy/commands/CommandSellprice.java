@@ -258,9 +258,9 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                     priceMap.put(ItemUtil.getItemName(recipe.getResultItem()), price);
                                     changedPrice = true;
 
-                                    String msg = String.format("%s = %.0f -> %s",
+                                    StringBuilder msg = new StringBuilder(String.format("%s = %.0f -> %s",
                                             ItemUtil.getItemName(recipe.getResultItem().getItem()),
-                                            resultPrice == null ? 0 : resultPrice, (int) price);
+                                            resultPrice == null ? 0 : resultPrice, (int) price));
                                     for (Ingredient ingredient : getRecipeItems(recipe))
                                         if (ingredient != null)
                                         {
@@ -272,9 +272,9 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                             }
 
                                             if (stack != ItemStack.EMPTY)
-                                                msg += String.format("\n  %.0f - %s",
+                                                msg.append(String.format("\n  %.0f - %s",
                                                         priceMap.get(ItemUtil.getItemName(stack)),
-                                                        ItemUtil.getItemName(stack.getItem()));
+                                                        ItemUtil.getItemName(stack.getItem())));
                                         }
                                     writer.write(msg + "\n");
                                 }
@@ -373,10 +373,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             Map<String, Integer> items = new HashMap<>();
             if (!ModuleEconomy.itemTables.isEmpty())
             {
-                for (Map.Entry<String, Integer> entry : ModuleEconomy.itemTables.entrySet())
-                {
-                    items.put(entry.getKey(), entry.getValue());
-                }
+                items.putAll(ModuleEconomy.itemTables);
             }
             // add new prices
             if (!priceMap.isEmpty())
@@ -393,9 +390,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             {
                 toWrite.add(entry.getKey() + "=" + Integer.toString(entry.getValue()));
             }
-            List<String> aList = new ArrayList<>();
-            for (String x : toWrite)
-                aList.add(x);
+            List<String> aList = new ArrayList<>(toWrite);
             ModuleEconomy.FEitemTables.set(aList);
             ChatOutputHandler.chatConfirmation(source, "Calculated and saved new price table");
         }
@@ -508,9 +503,9 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         {
             for (Map.Entry<String, Double> entry : priceMap.entrySet())
             {
-                String id = "I:\"" + entry.getKey() + "\"";
+                StringBuilder id = new StringBuilder("I:\"" + entry.getKey() + "\"");
                 while (id.length() < 50)
-                    id = id + ' ';
+                    id.append(' ');
                 writer.write(id + "=" + dTs(entry.getValue()) + "\n");
             }
         }

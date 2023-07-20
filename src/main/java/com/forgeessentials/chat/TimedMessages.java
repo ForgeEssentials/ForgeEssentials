@@ -98,7 +98,7 @@ public class TimedMessages implements Runnable
             TaskRegistry.remove(this);
         TimedMessages.interval = interval;
         if (interval > 0)
-            TaskRegistry.scheduleRepeated(this, interval * 1000);
+            TaskRegistry.scheduleRepeated(this, interval * 1000L);
     }
 
     public TextComponent formatMessage(String message)

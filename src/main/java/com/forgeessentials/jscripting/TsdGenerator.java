@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -93,7 +94,7 @@ public class TsdGenerator extends Doclet
 
         try
         {
-            try (PrintStream w = new PrintStream(new FileOutputStream(outFile)))
+            try (PrintStream w = new PrintStream(Files.newOutputStream(outFile.toPath())))
             {
                 writer = w;
                 indention = 0;
@@ -571,8 +572,7 @@ public class TsdGenerator extends Doclet
                 generator.headerFile = new File(argGroup[1]);
                 if (!generator.headerFile.exists())
                 {
-                    System.err.println(
-                            String.format("Could not find header file %s", generator.headerFile.getAbsolutePath()));
+                    System.err.printf("Could not find header file %s%n", generator.headerFile.getAbsolutePath());
                     System.exit(1);
                 }
                 System.out.println("Set header file to " + argGroup[1]);

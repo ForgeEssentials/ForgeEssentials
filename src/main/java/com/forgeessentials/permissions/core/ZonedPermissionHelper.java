@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -332,9 +331,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                             sb.append(' ');
                         sb.append("# ");
                         if (opValue != null)
-                            sb.append("(OP only: " + opValue + ") ");
+                            sb.append("(OP only: ").append(opValue).append(") ");
                         else
-                            sb.append("(default: " + value + ") ");
+                            sb.append("(default: ").append(value).append(") ");
                         if (description != null)
                             sb.append(description);
                         sb.append(NEW_LINE);
@@ -397,8 +396,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             if (zone.getPlayerPermissions(ident) != null)
             {
-                Map<String, String> zonePerms = new TreeMap<>();
-                zonePerms.putAll(zone.getPlayerPermissions(ident));
+                Map<String, String> zonePerms = new TreeMap<>(zone.getPlayerPermissions(ident));
                 result.put(zone, zonePerms);
             }
         }
@@ -414,8 +412,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 continue;
             if (zone.getGroupPermissions(group) != null)
             {
-                Map<String, String> zonePerms = new TreeMap<>();
-                zonePerms.putAll(zone.getGroupPermissions(group));
+                Map<String, String> zonePerms = new TreeMap<>(zone.getGroupPermissions(group));
                 result.put(zone, zonePerms);
             }
         }
@@ -1063,14 +1060,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public String getGroupPermissionProperty(String group, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getGlobalZones(), null, Arrays.asList(group), permissionNode,
+        return getServerZone().getPermissionProperty(getGlobalZones(), null, Collections.singletonList(group), permissionNode,
                 null);
     }
 
     @Override
     public String getGroupPermissionProperty(String group, Zone zone, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getGlobalZones(zone), null, Arrays.asList(group), permissionNode,
+        return getServerZone().getPermissionProperty(getGlobalZones(zone), null, Collections.singletonList(group), permissionNode,
                 null);
     }
 
@@ -1078,20 +1075,20 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public boolean checkGroupPermission(String group, String permissionNode)
     {
         return checkBooleanPermission(
-                getServerZone().getPermission(getGlobalZones(), null, Arrays.asList(group), permissionNode, null));
+                getServerZone().getPermission(getGlobalZones(), null, Collections.singletonList(group), permissionNode, null));
     }
 
     @Override
     public boolean checkGroupPermission(String group, Zone zone, String permissionNode)
     {
         return checkBooleanPermission(
-                getServerZone().getPermission(getGlobalZones(zone), null, Arrays.asList(group), permissionNode, null));
+                getServerZone().getPermission(getGlobalZones(zone), null, Collections.singletonList(group), permissionNode, null));
     }
 
     @Override
     public String getGroupPermissionProperty(String group, WorldPoint point, String permissionNode)
     {
-        return getServerZone().getPermissionProperty(getServerZone().getZonesAt(point), null, Arrays.asList(group),
+        return getServerZone().getPermissionProperty(getServerZone().getZonesAt(point), null, Collections.singletonList(group),
                 permissionNode, point);
     }
 
@@ -1099,7 +1096,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public boolean checkGroupPermission(String group, WorldPoint point, String permissionNode)
     {
         return checkBooleanPermission(getServerZone().getPermission(getServerZone().getZonesAt(point), null,
-                Arrays.asList(group), permissionNode, point));
+                Collections.singletonList(group), permissionNode, point));
     }
 
     // ------------------------------------------------------------

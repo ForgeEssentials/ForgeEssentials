@@ -579,27 +579,15 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_ListArgs = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>();
-        for (String arg : PermissionCommandParser.parseListArgs)
-        {
-            listArgs.add(arg);
-        }
+        List<String> listArgs = new ArrayList<>(Arrays.asList(PermissionCommandParser.parseListArgs));
         return ISuggestionProvider.suggest(listArgs, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_players = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>();
-        for (String arg : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerNamesArray())
-        {
-            listArgs.add(arg);
-        }
+        List<String> listArgs = new ArrayList<>(Arrays.asList(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerNamesArray()));
         return ISuggestionProvider.suggest(listArgs, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_parseUserGroupArgs = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>();
-        for (String arg : PermissionCommandParser.parseUserGroupArgs)
-        {
-            listArgs.add(arg);
-        }
+        List<String> listArgs = new ArrayList<>(Arrays.asList(PermissionCommandParser.parseUserGroupArgs));
         return ISuggestionProvider.suggest(listArgs, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_zones = (ctx, builder) -> {
@@ -622,19 +610,11 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         return ISuggestionProvider.suggest(listzones, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_group = (ctx, builder) -> {
-        List<String> listgroup = new ArrayList<>();
-        for (String z : APIRegistry.perms.getServerZone().getGroups())
-        {
-            listgroup.add(z);
-        }
+        List<String> listgroup = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
         return ISuggestionProvider.suggest(listgroup, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_perm = (ctx, builder) -> {
-        List<String> listperm = new ArrayList<>();
-        for (String z : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
-        {
-            listperm.add(z);
-        }
+        List<String> listperm = new ArrayList<>(APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
         for (int index = 0; index < listperm.size(); index++)
         {
             if (listperm.get(index).contains("*"))
@@ -645,7 +625,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         return ISuggestionProvider.suggest(listperm, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_GroupPerm = (ctx, builder) -> {
-        List<String> listclear = new ArrayList<>();
         Zone zone;
         try
         {
@@ -655,10 +634,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         {
             zone = APIRegistry.perms.getServerZone();
         }
-        for (String z : zone.getGroupPermissions(StringArgumentType.getString(ctx, "group")).keySet())
-        {
-            listclear.add(z);
-        }
+        List<String> listclear = new ArrayList<>(zone.getGroupPermissions(StringArgumentType.getString(ctx, "group")).keySet());
         for (int index = 0; index < listclear.size(); index++)
         {
             if (listclear.get(index).contains("*"))
@@ -669,7 +645,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         return ISuggestionProvider.suggest(listclear, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_GlobalPerm = (ctx, builder) -> {
-        List<String> listclear = new ArrayList<>();
         Zone zone;
         try
         {
@@ -679,10 +654,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         {
             zone = APIRegistry.perms.getServerZone();
         }
-        for (String z : zone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet())
-        {
-            listclear.add(z);
-        }
+        List<String> listclear = new ArrayList<>(zone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet());
         for (int index = 0; index < listclear.size(); index++)
         {
             if (listclear.get(index).contains("*"))
@@ -706,10 +678,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         try
         {
             UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"), null, false, false);
-            for (String z : zone.getPlayerPermissions(ident).keySet())
-            {
-                listclear.add(z);
-            }
+            listclear.addAll(zone.getPlayerPermissions(ident).keySet());
         }
         catch (FECommandParsingException ignored){}
         for (int index = 0; index < listclear.size(); index++)

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.SortedSet;
@@ -57,7 +58,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
         if (!rulesFile.exists())
         {
             LoggingHandler.felog.info("No rules file found. Generating with default rules..");
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rulesFile))))
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(rulesFile.toPath()))))
             {
                 writer.write("# " + rulesFile.getName() + " | numbers are automatically added");
                 writer.newLine();
@@ -79,7 +80,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(rulesFile))))
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(rulesFile.toPath()))))
             {
                 String line;
                 while ((line = reader.readLine()) != null)

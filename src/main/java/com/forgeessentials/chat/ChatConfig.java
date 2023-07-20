@@ -107,8 +107,7 @@ public class ChatConfig
         gamemodeAdventure = FEgamemodeAdventure.get();
 
         mutedCommands.clear();
-        for (String cmd : FEmutedCommands.get())
-            mutedCommands.add(cmd);
+        mutedCommands.addAll(FEmutedCommands.get());
 
         ModuleChat.instance.setChatLogging(FELogChat.get());
 

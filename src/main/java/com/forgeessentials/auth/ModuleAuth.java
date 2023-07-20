@@ -257,7 +257,7 @@ public class ModuleAuth extends ConfigLoaderBase
         int authCheckerInterval = FEauthCheckerInterval.get();
 
         if (checkVanillaAuthStatus && !forceEnabled)
-            TaskRegistry.scheduleRepeated(mojangServiceChecker, authCheckerInterval * 60 * 1000);
+            TaskRegistry.scheduleRepeated(mojangServiceChecker, (long) authCheckerInterval * 60 * 1000);
         else
             TaskRegistry.remove(mojangServiceChecker);
     }
