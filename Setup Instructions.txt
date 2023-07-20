@@ -1,16 +1,22 @@
-Run ./gradlew eclipse to build the classpath and generate eclipse files.
+If using IntelliJ:
+Run "./gradlew genintellijruns" then use the "Reload all gradle projects" button
+
+
+If using eclipse:
+
+Run "./gradlew eclipse" to build the classpath and generate eclipse files.
 
 If having eclipse problems, use the following commands:
 
 First try cleaning the Eclipse configuration completely. 
-./gradlew cleanEclipse
+"./gradlew cleanEclipse"
 
 If that doesn't work you may try more specific tasks: 
-./gradlew cleanEclipseProject       to remove the .project file
-./gradlew cleanEclipseClasspath     to empty the project's classpath
+"./gradlew cleanEclipseProject"       to remove the .project file
+"./gradlew cleanEclipseClasspath"     to empty the project's classpath
 
-Finally to rebuild the Eclipse configuration
-./gradlew eclipse
+Run to rebuild the Eclipse configuration
+"./gradlew eclipse"
 
 Finally to build launch files for Eclipse
-./gradlew genEclipseRuns
+."/gradlew genEclipseRuns"
