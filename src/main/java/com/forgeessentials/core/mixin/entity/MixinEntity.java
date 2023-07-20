@@ -36,10 +36,12 @@ public abstract class MixinEntity
      * @author Maximuslotro
      * @reason fix afk players being pushed by entities
      */
-    @Inject(at = @At("RETURN"), method = "Lnet/minecraft/entity/item/Entity;canBeCollidedWith()Z", cancellable = true)
+    @Inject(at = @At("RETURN"),
+            method = "canBeCollidedWith()Z",
+            cancellable = true)
     public void isAfkPlayer(CallbackInfoReturnable<Boolean> callback)
     {
-        if ((Object) this instanceof PlayerEntity)
+        if (((Entity) (Object) this) instanceof PlayerEntity)
         {
             if (ModuleCommandsEventHandler.isAfk(UserIdent.get((PlayerEntity) (Object) this)))
             {

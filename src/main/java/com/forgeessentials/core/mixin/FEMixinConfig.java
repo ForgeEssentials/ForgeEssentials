@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 public class FEMixinConfig implements IMixinConfigPlugin
 {
 
-    protected static List<String> injectedPatches = new ArrayList<String>();
+    protected static List<String> injectedPatches = new ArrayList<>();
 
     @Override
     public void onLoad(String mixinPackage)

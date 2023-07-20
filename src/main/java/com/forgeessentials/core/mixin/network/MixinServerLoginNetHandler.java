@@ -24,7 +24,7 @@ public class MixinServerLoginNetHandler
     public void disconnect(ITextComponent p_194026_1_) {}
     
     @Shadow
-    public GameProfile gameProfile;
+    private GameProfile gameProfile;
 
     @Inject(method = "handleAcceptedLogin()V",
             at = @At(value = "INVOKE",
@@ -60,7 +60,6 @@ public class MixinServerLoginNetHandler
         if(ModuleNetworking.getInstance().getTranferManager().onlinePlayers.contains(gameProfile.getId())){
             disconnect((new StringTextComponent("Double Login")).withStyle(TextFormatting.RED));
             ci.cancel();
-            return;
         }
     }
 }

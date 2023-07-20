@@ -41,7 +41,7 @@ public class MixinCommands
     }
 
     private void fillUsableCommandsNodes(CommandNode<CommandSource> p_197052_1_, CommandNode<ISuggestionProvider> p_197052_2_, CommandSource p_197052_3_,
-            Map<CommandNode<CommandSource>, CommandNode<ISuggestionProvider>> p_197052_4_, String nodeString, boolean dontChangeNode)
+                                         Map<CommandNode<CommandSource>, CommandNode<ISuggestionProvider>> p_197052_4_, String nodeString, boolean dontChangeNode)
     {
         for (CommandNode<CommandSource> commandnode : p_197052_1_.getChildren())
         {
@@ -54,14 +54,10 @@ public class MixinCommands
                 //System.out.println("Perm true: command." +newNode.replace(' ', '.'));
                 
                 ArgumentBuilder<ISuggestionProvider, ?> argumentbuilder = (ArgumentBuilder) commandnode.createBuilder();
-                argumentbuilder.requires((p_197060_0_) -> {
-                    return true;
-                });
+                argumentbuilder.requires((p_197060_0_) -> true);
                 if (argumentbuilder.getCommand() != null)
                 {
-                    argumentbuilder.executes((p_197053_0_) -> {
-                        return 0;
-                    });
+                    argumentbuilder.executes((p_197053_0_) -> 0);
                 }
 
                 if (argumentbuilder instanceof RequiredArgumentBuilder)
@@ -114,6 +110,7 @@ public class MixinCommands
     // //return checkPerms(commandNode, sender);
     // }
 
+
     private static boolean checkPerms(String commandNode, CommandSource source1)
     {
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(source1), "command." + commandNode))
@@ -122,28 +119,5 @@ public class MixinCommands
             return false;
         }
         return true;
-        // ICommandSource source = CommandUtils.GetSource(source1);
-        // if (source instanceof DoAsCommandSender) {
-        // if (!((DoAsCommandSender) source).getIdent().isPlayer()) {
-        // if (((DoAsCommandSender) source).getIdent().isNpc()) {
-        // return APIRegistry.perms.hasPermission(((DoAsCommandSender) source).getIdent().getGameProfile(), commandNode, null);
-        // }
-        // else
-        // {
-        // return true;
-        // }
-        // } else {
-        // return APIRegistry.perms.hasPermission(((DoAsCommandSender) source).getIdent().getGameProfile(), commandNode,new PlayerContext(((DoAsCommandSender)
-        // source).getIdent().getPlayer()));
-        // }
-        // }
-        //
-        // if (source1.getEntity() instanceof PlayerEntity)
-        // {
-        // return APIRegistry.perms.hasPermission(((PlayerEntity) source1.getEntity()).getGameProfile(), commandNode, new PlayerContext((PlayerEntity)source1.getEntity()));
-        // } else {
-        // UserIdent ident = UserIdent.get(source1);
-        // return APIRegistry.perms.hasPermission(ident.getGameProfile(), commandNode, null);
-        // }
     }
 }

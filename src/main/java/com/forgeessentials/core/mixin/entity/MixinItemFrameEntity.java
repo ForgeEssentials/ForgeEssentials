@@ -20,15 +20,13 @@ public class MixinItemFrameEntity
      * @author Maximuslotro
      * @reason stuff
      */
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/item/ItemFrameEntity;hurt(Lnet/minecraft/util/DamageSource;F)Z", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "hurt(Lnet/minecraft/util/DamageSource;F)Z", cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback)
     {
         EntityAttackedEvent event = new EntityAttackedEvent((ItemFrameEntity) (Object) this, source, amount);
         if (MinecraftForge.EVENT_BUS.post(event))
         {
             callback.setReturnValue(event.result);
-            // callback.cancel();
         }
-        amount = event.getDamage();
     }
 }

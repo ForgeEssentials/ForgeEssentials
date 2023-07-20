@@ -1,6 +1,7 @@
 package com.forgeessentials.core.mixin.network;
 
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,6 +28,7 @@ public class MixinNetHandlerPlayServer
 
     @Shadow
     public ServerPlayerEntity player;
+    @Final
     @Shadow
     private static Logger LOGGER;
 
@@ -35,8 +37,7 @@ public class MixinNetHandlerPlayServer
     /**
      * Post {@link SignEditEvent} to the event bus.
      *
-     * @param packetIn
-     *            the update sign packet
+     * @param p_244542_1_ the update sign packet
      */
     @Inject(method = "handleSignUpdate", at = @At("HEAD"),
             // at = @At(
@@ -86,7 +87,7 @@ public class MixinNetHandlerPlayServer
             ci.cancel();
         }
     }
-    /**
+    /*
      * Copy the {@link #signLines} to the {@link TileEntitySign}.
      *
      * @param src
