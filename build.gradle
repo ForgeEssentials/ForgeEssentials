@@ -16,7 +16,6 @@ buildscript {
         }
 		mavenCentral()
 		mavenLocal()
-		jcenter()
 	}
 	dependencies {
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
@@ -214,12 +213,8 @@ ext.clientManifest = manifest {
 
 // Create dependency configurations
 configurations {
-	//shade
-	//shadeClient
-	//serverLib
 	clientannotationProcessor
 	serverannotationProcessor
-	buildDep
 	shadowLib
 	shadowClientLib
 	compile.extendsFrom buildDep, shadowLib, shadowClientLib//, serverLib, shade, shadeClient
@@ -249,8 +244,7 @@ dependencies {
 	//org.hibernate
 	shadowLib group: 'org.hibernate', 	  name: 'hibernate-core', 		version: '5.6.15.Final'
 	//shadowLib group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-	//shadowLib group: 'org.hibernate', 	  name: 'hibernate-entitymanager', 		version: '5.2.12.Final'
-	buildDep  group: 'org.hibernate', 	  name: 'hibernate-jpamodelgen',version: '5.6.15.Final'
+	compileOnly   group: 'org.hibernate', 	  name: 'hibernate-jpamodelgen',version: '5.6.15.Final'
 
 	//annonations processor
 	serverannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
@@ -292,9 +286,9 @@ dependencies {
 sourceSets {
     def deps = [
 		configurations.minecraft,
-        configurations.compile,
-        configurations.compileClasspath,
-        configurations.runtimeClasspath
+		configurations.compile,
+		configurations.compileClasspath,
+		configurations.runtimeClasspath
 	]
 	utils {
 		compileClasspath = files(deps)
