@@ -102,6 +102,7 @@ ext.set 'releaseType', 'alpha'
 // Get commit hash
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.ajoberstar.grgit.Grgit
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
@@ -304,17 +305,18 @@ sourceSets {
 		}
 	}
 }
-import org.apache.tools.ant.filters.ReplaceTokens
+
+// Configure utils tokens
+task processSource(type: Sync) {
+    from sourceSets.utils.java
+    filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major])
+    into "$buildDir/src"
+}
+
 project.compileUtilsJava {
-    doFirst {
-        copy {
-            from ('src/utils/replaceJava') {
-                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major])
-            }
-            into 'src/utils/java'
-        }
-    }
+	source = processSource.outputs
 } 
+
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
@@ -504,7 +506,7 @@ jar {
 }
 jar.doLast {
 	delete (shadowJar.archivePath)
-	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
+	delete (processSource.outputs)
 }
 
 /************************************************************
