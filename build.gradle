@@ -307,6 +307,9 @@ sourceSets {
 		compileClasspath += files(sourceSets.main.compileClasspath)
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
+	utils {
+		compileClasspath = files(sourceSets.main.compileClasspath)
+	}
 }
 import org.apache.tools.ant.filters.ReplaceTokens
 project.compileUtilsJava {
