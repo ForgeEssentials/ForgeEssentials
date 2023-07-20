@@ -1,6 +1,5 @@
 package com.forgeessentials.remote;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
