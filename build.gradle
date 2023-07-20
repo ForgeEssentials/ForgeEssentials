@@ -28,6 +28,7 @@ buildscript {
 
 plugins {
     id 'eclipse'
+    id 'idea'
     id 'com.diffplug.eclipse.apt' version '3.35.0'
     id 'org.sonarqube' version '2.5'
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -102,6 +103,8 @@ ext.set 'changelog', System.getenv("CHANGE_LOG")
 ext.set 'releaseType', 'alpha'
 
 // Get commit hash
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.ajoberstar.grgit.Grgit
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
@@ -291,21 +294,19 @@ dependencies {
 sourceSets {
     def deps = [
 		configurations.minecraft,
+        configurations.compile,
         configurations.compileClasspath,
         configurations.runtimeClasspath
 	]
 	utils {
-		compileClasspath = files(configurations.compile)
-		compileClasspath += files deps
+		compileClasspath = files(deps)
 	}
 	main {
-		compileClasspath = files(configurations.compile, sourceSets.utils.output)
-		compileClasspath += files deps
+		compileClasspath += files(sourceSets.utils.compileClasspath, sourceSets.utils.output)
         ext.refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
-		compileClasspath = files(configurations.compile, sourceSets.utils.output)
-		compileClasspath += files deps
+		compileClasspath += files(sourceSets.main.compileClasspath)
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 }
@@ -389,24 +390,24 @@ task tsd(type: JavaExec) {
  * Configure client jar
  */
 
-task clientshadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task clientshadowJar(type: ShadowJar) {
 	minimize()
     description = "ShadowJar for client code"
-    classifier = 'shadow'
+    archiveClassifier = 'shadow'
     from sourceSets.client.output
     from sourceSets.utils.output
     configurations = [project.configurations.shadowClientLib]
 }
 
 task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
-	classifier = "client"
-	appendix = project.minecraftVersion
+	archiveClassifier = "client"
+	arcguveAppendix = project.minecraftVersion
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-	from (zipTree(clientshadowJar.archivePath)) {
+	from (zipTree(clientshadowJar.archiveFile)) {
 		exclude 'META-INF','META-INF/**'
 		exclude 'assets/**'
 		exclude 'about.html'
@@ -418,7 +419,7 @@ task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
 	}
 }
 clientJar.doLast {
-	delete (clientshadowJar.archivePath)
+	delete (clientshadowJar.archiveFile)
 }
 /************************************************************
  * Configure shadow jar
@@ -455,7 +456,7 @@ shadowJar {
 	//relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
 	relocate  'com.mysql','com.forgeessentials.thirdparty.com.mysql'
 	configurations = [project.configurations.shadowLib]
-	classifier = "shadow"
+	archiveClassifier = "shadow"
 
 	from sourceSets.main.output
 	from sourceSets.utils.output
@@ -471,8 +472,8 @@ jar {
 	dependsOn clientJar
 	dependsOn shadowJar
     //dependsOn "tsd"
-	classifier = "server"
-	appendix = project.minecraftVersion
+    archiveClassifier = "server"
+	archiveAppendix = project.minecraftVersion
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
@@ -518,8 +519,8 @@ jar.doLast {
  * */
 
 task deobfJar(dependsOn: "classes", type: Jar) {
-	classifier = "dev-"+gitCommitHash
-	appendix = project.minecraftVersion
+	archiveClassifier = "dev-"+gitCommitHash
+	archiveAppendix = project.minecraftVersion
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
@@ -568,8 +569,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
  * Configure Annotations for IDEs Jar
  */
 task annotations(type: Jar) {
-	classifier = "annonations"
-	appendix = project.minecraftVersion
+	archiveClassifier = "annonations"
+	archiveAppendix = project.minecraftVersion
 	
     from(sourceSets.main.output) {
         include "com/forgeessentials/playerlogger/entity/**"
