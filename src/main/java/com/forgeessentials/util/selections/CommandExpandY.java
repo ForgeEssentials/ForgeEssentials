@@ -45,6 +45,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBuilder
         SelectionHandler.setEnd(getServerPlayer(ctx.getSource()),
                 sel.getEnd().setY(ctx.getSource().getLevel().getMaxBuildHeight()));
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection expanded from bottom to top.");
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
         return Command.SINGLE_SUCCESS;
     }
 

@@ -142,6 +142,7 @@ public class ServerPacketHandler implements PacketHandler
         }
         if(data1==null) {
             LoggingHandler.felog.error("FENetworkServer Failed to find client for command channel!");
+            return;
         }
         if(data1.getPermissionLevel()>=2) {
             ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(

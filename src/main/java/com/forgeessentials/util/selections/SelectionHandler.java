@@ -73,6 +73,7 @@ public class SelectionHandler extends ServerEventHandler
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(),
                 event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
+        SelectionHandler.sendUpdate((ServerPlayerEntity) event.getPlayer());
         event.setCanceled(true);
     }
 
@@ -111,6 +112,7 @@ public class SelectionHandler extends ServerEventHandler
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(),
                 event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
+        SelectionHandler.sendUpdate((ServerPlayerEntity) event.getPlayer());
         event.setCanceled(true);
 
     }

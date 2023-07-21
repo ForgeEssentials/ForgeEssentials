@@ -24,8 +24,6 @@ public class Packet05NoClipHandler extends Packet05Noclip
     {
         Minecraft instance = Minecraft.getInstance();
         instance.player.noPhysics = noclip;
-        // instance.gui.getChat().addMessage(new StringTextComponent("NoClipHandler
-        // recieved message: "+noclip));
         ForgeEssentialsClient.noClip = noclip;
     }
 }

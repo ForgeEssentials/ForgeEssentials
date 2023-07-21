@@ -140,6 +140,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                 }
             }
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
+            SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
             return Command.SINGLE_SUCCESS;
         }
         int expandby = IntegerArgumentType.getInteger(ctx, "expand");
@@ -199,7 +200,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                 }
                 break;
         }
-
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
         ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
         return Command.SINGLE_SUCCESS;
     }

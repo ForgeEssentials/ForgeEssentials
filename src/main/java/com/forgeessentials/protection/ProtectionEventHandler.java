@@ -928,7 +928,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (checkMajoritySleep)
             checkMajoritySleep();
 
-        if (ServerUtil.getOverworld().getWorldServer().getGameTime() % (20 * 4) == 0)
+        if (ServerUtil.getOverworld().getWorldServer().getGameTime() % (20 * 10) == 0)
         {
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                 sendPermissionUpdate(UserIdent.get(player), false);

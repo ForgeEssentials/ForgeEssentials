@@ -109,6 +109,7 @@ public class NetworkUtils
     {
         if (!(player instanceof FakePlayer))
         {
+        	feletworklog.info("Sending "+msg.getClass().getSimpleName()+" to "+player.getDisplayName().getString());
             INSTANCE.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
         }
     }

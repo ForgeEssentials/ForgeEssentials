@@ -95,7 +95,7 @@ public class CommandPos2 extends ForgeEssentialsCommandBuilder
         }
 
         SelectionHandler.setEnd(player, point);
-
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
         ChatOutputHandler.chatConfirmation(player, "Pos2 set to " + x + ", " + y + ", " + z);
         return Command.SINGLE_SUCCESS;
     }
