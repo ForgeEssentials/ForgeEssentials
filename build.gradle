@@ -300,7 +300,7 @@ sourceSets {
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 	utils {
-		if(!project.gradle.startParameter.taskNames.contains("build")) {
+		if(project.gradle.startParameter.taskNames.contains("genintellijruns")||project.gradle.startParameter.taskNames.isEmpty()) {
 			compileClasspath = files(sourceSets.main.compileClasspath)
 		}
 	}
