@@ -16,7 +16,6 @@ import java.util.Set;
 import com.forgeessentials.core.environment.Environment;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -196,18 +195,6 @@ public abstract class ServerUtil
     }
 
     /* ------------------------------------------------------------ */
-
-    /**
-     * Returns working directory or minecraft data-directory on client side. <br>
-     * <b>Please use module directory instead!</b>
-     */
-    public static File getBaseDir()
-    {
-        if (ServerLifecycleHooks.getCurrentServer().isSingleplayer())
-            return Minecraft.getInstance().gameDirectory;
-        else
-            return new File(".");
-    }
 
     /**
      * Get the directory where the world is saved
