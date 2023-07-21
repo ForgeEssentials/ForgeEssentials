@@ -52,14 +52,9 @@ public class Packet01SelectionUpdateCUIRenderrer
 	    }
 	    if (selection.getStart() != null && selection.getEnd() != null)
         {
-            Point p1 = selection.getStart();
-            Point p2 = selection.getEnd();
-            Point size = selection.getSize();
-            Double x = (p1.getX() + p2.getX()) / 2.0d;
-            Double y = (p1.getY() + p2.getY()) / 2.0d;
-            Double z = (p1.getZ() + p2.getZ()) / 2.0d;
-            renderBox(matrix, bufferbuilder, tessellator, new Vector3d(x, y, z)
-		    		, (size.getX()/2d)+1d, (size.getY()/2d)+1d, (size.getZ()/2d)+1d, 0.0f, 1.0f, 0.0f, ALPHA);
+            renderBigBox(matrix, bufferbuilder, tessellator, new Vector3d(selection.getStart().getX(), selection.getStart().getY(), selection.getStart().getZ()),
+            		new Vector3d(selection.getEnd().getX(), selection.getEnd().getY(), selection.getEnd().getZ())
+		    		, 0.5, 0.5, 0.5, 0.0f, 1.0f, 0.0f, ALPHA);
         }
 	
 	    matrixStack.popPose();
@@ -128,6 +123,111 @@ public class Packet01SelectionUpdateCUIRenderrer
     	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+    }
+
+    private static void renderBigBox(Matrix4f matrix, BufferBuilder buffer, Tessellator tessellator, Vector3d v, Vector3d v2, Double offsetX, Double offsetY, Double offsetZ, float r, float g, float b, float alpha)
+    {
+    	Double x1;
+    	Double y1;
+    	Double z1;
+    	Double x2;
+    	Double y2;
+    	Double z2;
+    	if(v.x>v2.x) {
+    		x1=v.x;
+    		x2=v2.x;
+    	}
+    	else if(v.x<v2.x) {
+    		x1=v2.x;
+    		x2=v.x;
+    	}
+    	else {
+    		x1=x2=v.x;
+    	}
+    	if(v.y>v2.y) {
+    		y1=v.y;
+    		y2=v2.y;
+    	}
+    	else if(v.y<v2.y) {
+    		y1=v2.y;
+    		y2=v.y;
+    	}
+    	else {
+    		y1=y2=v.y;
+    	}
+    	if(v.z>v2.z) {
+    		z1=v.z;
+    		z2=v2.z;
+    	}
+    	else if(v.z<v2.z) {
+    		z1=v2.z;
+    		z2=v.z;
+    	}
+    	else {
+    		z1=z2=v.z;
+    	}
+        // FRONT
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+        // BACK
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+        // betweens.
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        tessellator.end();
+
+    	buffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+        buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
     }
 }
