@@ -356,6 +356,7 @@ public class ForgeEssentialsClient
     {
         clientTimeTicked = 0;
         sentHandshake = false;
+        cuiRenderer.selection=null;
     }
 
     @SubscribeEvent
