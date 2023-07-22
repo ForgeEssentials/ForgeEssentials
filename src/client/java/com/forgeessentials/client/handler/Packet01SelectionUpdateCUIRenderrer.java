@@ -1,6 +1,5 @@
 package com.forgeessentials.client.handler;
 
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;

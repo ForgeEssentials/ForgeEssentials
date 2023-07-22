@@ -4,7 +4,8 @@ import javax.xml.transform.Source;
 
 public class TestClass
 {
-    static public void get()
+    @SuppressWarnings("unused")
+	static public void get()
     {
         Source hi;
     }

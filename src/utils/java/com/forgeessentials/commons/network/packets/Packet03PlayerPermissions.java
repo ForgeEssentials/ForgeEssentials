@@ -15,9 +15,9 @@ public class Packet03PlayerPermissions implements IFEPacket
 
     public boolean reset;
 
-    public Set<Integer> placeIds;
+    public Set<String> placeIds;
 
-    public Set<Integer> breakIds;
+    public Set<String> breakIds;
 
     public Packet03PlayerPermissions()
     {
@@ -25,7 +25,7 @@ public class Packet03PlayerPermissions implements IFEPacket
         breakIds = new HashSet<>();
     }
 
-    public Packet03PlayerPermissions(boolean reset, Set<Integer> placeIds, Set<Integer> breakeIds)
+    public Packet03PlayerPermissions(boolean reset, Set<String> placeIds, Set<String> breakeIds)
     {
         this.reset = reset;
         this.placeIds = placeIds;
@@ -35,15 +35,15 @@ public class Packet03PlayerPermissions implements IFEPacket
     public static Packet03PlayerPermissions decode(PacketBuffer buf)
     {
         boolean reset1 = buf.readBoolean();
-        Set<Integer> placeIds1 = new HashSet<>();
-        Set<Integer> breakIds1 = new HashSet<>();
+        Set<String> placeIds1 = new HashSet<>();
+        Set<String> breakIds1 = new HashSet<>();
         int count = buf.readShort();
         for (int i = 0; i < count; i++)
-            placeIds1.add(buf.readInt());
+            placeIds1.add(buf.readUtf());
 
         count = buf.readShort();
         for (int i = 0; i < count; i++)
-            breakIds1.add(buf.readInt());
+            breakIds1.add(buf.readUtf());
         return new Packet03PlayerPermissions(reset1, placeIds1, breakIds1);
     }
 
@@ -54,16 +54,16 @@ public class Packet03PlayerPermissions implements IFEPacket
         if (placeIds != null)
         {
             buf.writeShort(placeIds.size());
-            for (int id : placeIds)
-                buf.writeInt(id);
+            for (String id : placeIds)
+                buf.writeUtf(id);
         }
         else
             buf.writeShort(0);
         if (breakIds != null)
         {
             buf.writeShort(breakIds.size());
-            for (int id : breakIds)
-                buf.writeInt(id);
+            for (String id : breakIds)
+                buf.writeUtf(id);
         }
         else
             buf.writeShort(0);

@@ -7,16 +7,14 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
 {
 
-    public Packet03PlayerPermissionsHandler(boolean reset, Set<Integer> placeIds, Set<Integer> breakeIds)
+    public Packet03PlayerPermissionsHandler(boolean reset, Set<String> placeIds, Set<String> breakeIds)
     {
         super(reset, placeIds, breakeIds);
     }
@@ -24,15 +22,15 @@ public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
     public static Packet03PlayerPermissionsHandler decode(PacketBuffer buf)
     {
         boolean reset1 = buf.readBoolean();
-        Set<Integer> placeIds1 = new HashSet<>();
-        Set<Integer> breakIds1 = new HashSet<>();
+        Set<String> placeIds1 = new HashSet<>();
+        Set<String> breakIds1 = new HashSet<>();
         int count = buf.readShort();
         for (int i = 0; i < count; i++)
-            placeIds1.add(buf.readInt());
+            placeIds1.add(buf.readUtf());
 
         count = buf.readShort();
         for (int i = 0; i < count; i++)
-            breakIds1.add(buf.readInt());
+            breakIds1.add(buf.readUtf());
         return new Packet03PlayerPermissionsHandler(reset1, placeIds1, breakIds1);
     }
 
@@ -41,28 +39,15 @@ public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
     {
         if (reset)
         {
-            ForgeEssentialsClient.permissionOverlay.permissions.breakIds.clear();
-            ForgeEssentialsClient.permissionOverlay.permissions.placeIds.clear();
-            ForgeEssentialsClient.permissionOverlay.permissions.reset = false;
+            ForgeEssentialsClient.permissionOverlay.breakIds.clear();
+            ForgeEssentialsClient.permissionOverlay.placeIds.clear();
+            Minecraft instance = Minecraft.getInstance();
+            instance.gui.getChat().addMessage(new StringTextComponent("Resetting Permissions"));
         }
         else
         {
-            ForgeEssentialsClient.permissionOverlay.permissions.placeIds.addAll(placeIds);
-            ForgeEssentialsClient.permissionOverlay.permissions.breakIds.addAll(breakIds);
-
-            Minecraft instance = Minecraft.getInstance();
-            PlayerEntity player = instance.player;
-            ItemStack stack = player.getMainHandItem();
-            if (stack != ItemStack.EMPTY)
-            {
-                int itemId = Item.getId(stack.getItem());
-                for (int id : ForgeEssentialsClient.permissionOverlay.permissions.placeIds)
-                    if (itemId == id)
-                    {
-                        player.stopUsingItem();
-                        break;
-                    }
-            }
+            ForgeEssentialsClient.permissionOverlay.placeIds.addAll(placeIds);
+            ForgeEssentialsClient.permissionOverlay.breakIds.addAll(breakIds);
         }
     }
 }

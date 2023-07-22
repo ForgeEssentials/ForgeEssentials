@@ -50,7 +50,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntity.SleepResult;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
 import net.minecraft.tileentity.TileEntity;
@@ -93,6 +92,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ProtectionEventHandler extends ServerEventHandler
 {
@@ -259,8 +259,8 @@ public class ProtectionEventHandler extends ServerEventHandler
                 updateBrokenTileEntity((ServerPlayerEntity) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
             {
-                int blockId = Block.getId(blockState);
-                Set<Integer> ids = new HashSet<>();
+                String blockId = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
+                Set<String> ids = new HashSet<>();
                 ids.add(blockId);
                 NetworkUtils.sendTo(new Packet03PlayerPermissions(false, null, ids), ident.getPlayerMP());
             }
@@ -516,8 +516,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
-                int itemId = Item.getId(stack.getItem());
-                Set<Integer> ids = new HashSet<>();
+                String itemId = ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
+                Set<String> ids = new HashSet<>();
                 ids.add(itemId);
                 NetworkUtils.sendTo(new Packet03PlayerPermissions(false, ids, null), ident.getPlayerMP());
             }
@@ -820,7 +820,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!PlayerInfo.get(ident).getHasFEClient()) // we can only send perm updates to players who have the client
             return;
 
-        Set<Integer> placeIds = new HashSet<>();
+        Set<String> placeIds = new HashSet<>();
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
 
@@ -833,7 +833,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             Block block = ((BlockItem) stack.getItem()).getBlock();
             String permission = ModuleProtection.getBlockPlacePermission(block);
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
-                placeIds.add(Block.getId(block.defaultBlockState()));
+                placeIds.add(ForgeRegistries.BLOCKS.getKey(block.getBlock()).toString());
         }
 
         ModulePermissions.permissionHelper.disableDebugMode(false);
@@ -928,7 +928,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (checkMajoritySleep)
             checkMajoritySleep();
 
-        if (ServerUtil.getOverworld().getWorldServer().getGameTime() % (20 * 10) == 0)
+        if (ServerUtil.getOverworld().getWorldServer().getGameTime() % (20 * 4) == 0)
         {
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                 sendPermissionUpdate(UserIdent.get(player), false);
@@ -956,12 +956,25 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void permissionChange(Group.ModifyPermission e)
     {
-        if (e.serverZone.getGroupPlayers().get(e.group) == null)
+    	System.out.println("1");
+    	if(Zone.GROUP_DEFAULT.equals(e.group)||Zone.GROUP_PLAYERS.equals(e.group)) {
+        	System.out.println("2");
+        	for (PlayerInfo info : PlayerInfo.getAll())
+            {
+                if (info.ident.hasPlayer()) {
+                    sendPermissionUpdate(info.ident, true);
+                }
+            }
             return;
+        }
+    	if (e.serverZone.getGroupPlayers().get(e.group) == null) {
+    		return;
+    	}
         for (UserIdent ident : e.serverZone.getGroupPlayers().get(e.group))
         {
-            if (ident.hasPlayer())
+            if (ident.hasPlayer()) {
                 sendPermissionUpdate(ident, true);
+            }
         }
     }
 

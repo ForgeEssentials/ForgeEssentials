@@ -1,9 +1,7 @@
 package com.forgeessentials.teleport.commands;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -122,7 +120,6 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
         }
 
         Map<String, Warp> warps = getWarps();
-        Set<String> completeList = new HashSet<>(warps.keySet());
 
         if (params.equals("list"))
         {
