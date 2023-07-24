@@ -22,6 +22,7 @@ import com.forgeessentials.commands.player.CommandBurn;
 import com.forgeessentials.commands.player.CommandDoAs;
 import com.forgeessentials.commands.player.CommandFly;
 import com.forgeessentials.commands.player.CommandGameMode;
+import com.forgeessentials.commands.player.CommandGod;
 import com.forgeessentials.commands.player.CommandHeal;
 import com.forgeessentials.commands.player.CommandInventorySee;
 import com.forgeessentials.commands.player.CommandKill;
@@ -157,6 +158,7 @@ public class ModuleCommands implements ConfigLoader
         FECommandManager.registerCommand(new CommandSeen(true), dispatcher);
         FECommandManager.registerCommand(new CommandTempBan(true), dispatcher);
         FECommandManager.registerCommand(new CommandFly(true), dispatcher);
+        FECommandManager.registerCommand(new CommandGod(true), dispatcher);
         // Help
         CommandHelp help = new CommandHelp(true, dispatcher);
         FECommandManager.registerCommand(help, dispatcher);
