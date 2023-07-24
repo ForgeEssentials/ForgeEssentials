@@ -955,10 +955,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     @SubscribeEvent
     public void permissionChange(Group.ModifyPermission e)
-    {
-    	System.out.println("1");
+    { 
     	if(Zone.GROUP_DEFAULT.equals(e.group)||Zone.GROUP_PLAYERS.equals(e.group)) {
-        	System.out.println("2");
         	for (PlayerInfo info : PlayerInfo.getAll())
             {
                 if (info.ident.hasPlayer()) {
