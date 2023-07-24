@@ -382,16 +382,18 @@ public class IrcHandler extends ListenerAdapter
     {
         if (!isConnected())
             return null;
+        CommandSource source = null;
         for (User user : bot.getUserChannelDao().getAllUsers())
         {
             if (user.getNick().equals(username))
             {
                 IrcCommandSender sender = new IrcCommandSender(user);
                 ircUserCache.put(sender.getUser(), sender);
-                return sender.createCommandSourceStack();
+                source = sender.createCommandSourceStack();
+                break;
             }
         }
-        return null;
+        return source;
     }
 
     private void processCommand(User user, String cmdLine)
