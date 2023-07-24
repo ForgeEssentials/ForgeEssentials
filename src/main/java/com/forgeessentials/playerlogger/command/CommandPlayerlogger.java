@@ -245,7 +245,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
 
             break;
         case "lookup":
-            if (subCmd[0].toLowerCase().equals("help"))
+            if (subCmd[1].toLowerCase().equals("help"))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
                         "/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [pageSize]? [filterConfig]?");

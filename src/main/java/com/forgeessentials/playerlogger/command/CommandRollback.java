@@ -2,6 +2,7 @@ package com.forgeessentials.playerlogger.command;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,8 +82,11 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.literal("start")
-                        .then(Commands.argument("time", StringArgumentType.string())
-                                .executes(CommandContext -> execute(CommandContext, "start"))))
+                		.then(Commands.literal("currentTime")
+                				.executes(CommandContext -> execute(CommandContext, "startN")))
+                		.then(Commands.literal("customTime")
+                				.then(Commands.argument("time", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "start")))))
                 .then(Commands.literal("cancel").executes(CommandContext -> execute(CommandContext, "cancel")))
                 .then(Commands.literal("confirm").executes(CommandContext -> execute(CommandContext, "confirm")))
                 .then(Commands.literal("+")
@@ -107,8 +111,11 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         case "help":
             help(ctx.getSource());
             break;
+        case "startN":
+        	startRollback(ctx, true);
+            break;
         case "start":
-            startRollback(ctx);
+            startRollback(ctx, false);
             break;
         case "cancel":
             cancelRollback(ctx);
@@ -135,7 +142,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    private void startRollback(CommandContext<CommandSource> ctx) throws CommandException
+    private void startRollback(CommandContext<CommandSource> ctx, boolean useCurrentTime) throws CommandException
     {
         if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
         {
@@ -154,22 +161,24 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         }
 
         int step = -60;
-        String time = StringArgumentType.getString(ctx, "time");
-        try
-        {
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-            Date parsedDate = format.parse(time);
-            Date currentDate = new Date();
-            Date date = new Date();
-            date.setSeconds(parsedDate.getSeconds());
-            date.setMinutes(parsedDate.getMinutes());
-            date.setHours(parsedDate.getHours());
-            step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
-        }
-        catch (ParseException e)
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), "Invalid time format: %s", time);
-            return;
+        if(!useCurrentTime) {
+        	String time = StringArgumentType.getString(ctx, "time");
+            try
+            {
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                Date parsedDate = format.parse(time);
+                Date currentDate = Date.from(Instant.now());
+                Date date = new Date();
+                date.setSeconds(parsedDate.getSeconds());
+                date.setMinutes(parsedDate.getMinutes());
+                date.setHours(parsedDate.getHours());
+                step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
+            }
+            catch (ParseException e)
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid time format: %s, use HH:mm:ss format!", time);
+                return;
+            }
         }
 
         RollbackInfo rb = new RollbackInfo(getServerPlayer(ctx.getSource()), area);

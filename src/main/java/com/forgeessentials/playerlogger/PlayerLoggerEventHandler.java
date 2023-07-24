@@ -17,11 +17,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayerLoggerEventHandler extends ServerEventHandler
 {
-
-    // private static PlayerLoggerEventHandler instance = null;
-
-    // public static int pickerRange = 0;
-
     public static boolean disabled = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -42,13 +37,10 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             {
                 disabled = false;
             }
-        }, 1000L);
+        }, 500L);
         WorldPoint point;
         if (event instanceof RightClickBlock)
-            point = new WorldPoint(event.getPlayer().level, //
-                    event.getPos().getX(), // + event.getFace().getFrontOffsetX(), //
-                    event.getPos().getY(), // + event.getFace().getFrontOffsetY(), //
-                    event.getPos().getZ());// + event.getFace().getFrontOffsetZ());
+            point = new WorldPoint(event.getPlayer().level, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         else
             point = new WorldPoint(event.getPlayer().level, event.getPos());
 

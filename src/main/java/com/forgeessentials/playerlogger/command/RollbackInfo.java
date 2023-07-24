@@ -66,18 +66,14 @@ public class RollbackInfo
                 if (change.type == ActionBlockType.PLACE)
                 {
                     sendBlockChange(player, change, Blocks.AIR.defaultBlockState());
-                    // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "
-                    // REMOVED " +
-                    // change.block.name);
+                    //System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "REMOVED " +change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE
                         || change.type == ActionBlockType.BURN)
                 {
                     Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                     sendBlockChange(player, change, block.defaultBlockState());
-                    // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "
-                    // RESTORED " +
-                    // change.block.name + ":" + change.metadata);
+                    //System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "RESTORED " +change.block.name);
                 }
             }
         }
@@ -90,17 +86,13 @@ public class RollbackInfo
                 {
                     Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                     sendBlockChange(player, change, block.defaultBlockState());
-                    // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "
-                    // REPLACED " +
-                    // change.block.name);
+                     //System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "REPLACED " +change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE
                         || change.type == ActionBlockType.BURN)
                 {
                     sendBlockChange(player, change, Blocks.AIR.defaultBlockState());
-                    // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "
-                    // REBROKE " +
-                    // change.block.name + ":" + change.metadata);
+                     //System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + "REBROKE " +change.block.name);
                 }
             }
         }
