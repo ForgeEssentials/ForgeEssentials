@@ -32,8 +32,6 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
         action.time = new Date();
         action.player = getPlayer(event.getPlayer());
         action.world = event.getPlayer().level.dimension().location().toString();
-        // action.block = getBlock(block);
-        // action.metadata = metadata;
         action.type = (event instanceof RightClickBlock || event instanceof RightClickItem) ? ActionBlockType.USE_RIGHT
                 : ActionBlockType.USE_LEFT;
         action.x = event.getPos().getX();
@@ -41,5 +39,4 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
         action.z = event.getPos().getZ();
         em.persist(action);
     }
-
 }

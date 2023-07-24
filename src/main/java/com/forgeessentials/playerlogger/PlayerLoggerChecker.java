@@ -32,13 +32,11 @@ public class PlayerLoggerChecker
 
     }
 
-    private WorldArea getAreaAround(WorldPoint wp)
-    {
-        return getAreaAround(wp, FilterConfig.globalConfig.pickerRange);
-    }
-
     private WorldArea getAreaAround(WorldPoint wp, int radius)
     {
+    	if(wp==null) {
+    		return null;
+    	}
         return new WorldArea(wp.getDimension(), new Point(wp.getX() - radius, wp.getY() - radius, wp.getZ() - radius),
                 new Point(wp.getX() + radius, wp.getY() + radius, wp.getZ() + radius));
     }
@@ -86,8 +84,13 @@ public class PlayerLoggerChecker
         }
         else
         {
-            if (!point.equals(info.checkPoint))
-            {
+        	if(point==null&&info.checkPoint!=null) {
+        		newCheck = true;
+        	}
+        	else if(point==null&&info.checkPoint==null) {
+        		newCheck = false;
+        	}
+        	else if (!point.equals(info.checkPoint)) {
                 newCheck = true;
             }
         }
@@ -120,12 +123,8 @@ public class PlayerLoggerChecker
             {
                 UserIdent player = UserIdent.get(change.player.uuid);
                 msg += " " + player.getUsernameOrUuid();
-                if (fc.player == null)
-                {
-                    continue;
-                }
-                if (fc.player != player)
-                {
+                if (fc.player != null && fc.player != player) {
+                	System.out.println(player.getUsername()+"!="+fc.player.getUsername());
                     continue;
                 }
             }

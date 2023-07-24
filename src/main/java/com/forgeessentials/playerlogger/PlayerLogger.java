@@ -55,7 +55,6 @@ import com.forgeessentials.playerlogger.event.LogEventPlace;
 import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
 import com.forgeessentials.playerlogger.event.LogEventPlayerPositions;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
-import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.player.PlayerPostInteractEvent;
@@ -86,7 +85,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityMultiPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -115,9 +113,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /* ------------------------------------------------------------ */
 
-    public PlayerLogger()
-    {
-    }
+    public PlayerLogger() {}
 
     /**
      * Closes any existing database connection and frees resources
@@ -193,9 +189,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         }
         em = entityManagerFactory.createEntityManager();
 
-        if (PlayerLoggerConfig.getPlayerPositionInterval() > 0)
-            TaskRegistry.scheduleRepeated(playerPositionTimer,
-                    (int) (PlayerLoggerConfig.getPlayerPositionInterval() * 1000));
+        //if (PlayerLoggerConfig.getPlayerPositionInterval() > 0)
+        //    TaskRegistry.scheduleRepeated(playerPositionTimer,
+        //            (int) (PlayerLoggerConfig.getPlayerPositionInterval() * 1000));
         LoggingHandler.felog.info("PLAYERLOGGER created Database");
 
     }
@@ -251,9 +247,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                             logEvent.process(em);
                         }
                         em.getTransaction().commit();
-                        // System.out.println(String.format("%d: Wrote %d playerlogger entries",
-                        // System.currentTimeMillis()
-                        // % (1000 * 60), count));
                     }
                     catch (Exception e1)
                     {
@@ -329,21 +322,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             }
         }, "FEPlayerLoggerPurgeThread");
         purgeData.start();
-        // String hql = "delete from Action where time < :startTime";
-        // Query q = em.createQuery(hql).setParameter("startTime", startTime);
-        // try
-        // {
-        // em.getTransaction().begin();
-        // int count = q.executeUpdate();
-        // LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
-        // if(player!=null) {
-        // ChatOutputHandler.chatConfirmation(player, String.format("Purged %d old Playerlogger entries", count));
-        // }
-        // }
-        // finally
-        // {
-        // em.getTransaction().commit();
-        // }
     }
 
     // ============================================================
@@ -754,16 +732,15 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         public void run()
         {
             logEvent(new LogEventPlayerPositions());
-            startThread();
         }
     };
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void worldLoad(WorldEvent.Load event)
-    {
-        logEvent(new LogEventWorldLoad(event));
-        startThread();
-    }
+//    @SubscribeEvent(priority = EventPriority.LOWEST)
+//    public void worldLoad(WorldEvent.Load event)
+//    {
+//        logEvent(new LogEventWorldLoad(event));
+//        startThread();
+//    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void placeEvent(EntityPlaceEvent event)
@@ -779,9 +756,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             for (BlockSnapshot snapshot : ((EntityMultiPlaceEvent) event).getReplacedBlockSnapshots())
                 changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(
-                        new LogEventPlace(new EntityPlaceEvent(snapshot, event.getPlacedAgainst(), event.getEntity())));
-            startThread();
+            	logEvent(new LogEventPlace(new EntityPlaceEvent(snapshot, event.getPlacedAgainst(), event.getEntity())));
         }
         else
         {

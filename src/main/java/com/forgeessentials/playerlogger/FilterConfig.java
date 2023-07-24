@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.FECommandParsingException;
@@ -25,7 +26,7 @@ public class FilterConfig
         blockPlace, blockBreak, blockDetonate, blockUse_Left, blockUse_Right, blockBurn, command, playerLogin, playerLogout, playerRespawn, playerChangeDim, playerPosition, other
     }
 
-    private static HashMap<UserIdent, FilterConfig> perPlayerFilters = new HashMap<>();
+    private static HashMap<UUID, FilterConfig> perPlayerFilters = new HashMap<>();
 
     public static FilterConfig globalConfig = new FilterConfig();
 
@@ -33,22 +34,25 @@ public class FilterConfig
 
     public boolean hasAction(ActionEnum a)
     {
-        return Awhitelist == actions.contains(a);
+    	if(actions.isEmpty()) {
+    		return true;
+    	}
+        return actions.contains(a);
     }
 
     private HashSet<Block> blocks = new HashSet<>();
 
     public boolean hasBlock(Block b)
     {
-        return Bwhitelist == blocks.contains(b);
+    	if(blocks.isEmpty()) {
+    		return true;
+    	}
+        return blocks.contains(b);
     }
 
     public static HashSet<String> keywords = new HashSet<>();
 
     public static ArrayList<String> actiontabs = new ArrayList<>();
-
-    public Boolean Awhitelist = null;
-    public Boolean Bwhitelist = null;
 
     public int pickerRange = 0;
 
@@ -61,8 +65,6 @@ public class FilterConfig
         keywords.add("before");
         keywords.add("after");
         keywords.add("range");
-        keywords.add("whitelist");
-        keywords.add("blacklist");
         keywords.add("player");
 
         ActionEnum[] enums = ActionEnum.values();
@@ -85,8 +87,8 @@ public class FilterConfig
 
     public static FilterConfig getDefaultPlayerConfig(UserIdent ident)
     {
-        if (perPlayerFilters.containsKey(ident))
-            return perPlayerFilters.get(ident);
+        if (perPlayerFilters.containsKey(ident.getUuid()))
+            return perPlayerFilters.get(ident.getUuid());
         return null;
     }
 
@@ -129,12 +131,6 @@ public class FilterConfig
                 case "range":
                     parseRange(ctx, args);
                     break;
-                case "whitelist":
-                    parseWhitelist(ctx, args, true);
-                    break;
-                case "blacklist":
-                    parseWhitelist(ctx, args, false);
-                    break;
                 case "player":
                     try
                     {
@@ -155,35 +151,6 @@ public class FilterConfig
 
             }
         }
-        if (Awhitelist == null)
-        {
-            Awhitelist = !actions.isEmpty();
-        }
-        if (Bwhitelist == null)
-        {
-            Bwhitelist = !blocks.isEmpty();
-        }
-
-    }
-
-    public void parseWhitelist(CommandContext<CommandSource> ctx, List<String> args, boolean enabled)
-    {
-        // while (!args.isEmpty() && !keywords.contains(args.peek()))
-        {
-            String name = args.remove(0);
-            if (name.equalsIgnoreCase("actions"))
-            {
-                Awhitelist = enabled;
-                ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        (enabled ? "Enabled" : "Disabled") + " Action Whitelist");
-            }
-            else if (name.equalsIgnoreCase("blocks"))
-            {
-                Bwhitelist = enabled;
-                ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        (enabled ? "Enabled" : "Disabled") + " Block Whitelist");
-            }
-        }
     }
 
     public FilterConfig(FilterConfig c)
@@ -193,8 +160,6 @@ public class FilterConfig
         blocks.addAll(c.blocks);
         before = c.before;
         after = c.after;
-        Awhitelist = c.Awhitelist;
-        Bwhitelist = c.Bwhitelist;
         player = c.player;
         pickerRange = c.pickerRange;
     }
@@ -323,13 +288,13 @@ public class FilterConfig
 
     public static void setPerPlayerFilters(UserIdent user, FilterConfig PlayerFilter)
     {
-        FilterConfig.perPlayerFilters.put(user, PlayerFilter);
+        FilterConfig.perPlayerFilters.put(user.getUsernameUuid(), PlayerFilter);
     }
 
     public String toReadableString()
     {
         return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks
-                + "\nAWhitelist: " + Awhitelist + "\nBWhitelist: " + Bwhitelist + "\nPickerRange: " + pickerRange;
+                + "\nPickerRange: " + pickerRange;
     }
 
 }
