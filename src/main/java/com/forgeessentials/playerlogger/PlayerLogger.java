@@ -783,15 +783,17 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLEnvironment.dist.isClient() || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        GameType gameType = GameType.SURVIVAL;
-        if (event.getEntity() instanceof ServerPlayerEntity)
-        {
-            gameType = ((ServerPlayerEntity) event.getEntity()).gameMode.getGameModeForPlayer();
-        }
-        if (gameType != GameType.CREATIVE)
+        if (((ServerPlayerEntity) event.getEntity()).gameMode.getGameModeForPlayer() != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
         }
+    }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
+    {
+        if (FMLEnvironment.dist.isClient() || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
+            return;
+        logEvent(new LogEventInteract(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

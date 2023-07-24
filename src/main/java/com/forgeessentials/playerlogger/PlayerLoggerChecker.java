@@ -188,7 +188,7 @@ public class PlayerLoggerChecker
                 Action02Command change2 = (Action02Command) change;
                 String command = change2.command;
                 String args = change2.arguments;
-                msg += String.format("Ran Command: %s with args: %s", command, args);
+                msg += String.format("Ran Command: \"%s\" with args: \"%s\"", command, args);
             }
             else if (change instanceof Action03PlayerEvent)
             {
@@ -198,27 +198,27 @@ public class PlayerLoggerChecker
                 case LOGIN:
                     if (!fc.hasAction(ActionEnum.playerLogin))
                         continue;
-                    msg += String.format("Logged In at %d %d %d", change2.x, change2.y, change2.z);
+                    msg += String.format("Logged In at %d %d %d %s", change2.x, change2.y, change2.z, change2.world);
                     break;
                 case LOGOUT:
                     if (!fc.hasAction(ActionEnum.playerLogout))
                         continue;
-                    msg += String.format("Logged Out at %d %d %d", change2.x, change2.y, change2.z);
+                    msg += String.format("Logged Out at %d %d %d %s", change2.x, change2.y, change2.z, change2.world);
                     break;
                 case RESPAWN:
                     if (!fc.hasAction(ActionEnum.playerRespawn))
                         continue;
-                    msg += String.format("Respawned at %d %d %d", change2.x, change2.y, change2.z);
+                    msg += String.format("Respawned at %d %d %d %s", change2.x, change2.y, change2.z, change2.world);
                     break;
                 case CHANGEDIM:
                     if (!fc.hasAction(ActionEnum.playerChangeDim))
                         continue;
-                    msg += String.format("Changed Dim at %d %d %d", change2.x, change2.y, change2.z);
+                    msg += String.format("Changed Dim at %d %d %d %s", change2.x, change2.y, change2.z, change2.world);
                     break;
                 case MOVE:
                     if (!fc.hasAction(ActionEnum.playerPosition))
                         continue;
-                    msg += String.format("Position at %d %d %d", change2.x, change2.y, change2.z);
+                    msg += String.format("Position at %d %d %d %s", change2.x, change2.y, change2.z, change2.world);
                     break;
                 default:
                     continue;

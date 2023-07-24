@@ -11,7 +11,6 @@ import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 
 public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
 {
@@ -26,14 +25,13 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
     {
         // TODO (upgrade): Check which types of interact events are triggered when
         // (especially EntityInteract)
-        if (event instanceof LeftClickBlock)
+        if (!(event instanceof LeftClickBlock||event instanceof RightClickBlock))
             return;
         Action01Block action = new Action01Block();
         action.time = new Date();
         action.player = getPlayer(event.getPlayer());
         action.world = event.getPlayer().level.dimension().location().toString();
-        action.type = (event instanceof RightClickBlock || event instanceof RightClickItem) ? ActionBlockType.USE_RIGHT
-                : ActionBlockType.USE_LEFT;
+        action.type = (event instanceof RightClickBlock) ? ActionBlockType.USE_RIGHT : ActionBlockType.USE_LEFT;
         action.x = event.getPos().getX();
         action.y = event.getPos().getY();
         action.z = event.getPos().getZ();
