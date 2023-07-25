@@ -78,8 +78,6 @@ public class SignToolsModule extends ConfigLoaderBase
                 {
                 	e.setCanceled(true);
                     StringTextComponent text = new StringTextComponent(ChatOutputHandler.formatColors(e.text[i]));
-                    ChatOutputHandler.applyFormatting(text.getStyle(),
-                            ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
                     e.formatted[i] = text;
                 }
             }
@@ -112,11 +110,16 @@ public class SignToolsModule extends ConfigLoaderBase
                         // Convert Formatting back into FE format for easy use
                         ITextComponent[] imessage = ItemUtil.getText(sign);
                         String[] signText = getFormatted(imessage);
+                        ITextComponent[] newMessage = new ITextComponent[4];
                         for (int i = 0; i < signText.length; i++)
                         {
-                            imessage[i] = new StringTextComponent(signText[i]);
+                        	newMessage[i] = new StringTextComponent(signText[i]);
                         }
-                        ItemUtil.setText(sign, imessage);
+                        ItemUtil.setText(sign, newMessage);
+                        sign.setChanged();
+                        w.sendBlockUpdated(event.getPos(), w.getBlockState(event.getPos()), w.getBlockState(event.getPos()), 3);
+
+                        ((ServerPlayerEntity) event.getPlayer()).connection.send(sign.getUpdatePacket());
                         ((ServerPlayerEntity) event.getPlayer()).openTextEdit(sign);
                         event.setCanceled(true);
                     }
@@ -155,7 +158,7 @@ public class SignToolsModule extends ConfigLoaderBase
         String[] out = new String[text.length];
         for (int i = 0; i < text.length; i++)
         {
-            out[i] = text[i].getContents().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
+            out[i] = text[i].getString().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
         }
         return out;
     }

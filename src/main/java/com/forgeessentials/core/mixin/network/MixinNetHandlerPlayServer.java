@@ -35,7 +35,7 @@ public class MixinNetHandlerPlayServer
      * Post {@link SignEditEvent} to the event bus.
      *
      * @param p_244542_1_ the update sign packet
-     * @param p_244542_2_ the list of string to be set to the sign
+     * @param p_244542_2_ the list of string we don't want to use
      * @author maximuslotro
      * @reason Need to inject custom colors into sign text
      */
@@ -52,11 +52,17 @@ public class MixinNetHandlerPlayServer
                 return;
             }
             SignTileEntity signtileentity = (SignTileEntity)tileentity;
+            if (signtileentity.getPlayerWhoMayEdit() != this.player)
+            {
+                LOGGER.warn("Player {} just tried to change non-editable sign",
+                        (Object) this.player.getDisplayName().getString());
+                return;
+            }
             SignEditEvent event = new SignEditEvent(p_244542_1_.getPos(), p_244542_1_.getLines(), this.player);
             if (MinecraftForge.EVENT_BUS.post(event)) {
-            	for(int i = 0; i < p_244542_2_.size(); ++i) {
+            	for(int i = 0; i < p_244542_1_.getLines().length; ++i) {
                     if (event.formatted[i] == null) {
-                        signtileentity.setMessage(i, new StringTextComponent(p_244542_2_.get(i)));
+                        signtileentity.setMessage(i, new StringTextComponent(p_244542_1_.getLines()[i]));
                     }
                     else {
                         signtileentity.setMessage(i, event.formatted[i]);
@@ -64,8 +70,8 @@ public class MixinNetHandlerPlayServer
                 }
             }
             else {
-            	for(int i = 0; i < p_244542_2_.size(); ++i) {
-                    signtileentity.setMessage(i, new StringTextComponent(p_244542_2_.get(i)));
+            	for(int i = 0; i < p_244542_1_.getLines().length; ++i) {
+                    signtileentity.setMessage(i, new StringTextComponent(p_244542_1_.getLines()[i]));
                  }
             }
 
