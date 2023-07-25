@@ -15,7 +15,6 @@ public class SignInfo
     int x, y, z;
     String dim;
     String[] text;
-    String event;
     Hand hand;
     BlockRayTraceResult hitVec;
 
@@ -26,10 +25,6 @@ public class SignInfo
         z = pos.getZ();
         this.text = text;
         this.dim = dim;
-        if (event != null)
-        {
-            this.event = event.getClass().getSimpleName();
-        }
 
         if (event instanceof PlayerInteractEvent)
         {

@@ -76,6 +76,7 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
+                	e.setCanceled(true);
                     StringTextComponent text = new StringTextComponent(ChatOutputHandler.formatColors(e.text[i]));
                     ChatOutputHandler.applyFormatting(text.getStyle(),
                             ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
@@ -93,37 +94,34 @@ public class SignToolsModule extends ConfigLoaderBase
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         World w = event.getWorld();
-        if (!w.isClientSide)
+        if (w.isClientSide)
         {
             return;
         }
-
-        TileEntity te = event.getPlayer().level.getBlockEntity(event.getPos());
+        TileEntity te = w.getBlockEntity(event.getPos());
         if (te instanceof SignTileEntity)
         {
             SignTileEntity sign = ((SignTileEntity) te);
             if (allowSignEdit && event.getPlayer().isCrouching() && event instanceof RightClickBlock)
             {
-                if (event.getPlayer().getMainHandItem() != ItemStack.EMPTY)
+                if (event.getPlayer().getMainHandItem() == ItemStack.EMPTY)
                 {
                     if (APIRegistry.perms.checkPermission(event.getPlayer(), EDIT_PERM)
-                            && APIRegistry.perms.checkPermission(event.getPlayer(), "fe.protection.use.minecraft.sign")
-                            && SIGNS(event.getPlayer().getMainHandItem().getItem()))
+                            && APIRegistry.perms.checkPermission(event.getPlayer(), "fe.protection.use.minecraft.sign"))
                     {
                         // Convert Formatting back into FE format for easy use
                         ITextComponent[] imessage = ItemUtil.getText(sign);
-                        for (int i = 0; i < imessage.length; i++)
+                        String[] signText = getFormatted(imessage);
+                        for (int i = 0; i < signText.length; i++)
                         {
-                            imessage[i] = new StringTextComponent(
-                                    imessage[i].getContents().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
-                            ItemUtil.setText(sign, imessage);
+                            imessage[i] = new StringTextComponent(signText[i]);
                         }
-
-                        ((ServerPlayerEntity) event.getPlayer()).openTextEdit((SignTileEntity) te);
+                        ItemUtil.setText(sign, imessage);
+                        ((ServerPlayerEntity) event.getPlayer()).openTextEdit(sign);
                         event.setCanceled(true);
                     }
                 }
-
+                return;
             }
             ITextComponent[] imessage = ItemUtil.getText(sign);
             String[] signText = getFormatted(imessage);
