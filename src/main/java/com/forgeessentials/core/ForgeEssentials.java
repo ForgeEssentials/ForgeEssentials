@@ -416,7 +416,9 @@ public class ForgeEssentials
                 "Shows notification to the player if FE version is outdated");
 
         PermissionManager.registerCommandPermission("help", DefaultPermissionLevel.ALL);
-        APIRegistry.perms.registerPermission("command.help", DefaultPermissionLevel.ALL, "Help command");
+        PermissionManager.registerCommandPermission("config", DefaultPermissionLevel.OP);
+        PermissionManager.registerCommandPermission("forge", DefaultPermissionLevel.OP);
+        PermissionManager.registerCommandPermission("trigger", DefaultPermissionLevel.OP);
 
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5",

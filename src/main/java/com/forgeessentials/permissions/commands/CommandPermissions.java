@@ -63,7 +63,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
     @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
-        return DefaultPermissionLevel.ALL;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
