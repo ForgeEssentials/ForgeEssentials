@@ -82,7 +82,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required3. Try /auth help.");
         }
     }
 
@@ -95,7 +95,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required4. Try /auth help.");
         }
     }
 
@@ -111,7 +111,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(info))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required5. Try /auth help.");
         }
     }
 
@@ -124,7 +124,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required6. Try /auth help.");
         }
     }
 
@@ -137,7 +137,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required7. Try /auth help.");
         }
     }
 
@@ -150,7 +150,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required8. Try /auth help.");
         }
     }
 
@@ -162,7 +162,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required9. Try /auth help.");
             // add the item back to the inventory
             ItemStack stack = event.getEntityItem().getItem();
             event.getPlayer().inventory.add(stack);
@@ -179,7 +179,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required10. Try /auth help.");
         }
     }
 
@@ -192,7 +192,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(player))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required11. Try /auth help.");
         }
     }
 
@@ -205,7 +205,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required12. Try /auth help.");
         }
     }
 
@@ -219,7 +219,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             event.setResult(Result.DENY);
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    "Login required. Try /auth help.");
+                    "Login required13. Try /auth help.");
         }
     }
 

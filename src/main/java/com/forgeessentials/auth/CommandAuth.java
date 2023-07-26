@@ -173,7 +173,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // stop if unlogged.
         if (!ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getGameProfile().getId()))
         {
-            ChatOutputHandler.chatWarning(ctx.getSource(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatWarning(ctx.getSource(), "Login required1. Try /auth help.");
             return Command.SINGLE_SUCCESS;
         }
 
@@ -239,7 +239,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
 
         if (!ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getGameProfile().getId()))
         {
-            ChatOutputHandler.chatWarning(ctx.getSource(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatWarning(ctx.getSource(), "Login required2. Try /auth help.");
             return Command.SINGLE_SUCCESS;
         }
 
