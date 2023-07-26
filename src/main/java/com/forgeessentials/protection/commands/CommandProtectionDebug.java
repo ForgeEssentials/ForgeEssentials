@@ -51,8 +51,10 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return baseBuilder.then(Commands.argument("command", StringArgumentType.greedyString())
-                .executes(CommandContext -> execute(CommandContext, "setPass")));
+        return baseBuilder
+        		.then(Commands.argument("command", StringArgumentType.greedyString())
+        				.executes(CommandContext -> execute(CommandContext, "setCmd")))
+        		.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
@@ -73,10 +75,11 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            String cmd = StringArgumentType.getString(ctx, "command");
-            if (cmd.isEmpty())
-                cmd = "global deny";
-            cmd = "/p " + cmd + " ";
+        	String cmd = "global deny";
+        	if(params.equals("setCmd")) {
+        		cmd = StringArgumentType.getString(ctx, "command");
+        	}
+            cmd = "/feperm " + cmd + " ";
 
             ModuleProtection.setDebugMode(player, cmd);
             if (!ModuleProtection.isDebugMode(player))
