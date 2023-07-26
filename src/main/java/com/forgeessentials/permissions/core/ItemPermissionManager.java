@@ -41,7 +41,7 @@ public class ItemPermissionManager extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
 
-    protected static boolean enabled;
+    protected static boolean enabled = false;
 
     /* ------------------------------------------------------------ */
 
@@ -203,5 +203,9 @@ public class ItemPermissionManager extends ServerEventHandler
                 ModulePermissions.getItemPermissionManager().unregister();
         }
     }
+
+	public static boolean isEnabled() {
+		return enabled;
+	}
 
 }

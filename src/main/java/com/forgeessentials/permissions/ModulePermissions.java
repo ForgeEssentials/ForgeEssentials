@@ -12,7 +12,7 @@ import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.permissions.commands.CommandItemPermission;
+import com.forgeessentials.permissions.commands.CommandPermissionTaggedItem;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
@@ -103,7 +103,7 @@ public class ModulePermissions extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandZone(true), dispatcher);
         FECommandManager.registerCommand(new CommandPermissions(true), dispatcher);
         FECommandManager.registerCommand(new CommandPromote(true), dispatcher);
-        FECommandManager.registerCommand(new CommandItemPermission(true), dispatcher);
+        FECommandManager.registerCommand(new CommandPermissionTaggedItem(true), dispatcher);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

@@ -31,10 +31,10 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandItemPermission extends ForgeEssentialsCommandBuilder
+public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandItemPermission(boolean enabled)
+    public CommandPermissionTaggedItem(boolean enabled)
     {
         super(enabled);
     }
@@ -42,13 +42,13 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     @Override
     public @NotNull String getPrimaryAlias()
     {
-        return "permitem";
+        return "permtaggeditem";
     }
 
     @Override
     public String getPermissionNode()
     {
-        return PermissionCommandParser.PERM + ".permitem";
+        return PermissionCommandParser.PERM + ".permtaggeditem";
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
                                 .then(Commands.literal(Zone.PERMISSION_TRUE)
                                         .executes(context -> execute(context, "perm-" + Zone.PERMISSION_TRUE)))
                                 .then(Commands.literal(Zone.PERMISSION_FALSE)
-                                        .executes(context -> execute(context, "perm" + Zone.PERMISSION_FALSE)))))
+                                        .executes(context -> execute(context, "perm-" + Zone.PERMISSION_FALSE)))))
                 .then(Commands.literal("group")
                         .then(Commands.argument("group", StringArgumentType.string()).suggests(SUGGEST_GROUPS)
                                 .executes(context -> execute(context, "group"))))
@@ -103,6 +103,10 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
+        if(!ItemPermissionManager.isEnabled()) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Command requires ItemPermissionManager to be enabled!");
+            return Command.SINGLE_SUCCESS;
+        }
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)
         {
