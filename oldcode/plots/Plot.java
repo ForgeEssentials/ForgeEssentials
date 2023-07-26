@@ -18,11 +18,10 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.economy.plots.PlotEvent.OwnerChanged;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
-import com.forgeessentials.util.events.world.PlotEvent;
-import com.forgeessentials.util.events.world.PlotEvent.OwnerChanged;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import net.minecraft.command.CommandSource;

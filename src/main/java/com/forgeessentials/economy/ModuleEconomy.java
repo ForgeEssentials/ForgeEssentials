@@ -29,7 +29,6 @@ import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
-import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.CommandUtils;
@@ -99,8 +98,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     /* ------------------------------------------------------------ */
 
-    protected PlotManager plotManager = new PlotManager();
-
     protected ShopManager shopManager = new ShopManager();
 
     protected HashMap<UserIdent, PlayerWallet> wallets = new HashMap<>();
@@ -153,8 +150,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         CommandFeSettings.addSetting("Economy", "currency_name", PERM_CURRENCY);
         CommandFeSettings.addSetting("Economy", "currency_name_singular", PERM_CURRENCY_SINGULAR);
         CommandFeSettings.addSetting("Economy", "death_toll", PERM_DEATHTOLL);
-
-        PlotManager.serverStarting();
     }
 
     @SubscribeEvent

@@ -1,7 +1,6 @@
-package com.forgeessentials.util.events.world;
+package com.forgeessentials.economy.plots;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.economy.plots.Plot;
 
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
