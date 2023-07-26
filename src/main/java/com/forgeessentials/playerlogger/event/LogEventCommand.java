@@ -49,7 +49,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
                     .GetSource(event.getParseResults().getContext().getSource()));
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
             action.world = block.getLevel().dimension().location().toString();
-            BlockPos pos = new BlockPos(block.getPosition());
+            BlockPos pos = new BlockPos(0, 0, 0);
             action.x = pos.getX();
             action.y = pos.getY();
             action.z = pos.getZ();
