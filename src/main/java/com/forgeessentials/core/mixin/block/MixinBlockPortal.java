@@ -1,7 +1,9 @@
 package com.forgeessentials.core.mixin.block;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.At;
 
 import com.forgeessentials.util.events.entity.EntityPortalEvent;
 
@@ -18,22 +20,23 @@ public class MixinBlockPortal
 
     /**
      * Custom portal stuff
-     * 
+     *
      * @author Maximuslotro
      * @reason stuff
      */
-    @Overwrite
-    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
+    @Inject(method = "entityInside",
+            at = @At(value = "HEAD"),
+            cancellable=true)
+    public void runFEEntityPortalEVENT(BlockState state, World worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci)
     {
         if (!entityIn.isPassenger() && !entityIn.isVehicle() && entityIn.canChangeDimensions())
-        { // TODO: get target
-          // coordinates
-          // somehow
-            if (!MinecraftForge.EVENT_BUS
-                    .post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.level, new BlockPos(0, 0, 0))))
-            {
-                entityIn.handleInsidePortal(pos);
+        {
+            if (MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.level, entityIn.blockPosition()))) {
+                ci.cancel();
             }
+        }
+        else{
+            ci.cancel();
         }
     }
 
