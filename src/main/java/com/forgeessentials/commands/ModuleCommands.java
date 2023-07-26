@@ -149,10 +149,7 @@ public class ModuleCommands implements ConfigLoader
         FECommandManager.registerCommand(new CommandDrop(true), dispatcher);
         FECommandManager.registerCommand(new CommandFindblock(true), dispatcher);
         FECommandManager.registerCommand(new CommandNoClip(true), dispatcher);
-        // Bubble
-        CommandBubble bubble = new CommandBubble(true);
-        FECommandManager.registerCommand(bubble, dispatcher);
-        MinecraftForge.EVENT_BUS.register(bubble);
+        FECommandManager.registerCommand(new CommandBubble(true), dispatcher);
 
         FECommandManager.registerCommand(new CommandSpeed(true), dispatcher);
         FECommandManager.registerCommand(new CommandSeen(true), dispatcher);

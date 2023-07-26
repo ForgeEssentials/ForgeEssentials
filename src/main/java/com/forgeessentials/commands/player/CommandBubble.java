@@ -2,7 +2,6 @@ package com.forgeessentials.commands.player;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -15,7 +14,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,22 +51,25 @@ public class CommandBubble extends ForgeEssentialsCommandBuilder
         return ModuleCommands.PERM + ".bubble";
     }
 
-    @SubscribeEvent
-    public void permissionInitializeEvent(PermissionEvent.Initialize e)
+    @Override
+    public void registerExtraPermissions()
     {
-        e.serverZone.setGroupPermissionProperty(BUBBLE_GROUP, FEPermissions.GROUP_PRIORITY, "45");
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
-        e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
+    	APIRegistry.perms.getServerZone().setGroupPermissionProperty(BUBBLE_GROUP, FEPermissions.GROUP_PRIORITY, "45");
+    	APIRegistry.perms.getServerZone().setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_USE + Zone.ALL_PERMS, false);
+        APIRegistry.perms.getServerZone().setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_PLACE + Zone.ALL_PERMS, false);
+        APIRegistry.perms.getServerZone().setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
+        APIRegistry.perms.getServerZone().setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
+        APIRegistry.perms.getServerZone().setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return baseBuilder.then(Commands.literal("on").executes(CommandContext -> execute(CommandContext, "on")))
-                .then(Commands.literal("off").executes(CommandContext -> execute(CommandContext, "off")))
+        return baseBuilder
+        		.then(Commands.literal("on").
+        				executes(CommandContext -> execute(CommandContext, "on")))
+                .then(Commands.literal("off")
+                		.executes(CommandContext -> execute(CommandContext, "off")))
                 .executes(CommandContext -> execute(CommandContext, "toggle"));
     }
 
@@ -76,19 +77,14 @@ public class CommandBubble extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         boolean toggleOn = false;
-        if (params.equals("toggle"))
-        {
+        if (params.equals("toggle")) {
             toggleOn = !APIRegistry.perms.getServerZone().getIncludedGroups(Zone.GROUP_DEFAULT).contains(BUBBLE_GROUP);
         }
-        else
-        {
-            switch (params)
-            {
-            case ("on"):
-                toggleOn = true;
-            case ("off"):
-                toggleOn = false;
-            }
+        else if(params.equals("on")) {
+        	toggleOn = true;
+        }
+        else {
+        	toggleOn = false;
         }
         if (toggleOn)
         {
