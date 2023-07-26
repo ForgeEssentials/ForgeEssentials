@@ -25,7 +25,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity.SleepResult;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -157,7 +156,6 @@ public class TeleportModule extends ConfigLoaderBase
             ((ServerPlayerEntity) e.getPlayer()).setRespawnPosition(e.getPlayer().level.dimension(), e.getPos(), 0,
                     false, false);
             ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
-            e.setResult(SleepResult.OTHER_PROBLEM);
         }
     }
 
