@@ -40,6 +40,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.playerlogger.TestClass;
+import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.PlayerInfo;
@@ -443,6 +444,8 @@ public class ForgeEssentials
                 "Allow being teleported from a certain location / dimension via a portal");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, DefaultPermissionLevel.ALL,
                 "Allow being teleported to a certain location / dimension via a portal");
+        APIRegistry.perms.registerPermission(ModuleProtection.COMMANDBLOCK_PERM, DefaultPermissionLevel.OP,
+                "Lowest node for restricting access to CommandBlocks");
 
         CommandFeSettings.addSetting("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
         CommandFeSettings.addSetting("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);

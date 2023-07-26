@@ -1,11 +1,13 @@
 package com.forgeessentials.core.mixin.entity.player;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.PlayerInfo;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,11 +22,11 @@ public abstract class MixinPlayerEntity
      * @author Maximuslotro
      * @reason stuff
      */
-    @Overwrite
-    public boolean canUseGameMasterBlocks()
+    @Inject(method = "canUseGameMasterBlocks", at = @At("HEAD"), cancellable = true)
+    public void canUseGameMasterBlocks2(CallbackInfoReturnable<Boolean> cir)
     {
-        return ((PlayerEntity) (Object) this).isCreative()
-                && APIRegistry.perms.checkPermission((PlayerEntity) (Object) this, "mc.commandblock");
+        cir.setReturnValue(((PlayerEntity) (Object) this).isCreative()
+                && APIRegistry.perms.checkPermission((PlayerEntity) (Object) this, ModuleProtection.COMMANDBLOCK_PERM));
     }
 
     /**

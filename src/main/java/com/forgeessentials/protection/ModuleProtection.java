@@ -153,6 +153,8 @@ public class ModuleProtection
     public static final String ZONE_POTION = ZONE + ".potion";
     public static final String ZONE_POTION_INTERVAL = ZONE_POTION + ".interval";
 
+	public final static String COMMANDBLOCK_PERM = "mc.commandblock";
+
     public static final String MSG_ZONE_DENIED = "You are not allowed to enter this area!";
 
     private static final Class<?>[] damageEntityClasses = new Class<?>[] {
