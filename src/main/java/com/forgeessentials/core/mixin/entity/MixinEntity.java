@@ -1,7 +1,6 @@
 package com.forgeessentials.core.mixin.entity;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -24,10 +23,13 @@ public abstract class MixinEntity
      * @author Maximuslotro
      * @reason we want to add perms so players can't activate redstone in protected areas without permission
      */
-    @Overwrite
-    public boolean isIgnoringBlockTriggers()
+	@Inject(method = "isIgnoringBlockTriggers()Z", at = @At("RETURN"), cancellable = true)
+    public void isFEIgnoringBlockTriggers(CallbackInfoReturnable<Boolean> callback)
     {
-        return MinecraftForge.EVENT_BUS.post(new PressurePlateEvent((Entity) (Object) this));
+		if(MinecraftForge.EVENT_BUS.post(new PressurePlateEvent((Entity) (Object) this)))
+        {
+			callback.setReturnValue(true);
+        }
     }
 
     /**
@@ -36,25 +38,16 @@ public abstract class MixinEntity
      * @author Maximuslotro
      * @reason fix afk players being pushed by entities
      */
-    @Inject(at = @At("RETURN"),
-            method = "canBeCollidedWith()Z",
-            cancellable = true)
+    @Inject(method = "canBeCollidedWith()Z", at = @At("RETURN"), cancellable = true)
     public void isAfkPlayer(CallbackInfoReturnable<Boolean> callback)
     {
-        if (((Entity) (Object) this) instanceof PlayerEntity)
+        if(((Entity) (Object) this) instanceof PlayerEntity)
         {
             if (ModuleCommandsEventHandler.isAfk(UserIdent.get((PlayerEntity) (Object) this)))
             {
-                if (!callback.getReturnValue())
-                {
-                    callback.setReturnValue(true);
-                    if (callback.getReturnValue())
-                    {
-                        LoggingHandler.felog.debug("Prevented afk player from being moved");
-                    }
-                }
+            	callback.setReturnValue(true);
+            	LoggingHandler.felog.debug("Prevented afk player from being moved");
             }
         }
     }
-
 }

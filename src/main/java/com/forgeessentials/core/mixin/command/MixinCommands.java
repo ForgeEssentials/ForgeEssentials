@@ -87,29 +87,6 @@ public class MixinCommands
             }
         }
     }
-    // /**
-    // * Check if the sender has permission for the command.
-    // *
-    // * @param command the command
-    // * @param sender the sender
-    // * @return {@code true} if the sender has permission
-    // */
-    // @Redirect(
-    // method = "fillUsableCommands",//(Lcom/mojang/brigadier/tree/CommandNode;Lcom/mojang/brigadier/tree/CommandNode;Lnet/minecraft/command/CommandSource;Ljava/util/Map;)V",
-    // at = @At(
-    // value = "INVOKE",
-    // target = "Lcom/mojang/brigadier/tree/CommandNode;canUse(Lnet/minecraft/command/CommandSource;)Z",
-    // remap=false
-    // ),
-    // require = 1,
-    // remap=true
-    // )
-    // public boolean canUse(CommandNode<CommandSource> commandNode,CommandSource sender)
-    // {
-    // return true;
-    // //return checkPerms(commandNode, sender);
-    // }
-
 
     private static boolean checkPerms(String commandNode, CommandSource source1)
     {

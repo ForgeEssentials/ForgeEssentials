@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.forgeessentials.util.events.world.SignEditEvent;
 
@@ -39,10 +41,12 @@ public class MixinServerPlayNetHandler
      * @author maximuslotro
      * @reason Need to inject custom colors into sign text
      */
-    @Overwrite
-    public void updateSignText(CUpdateSignPacket p_244542_1_, List<String> p_244542_2_)
+    @Inject(method = "updateSignText", 
+    		at = @At("HEAD"),
+    		cancellable = true)
+    public void updateSignText(CUpdateSignPacket p_244542_1_, List<String> p_244542_2_, CallbackInfo ci)
     {
-    	this.player.resetLastActionTime();
+        this.player.resetLastActionTime();
         ServerWorld serverworld = this.player.getLevel();
         BlockPos blockpos = p_244542_1_.getPos();
         if (serverworld.hasChunkAt(blockpos)) {
@@ -58,6 +62,7 @@ public class MixinServerPlayNetHandler
                         (Object) this.player.getDisplayName().getString());
                 return;
             }
+            ci.cancel();
             SignEditEvent event = new SignEditEvent(p_244542_1_.getPos(), p_244542_1_.getLines(), this.player);
             if (MinecraftForge.EVENT_BUS.post(event)) {
             	for(int i = 0; i < p_244542_1_.getLines().length; ++i) {
