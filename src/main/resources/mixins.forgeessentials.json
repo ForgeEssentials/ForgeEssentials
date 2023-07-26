@@ -5,6 +5,7 @@
 	"refmap": "mixins.forgeessentials.refmap.json",
 	"compatibilityLevel": "JAVA_8",
 	"server": [
+		"block.MixinEndPortalBlock",
 		"block.MixinNetherPortalBlock",
 		"block.MixinFireBlock",
 		"command.MixinCommands",
