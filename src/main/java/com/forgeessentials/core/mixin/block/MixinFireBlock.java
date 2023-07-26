@@ -16,7 +16,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(FireBlock.class)
-public class MixinBlockFire
+public class MixinFireBlock
 {
     /*
      * @Inject( method = "tryCatchFire", at = @At( value = "INVOKE", target =

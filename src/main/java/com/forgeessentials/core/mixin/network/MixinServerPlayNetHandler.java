@@ -22,7 +22,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(ServerPlayNetHandler.class)
-public class MixinNetHandlerPlayServer
+public class MixinServerPlayNetHandler
 {
 
     @Shadow

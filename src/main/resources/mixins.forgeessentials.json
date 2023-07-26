@@ -5,13 +5,13 @@
 	"refmap": "mixins.forgeessentials.refmap.json",
 	"compatibilityLevel": "JAVA_8",
 	"server": [
-		"block.MixinBlockPortal",
-		"block.MixinBlockFire",
+		"block.MixinNetherPortalBlock",
+		"block.MixinFireBlock",
 		"command.MixinCommands",
 		"entity.MixinEntity",
 		"entity.MixinItemFrameEntity",
-		"entity.player.MixinEntityPlayer",
-		"network.MixinNetHandlerPlayServer",
+		"entity.player.MixinPlayerEntity",
+		"network.MixinServerPlayNetHandler",
 		"network.MixinServerLoginNetHandler",
 		"network.MixinMinecraftServer"
 	],

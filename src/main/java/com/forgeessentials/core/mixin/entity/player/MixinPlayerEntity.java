@@ -11,7 +11,7 @@ import com.forgeessentials.util.PlayerInfo;
 import net.minecraft.entity.player.PlayerEntity;
 
 @Mixin(PlayerEntity.class)
-public abstract class MixinEntityPlayer
+public abstract class MixinPlayerEntity
 {
 
     /**

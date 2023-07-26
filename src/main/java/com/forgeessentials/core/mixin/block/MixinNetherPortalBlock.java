@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(NetherPortalBlock.class)
-public class MixinBlockPortal
+public class MixinNetherPortalBlock
 {
 
     /**
