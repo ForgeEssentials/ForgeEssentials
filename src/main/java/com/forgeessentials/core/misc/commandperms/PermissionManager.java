@@ -34,7 +34,7 @@ public class PermissionManager
     public static void registerCommandPermission(String commandNode, DefaultPermissionLevel permissionLevel)
     {
         commandPermissionMap.put(commandNode, permissionLevel);
-        registerCommandPermissionDiscription(commandNode, permissionLevel, "");
+        APIRegistry.perms.registerPermission("command." + commandNode, permissionLevel, "");
     }
 
     /**
@@ -63,7 +63,7 @@ public class PermissionManager
             }
             else
             {
-                LoggingHandler.felog.debug("Command Tried to be registered twice: " + node.getKey());
+                LoggingHandler.felog.debug("Command permission tried to be set twice: " + node.getKey());
             }
         }
     }
@@ -142,6 +142,9 @@ public class PermissionManager
             if (parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node) == DefaultPermissionLevel.OP)
             {
                 parentLevel = DefaultPermissionLevel.OP;
+            }
+            if(commandPermissionMap.containsKey(prefix)) {
+            	parentLevel = commandPermissionMap.get(prefix);
             }
             result.put(prefix.replace(' ', '.').replace("<", "").replace(">", ""), parentLevel);
         }
