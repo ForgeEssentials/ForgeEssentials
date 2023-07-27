@@ -1,14 +1,12 @@
 package com.forgeessentials.commands.server;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -22,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -116,13 +113,9 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
             if (!cmdObj.canUse(sender.createCommandSourceStack()))
                 continue;
 
-            Set<String> commands = new HashSet<>();
-            commands.add("/" + cmdObj.getName());
-
-            String perm = "TODO PLACEHOLDER";
-            String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
-                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK
-                    + cmdObj.getUsageText();
+            String text = "{\"text\":\" "+ChatOutputHandler.COLOR_FORMAT_CHARACTER+"6/"+cmdObj.getName() + '\n' 
+            +ChatOutputHandler.COLOR_FORMAT_CHARACTER+"4 command."+cmdObj.getName()+".*" + '\n' 
+            		+ChatOutputHandler.COLOR_FORMAT_CHARACTER+"0 "+ cmdObj.getUsageText()+"\"}";
             pages.add(text);
         }
 
@@ -134,6 +127,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
 
         is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
         is.addTagElement("title", StringNBT.valueOf("CommandBook"));
+        is.addTagElement("pages", pagesNbt);
 
         sender.inventory.add(is);
         return Command.SINGLE_SUCCESS;
