@@ -85,7 +85,11 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
                     Translator.format("Player %s not found.", victim.getDisplayName().getString()));
             return Command.SINGLE_SUCCESS;
         }
-
+        if(victim == source) {
+        	ChatOutputHandler.chatNotification(ctx.getSource(), "Pressing E is just one key, "
+        			+ "Why go through all the trouble of using this command?");
+            return Command.SINGLE_SUCCESS;
+        }
         if (source.containerMenu != source.inventoryMenu)
         {
             source.closeContainer();
@@ -95,9 +99,9 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
         source.openMenu(new INamedContainerProvider() {
 
             @Override
-            public Container createMenu(int id, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity victim)
+            public Container createMenu(int id, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity player)
             {
-                return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory,
+            	return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory,
                         new SeeablePlayerInventory(victim), 5);
             }
 

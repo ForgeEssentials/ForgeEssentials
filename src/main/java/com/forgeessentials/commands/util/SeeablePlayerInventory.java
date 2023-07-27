@@ -13,17 +13,6 @@ public class SeeablePlayerInventory implements IInventory
         victim = player;
     }
 
-    public boolean shouldGetFromSlot(int section)
-    {
-        return section >= 4 && section < 8;
-    }
-
-    @Override
-    public void clearContent()
-    {
-        victim.inventory.clearContent();
-    }
-
     @Override
     public int getContainerSize()
     {
@@ -36,82 +25,28 @@ public class SeeablePlayerInventory implements IInventory
         return victim.inventory.isEmpty();
     }
 
-    public int getSlot(int section)
-    {
-        if (section == 8)
-        {
-            return 40;
-        }
-        else if (section >= 0 && section <= 3)
-        {
-            return 39 - section;
-        }
-        else if (section >= 9 && section <= 35)
-        {
-            return section;
-        }
-        else if (section >= 36 && section <= 44)
-        {
-            return section - 36;
-        }
-
-        return -1;
-    }
-
     @Override
     public ItemStack getItem(int section)
     {
-        if (shouldGetFromSlot(section))
-        {
-            return ItemStack.EMPTY;
-        }
-        return getSlot(section) == -1 ? ItemStack.EMPTY : victim.inventory.getItem(getSlot(section));
+    	return victim.inventory.getItem(section);
     }
 
     @Override
     public ItemStack removeItem(int section, int number)
     {
-        if (shouldGetFromSlot(section))
-        {
-            return ItemStack.EMPTY;
-        }
-        return getSlot(section) == -1 ? ItemStack.EMPTY : victim.inventory.removeItem(getSlot(section), number);
+    	return victim.inventory.removeItem(section, number);
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int section)
     {
-        if (shouldGetFromSlot(section))
-        {
-            return ItemStack.EMPTY;
-        }
-        return getSlot(section) == -1 ? ItemStack.EMPTY : victim.inventory.removeItemNoUpdate(getSlot(section));
+    	return victim.inventory.removeItemNoUpdate(section);
     }
 
     @Override
     public void setItem(int section, ItemStack stack)
     {
-        if (shouldGetFromSlot(section))
-        {
-            return;
-        }
-        if (getSlot(section) != -1)
-        {
-            victim.inventory.setItem(getSlot(section), stack);
-            setChanged();
-        }
-    }
-
-    @Override
-    public boolean canPlaceItem(int section, ItemStack stack)
-    {
-        if (shouldGetFromSlot(section))
-        {
-            return false;
-        }
-
-        int slot = getSlot(section);
-        return slot != -1 && victim.inventory.canPlaceItem(slot, stack);
+    	victim.inventory.setItem(section, stack);
     }
 
     @Override
@@ -133,4 +68,15 @@ public class SeeablePlayerInventory implements IInventory
         return true;
     }
 
+    @Override
+    public boolean canPlaceItem(int section, ItemStack stack)
+    {
+    	return victim.inventory.canPlaceItem(section, stack);
+    }
+
+    @Override
+    public void clearContent()
+    {
+        victim.inventory.clearContent();
+    }
 }
