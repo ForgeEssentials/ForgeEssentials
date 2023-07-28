@@ -18,8 +18,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -238,50 +236,12 @@ public class CommandUtils
     // ------------------------------------------------------------
     // Utilities
 
-    public static List<String> completePlayername(String arg)
-    {
-        List<String> arraylist = new ArrayList<>();
-        for (UserIdent s2 : APIRegistry.perms.getServerZone().getKnownPlayers())
-        {
-            if (doesStringStartWith(arg, s2.getUsernameOrUuid()))
-            {
-                arraylist.add(s2.getUsernameOrUuid());
-            }
-        }
-        return arraylist;
-    }
-
     public static boolean hasPermissionNOC(CommandSource sender, String perm)
     {
         if (sender.getEntity() != null && sender.getEntity() instanceof PlayerEntity)
             return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
         ICommandSource source = GetSource(sender);
         return source instanceof MinecraftServer || source instanceof CommandBlockLogic;
-    }
-
-    @Deprecated
-    public static TextComponent getChatComponentFromNthArg(String[] args, int index)
-    {
-        TextComponent itextcomponent = new StringTextComponent("");
-
-        for (int i = index; i < args.length; ++i)
-        {
-            if (i > index)
-            {
-                itextcomponent.append(" ");
-            }
-
-            itextcomponent.append(net.minecraftforge.common.ForgeHooks.newChatWithLinks(args[i])); // Forge: links for
-                                                                                                   // messages
-
-        }
-
-        return itextcomponent;
-    }
-
-    public static boolean doesStringStartWith(String original, String region)
-    {
-        return region.regionMatches(true, 0, original, 0, original.length());
     }
 
     public static ServerPlayerEntity getServerPlayer(CommandSource source)

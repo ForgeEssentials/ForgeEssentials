@@ -24,14 +24,11 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
-import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.command.CommandHelp;
 import com.forgeessentials.chat.irc.command.CommandListPlayers;
-import com.forgeessentials.chat.irc.command.CommandMessage;
-import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandUtils;
@@ -117,11 +114,6 @@ public class IrcHandler extends ListenerAdapter
 
     public final Map<String, IrcCommand> commands = new HashMap<>();
 
-    // This map is used to keep the ICommandSender from being recycled by the
-    // garbage collector,
-    // so they can be used as WeakReferences in CommandReply
-    public final Map<User, IrcCommandSender> ircUserCache = new HashMap<>();
-
     /* ------------------------------------------------------------ */
 
     public IrcHandler()
@@ -130,8 +122,6 @@ public class IrcHandler extends ListenerAdapter
 
         registerCommand(new CommandHelp());
         registerCommand(new CommandListPlayers());
-        registerCommand(new CommandMessage());
-        registerCommand(new CommandReply());
     }
 
     public static IrcHandler getInstance()
@@ -185,7 +175,6 @@ public class IrcHandler extends ListenerAdapter
         if (bot != null && bot.isConnected())
         {
             bot.sendIRC().quitServer();
-            ircUserCache.clear();
             bot = null;
         }
     }
@@ -336,16 +325,6 @@ public class IrcHandler extends ListenerAdapter
     }
     /* ------------------------------------------------------------ */
 
-    public void ircSendMessageUser(User user, String message)
-    {
-        if (!isConnected())
-            return;
-        // ignore messages to jtv
-        if (twitchMode && user.getNick().equals("jtv"))
-            return;
-        user.send().message(message);
-    }
-
     public void ircSendMessage(String message)
     {
         if (isConnected())
@@ -380,25 +359,7 @@ public class IrcHandler extends ListenerAdapter
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
-    public CommandSource getIrcUser(String username)
-    {
-        if (!isConnected())
-            return null;
-        CommandSource source = null;
-        for (User user : bot.getUserChannelDao().getAllUsers())
-        {
-            if (user.getNick().equals(username))
-            {
-                IrcCommandSender sender = new IrcCommandSender(user);
-                ircUserCache.put(sender.getUser(), sender);
-                source = sender.createCommandSourceStack();
-                break;
-            }
-        }
-        return source;
-    }
-
-    private void processCommand(User user, String cmdLine)
+    private void processCommand(MessageEvent event, String cmdLine)
     {
         String[] args = cmdLine.split(" ");
         String commandName = args[0].substring(1);
@@ -407,53 +368,47 @@ public class IrcHandler extends ListenerAdapter
         IrcCommand command = commands.get(commandName);
         if (command == null)
         {
-            ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
+            event.respondWith(String.format("Error: Command %s not found!", commandName));
             return;
         }
 
-        IrcCommandSender sender = new IrcCommandSender(user);
-        ircUserCache.put(sender.getUser(), sender);
         try
         {
-            command.processCommand(sender.createCommandSourceStack(), args);
+            command.processCommand(event, args);
         }
         catch (CommandException e)
         {
-            ircSendMessageUser(user, "Error: " + e.getMessage());
+            event.respondWith("Error: " + e.getMessage());
         }
     }
 
-    private void processMcCommand(User user, String cmdLine)
+    private void processMcCommand(MessageEvent event, String cmdLine)
     {
-        if (!admins.contains(user.getNick()))
+        if (!admins.contains(event.getUser().getNick()))
         {
-            ircSendMessageUser(user, "Permission denied. You are not an admin");
+        	event.respondWith("Permission denied. You are not an admin");
             return;
         }
 
-        String[] args = cmdLine.split(" ");
-        String commandName = args[0].substring(1);
-        args = Arrays.copyOfRange(args, 1, args.length);
+        String commandRaw = cmdLine.substring(1);
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
-        IrcCommandSender sender = new IrcCommandSender(user);
-        ircUserCache.put(sender.getUser(), sender);
-
+        CommandSource sender= new IrcCommandFaker().createCommandSourceStack(4, event);
         ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
-                .parse(commandName, sender.createCommandSourceStack());
-        if (!command.getReader().canRead())
+                .parse(commandRaw, sender);
+        if (command.getContext().getNodes().isEmpty())
         {
-            ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
+        	event.respondWith(String.format("Error: Command \"%s\" not found!", commandRaw));
             return;
         }
 
         try
         {
-            server.getCommands().performCommand(sender.createCommandSourceStack(), commandName.substring(1));
+            server.getCommands().performCommand(sender, commandRaw);
         }
         catch (CommandException e)
         {
-            ircSendMessageUser(user, "Error: " + e.getMessage());
+        	event.respondWith("Error: " + e.getMessage());
         }
     }
 
@@ -514,30 +469,31 @@ public class IrcHandler extends ListenerAdapter
 
     /* ------------------------------------------------------------ */
 
-    @Override
-    public void onPrivateMessage(PrivateMessageEvent event)
-    {
-        String raw = event.getMessage().trim();
-        while (raw.startsWith(":"))
-            raw = raw.replace(":", "");
-
-        // Check to see if it is a command
-        if (raw.startsWith(COMMAND_CHAR) && allowCommands)
-        {
-            processCommand(event.getUser(), raw);
-        }
-        else if (raw.startsWith(COMMAND_MC_CHAR) && allowMcCommands)
-        {
-            processMcCommand(event.getUser(), raw);
-        }
-        else
-        {
-            if (twitchMode && (event.getUser().getNick().equals("jtv")))
-                return;
-            ircSendMessageUser(event.getUser(),
-                    String.format("Hello %s, use %%help for commands", event.getUser().getNick()));
-        }
-    }
+//    @Override
+//    public void onPrivateMessage(PrivateMessageEvent event)
+//    {
+//        System.out.println("E1");
+//        String raw = event.getMessage().trim();
+//        while (raw.startsWith(":"))
+//            raw = raw.replace(":", "");
+//
+//        // Check to see if it is a command
+//        if (raw.startsWith(COMMAND_CHAR) && allowCommands)
+//        {
+//            processCommand(event, raw);
+//        }
+//        else if (raw.startsWith(COMMAND_MC_CHAR) && allowMcCommands)
+//        {
+//            processMcCommand(event, raw);
+//        }
+//        else
+//        {
+//            if (twitchMode && (event.getUser().getNick().equals("jtv")))
+//                return;
+//            ircSendMessageUser(event.getUser(),
+//                    String.format("Hello %s, use %%help for commands", event.getUser().getNick()));
+//        }
+//    }
 
     @Override
     public void onMessage(MessageEvent event)
@@ -551,11 +507,11 @@ public class IrcHandler extends ListenerAdapter
 
         if (raw.startsWith(COMMAND_CHAR) && allowCommands)
         {
-            processCommand(event.getUser(), raw);
+            processCommand(event, raw);
         }
         else if (raw.startsWith(COMMAND_MC_CHAR) && allowMcCommands)
         {
-            processMcCommand(event.getUser(), raw);
+            processMcCommand(event, raw);
         }
         else if (showMessages)
             mcSendMessage(raw, event.getUser());
@@ -604,7 +560,6 @@ public class IrcHandler extends ListenerAdapter
     @Override
     public void onPart(PartEvent event) throws Exception
     {
-        ircUserCache.remove(event.getUser());
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
         mcSendMessage(Translator.format("%s left the channel %s: %s", event.getUser().getNick(),

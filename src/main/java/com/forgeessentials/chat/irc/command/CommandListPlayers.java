@@ -3,11 +3,10 @@ package com.forgeessentials.chat.irc.command;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.forgeessentials.chat.irc.IrcCommand;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import org.pircbotx.hooks.events.MessageEvent;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
+import com.forgeessentials.chat.irc.IrcCommand;
+
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class CommandListPlayers implements IrcCommand
@@ -38,11 +37,12 @@ public class CommandListPlayers implements IrcCommand
     }
 
     @Override
-    public void processCommand(CommandSource sender, String[] args) throws CommandException
+    public void processCommand(MessageEvent event, String[] args)
     {
-        ChatOutputHandler.chatConfirmation(sender, "List of players:");
+    	System.out.println("Running list command");
+    	event.respondWith("List of players:");
         for (String username : ServerLifecycleHooks.getCurrentServer().getPlayerNames())
-            ChatOutputHandler.chatConfirmation(sender, " - " + username);
+        	event.respondWith(" - " + username);
     }
 
 }

@@ -4,12 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map.Entry;
 
+import org.pircbotx.hooks.events.MessageEvent;
+
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
 
 public class CommandHelp implements IrcCommand
 {
@@ -39,12 +38,13 @@ public class CommandHelp implements IrcCommand
     }
 
     @Override
-    public void processCommand(CommandSource sender, String[] args) throws CommandException
+    public void processCommand(MessageEvent event, String[] args)
     {
-        ChatOutputHandler.chatConfirmation(sender, "List of commands:");
+    	System.out.println("Running help command");
+    	event.respondWith("List of commands:");
         for (Entry<String, IrcCommand> command : IrcHandler.getInstance().commands.entrySet())
         {
-            ChatOutputHandler.chatConfirmation(sender, COMMAND_CHAR + command.getKey() + " "
+        	event.respondWith(COMMAND_CHAR + command.getKey() + " "
                     + command.getValue().getUsage() + ": " + command.getValue().getCommandHelp());
         }
     }

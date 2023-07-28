@@ -2,8 +2,9 @@ package com.forgeessentials.chat.irc;
 
 import java.util.Collection;
 
+import org.pircbotx.hooks.events.MessageEvent;
+
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
 
 public interface IrcCommand
 {
@@ -18,6 +19,6 @@ public interface IrcCommand
 
     public boolean isAdminCommand();
 
-    public void processCommand(CommandSource sender, String[] args) throws CommandException;
+    public void processCommand(MessageEvent event, String[] args) throws CommandException;
 
 }
