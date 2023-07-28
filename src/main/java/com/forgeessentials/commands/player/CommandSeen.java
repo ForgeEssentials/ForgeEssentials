@@ -11,10 +11,16 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 public class CommandSeen extends ForgeEssentialsCommandBuilder
@@ -52,9 +58,21 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return baseBuilder.then(Commands.argument("player", StringArgumentType.word())
-                .executes(CommandContext -> execute(CommandContext, "player")));
+        return baseBuilder
+        		.then(Commands.argument("player", StringArgumentType.word())
+        				.suggests(SUGGEST_PLAYERS)
+        				.executes(CommandContext -> execute(CommandContext, "player")));
     }
+
+    public final SuggestionProvider<CommandSource> SUGGEST_PLAYERS = (ctx, builder) -> {
+    	List<String> names = new ArrayList<>();;
+    	for(String s : getAllPlayernames()) {
+    		if(!(s.contains("$")||s.contains("_"))) {
+    			names.add(s);
+    		}
+    	}
+        return ISuggestionProvider.suggest(names, builder);
+    };
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
