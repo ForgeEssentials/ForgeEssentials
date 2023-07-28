@@ -21,7 +21,6 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.chat.command.CommandGroupMessage;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
-import com.forgeessentials.chat.command.CommandIrcPm;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
 import com.forgeessentials.chat.command.CommandPm;
@@ -195,7 +194,6 @@ public class ModuleChat implements ConfigSaver
         FECommandManager.registerCommand(new CommandGroupMessage(true), dispatcher);
 
         FECommandManager.registerCommand(new CommandIrc(true), dispatcher);
-        FECommandManager.registerCommand(new CommandIrcPm(true), dispatcher);
         FECommandManager.registerCommand(new CommandIrcBot(true), dispatcher);
 
         FECommandManager.registerCommand(new CommandDiscord(true), dispatcher);
