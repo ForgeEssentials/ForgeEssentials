@@ -93,7 +93,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "name"));
+            TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
             ModuleChat.tell(ctx.getSource(), message, target);
         }
         return Command.SINGLE_SUCCESS;

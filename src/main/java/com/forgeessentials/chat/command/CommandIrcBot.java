@@ -50,10 +50,9 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.literal("connect").executes(CommandContext -> execute(CommandContext, "connect")))
+                .then(Commands.literal("info").executes(CommandContext -> execute(CommandContext, "info")))
                 .then(Commands.literal("reconnect").executes(CommandContext -> execute(CommandContext, "reconnect")))
-                .then(Commands.literal("disconnect").executes(CommandContext -> execute(CommandContext, "disconnect")))
-                .executes(CommandContext -> execute(CommandContext, "info"));
+                .then(Commands.literal("disconnect").executes(CommandContext -> execute(CommandContext, "disconnect")));
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
         if (params.equals("info"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(),
-                    Translator.format("IRC bot is ", (IrcHandler.getInstance().isConnected() ? "online" : "offline")));
+                    Translator.format("IRC bot is "+ (IrcHandler.getInstance().isConnected() ? "online" : "offline")));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
