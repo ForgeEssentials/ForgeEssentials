@@ -35,10 +35,10 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkWECommands(CommandEvent e)
     {
+    	if (e.getParseResults().getContext().getNodes().isEmpty())
+            return;
         if (e.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
         {
-            if (e.getParseResults().getContext().getNodes().isEmpty())
-                return;
             CommandInfo info = CommandUtils.getCommandInfo(e);
             for (String weCmd : worldEditSelectionCommands)
             {
