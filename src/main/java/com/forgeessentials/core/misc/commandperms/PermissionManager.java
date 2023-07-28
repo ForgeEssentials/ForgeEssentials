@@ -83,14 +83,14 @@ public class PermissionManager
     public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode)
     {
         DefaultPermissionLevel result;
-        if (commandNode.canUse(new CommandFaker().createCommandSourceStack(0)))
+        if (commandNode.canUse(new CommandFaker().createCommandSourceStack(0, "CommandFaker")))
         {
             result = DefaultPermissionLevel.ALL;
         }
-        else if (commandNode.canUse(new CommandFaker().createCommandSourceStack(1)) ||
-                commandNode.canUse(new CommandFaker().createCommandSourceStack(2)) ||
-                commandNode.canUse(new CommandFaker().createCommandSourceStack(3)) ||
-                commandNode.canUse(new CommandFaker().createCommandSourceStack(4)))
+        else if (commandNode.canUse(new CommandFaker().createCommandSourceStack(1, "CommandFaker")) ||
+                commandNode.canUse(new CommandFaker().createCommandSourceStack(2, "CommandFaker")) ||
+                commandNode.canUse(new CommandFaker().createCommandSourceStack(3, "CommandFaker")) ||
+                commandNode.canUse(new CommandFaker().createCommandSourceStack(4, "CommandFaker")))
         {
             result = DefaultPermissionLevel.OP;
         }

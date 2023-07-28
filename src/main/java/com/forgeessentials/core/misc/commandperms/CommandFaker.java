@@ -44,7 +44,7 @@ public class CommandFaker implements ICommandSource
         return false;
     }
 
-    public CommandSource createCommandSourceStack(int level)
+    public CommandSource createCommandSourceStack(int level, String name)
     {
         if (level < 0)
         {
@@ -57,7 +57,7 @@ public class CommandFaker implements ICommandSource
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         ServerWorld serverworld = server.overworld();
         return new CommandSource(this, Vector3d.ZERO, Vector2f.ZERO,
-                serverworld, level, "CommandFaker",
-                new StringTextComponent("CommandFaker"), server, new FakePlayer(serverworld, new GameProfile(UUID.fromString("35763490-CD67-428C-9A29-4DED4429A483"), "FEPermissionChecker")));
+                serverworld, level, name,
+                new StringTextComponent(name), server, new FakePlayer(serverworld, new GameProfile(UUID.fromString("35763490-CD67-428C-9A29-4DED4429A483"), name)));
     }
 }
