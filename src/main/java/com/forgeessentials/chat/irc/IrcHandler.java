@@ -45,6 +45,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -198,7 +199,8 @@ public class IrcHandler extends ListenerAdapter
         builder.setAutoNickChange(true);
         builder.setMessageDelay(messageDelay);
         builder.setCapEnabled(!twitchMode);
-        builder.buildForServer(server, port, serverPassword.isEmpty() ? "" : serverPassword);
+        builder.addServer(server, port);
+        builder.setServerPassword(serverPassword.isEmpty() ? "" : serverPassword);
 
         if (!nickPassword.isEmpty())
             builder.setNickservPassword(nickPassword);
@@ -259,7 +261,7 @@ public class IrcHandler extends ListenerAdapter
     {
         BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
         FEserver = BUILDER.comment("Server address").define("server", "irc.something.com");
-        FEport = BUILDER.comment("Server port").defineInRange("port", 5555, 0, 65535);
+        FEport = BUILDER.comment("Server port").defineInRange("port", 6667, 0, 65535);
         FEbotName = BUILDER.comment("Bot name").define("botName", "FEIRCBot");
         FEserverPassword = BUILDER.comment("Server password").define("serverPassword", "");
         FEnickPassword = BUILDER.comment("NickServ password").define("nickPassword", "");
@@ -461,21 +463,21 @@ public class IrcHandler extends ListenerAdapter
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            ircSendMessage(ChatOutputHandler.stripFormatting(event.getMessage()));
+            sendPlayerMessage(event.getPlayer().createCommandSourceStack(), new StringTextComponent(ChatOutputHandler.stripFormatting(event.getMessage())));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedInEvent event)
     {
         if (showGameEvents)
-            ircSendMessage(Translator.format("%s joined the game", event.getPlayer().getName()));
+            ircSendMessage(Translator.format("%s joined the game", event.getPlayer().getDisplayName().getString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedOutEvent event)
     {
         if (showGameEvents)
-            ircSendMessage(Translator.format("%s left the game", event.getPlayer().getName()));
+            ircSendMessage(Translator.format("%s left the game", event.getPlayer().getDisplayName().getString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -507,7 +509,7 @@ public class IrcHandler extends ListenerAdapter
     public void welcomeNewPlayers(NoPlayerInfoEvent e)
     {
         if (showGameEvents)
-            ircSendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
+            ircSendMessage(Translator.format("New player %s has joined the server!", e.getPlayer().getDisplayName().getString()));
     }
 
     /* ------------------------------------------------------------ */
@@ -596,8 +598,7 @@ public class IrcHandler extends ListenerAdapter
     {
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
-        mcSendMessage(
-                Translator.format("%s joined the channel %s", event.getUser().getNick(), event.getChannel().getName()));
+        mcSendMessage(Translator.format("%s joined the channel %s", event.getUser().getNick(), event.getChannel().getName()));
     }
 
     @Override
