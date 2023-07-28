@@ -94,24 +94,23 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        ChatOutputHandler.chatWarning(ctx.getSource(),
-                "This command currently will break your player's movments, use at your own risk!");
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (EntityArgument.getPlayer(ctx, "player") != getServerPlayer(ctx.getSource()))
-        {
-            if (!hasPermission(ctx.getSource(), PERM_OTHERS))
-            {
-                ChatOutputHandler.chatError(ctx.getSource(), "You don't have permission to vanish other players");
-                return Command.SINGLE_SUCCESS;
-            }
-            player = EntityArgument.getPlayer(ctx, "player");
-        }
-
-        vanishToggle(UserIdent.get(player));
-        if (isVanished(UserIdent.get(player)))
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "You are vanished now");
-        else
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "You are visible now");
+    	ChatOutputHandler.chatWarning(ctx.getSource(), "This command has not been fully ported");
+//        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+//        if (EntityArgument.getPlayer(ctx, "player") != getServerPlayer(ctx.getSource()))
+//        {
+//            if (!hasPermission(ctx.getSource(), PERM_OTHERS))
+//            {
+//                ChatOutputHandler.chatError(ctx.getSource(), "You don't have permission to vanish other players");
+//                return Command.SINGLE_SUCCESS;
+//            }
+//            player = EntityArgument.getPlayer(ctx, "player");
+//        }
+//
+//        vanishToggle(UserIdent.get(player));
+//        if (isVanished(UserIdent.get(player)))
+//            ChatOutputHandler.chatConfirmation(ctx.getSource(), "You are vanished now");
+//        else
+//            ChatOutputHandler.chatConfirmation(ctx.getSource(), "You are visible now");
         return Command.SINGLE_SUCCESS;
     }
 

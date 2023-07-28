@@ -60,8 +60,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
         List<String> modList = new ArrayList<>();
         for (String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList()))
         {
-            modList.add(ModList.get().<ModContainer> getModObjectById(id).orElse(null).getModId());
-            modList.add(ModList.get().<ModContainer> getModObjectById(id).orElse(null).getModInfo().getDisplayName());
+            modList.add(id);
         }
         return ISuggestionProvider.suggest(modList, builder);
     };
@@ -74,29 +73,12 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
         {
             if (params.equals("player"))
             {
-                key = "p:" + EntityArgument.getPlayer(ctx, "players").getDisplayName().getString();
+                key = "p:" + EntityArgument.getPlayer(ctx, "player").getDisplayName().getString();
             }
 
             if (params.equals("modname"))
             {
-                List<ModContainer> modList = new ArrayList<>();
-                for (String id : ModList.get().applyForEachModContainer(ModContainer::getModId)
-                        .collect(Collectors.toList()))
-                {
-                    modList.add(ModList.get().<ModContainer> getModObjectById(id).orElse(null));
-                }
-                for (ModContainer mod : modList)
-                {
-                    String modid = StringArgumentType.getString(ctx, "modname");
-                    if (mod.getModInfo().getDisplayName().equalsIgnoreCase(modid))
-                    {
-                        key = "m:" + mod.getModId();
-                    }
-                    else if (mod.getModId().equalsIgnoreCase(modid))
-                    {
-                        key = "m:" + mod.getModId();
-                    }
-                }
+            	key = "m:" + StringArgumentType.getString(ctx, "modname");
             }
         }
         list(ctx, key);
@@ -118,6 +100,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatNotification(ctx.getSource(), "Dimension: " + i.dimension().location().toString());
             // list(ctx, i.dimension().location().toString(), key);
         }
+        ChatOutputHandler.chatWarning(ctx.getSource(), "This command has not been fully ported");
     }
 
     /*
