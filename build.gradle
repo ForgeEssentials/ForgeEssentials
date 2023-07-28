@@ -429,7 +429,6 @@ shadowJar {
  	   exclude(dependency('com.h2database:.*:.*'))
  	   exclude(dependency('javax:.*:.*'))
  	}
-	//relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
 	relocate  'org.eclipse.jgit','com.forgeessentials.thirdparty.org.eclipse.jgit'
 	relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
@@ -439,15 +438,7 @@ shadowJar {
 	relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
 	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
-	//relocate  'javax.interceptor','com.forgeessentials.thirdparty.javax.interceptor'
-	//relocate  'javax.inject','com.forgeessentials.thirdparty.javax.inject'
-	//relocate  'javax.enterprise','com.forgeessentials.thirdparty.javax.enterprise'
-	//relocate  'javax.el','com.forgeessentials.thirdparty.javax.el'
-	//relocate  'javax.decorator','com.forgeessentials.thirdparty.javax.decorator'
-	//relocate  'javax.annotation','com.forgeessentials.thirdparty.javax.annotation'
 	relocate  'javax.activation','com.forgeessentials.thirdparty.javax.activation'
-	//relocate  'javax.xml','com.forgeessentials.thirdparty.javax.xml'
-	//relocate  'javassist','com.forgeessentials.thirdparty.javassist'
 	relocate  'antlr','com.forgeessentials.thirdparty.antlr'
 	//relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
 	relocate  'com.mysql','com.forgeessentials.thirdparty.com.mysql'
@@ -486,16 +477,6 @@ jar {
 
 	from (zipTree(shadowJar.archivePath)) {
 		include 'META-INF/services/*'
-		//include 'META-INF/persistence.xml'
-		//filter {
-		//	line -> line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate')
-		//}
-		//filter {
-		//	line -> line.replaceAll('org.h2','com.forgeessentials.thirdparty.org.h2')
-		//}
-		//rename {
-		//	name -> "com.forgeessentials.thirdparty.$name"
-		//}
 	}
 
 	exclude('mixins.forgeessentials.client.refmap.json')
