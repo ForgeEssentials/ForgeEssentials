@@ -113,28 +113,28 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                                                                 )
                                                         )
                                                 .then(Commands.literal("allow")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_perm)
                                                                 .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&allow&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
                                                                 )
                                                         )
                                                 .then(Commands.literal("deny")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_perm)
                                                                 .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&deny&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
                                                                 )
                                                         )
                                                 .then(Commands.literal("clear")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_PlayerPerm)
                                                                 .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&clear&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
                                                                 )
                                                         )
                                                 .then(Commands.literal("value")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_perm)
                                                                 .executes(CommandContext -> execute(CommandContext, "user&&"+StringArgumentType.getString(CommandContext, "player")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&value&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
@@ -285,28 +285,28 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                                                 .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone"))
                                                         )
                                                 .then(Commands.literal("allow")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_perm)
                                                                 .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&allow&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
                                                                 )
                                                         )
                                                 .then(Commands.literal("deny")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_perm)
                                                                 .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&deny&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
                                                                 )
                                                         )
                                                 .then(Commands.literal("clear")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_GroupPerm)
                                                                 .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&clear&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
                                                                 )
                                                         )
                                                 .then(Commands.literal("value")
-                                                        .then(Commands.argument("perm", StringArgumentType.string())
+                                                        .then(Commands.argument("perm", StringArgumentType.greedyString())
                                                                 .suggests(SUGGEST_perm)
                                                                 .executes(CommandContext -> execute(CommandContext, "group&&"+StringArgumentType.getString(CommandContext, "group")+"&&zone&&"+StringArgumentType.getString(CommandContext, "zone")+"&&value&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                                         )
@@ -442,28 +442,28 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         .then(Commands.literal("allow")
-                                .then(Commands.argument("perm", StringArgumentType.string())
+                                .then(Commands.argument("perm", StringArgumentType.greedyString())
                                         .suggests(SUGGEST_perm)
                                         .executes(CommandContext -> execute(CommandContext, "global&&allow&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                 )
                                         )
                                 )
                         .then(Commands.literal("deny")
-                                .then(Commands.argument("perm", StringArgumentType.string())
+                                .then(Commands.argument("perm", StringArgumentType.greedyString())
                                         .suggests(SUGGEST_perm)
                                         .executes(CommandContext -> execute(CommandContext, "global&&deny&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                 )
                                         )
                                 )
                         .then(Commands.literal("clear")
-                                .then(Commands.argument("perm", StringArgumentType.string())
+                                .then(Commands.argument("perm", StringArgumentType.greedyString())
                                         .suggests(SUGGEST_GlobalPerm)
                                         .executes(CommandContext -> execute(CommandContext, "global&&clear&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                 )
                                         )
                                 )
                         .then(Commands.literal("value")
-                                .then(Commands.argument("perm", StringArgumentType.string())
+                                .then(Commands.argument("perm", StringArgumentType.greedyString())
                                         .suggests(SUGGEST_perm)
                                         .executes(CommandContext -> execute(CommandContext, "global&&value&&"+StringArgumentType.getString(CommandContext, "perm"))
                                                 )
@@ -599,6 +599,9 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         if(listzones.contains("_ROOT_")) {
             listzones.remove("_ROOT_");
         }
+        if(listzones.contains("_SERVER_")) {
+            listzones.remove("_SERVER_");
+        }
         for (int index = 0; index < listzones.size(); index++)
         {
             if (listzones.get(index).contains(":"))
@@ -615,13 +618,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_perm = (ctx, builder) -> {
         List<String> listperm = new ArrayList<>(APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
-        for (int index = 0; index < listperm.size(); index++)
-        {
-            if (listperm.get(index).contains("*"))
-            {
-                listperm.set(index, listperm.get(index).replace("*", "+"));
-            }
-        }
         return ISuggestionProvider.suggest(listperm, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_GroupPerm = (ctx, builder) -> {
@@ -635,13 +631,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             zone = APIRegistry.perms.getServerZone();
         }
         List<String> listclear = new ArrayList<>(zone.getGroupPermissions(StringArgumentType.getString(ctx, "group")).keySet());
-        for (int index = 0; index < listclear.size(); index++)
-        {
-            if (listclear.get(index).contains("*"))
-            {
-                listclear.set(index, listclear.get(index).replace("*", "+"));
-            }
-        }
         return ISuggestionProvider.suggest(listclear, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_GlobalPerm = (ctx, builder) -> {
@@ -655,13 +644,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             zone = APIRegistry.perms.getServerZone();
         }
         List<String> listclear = new ArrayList<>(zone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet());
-        for (int index = 0; index < listclear.size(); index++)
-        {
-            if (listclear.get(index).contains("*"))
-            {
-                listclear.set(index, listclear.get(index).replace("*", "+"));
-            }
-        }
         return ISuggestionProvider.suggest(listclear, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_PlayerPerm = (ctx, builder) -> {
@@ -681,13 +663,6 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             listclear.addAll(zone.getPlayerPermissions(ident).keySet());
         }
         catch (FECommandParsingException ignored){}
-        for (int index = 0; index < listclear.size(); index++)
-        {
-            if (listclear.get(index).contains("*"))
-            {
-                listclear.set(index, listclear.get(index).replace("*", "+"));
-            }
-        }
         return ISuggestionProvider.suggest(listclear, builder);
     };
 
