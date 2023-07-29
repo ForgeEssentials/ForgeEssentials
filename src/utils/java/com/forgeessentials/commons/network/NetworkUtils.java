@@ -114,7 +114,7 @@ public class NetworkUtils
     }
 
     public static void handleGetLog(IFEPacket packet) {
-        feletworklog.info("Recieved "+packet.getClass().getSimpleName());
+        feletworklog.debug("Recieved "+packet.getClass().getSimpleName());
     }
 
     public static void handleNotHandled(IFEPacket packet) {
