@@ -29,7 +29,6 @@ public class WEIntegration
             ModuleLauncher.instance.unregister(weModule);
             return;
         }
-        handler.fixWEPErms();
     }
 
     private static boolean getDevOverride()

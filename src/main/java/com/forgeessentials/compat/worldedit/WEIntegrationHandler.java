@@ -1,13 +1,11 @@
 package com.forgeessentials.compat.worldedit;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class WEIntegrationHandler
 {
@@ -38,6 +36,9 @@ public class WEIntegrationHandler
             if (ModList.get().isLoaded("worldedit"))
             {
                 SelectionHandler.selectionProvider = new WESelectionHandler();
+                ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
+                cuiComms = new CUIComms();
+                return false;
             }
             else
             {
@@ -45,25 +46,5 @@ public class WEIntegrationHandler
                 return true;
             }
         }
-        return false;
     }
-
-    public void fixWEPErms()
-    {
-        if (!WEIntegration.disable)
-        {
-            try
-            {
-            	ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
-                cuiComms = new CUIComms();
-            }
-            catch (SecurityException | IllegalArgumentException e1)
-            {
-                e1.printStackTrace();
-            }
-            APIRegistry.perms.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
-        }
-
-    }
-
 }

@@ -32,7 +32,7 @@ public class CUIComms
 
     protected List<ServerPlayerEntity> updatedSelectionPlayers = new ArrayList<>();
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void checkWECommands(CommandEvent e)
     {
     	if (e.getParseResults().getContext().getNodes().isEmpty())
