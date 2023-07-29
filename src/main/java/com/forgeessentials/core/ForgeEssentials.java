@@ -525,7 +525,7 @@ public class ForgeEssentials
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void commandEvent(CommandEvent event) throws CommandSyntaxException
     {
         if (event.getParseResults().getContext().getNodes().isEmpty())
