@@ -1,13 +1,11 @@
 package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -50,8 +48,7 @@ public class WEIntegrationHandler
         return false;
     }
 
-    @SubscribeEvent
-    public void serverStart(FEModuleServerStartingEvent e)
+    public void fixWEPErms()
     {
         if (!WEIntegration.disable)
         {

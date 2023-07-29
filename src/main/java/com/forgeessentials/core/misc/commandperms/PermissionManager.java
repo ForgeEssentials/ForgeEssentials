@@ -80,25 +80,23 @@ public class PermissionManager
         }
     }
 
-    public static DefaultPermissionLevel getCommandPermFromNode(CommandNode<CommandSource> commandNode)
+    public static DefaultPermissionLevel getDefaultCommandPermFromNode(CommandNode<CommandSource> commandNode)
     {
-        DefaultPermissionLevel result;
-        if (commandNode.canUse(new CommandFaker().createCommandSourceStack(0, "CommandFaker")))
-        {
-            result = DefaultPermissionLevel.ALL;
-        }
-        else if (commandNode.canUse(new CommandFaker().createCommandSourceStack(1, "CommandFaker")) ||
-                commandNode.canUse(new CommandFaker().createCommandSourceStack(2, "CommandFaker")) ||
-                commandNode.canUse(new CommandFaker().createCommandSourceStack(3, "CommandFaker")) ||
-                commandNode.canUse(new CommandFaker().createCommandSourceStack(4, "CommandFaker")))
-        {
-            result = DefaultPermissionLevel.OP;
-        }
-        else
-        {
-            result = DefaultPermissionLevel.ALL;
-        }
-        return result;
+    	try {
+            if (commandNode.canUse(new CommandFaker().createCommandSourceStack(0)))
+            {
+            	return DefaultPermissionLevel.ALL;
+            }
+            else if (commandNode.canUse(new CommandFaker().createCommandSourceStack(1)) ||
+                    commandNode.canUse(new CommandFaker().createCommandSourceStack(2)) ||
+                    commandNode.canUse(new CommandFaker().createCommandSourceStack(3)) ||
+                    commandNode.canUse(new CommandFaker().createCommandSourceStack(4)))
+            {
+            	return DefaultPermissionLevel.OP;
+            }
+            return DefaultPermissionLevel.ALL;
+    	}catch(UnsupportedOperationException e) {}
+    	return DefaultPermissionLevel.OP;
     }
 
     /**
@@ -139,7 +137,7 @@ public class PermissionManager
         }
         if (!prefix.equals(""))
         {
-            if (parentLevel == DefaultPermissionLevel.ALL && getCommandPermFromNode(node) == DefaultPermissionLevel.OP)
+            if (parentLevel == DefaultPermissionLevel.ALL && getDefaultCommandPermFromNode(node) == DefaultPermissionLevel.OP)
             {
                 parentLevel = DefaultPermissionLevel.OP;
             }

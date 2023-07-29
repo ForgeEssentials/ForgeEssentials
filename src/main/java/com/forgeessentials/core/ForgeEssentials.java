@@ -20,6 +20,7 @@ import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet05Noclip;
 import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.HelpFixer;
+import com.forgeessentials.compat.worldedit.WEIntegration;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeReload;
@@ -230,6 +231,9 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
         commandManager = new FECommandManager();
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
+        if(ModuleLauncher.getModuleList().contains(WEIntegration.weModule)) {
+        	WEIntegration.instance.postLoad();
+        }
     }
 
     /* ------------------------------------------------------------ */

@@ -31,8 +31,6 @@ public class Packet01SelectionUpdateHandler extends Packet01SelectionUpdate
     @Override
     public void handle(NetworkEvent.Context context)
     {
-    	Minecraft instance = Minecraft.getInstance();
-        instance.gui.getChat().addMessage(new StringTextComponent("Recieved Pos:"+selection.toString()));
         ForgeEssentialsClient.cuiRenderer.selection = selection;
     }
 }

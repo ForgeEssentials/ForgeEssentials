@@ -2,6 +2,7 @@ package com.forgeessentials.core.misc.commandperms;
 
 import java.util.UUID;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.authlib.GameProfile;
 
@@ -44,7 +45,7 @@ public class CommandFaker implements ICommandSource
         return false;
     }
 
-    public CommandSource createCommandSourceStack(int level, String name)
+    public CommandSource createCommandSourceStack(int level)
     {
         if (level < 0)
         {
@@ -57,7 +58,7 @@ public class CommandFaker implements ICommandSource
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         ServerWorld serverworld = server.overworld();
         return new CommandSource(this, Vector3d.ZERO, Vector2f.ZERO,
-                serverworld, level, name,
-                new StringTextComponent(name), server, new FakePlayer(serverworld, new GameProfile(UUID.fromString("35763490-CD67-428C-9A29-4DED4429A483"), name)));
+                serverworld, level, APIRegistry.IDENT_COMMANDFAKER.getUsername(),
+                new StringTextComponent(APIRegistry.IDENT_COMMANDFAKER.getUsername()), server, new FakePlayer(serverworld, new GameProfile(APIRegistry.IDENT_COMMANDFAKER.getUuid(), APIRegistry.IDENT_COMMANDFAKER.getUsername())));
     }
 }

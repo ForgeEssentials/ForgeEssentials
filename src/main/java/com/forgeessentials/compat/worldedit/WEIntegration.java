@@ -5,32 +5,31 @@ import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
-@FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)
+@FEModule(name = WEIntegration.weModule, parentMod = ForgeEssentials.class)
 public class WEIntegration
 {
+	public static final String weModule = "WEIntegrationTools";
+
+	@FEModule.Instance
+    public static WEIntegration instance;
 
     protected static boolean disable;
 
     WEIntegrationHandler handler;
 
-    @SubscribeEvent
-    public void postLoad(FEModuleServerAboutToStartEvent e)
+    public void postLoad()
     {
         handler = new WEIntegrationHandler();
         if (handler.postLoad())
         {
             handler = null;
-            ModuleLauncher.instance.unregister("WEIntegrationTools");
+            ModuleLauncher.instance.unregister(weModule);
             return;
         }
-        MinecraftForge.EVENT_BUS.register(new WEIntegrationHandler());
+        handler.fixWEPErms();
     }
 
     private static boolean getDevOverride()
