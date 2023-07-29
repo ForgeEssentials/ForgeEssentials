@@ -315,12 +315,21 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
+    	LoggingHandler.felog.info("Registered " + FECommandManager.getTotalCommandNumber() + " commands");
         LoggingHandler.felog.info("ForgeEssentials ServerAboutToStart");
+
+        //Register Server-Client Packets
         registerNetworkMessages();
+
         // ConfigBase.registerConfigManual(FEAliasesManager.returnData().getSpecBuilder().build(),
         // FEAliasesManager.returnData().getName(), true);
+
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
+
+        //Load ConfigurableCommands after DataManager is created
+        FECommandManager.loadConfigurableCommand();
+
         MinecraftForge.EVENT_BUS.post(new FEModuleServerAboutToStartEvent(e));
         new BaublesCompat();
     }
@@ -344,12 +353,6 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials ServerStarted");
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStartedEvent(e));
-
-        // TODO: what the fuck? I don't think we should just go and delete all commands
-        // colliding with ours!
-        // CommandSetChecker.remove();
-
-        FECommandManager.registerLoadedCommands();
 
         // Do permission registration in first server tick.
         MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());

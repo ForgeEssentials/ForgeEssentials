@@ -22,6 +22,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -36,7 +37,7 @@ import net.minecraft.command.ISuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandFeSettings extends ForgeEssentialsCommandBuilder
+public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
     public CommandFeSettings(boolean enabled)
@@ -260,4 +261,9 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder
             // Empty settings Map
         }
     }
+
+	@Override
+	public void loadData() {
+		loadSettings();
+	}
 }

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.commandperms.PermissionManager;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -13,7 +12,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class FECommandManager
 {
@@ -26,8 +24,7 @@ public class FECommandManager
     protected static Set<FECommandData> loadedFEcommands = new HashSet<>();
     protected static Set<String> registeredFEcommands = new HashSet<>();
     protected static Set<String> registeredAiliases = new HashSet<>();
-
-    // protected static boolean useSingleConfigFile = false;
+    protected static Set<String> loadedConfigurableCommand = new HashSet<>();
 
     public static FEAliasesManager aliaseManager;
 
@@ -36,54 +33,16 @@ public class FECommandManager
         aliaseManager = new FEAliasesManager();
     }
 
-    public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder,
-            CommandDispatcher<CommandSource> dispatcher)
+    public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
     {
-        FECommandData command = new FECommandData(commandBuilder, dispatcher);
+        FECommandData command = new FECommandData(commandBuilder);
         loadedFEcommands.add(command);
+        if (!registeredFEcommands.contains(command.getData().getName()))
+        {
+            // FEAliasesManager.bakeCommandConfig(command);
+            register(command, dispatcher);
+        }
         // FEAliasesManager.loadCommandConfig(command);
-        // if (useSingleConfigFile = false){}
-    }
-
-    public static void deegisterCommand(String name)
-    {
-        FECommandData command = null;
-        for (FECommandData cmd : loadedFEcommands)
-        {
-            if (cmd.getData().getName().equals(name))
-            {
-                command = cmd;
-                break;
-            }
-        }
-
-        if (command != null)
-        {
-            registeredFEcommands.remove(name);
-            deregister(command);
-        }
-        else
-        {
-            LoggingHandler.felog.error(String.format("Tried to deregister command %s, but got a nullpointer", name));
-        }
-    }
-
-    public static void registerLoadedCommands()
-    {
-        LoggingHandler.felog.info("ForgeEssentials: Registering known commands");
-        for (FECommandData command : loadedFEcommands)
-        {
-            if (!registeredFEcommands.contains(command.getData().getName()))
-            {
-                // FEAliasesManager.bakeCommandConfig(command);
-                register(command);
-                if (command.getData() instanceof ConfigurableCommand)
-                    ((ConfigurableCommand) command.getData()).loadData();
-            }
-        }
-        LoggingHandler.felog.info("Registered "
-                + Integer.toString(registeredFEcommands.size() + registeredAiliases.size()) + " commands");
-        CommandFeSettings.getInstance().loadSettings();
     }
 
     public static void clearRegisteredCommands()
@@ -94,14 +53,18 @@ public class FECommandManager
         registeredAiliases.clear();
     }
 
+    public static void loadConfigurableCommand() {
+    	for (FECommandData command : loadedFEcommands) {
+    		if (command.getData() instanceof ConfigurableCommand)
+                ((ConfigurableCommand) command.getData()).loadData();
+    	}
+    }
+
     /**
      * Registers this command and it's permission node
      */
-    public static void register(FECommandData commandData)
+    public static void register(FECommandData commandData, CommandDispatcher<CommandSource> dispatcher)
     {
-
-        if (ServerLifecycleHooks.getCurrentServer() == null)
-            return;
 
         String name = commandData.getData().getName();
         if (commandData.isRegistered())
@@ -117,8 +80,6 @@ public class FECommandManager
         }
         if (commandData.getData().isEnabled())
         {
-
-            CommandDispatcher<CommandSource> dispatcher = commandData.getDisp();
             if (registeredFEcommands.contains(name))
             {
                 LoggingHandler.felog.error(String.format("Command %s already registered!", name));
@@ -127,7 +88,7 @@ public class FECommandManager
 
             LiteralCommandNode<CommandSource> literalcommandnode = dispatcher
                     .register(commandData.getData().getMainBuilder());
-            LoggingHandler.felog.debug("Registered Command: " + name);
+            //LoggingHandler.felog.debug("Registered Command: " + name);
             if (FEConfig.enableCommandAliases)
             {
                 if (commandData.getData().getAliases() != null && !commandData.getData().getAliases().isEmpty())
@@ -163,15 +124,7 @@ public class FECommandManager
         commandData.getData().registerExtraPermissions();
     }
 
-    public static void deregister(FECommandData commandData)
-    {
-        /*
-         * if (ServerLifecycleHooks.getCurrentServer() == null) return; CommandHandler cmdHandler = (CommandHandler)
-         * FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager(); Map<String, ICommand> commandMap = cmdHandler.getCommands(); Set<ICommand> commandSet =
-         * cmdHandler.commandSet;
-         * 
-         * String commandName = getName(); List<String> commandAliases = getAliases(); commandSet.remove(this); if (commandName != null) commandMap.remove(commandName); if
-         * (commandAliases != null && !commandAliases.isEmpty()) { for (String alias : commandAliases) { commandMap.remove(alias); } }
-         */
+    public static int getTotalCommandNumber() {
+    	return FECommandManager.registeredFEcommands.size() + FECommandManager.registeredAiliases.size();
     }
 }
