@@ -12,12 +12,14 @@ public class PermissionsHandler implements ForgePermissionsProvider
     @Override
     public boolean hasPermission(ServerPlayerEntity player, String permission)
     {
+    	System.out.println("Checking We Permission: "+permission);
         return APIRegistry.perms.checkPermission(player, permission);
     }
 
     @Override
     public void registerPermission(String permission)
     {
+    	System.out.println("Registering We Permission: "+permission);
         APIRegistry.perms.registerPermission(permission, DefaultPermissionLevel.OP, "");
         // boolean allowForAllPlayers = permission.startsWith("worldedit.selection");
         // PermissionManager.registerCommandPermission(permission.split("\\.")[1], permission,

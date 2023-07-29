@@ -224,6 +224,9 @@ public class ForgeEssentials
 
         // Load submodules
         moduleLauncher.init();
+        if(ModuleLauncher.getModuleList().contains(WEIntegration.weModule)) {
+        	WEIntegration.instance.postLoad();
+        }
     }
 
     public void postLoad(FMLLoadCompleteEvent e)
@@ -231,9 +234,6 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
         commandManager = new FECommandManager();
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
-        if(ModuleLauncher.getModuleList().contains(WEIntegration.weModule)) {
-        	WEIntegration.instance.postLoad();
-        }
     }
 
     /* ------------------------------------------------------------ */
@@ -298,7 +298,7 @@ public class ForgeEssentials
         FECommandManager.registerCommand(new CommandWand(true), dispatcher);
         FECommandManager.registerCommand(new CommandUuid(true), dispatcher);
         FECommandManager.registerCommand(new CommandFEWorldInfo(true), dispatcher);
-        if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
+        if (!ModuleLauncher.getModuleList().contains(WEIntegration.weModule))
         {
             FECommandManager.registerCommand(new CommandPos1(true), dispatcher);
             FECommandManager.registerCommand(new CommandPos2(true), dispatcher);

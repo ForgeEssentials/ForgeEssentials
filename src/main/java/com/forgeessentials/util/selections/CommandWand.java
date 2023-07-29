@@ -1,6 +1,7 @@
 package com.forgeessentials.util.selections;
 
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.compat.worldedit.WEIntegration;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
@@ -46,7 +47,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
+        if (ModuleLauncher.getModuleList().contains(WEIntegration.weModule))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(),
                     "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
