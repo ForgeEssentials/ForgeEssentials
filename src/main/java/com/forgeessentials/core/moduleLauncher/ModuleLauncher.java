@@ -208,6 +208,12 @@ public class ModuleLauncher
         containerMap.remove(moduleName);
     }
 
+    public void handleModuleParents() {
+    	for(ModuleContainer mod :getModuleMap().values()) {
+    		mod.handleParentMod();
+    	}
+    }
+
     public static Collection<String> getModuleList()
     {
         return containerMap.keySet();

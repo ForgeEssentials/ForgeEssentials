@@ -151,7 +151,7 @@ public class ForgeEssentials
 
     private static File jarLocation;
 
-    protected static boolean debugMode = false;
+    protected static boolean debugMode = true;
 
     protected static boolean safeMode = false;
 
@@ -195,9 +195,9 @@ public class ForgeEssentials
         modMain.addListener(this::preInit);
         modMain.addListener(this::postLoad);
         moduleLauncher = new ModuleLauncher();
-        // Load submodules
-        // moduleLauncher.init();
         NetworkUtils.init();
+        // Load submodules
+        moduleLauncher.init();
     }
 
     public void preInit(FMLCommonSetupEvent event)
@@ -205,12 +205,12 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials CommonSetup");
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getCurrentVersion(),
                 BuildInfo.getBuildHash()));
-        if (safeMode)
-        {
-            LoggingHandler.felog.warn(
-                    "You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
+    	// Handle submodules parents, must be called after mod loading
+        moduleLauncher.handleModuleParents();
+        if (safeMode) {
+            LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
         }
-
+        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
         // Set up logger level
         toggleDebug();
 
@@ -222,8 +222,6 @@ public class ForgeEssentials
         selectionHandler = new SelectionHandler();
         // MinecraftForge.EVENT_BUS.register(new CompatReiMinimap());
 
-        // Load submodules
-        moduleLauncher.init();
         if(ModuleLauncher.getModuleList().contains(WEIntegration.weModule)) {
         	WEIntegration.instance.postLoad();
         }
@@ -242,9 +240,6 @@ public class ForgeEssentials
     {
         feDirectory = new File(FMLPaths.GAMEDIR.get().toFile(), FE_DIRECTORY);
         feDirectory.mkdirs();
-
-        // moduleDirectory = new File(feDirectory, "modules");
-        // moduleDirectory.mkdirs();
 
         configManager = new ConfigBase();
 
@@ -326,9 +321,6 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials ServerAboutToStart");
         registerNetworkMessages();
-        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);// any config baking needing to be done after
-                                                                           // here must use
-                                                                           // getConfigManager().loadNBuildNBakeSpec();
         // ConfigBase.registerConfigManual(FEAliasesManager.returnData().getSpecBuilder().build(),
         // FEAliasesManager.returnData().getName(), true);
         // Initialize data manager once server begins to start
@@ -344,11 +336,7 @@ public class ForgeEssentials
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
         // TODO REIMPLEMENT
-        // ForgeChunkManager.setForcedChunkLoadingCallback(ForgeEssentials.MODID, new
-        // FEChunkLoader());
-
-        // ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten
-        // again by commands module
+        // ForgeChunkManager.setForcedChunkLoadingCallback(ForgeEssentials.MODID, new FEChunkLoader());
 
         registerPermissions();
 
@@ -368,7 +356,6 @@ public class ForgeEssentials
         FECommandManager.registerLoadedCommands();
 
         // Do permission registration in first server tick.
-        // TODO This can be removed if the Permission API gets accepted!
         MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
     }
 

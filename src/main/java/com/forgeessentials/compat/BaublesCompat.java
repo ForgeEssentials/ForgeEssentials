@@ -15,9 +15,10 @@ public class BaublesCompat extends ServerEventHandler
     // the Mod is down.
     public BaublesCompat()
     {
-        if (ModList.get().isLoaded("Baubles"))
+        if (ModList.get().isLoaded("Baubles")) {
             LoggingHandler.felog.info("Baubles compatibility enabled.");
-        register();
+            register();
+        }
     }
 
     // @Optional(modid = "Baubles") //Use capabilities instead of directly

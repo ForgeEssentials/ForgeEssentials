@@ -172,7 +172,7 @@ public class ConfigBase
         if (autoSave)
         {
             LoggingHandler.felog.debug("Registering configuration fileT: " + name);
-            peModConfig = new FEModConfig(ModLoadingContext.get().getActiveContainer(), ModConfig.Type.SERVER, spec,
+            peModConfig = new FEModConfig(ModLoadingContext.get().getActiveContainer(), ModConfig.Type.COMMON, spec,
                     name, true);
             // final CommentedFileConfig configData = CommentedFileConfig.builder(rootDirectory+"/"+name+".toml")
             // .sync()
@@ -185,7 +185,7 @@ public class ConfigBase
         else
         {
             LoggingHandler.felog.debug("Registering configuration fileF: " + name);
-            peModConfig = new FEModConfig(ModLoadingContext.get().getActiveContainer(), ModConfig.Type.SERVER, spec,
+            peModConfig = new FEModConfig(ModLoadingContext.get().getActiveContainer(), ModConfig.Type.COMMON, spec,
                     name, false);
             // final CommentedFileConfig configData = CommentedFileConfig.builder(rootDirectory+"/"+name+".toml")
             // .sync()

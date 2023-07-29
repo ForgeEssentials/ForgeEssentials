@@ -30,6 +30,7 @@ public class ModuleContainer implements Comparable<Object>
     protected static HashSet<Class<?>> modClasses = new HashSet<>();
 
     public Object module, mod;
+    Class<?> parentClass;
 
     // methods..
     private String reload;
@@ -93,7 +94,7 @@ public class ModuleContainer implements Comparable<Object>
         }
 
         // try getting the parent mod.. and register it.
-        mod = handleMod(annot.parentMod());
+        parentClass = annot.parentMod();
 
         // check method annotations. they are all optional...
         Class<?>[] params;
@@ -210,12 +211,12 @@ public class ModuleContainer implements Comparable<Object>
                 f.set(module, this);
             }
 
-            if (parentMod != null)
-            {
-                f = c.getDeclaredField(parentMod);
-                f.setAccessible(true);
-                f.set(module, mod);
-            }
+            //if (parentMod != null)
+            //{
+            //    f = c.getDeclaredField(parentMod);
+            //    f.setAccessible(true);
+            //    f.set(module, mod);
+            //}
 
             if (moduleDir != null)
             {
@@ -303,38 +304,58 @@ public class ModuleContainer implements Comparable<Object>
         return (11 + name.hashCode()) * 29 + className.hashCode();
     }
 
-    private static Object handleMod(Class<?> modClass)
-    {
-        String modid;
-        Object obj = null;
+	public void handleParentMod() {
+		String modid;
+		Object obj = null;
 
-        ModContainer contain = null;
-        List<ModContainer> modList = new ArrayList<>();
-        for (String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList()))
-        {
-            ModContainer temp = ModList.get().getModContainerById(id).orElse(null);
-            if (temp != null)
-            {
-                modList.add(temp);
-            }
-        }
+		ModContainer contain = null;
+		List<ModContainer> modList = new ArrayList<>();
+		for (String id : ModList.get()
+				.applyForEachModContainer(ModContainer::getModId)
+				.collect(Collectors.toList())) {
+			ModContainer temp = ModList.get().getModContainerById(id)
+					.orElse(null);
+			if (temp != null) {
+				modList.add(temp);
+			}
+		}
 
-        for (ModContainer c : modList)
-        {
-            if (c.getMod() != null && c.getMod().getClass().equals(modClass))
-            {
-                contain = c;
-                obj = c.getMod();
-                break;
-            }
-        }
+		for (ModContainer c : modList) {
+			if (c.getMod() != null
+					&& c.getMod().getClass().equals(parentClass)) {
+				contain = c;
+				obj = c.getMod();
+				break;
+			}
+		}
 
-        if (obj == null || contain == null)
-            throw new RuntimeException(modClass + " isn't an loaded mod class!");
+		if (obj == null || contain == null)
+			throw new RuntimeException(
+					parentClass + " isn't an loaded mod class!");
 
-        modid = contain.getModId() + "-" + contain.getModInfo().getVersion();
-        if (modClasses.add(modClass))
-            LoggingHandler.felog.info("Modules from " + modid + " are being loaded");
-        return obj;
-    }
+		modid = contain.getModId() + "-" + contain.getModInfo().getVersion();
+		if (modClasses.add(parentClass))
+			LoggingHandler.felog
+					.info("Modules from " + modid + " are being validated");
+		mod = obj;
+		Field f;
+		Class<?> c;
+		try {
+			c = Class.forName(className);
+		} catch (Throwable e) {
+			LoggingHandler.felog.warn(name + " could not be validated.");
+			e.printStackTrace();
+			return;
+		}
+		try {
+			if (parentMod != null) {
+				f = c.getDeclaredField(parentMod);
+				f.setAccessible(true);
+				f.set(module, mod);
+			}
+		} catch (Exception e) {
+			LoggingHandler.felog.info("Error populating fields of " + name);
+			throw new RuntimeException(e);
+		}
+	}
 }
