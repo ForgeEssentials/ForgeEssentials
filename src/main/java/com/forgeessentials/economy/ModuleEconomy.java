@@ -37,13 +37,10 @@ import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,6 +52,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
@@ -111,17 +109,16 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandWallet(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPay(true), dispatcher);
-        FECommandManager.registerCommand(new CommandSell(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPaidCommand(true), dispatcher);
-        FECommandManager.registerCommand(new CommandSellCommand(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTrade(true), dispatcher);
-        FECommandManager.registerCommand(new CommandSellprice(true), dispatcher);
-        FECommandManager.registerCommand(new CommandRequestPayment(true), dispatcher);
+        FECommandManager.registerCommand(new CommandWallet(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPay(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSell(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPaidCommand(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSellCommand(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTrade(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSellprice(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandRequestPayment(true), event.getDispatcher());
     }
 
     @SubscribeEvent

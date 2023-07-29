@@ -43,16 +43,14 @@ import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -138,10 +136,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandRemote(true), dispatcher);
+        FECommandManager.registerCommand(new CommandRemote(true), event.getDispatcher());
     }
 
     @SubscribeEvent

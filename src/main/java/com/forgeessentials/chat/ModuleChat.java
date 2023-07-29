@@ -45,11 +45,9 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
@@ -64,6 +62,7 @@ import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -182,21 +181,20 @@ public class ModuleChat implements ConfigSaver
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandMute(true), dispatcher);
-        FECommandManager.registerCommand(new CommandNickname(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPm(true), dispatcher);
-        FECommandManager.registerCommand(new CommandReply(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTimedMessages(true), dispatcher);
-        FECommandManager.registerCommand(new CommandUnmute(true), dispatcher);
-        FECommandManager.registerCommand(new CommandGroupMessage(true), dispatcher);
+        FECommandManager.registerCommand(new CommandMute(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandNickname(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPm(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandReply(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTimedMessages(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandUnmute(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandGroupMessage(true), event.getDispatcher());
 
-        FECommandManager.registerCommand(new CommandIrc(true), dispatcher);
-        FECommandManager.registerCommand(new CommandIrcBot(true), dispatcher);
+        FECommandManager.registerCommand(new CommandIrc(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandIrcBot(true), event.getDispatcher());
 
-        FECommandManager.registerCommand(new CommandDiscord(true), dispatcher);
+        FECommandManager.registerCommand(new CommandDiscord(true), event.getDispatcher());
     }
 
     @SubscribeEvent

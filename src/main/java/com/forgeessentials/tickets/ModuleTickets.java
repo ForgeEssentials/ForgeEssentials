@@ -14,15 +14,13 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -42,10 +40,9 @@ public class ModuleTickets implements ConfigSaver
     public static int currentID;
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandTicket(true), dispatcher);
+        FECommandManager.registerCommand(new CommandTicket(true), event.getDispatcher());
     }
 
     @SubscribeEvent

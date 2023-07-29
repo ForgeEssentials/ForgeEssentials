@@ -30,13 +30,11 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -97,13 +95,12 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandZone(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPermissions(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPromote(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPermissionTaggedItem(true), dispatcher);
+        FECommandManager.registerCommand(new CommandZone(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPermissions(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPromote(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPermissionTaggedItem(true), event.getDispatcher());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

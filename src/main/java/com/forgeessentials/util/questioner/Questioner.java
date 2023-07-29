@@ -6,15 +6,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
-import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,11 +32,10 @@ public class Questioner extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandQuestionerYes(true), dispatcher);
-        FECommandManager.registerCommand(new CommandQuestionerNo(true), dispatcher);
+        FECommandManager.registerCommand(new CommandQuestionerYes(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandQuestionerNo(true), event.getDispatcher());
     }
 
     public static synchronized void add(QuestionData question) throws QuestionerException

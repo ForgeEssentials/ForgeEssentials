@@ -51,7 +51,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.player.PlayerPositionEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -64,10 +63,8 @@ import com.forgeessentials.util.selections.CommandPos2;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.google.gson.JsonParseException;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -278,32 +275,6 @@ public class ForgeEssentials
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
-    {
-        LoggingHandler.felog.info("ForgeEssentials registering commands");
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandFEInfo(true), dispatcher);
-        FECommandManager.registerCommand(new CommandFeReload(true), dispatcher);
-
-        CommandFeSettings settings = new CommandFeSettings(true);
-        FECommandManager.registerCommand(settings, dispatcher);
-        MinecraftForge.EVENT_BUS.register(settings);
-
-        FECommandManager.registerCommand(new CommandTest(true), dispatcher);
-        FECommandManager.registerCommand(new CommandWand(true), dispatcher);
-        FECommandManager.registerCommand(new CommandUuid(true), dispatcher);
-        FECommandManager.registerCommand(new CommandFEWorldInfo(true), dispatcher);
-        if (!ModuleLauncher.getModuleList().contains(WEIntegration.weModule))
-        {
-            FECommandManager.registerCommand(new CommandPos1(true), dispatcher);
-            FECommandManager.registerCommand(new CommandPos2(true), dispatcher);
-            FECommandManager.registerCommand(new CommandDeselect(true), dispatcher);
-            FECommandManager.registerCommand(new CommandExpand(true), dispatcher);
-            FECommandManager.registerCommand(new CommandExpandY(true), dispatcher);
-        }
-    }
-
-    @SubscribeEvent
     public void newVersion(NewVersionEvent e)
     {
         LoggingHandler.felog
@@ -315,6 +286,31 @@ public class ForgeEssentials
                 .warn("-------------------------------------------------------------------------------------");
     }
     /* ------------------------------------------------------------ */
+
+    @SubscribeEvent
+    public void registerCommandEvent(final RegisterCommandsEvent event)
+    {
+        LoggingHandler.felog.debug("ForgeEssentials Register Commands Event");
+        FECommandManager.registerCommand(new CommandFEInfo(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandFeReload(true), event.getDispatcher());
+
+        CommandFeSettings settings = new CommandFeSettings(true);
+        FECommandManager.registerCommand(settings, event.getDispatcher());
+        MinecraftForge.EVENT_BUS.register(settings);
+
+        FECommandManager.registerCommand(new CommandTest(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandWand(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandUuid(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandFEWorldInfo(true), event.getDispatcher());
+        if (!ModuleLauncher.getModuleList().contains(WEIntegration.weModule))
+        {
+            FECommandManager.registerCommand(new CommandPos1(true), event.getDispatcher());
+            FECommandManager.registerCommand(new CommandPos2(true), event.getDispatcher());
+            FECommandManager.registerCommand(new CommandDeselect(true), event.getDispatcher());
+            FECommandManager.registerCommand(new CommandExpand(true), event.getDispatcher());
+            FECommandManager.registerCommand(new CommandExpandY(true), event.getDispatcher());
+        }
+    }
 
     @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
@@ -393,13 +389,6 @@ public class ForgeEssentials
         {
             LoggingHandler.felog.fatal("Caught Runtime Exception During Server Stop event! Suppressing Fire!", ex);
         }
-    }
-
-    @SubscribeEvent
-    public void registerCommandEvent(final RegisterCommandsEvent event)
-    {
-        LoggingHandler.felog.debug("ForgeEssentials Register Commands Event");
-        MinecraftForge.EVENT_BUS.post(new FERegisterCommandsEvent(event));
     }
 
     protected void registerPermissions()

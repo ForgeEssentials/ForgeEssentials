@@ -31,14 +31,13 @@ import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -127,10 +126,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandJScript(true), dispatcher);
+        FECommandManager.registerCommand(new CommandJScript(true), event.getDispatcher());
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException

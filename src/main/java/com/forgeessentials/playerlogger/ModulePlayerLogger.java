@@ -18,14 +18,12 @@ import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -51,14 +49,13 @@ public class ModulePlayerLogger implements ConfigSaver
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandRollback(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPlayerlogger(true), dispatcher);
+        FECommandManager.registerCommand(new CommandRollback(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPlayerlogger(true), event.getDispatcher());
 
         CommandTestPlayerlogger test = new CommandTestPlayerlogger(true);
-        FECommandManager.registerCommand(test, dispatcher);
+        FECommandManager.registerCommand(test, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(test);
     }
 

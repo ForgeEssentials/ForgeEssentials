@@ -9,12 +9,10 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -32,11 +30,10 @@ public class PerfToolsModule extends ConfigLoaderBase
     protected static boolean warn;
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandServerPerf(true), dispatcher);
-        FECommandManager.registerCommand(new CommandChunkLoaderList(true), dispatcher);
+        FECommandManager.registerCommand(new CommandServerPerf(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandChunkLoaderList(true), event.getDispatcher());
     }
 
     @SubscribeEvent

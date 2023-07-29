@@ -20,16 +20,14 @@ import com.forgeessentials.teleport.commands.CommandTppos;
 import com.forgeessentials.teleport.commands.CommandWarp;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,28 +81,27 @@ public class TeleportModule extends ConfigLoaderBase
     private PortalManager portalManager = new PortalManager();
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandBack(true), dispatcher);
+        FECommandManager.registerCommand(new CommandBack(true), event.getDispatcher());
 
         CommandBed bed = new CommandBed(true);
-        FECommandManager.registerCommand(bed, dispatcher);
+        FECommandManager.registerCommand(bed, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(bed);
 
-        FECommandManager.registerCommand(new CommandHome(true), dispatcher);
-        FECommandManager.registerCommand(new CommandSpawn(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTp(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTppos(true), dispatcher);
-        FECommandManager.registerCommand(new CommandWarp(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTPA(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPersonalWarp(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTop(true), dispatcher);
+        FECommandManager.registerCommand(new CommandHome(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSpawn(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTp(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTppos(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandWarp(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTPA(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPersonalWarp(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTop(true), event.getDispatcher());
         // FECommandManager.registerCommand(new CommandPortal());
-        FECommandManager.registerCommand(new CommandSetSpawn(true), dispatcher);
+        FECommandManager.registerCommand(new CommandSetSpawn(true), event.getDispatcher());
 
         CommandJump jump = new CommandJump(true);
-        FECommandManager.registerCommand(jump, dispatcher);
+        FECommandManager.registerCommand(jump, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(jump);
     }
 

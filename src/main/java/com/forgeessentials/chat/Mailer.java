@@ -14,12 +14,10 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -32,10 +30,9 @@ public class Mailer extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandMail(true), dispatcher);
+        FECommandManager.registerCommand(new CommandMail(true), event.getDispatcher());
 
     }
 

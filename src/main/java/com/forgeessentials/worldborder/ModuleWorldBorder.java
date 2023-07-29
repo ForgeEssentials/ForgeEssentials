@@ -14,17 +14,15 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectBlock;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,10 +56,9 @@ public class ModuleWorldBorder extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandWorldBorder(true), dispatcher);
+        FECommandManager.registerCommand(new CommandWorldBorder(true), event.getDispatcher());
     }
 
     @SubscribeEvent

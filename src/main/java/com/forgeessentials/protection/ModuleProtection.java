@@ -17,14 +17,11 @@ import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -105,6 +102,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -202,11 +200,10 @@ public class ModuleProtection
     private ProtectionEventHandler protectionHandler = new ProtectionEventHandler();
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandItemPermission(true), dispatcher);
-        FECommandManager.registerCommand(new CommandProtectionDebug(true), dispatcher);
+        FECommandManager.registerCommand(new CommandItemPermission(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandProtectionDebug(true), event.getDispatcher());
         // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 

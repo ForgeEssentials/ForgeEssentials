@@ -19,13 +19,11 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -70,11 +68,10 @@ public class ModuleAuth extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandAuth(true), dispatcher);
-        FECommandManager.registerCommand(new CommandVIP(true), dispatcher);
+        FECommandManager.registerCommand(new CommandAuth(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandVIP(true), event.getDispatcher());
     }
 
     @SubscribeEvent

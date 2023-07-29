@@ -59,13 +59,11 @@ import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
@@ -92,78 +90,77 @@ public class ModuleCommands implements ConfigLoader
     }
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         CommandTime time = new CommandTime(true);
-        FECommandManager.registerCommand(time, dispatcher);
+        FECommandManager.registerCommand(time, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(time);
 
-        FECommandManager.registerCommand(new CommandEnchant(true), dispatcher);
-        FECommandManager.registerCommand(new CommandDechant(true), dispatcher);
-        FECommandManager.registerCommand(new CommandLocate(true), dispatcher);
-        FECommandManager.registerCommand(new CommandRules(true), dispatcher);
-        FECommandManager.registerCommand(new CommandModlist(true), dispatcher);
-        FECommandManager.registerCommand(new CommandButcher(true), dispatcher);
-        FECommandManager.registerCommand(new CommandRemove(true), dispatcher);
+        FECommandManager.registerCommand(new CommandEnchant(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandDechant(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandLocate(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandRules(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandModlist(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandButcher(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandRemove(true), event.getDispatcher());
         // Afk
-        FECommandManager.registerCommand(new CommandAFK(true), dispatcher);
+        FECommandManager.registerCommand(new CommandAFK(true), event.getDispatcher());
         CommandFeSettings.addSetting("Afk", "timeout", CommandAFK.PERM_AUTOTIME);
         CommandFeSettings.addSetting("Afk", "auto_kick", CommandAFK.PERM_AUTOKICK);
         CommandFeSettings.addSetting("Afk", "warmup", CommandAFK.PERM_WARMUP);
         // Kit
         CommandKit kit = new CommandKit(true);
-        FECommandManager.registerCommand(kit, dispatcher);
+        FECommandManager.registerCommand(kit, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(kit);
 
-        FECommandManager.registerCommand(new CommandEnderchest(true), dispatcher);
-        FECommandManager.registerCommand(new CommandVirtualchest(true), dispatcher);
+        FECommandManager.registerCommand(new CommandEnderchest(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandVirtualchest(true), event.getDispatcher());
         // Craft
         CommandCraft craft = new CommandCraft(true);
-        FECommandManager.registerCommand(craft, dispatcher);
+        FECommandManager.registerCommand(craft, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(craft);
 
-        FECommandManager.registerCommand(new CommandPing(true), dispatcher);
-        FECommandManager.registerCommand(new CommandInventorySee(true), dispatcher);
-        FECommandManager.registerCommand(new CommandSmite(true), dispatcher);
-        FECommandManager.registerCommand(new CommandBurn(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPotion(true), dispatcher);
-        FECommandManager.registerCommand(new CommandRepair(true), dispatcher);
-        FECommandManager.registerCommand(new CommandHeal(true), dispatcher);
-        FECommandManager.registerCommand(new CommandKill(true), dispatcher);
-        FECommandManager.registerCommand(new CommandGameMode(true), dispatcher);
-        FECommandManager.registerCommand(new CommandDoAs(true), dispatcher);
-        FECommandManager.registerCommand(new CommandServerSettings(true), dispatcher);
-        FECommandManager.registerCommand(new CommandGetCommandBook(true), dispatcher);
+        FECommandManager.registerCommand(new CommandPing(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandInventorySee(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSmite(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandBurn(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPotion(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandRepair(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandHeal(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandKill(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandGameMode(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandDoAs(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandServerSettings(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandGetCommandBook(true), event.getDispatcher());
         // Weather
         CommandWeather weather = new CommandWeather(true);
-        FECommandManager.registerCommand(weather, dispatcher);
+        FECommandManager.registerCommand(weather, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(weather);
         // Bind
         CommandBind bind = new CommandBind(true);
-        FECommandManager.registerCommand(bind, dispatcher);
+        FECommandManager.registerCommand(bind, event.getDispatcher());
         MinecraftForge.EVENT_BUS.register(bind);
 
-        FECommandManager.registerCommand(new CommandRename(true), dispatcher);
-        FECommandManager.registerCommand(new CommandPush(true), dispatcher);
-        FECommandManager.registerCommand(new CommandDrop(true), dispatcher);
-        FECommandManager.registerCommand(new CommandFindblock(true), dispatcher);
-        FECommandManager.registerCommand(new CommandNoClip(true), dispatcher);
-        FECommandManager.registerCommand(new CommandBubble(true), dispatcher);
+        FECommandManager.registerCommand(new CommandRename(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPush(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandDrop(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandFindblock(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandNoClip(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandBubble(true), event.getDispatcher());
 
-        FECommandManager.registerCommand(new CommandSpeed(true), dispatcher);
-        FECommandManager.registerCommand(new CommandSeen(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTempBan(true), dispatcher);
-        FECommandManager.registerCommand(new CommandFly(true), dispatcher);
-        FECommandManager.registerCommand(new CommandGod(true), dispatcher);
+        FECommandManager.registerCommand(new CommandSpeed(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSeen(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTempBan(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandFly(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandGod(true), event.getDispatcher());
         // Help
-        CommandHelp help = new CommandHelp(true, dispatcher);
-        FECommandManager.registerCommand(help, dispatcher);
+        CommandHelp help = new CommandHelp(true, event.getDispatcher());
+        FECommandManager.registerCommand(help, event.getDispatcher());
         help.fixer = new HelpFixer();
 
-        FECommandManager.registerCommand(new CommandVanish(true), dispatcher);
-        FECommandManager.registerCommand(new CommandDuplicate(true), dispatcher);
-        FECommandManager.registerCommand(new CommandDelayedAction(true), dispatcher);
+        FECommandManager.registerCommand(new CommandVanish(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandDuplicate(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandDelayedAction(true), event.getDispatcher());
     }
 
     static ForgeConfigSpec.IntValue FECversion;

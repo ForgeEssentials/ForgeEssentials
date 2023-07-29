@@ -29,14 +29,12 @@ import com.forgeessentials.serverNetwork.utils.ServerType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
-import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -95,11 +93,10 @@ public class ModuleNetworking extends ConfigLoaderBase
     public ModuleNetworking(){}
 
     @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandNetworking(true), dispatcher);
-        FECommandManager.registerCommand(new CommandTransferServer(true), dispatcher);
+        FECommandManager.registerCommand(new CommandNetworking(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTransferServer(true), event.getDispatcher());
     }
 
     @SubscribeEvent
