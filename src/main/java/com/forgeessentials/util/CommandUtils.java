@@ -106,7 +106,7 @@ public class CommandUtils
             info.commandRelativeArgs.remove(0);
         }
         info.commandActualArgs = event.getParseResults().getReader().getString();
-        while (info.commandActualArgs.startsWith("/"))
+        if (info.commandActualArgs.startsWith("/"))
         {
             info.commandActualArgs = info.commandActualArgs.substring(1);
         }
