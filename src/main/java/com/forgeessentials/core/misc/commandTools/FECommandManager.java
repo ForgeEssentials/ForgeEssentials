@@ -36,9 +36,11 @@ public class FECommandManager
     {
         final FECommandData command = new FECommandData(commandBuilder);
         loadedFEcommands.add(command);
-        if (!registeredFEcommands.contains(command.getData().getName()))
+        if (!registeredFEcommands.contains(command.getBuilder().getName()))
         {
+        	System.out.println(command.getAliases());
         	aliaseManager.loadCommandAliases(command);
+        	System.out.println(command.getAliases());
             register(command, dispatcher);
         }
     }
@@ -53,8 +55,8 @@ public class FECommandManager
 
     public static void loadConfigurableCommand() {
     	for (FECommandData command : loadedFEcommands) {
-    		if (command.getData() instanceof ConfigurableCommand)
-                ((ConfigurableCommand) command.getData()).loadData();
+    		if (command.getBuilder() instanceof ConfigurableCommand)
+                ((ConfigurableCommand) command.getBuilder()).loadData();
     	}
     }
 
@@ -64,19 +66,19 @@ public class FECommandManager
     public static void register(FECommandData commandData, CommandDispatcher<CommandSource> dispatcher)
     {
 
-        String name = commandData.getData().getName();
+        String name = commandData.getBuilder().getName();
         if (commandData.isRegistered())
         {
             LoggingHandler.felog
                     .error(String.format("Tried to register command %s, but it is alredy registered", name));
             return;
         }
-        if (commandData.getData().setExecution() == null)
+        if (commandData.getBuilder().setExecution() == null)
         {
             LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", name));
             return;
         }
-        if (commandData.getData().isEnabled())
+        if (commandData.getBuilder().isEnabled())
         {
             if (registeredFEcommands.contains(name))
             {
@@ -85,15 +87,15 @@ public class FECommandManager
             }
 
             LiteralCommandNode<CommandSource> literalcommandnode = dispatcher
-                    .register(commandData.getData().getMainBuilder());
+                    .register(commandData.getBuilder().getMainBuilder());
             //LoggingHandler.felog.debug("Registered Command: " + name);
             if (FEConfig.enableCommandAliases)
             {
-                if (commandData.getData().getAliases() != null && !commandData.getData().getAliases().isEmpty())
+                if (commandData.getBuilder().getAliases() != null && !commandData.getBuilder().getAliases().isEmpty())
                 {
                     try
                     {
-                        for (String alias : commandData.getData().getAliases())
+                        for (String alias : commandData.getBuilder().getAliases())
                         {
                             if (registeredAiliases.contains(alias))
                             {
@@ -103,7 +105,7 @@ public class FECommandManager
                             }
                             dispatcher.register(Commands.literal(alias).redirect(literalcommandnode)
                                     .requires(source -> source.hasPermission(PermissionManager
-                                            .fromDefaultPermissionLevel(commandData.getData().getPermissionLevel()))));
+                                            .fromDefaultPermissionLevel(commandData.getBuilder().getPermissionLevel()))));
                             LoggingHandler.felog.info("Registered Command: " + name + "'s alias: " + alias);
                             registeredAiliases.add(alias);
                         }
@@ -117,7 +119,7 @@ public class FECommandManager
             commandData.setRegistered(true);
             registeredFEcommands.add(name);
         }
-        commandData.getData().registerExtraPermissions();
+        commandData.getBuilder().registerExtraPermissions();
     }
 
     public static int getTotalCommandNumber() {

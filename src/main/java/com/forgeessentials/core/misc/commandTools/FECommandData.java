@@ -1,5 +1,7 @@
 package com.forgeessentials.core.misc.commandTools;
 
+import java.util.List;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 
 
@@ -7,20 +9,23 @@ public class FECommandData
 {
     private String name;
     private boolean registered;
-    private ForgeEssentialsCommandBuilder data;
+    private ForgeEssentialsCommandBuilder builder;
+    private List<String> aliases;
 
-    public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandData)
+    public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandBuilder)
     {
         name = mainName;
         registered = false;
-        data = commandData;
+        builder = commandBuilder;
+        aliases = commandBuilder.getAliases();
     }
 
     public FECommandData(ForgeEssentialsCommandBuilder commandBuilder)
     {
         name = commandBuilder.getName();
         registered = false;
-        data = commandBuilder;
+        builder = commandBuilder;
+        aliases = commandBuilder.getAliases();
     }
 
     public String getName()
@@ -28,9 +33,9 @@ public class FECommandData
         return name;
     }
 
-    public ForgeEssentialsCommandBuilder getData()
+    public ForgeEssentialsCommandBuilder getBuilder()
     {
-        return data;
+        return builder;
     }
 
     public void setRegistered(boolean registered)
@@ -42,4 +47,12 @@ public class FECommandData
     {
         return registered;
     }
+
+	public List<String> getAliases() {
+		return aliases;
+	}
+
+	public void setAliases(List<String> aliases) {
+		this.aliases = aliases;
+	}
 }
