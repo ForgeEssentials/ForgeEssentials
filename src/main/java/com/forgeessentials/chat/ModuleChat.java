@@ -35,7 +35,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandUtils;

@@ -3,9 +3,9 @@ package com.forgeessentials.commands.server;
 import java.util.TimerTask;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;

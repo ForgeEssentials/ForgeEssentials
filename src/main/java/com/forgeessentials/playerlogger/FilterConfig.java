@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.misc.FECommandParsingException;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;

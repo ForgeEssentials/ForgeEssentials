@@ -1,4 +1,6 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.core.misc.commandTools;
+
+import com.forgeessentials.core.misc.Translator;
 
 public class FECommandParsingException extends Exception
 {

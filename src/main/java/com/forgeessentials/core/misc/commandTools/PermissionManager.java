@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc.commandperms;
+package com.forgeessentials.core.misc.commandTools;
 
 import java.util.Map;
 import java.util.TreeMap;

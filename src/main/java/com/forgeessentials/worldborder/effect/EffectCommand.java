@@ -1,6 +1,6 @@
 package com.forgeessentials.worldborder.effect;
 
-import com.forgeessentials.core.misc.FECommandParsingException;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;

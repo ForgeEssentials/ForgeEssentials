@@ -9,7 +9,7 @@ import java.util.Set;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;

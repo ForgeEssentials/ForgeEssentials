@@ -7,7 +7,7 @@ import java.util.WeakHashMap;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.FECommandParsingException;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;

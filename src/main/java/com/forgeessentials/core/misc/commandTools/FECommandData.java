@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.core.misc.commandTools;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 

@@ -1,6 +1,6 @@
 package com.forgeessentials.worldborder;
 
-import com.forgeessentials.core.misc.FECommandParsingException;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.mojang.brigadier.context.CommandContext;
 

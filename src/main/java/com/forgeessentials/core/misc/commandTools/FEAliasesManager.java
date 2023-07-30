@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc;
+package com.forgeessentials.core.misc.commandTools;
 
 import java.io.File;
 import java.util.ArrayList;

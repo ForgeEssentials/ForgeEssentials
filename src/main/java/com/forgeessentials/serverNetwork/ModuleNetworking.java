@@ -13,7 +13,7 @@ import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.data.v2.DataManager;

@@ -1,7 +1,7 @@
 package com.forgeessentials.worldborder.effect;
 
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.misc.FECommandParsingException;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.worldborder.WorldBorder;
