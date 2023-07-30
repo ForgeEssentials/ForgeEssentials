@@ -1,7 +1,6 @@
 package com.forgeessentials.core.misc.commandTools;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +17,11 @@ public class FEAliasesManager
 		loadData();
 	}
 	public AliasesMap aliasMap = new AliasesMap();
-	private List<String> test = new ArrayList<String>(){{add("gg");}};
 
     public void loadCommandAliases(final FECommandData commandData)
     {
     	if(aliasMap.getList().containsKey(commandData.getName())) {
-    		//commandData.setAliases(aliasMap.getList().get(commandData.getName()));
-    		commandData.setAliases(test);
-    		System.out.println(commandData.getAliases());
+    		commandData.setAliases(aliasMap.getList().get(commandData.getName()));
     		return;
     	}
     	aliasMap.addAliases(commandData.getName(), commandData.getAliases());
@@ -38,7 +34,7 @@ public class FEAliasesManager
 
     public void loadData()
     {
-    	if (!ModuleCommands.newMappings)
+    	if (!ModuleCommands.newMappings && getAliasFile().exists())
         {
     		aliasMap = DataManager.load(AliasesMap.class, getAliasFile());
         }

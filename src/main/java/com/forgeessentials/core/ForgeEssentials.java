@@ -341,6 +341,7 @@ public class ForgeEssentials
         // ForgeChunkManager.setForcedChunkLoadingCallback(ForgeEssentials.MODID, new FEChunkLoader());
 
         registerPermissions();
+        FECommandManager.aliaseManager.saveData();
 
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStartingEvent(e));
     }
@@ -384,7 +385,6 @@ public class ForgeEssentials
             FECommandManager.clearRegisteredCommands();
             Translator.save();
             ConfigBase.getModuleConfig().saveConfig();
-            FECommandManager.aliaseManager.saveData();
         }
         catch (RuntimeException ex)
         {
