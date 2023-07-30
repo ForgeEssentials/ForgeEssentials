@@ -147,7 +147,7 @@ public class PermissionManager
             result.put(prefix.replace(' ', '.').replace("<", "").replace(">", ""), parentLevel);
         }
 
-        if (node.getRedirect() != null)
+        if (node.getRedirect() != null && !prefix.replace(' ', '.').replace("<", "").replace(">", "").startsWith("execute.run.execute"))
         {
             // final String redirect = node.getRedirect() == dispatcher.getRoot() ? "..." : "-> " + node.getRedirect().getUsageText();
             // LoggingHandler.felog.debug("Found Command Redirect: "+ (prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix +
