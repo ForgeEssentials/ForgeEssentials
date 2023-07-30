@@ -38,9 +38,7 @@ public class FECommandManager
         loadedFEcommands.add(command);
         if (!registeredFEcommands.contains(command.getBuilder().getName()))
         {
-        	System.out.println(command.getAliases());
         	aliaseManager.loadCommandAliases(command);
-        	System.out.println(command.getAliases());
             register(command, dispatcher);
         }
     }
@@ -91,11 +89,11 @@ public class FECommandManager
             //LoggingHandler.felog.debug("Registered Command: " + name);
             if (FEConfig.enableCommandAliases)
             {
-                if (commandData.getBuilder().getAliases() != null && !commandData.getBuilder().getAliases().isEmpty())
+                if (commandData.getAliases() != null && !commandData.getAliases().isEmpty())
                 {
                     try
                     {
-                        for (String alias : commandData.getBuilder().getAliases())
+                        for (String alias : commandData.getAliases())
                         {
                             if (registeredAiliases.contains(alias))
                             {

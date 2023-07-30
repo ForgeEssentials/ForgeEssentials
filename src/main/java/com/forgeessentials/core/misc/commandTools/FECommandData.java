@@ -17,7 +17,7 @@ public class FECommandData
         name = mainName;
         registered = false;
         builder = commandBuilder;
-        aliases = commandBuilder.getAliases();
+        aliases = commandBuilder.getDefaultAliases();
     }
 
     public FECommandData(ForgeEssentialsCommandBuilder commandBuilder)
@@ -25,7 +25,7 @@ public class FECommandData
         name = commandBuilder.getName();
         registered = false;
         builder = commandBuilder;
-        aliases = commandBuilder.getAliases();
+        aliases = commandBuilder.getDefaultAliases();
     }
 
     public String getName()

@@ -75,8 +75,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
         return new String[] {};
     }
 
-    private List<String> Aliases;
-
     protected final static String PREFIX = "fe";
 
     public String getName()
@@ -109,8 +107,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     public List<String> getAliases()
     {
-        Aliases = new ArrayList<>(Arrays.asList(getDefaultSecondaryAliases()));
-        return Aliases;
+        return new ArrayList<>(Arrays.asList(getDefaultSecondaryAliases()));
     }
 
     public List<String> getDefaultAliases()
@@ -122,11 +119,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
             list.add(name);
         }
         return list;
-    }
-
-    public void setAliases(List<String> aliases)
-    {
-        Aliases = aliases;
     }
 
     /**
