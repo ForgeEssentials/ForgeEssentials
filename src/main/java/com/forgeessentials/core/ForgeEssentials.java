@@ -321,9 +321,6 @@ public class ForgeEssentials
         //Register Server-Client Packets
         registerNetworkMessages();
 
-        // ConfigBase.registerConfigManual(FEAliasesManager.returnData().getSpecBuilder().build(),
-        // FEAliasesManager.returnData().getName(), true);
-
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
 
@@ -387,6 +384,7 @@ public class ForgeEssentials
             FECommandManager.clearRegisteredCommands();
             Translator.save();
             ConfigBase.getModuleConfig().saveConfig();
+            FECommandManager.aliaseManager.saveData();
         }
         catch (RuntimeException ex)
         {

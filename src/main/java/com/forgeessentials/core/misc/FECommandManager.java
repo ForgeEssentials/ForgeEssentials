@@ -35,14 +35,13 @@ public class FECommandManager
 
     public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
     {
-        FECommandData command = new FECommandData(commandBuilder);
+        final FECommandData command = new FECommandData(commandBuilder);
         loadedFEcommands.add(command);
         if (!registeredFEcommands.contains(command.getData().getName()))
         {
-            // FEAliasesManager.bakeCommandConfig(command);
+        	aliaseManager.loadCommandAliases(command);
             register(command, dispatcher);
         }
-        // FEAliasesManager.loadCommandConfig(command);
     }
 
     public static void clearRegisteredCommands()

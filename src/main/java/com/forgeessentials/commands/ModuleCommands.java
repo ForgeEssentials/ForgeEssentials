@@ -80,7 +80,7 @@ public class ModuleCommands implements ConfigLoader
 
     public static final int COMMANDS_VERSION = 5;
 
-    public static boolean newMappings;
+    public static boolean newMappings = false;
 
     @SubscribeEvent
     public void load(FEModuleServerStartingEvent event)
