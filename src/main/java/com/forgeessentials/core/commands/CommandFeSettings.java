@@ -89,12 +89,6 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.settings";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

@@ -41,12 +41,6 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleEconomy.PERM_COMMAND + ".trade";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;

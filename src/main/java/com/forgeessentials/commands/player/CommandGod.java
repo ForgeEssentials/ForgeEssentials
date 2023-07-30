@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -44,12 +43,6 @@ public class CommandGod extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".god";
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.forgeessentials.commands.player;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -43,12 +42,6 @@ public class CommandBubble extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".bubble";
     }
 
     @Override

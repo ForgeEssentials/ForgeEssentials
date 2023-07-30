@@ -1,7 +1,6 @@
 package com.forgeessentials.commands.player;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
@@ -47,12 +46,6 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".seen";
     }
 
     @Override

@@ -29,12 +29,6 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.chat.ircbot";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

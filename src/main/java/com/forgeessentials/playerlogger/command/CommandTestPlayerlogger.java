@@ -39,12 +39,6 @@ public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "testpl";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

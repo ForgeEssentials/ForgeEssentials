@@ -41,12 +41,6 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.chat.timedmessage";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

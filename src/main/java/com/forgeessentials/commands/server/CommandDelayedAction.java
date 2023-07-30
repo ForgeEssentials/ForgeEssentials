@@ -2,7 +2,6 @@ package com.forgeessentials.commands.server;
 
 import java.util.TimerTask;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -43,12 +42,6 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".delayedaction";
     }
 
     @Override

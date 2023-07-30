@@ -92,15 +92,9 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".potion";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP,
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".potion.others", DefaultPermissionLevel.OP,
                 "Use potions on others");
     }
 
@@ -140,7 +134,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
                     }
                     else
                     {
-                        if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+                        if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".potion.others"))
                         {
                             ChatOutputHandler.chatWarning(ctx.getSource(),
                                     Translator.format("You dont have permission to remove effects from %s",
@@ -167,7 +161,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
                     }
                     else
                     {
-                        if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+                        if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".potion.others"))
                         {
                             ChatOutputHandler.chatWarning(ctx.getSource(),
                                     Translator.format("You dont have permission to remove effects from %s",
@@ -233,7 +227,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
                 }
                 else
                 {
-                    if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+                    if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".potion.others"))
                     {
                         ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
                                 "You dont have permission to give effects to %s", entity.getDisplayName().getString()));

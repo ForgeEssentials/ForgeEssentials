@@ -49,12 +49,6 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM_SETSPAWN;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder

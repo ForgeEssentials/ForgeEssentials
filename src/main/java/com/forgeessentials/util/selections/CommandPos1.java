@@ -88,7 +88,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
         z = (int) mop.getLocation().z;
 
         WorldPoint point = new WorldPoint(player.level, x, y, z);
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, "fe.core.pos.pos"))
         {
             ChatOutputHandler.chatError(player, "Insufficient permissions.");
             return Command.SINGLE_SUCCESS;
@@ -98,12 +98,6 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
         SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
         ChatOutputHandler.chatConfirmation(player, "Pos1 set to " + x + ", " + y + ", " + z);
         return Command.SINGLE_SUCCESS;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.pos";
     }
 
     @Override

@@ -45,12 +45,6 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
         return null;// options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return null;// options.permission;
-    }
-
     /*
      * @Override public void parse() throws CommandException { try { if (arguments.isTabCompletion) { if (options.tabComplete != null) //script.call(options.tabComplete,
      * options.tabComplete, new JsCommandArgs(arguments)); } else { //script.call(options.processCommand, options.processCommand, new JsCommandArgs(arguments)); } } catch

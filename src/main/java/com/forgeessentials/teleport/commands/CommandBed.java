@@ -50,12 +50,6 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_BED;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder.then(Commands.argument("player", EntityArgument.player())

@@ -46,12 +46,6 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleEconomy.PERM_COMMAND + ".sellcommand";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

@@ -154,15 +154,9 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".rules";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", DefaultPermissionLevel.OP, "Edit rules");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".rules.edit", DefaultPermissionLevel.OP, "Edit rules");
     }
 
     @Override
@@ -224,7 +218,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             case "help":
                 ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");
-                if (hasPermission(Splayer.createCommandSourceStack(), getPermissionNode() + ".edit")) {
+                if (hasPermission(Splayer.createCommandSourceStack(), ModuleCommands.PERM + ".rules.edit")) {
                     ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules <#> [changedRule]");
                     ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules add <newRule>");
                     ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules remove <#>");
@@ -237,7 +231,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
         }
 
-        if (!hasPermission(ctx.getSource(), getPermissionNode() + ".edit"))
+        if (!hasPermission(ctx.getSource(), ModuleCommands.PERM + ".rules.edit"))
         {
             ChatOutputHandler.chatError(ctx.getSource(),
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");

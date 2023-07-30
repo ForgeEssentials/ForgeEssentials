@@ -33,18 +33,10 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public static final String PERM_NODE = "fe.perm.promote";
-
     @Override
     public @NotNull String getPrimaryAlias()
     {
         return "promote";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM_NODE;
     }
 
     @Override

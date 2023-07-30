@@ -56,15 +56,9 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".heal";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Heal others");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".heal.others", DefaultPermissionLevel.OP, "Heal others");
     }
 
     @Override
@@ -84,7 +78,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
             heal(ctx.getSource().getPlayerOrException());
         }
         else if (params.equals("others")
-                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".heal.others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())

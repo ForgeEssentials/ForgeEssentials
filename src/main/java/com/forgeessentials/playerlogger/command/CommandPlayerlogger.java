@@ -58,12 +58,6 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModulePlayerLogger.PERM_COMMAND + ".pl";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

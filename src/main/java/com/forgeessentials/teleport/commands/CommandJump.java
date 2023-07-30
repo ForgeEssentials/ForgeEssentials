@@ -52,12 +52,6 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_JUMP;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));

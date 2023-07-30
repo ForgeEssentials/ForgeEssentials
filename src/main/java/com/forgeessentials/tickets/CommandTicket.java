@@ -208,12 +208,6 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
         return true;
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleTickets.PERMBASE + ".command";
-    }
-
     public List<String> getTicketList()
     {
         List<String> list = new ArrayList<>();

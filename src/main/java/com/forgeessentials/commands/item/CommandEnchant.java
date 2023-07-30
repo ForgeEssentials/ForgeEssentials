@@ -2,7 +2,6 @@ package com.forgeessentials.commands.item;
 
 import java.util.Map;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -28,8 +27,6 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    private static final String PERM = ModuleCommands.PERM + ".enchant";
-
     @Override
     public @NotNull String getPrimaryAlias()
     {
@@ -46,12 +43,6 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM;
     }
 
     @Override

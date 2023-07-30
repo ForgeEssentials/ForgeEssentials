@@ -49,12 +49,6 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TOP;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder

@@ -63,12 +63,6 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_ANNOUNCE, DefaultPermissionLevel.ALL,

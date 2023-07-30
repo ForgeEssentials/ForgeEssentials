@@ -85,7 +85,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         else
         {
             // Check for permissions
-            if (!hasPermission(ctx.getSource(), getPermissionNode()))
+            if (!hasPermission(ctx.getSource(), "fe.core.pos.wand"))
             {
                 ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
                 return Command.SINGLE_SUCCESS;
@@ -104,12 +104,6 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.wand";
     }
 
     @Override

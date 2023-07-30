@@ -251,12 +251,6 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleRemote.PERM;
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

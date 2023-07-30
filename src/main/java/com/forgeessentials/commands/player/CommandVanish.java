@@ -73,12 +73,6 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Allow to vanish other players");

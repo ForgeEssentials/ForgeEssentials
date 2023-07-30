@@ -32,12 +32,6 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.perftools.chunkloaderlist";
-    }
-
-    @Override
     public @NotNull String getPrimaryAlias()
     {
         return "chunkloaderlist";

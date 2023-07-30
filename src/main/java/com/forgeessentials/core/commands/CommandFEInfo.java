@@ -3,7 +3,6 @@ package com.forgeessentials.core.commands;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.mixin.FEMixinConfig;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -30,12 +29,6 @@ public class CommandFEInfo extends ForgeEssentialsCommandBuilder
     public @NotNull String getPrimaryAlias()
     {
         return "feinfo";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ForgeEssentials.PERM_INFO;
     }
 
     @Override

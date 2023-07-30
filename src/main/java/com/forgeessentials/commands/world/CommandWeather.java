@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.Translator;
@@ -112,12 +111,6 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".weather";
     }
 
     public static WeatherState getWeatherState(String dim, WeatherType type)

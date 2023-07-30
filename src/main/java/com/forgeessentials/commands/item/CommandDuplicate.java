@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.item;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -41,12 +40,6 @@ public class CommandDuplicate extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + "duplicate";
     }
 
     @Override

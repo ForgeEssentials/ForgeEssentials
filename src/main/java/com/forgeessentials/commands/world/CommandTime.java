@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.FECommandParsingException;
@@ -83,12 +82,6 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".time";
     }
 
     @Override

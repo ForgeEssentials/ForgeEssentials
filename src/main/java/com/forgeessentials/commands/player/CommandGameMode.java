@@ -120,7 +120,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
             if (isPlayer)
             {
                 if (serverplayerentity != getServerPlayer(source)
-                        && !hasPermission(source, getPermissionNode() + ".others"))
+                        && !hasPermission(source, ModuleCommands.PERM + "." + getName() + ".others"))
                 {
                     ChatOutputHandler.chatError(source, "You dont have permission to change others gamemodes.");
                     return;
@@ -144,7 +144,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP,
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + "." + getName() + ".others", DefaultPermissionLevel.OP,
                 "Change others' game modes");
     }
 
@@ -152,12 +152,6 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getName();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.SeeablePlayerInventory;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
@@ -53,12 +52,6 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".invsee";
     }
 
     @Override

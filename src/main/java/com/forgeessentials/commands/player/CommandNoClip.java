@@ -47,12 +47,6 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".noclip";
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder

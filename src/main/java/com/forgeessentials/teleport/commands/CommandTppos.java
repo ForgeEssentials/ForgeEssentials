@@ -54,12 +54,6 @@ public class CommandTppos extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TPPOS;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder.then(Commands.argument("pos", BlockPosArgument.blockPos())

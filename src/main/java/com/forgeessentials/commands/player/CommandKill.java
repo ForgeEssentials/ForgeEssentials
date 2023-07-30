@@ -50,15 +50,9 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".kill";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP,
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".kill.others", DefaultPermissionLevel.OP,
                 "Use /kill on other players");
     }
 
@@ -73,7 +67,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (EntityArgument.getPlayer(ctx, "victim") != getServerPlayer(ctx.getSource())
-                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".kill.others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
             if (!player.hasDisconnected())

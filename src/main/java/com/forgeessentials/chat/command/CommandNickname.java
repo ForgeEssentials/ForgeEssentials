@@ -28,10 +28,6 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public static final String PERM = ModuleChat.PERM + ".nickname";
-
-    public static final String PERM_OTHERS = PERM + ".others";
-
     @Override
     public @NotNull String getPrimaryAlias()
     {
@@ -51,15 +47,9 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Edit other players' nicknames");
+        APIRegistry.perms.registerPermission(ModuleChat.PERM + ".nickname.others", DefaultPermissionLevel.OP, "Edit other players' nicknames");
     }
 
     @Override
@@ -102,7 +92,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!hasPermission(((PlayerEntity) ctx.getSource().getEntity()).createCommandSourceStack(), PERM_OTHERS))
+        if (!hasPermission(((PlayerEntity) ctx.getSource().getEntity()).createCommandSourceStack(), ModuleChat.PERM + ".nickname.others"))
         {
             ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return Command.SINGLE_SUCCESS;

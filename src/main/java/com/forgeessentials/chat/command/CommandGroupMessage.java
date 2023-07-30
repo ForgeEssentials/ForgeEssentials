@@ -27,18 +27,10 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public static final String PERM = "fe.chat.groupmessage";
-
     @Override
     public @NotNull String getPrimaryAlias()
     {
         return "gmsg";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM;
     }
 
     @Override

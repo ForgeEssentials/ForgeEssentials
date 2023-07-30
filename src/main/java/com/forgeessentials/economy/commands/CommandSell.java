@@ -38,12 +38,6 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleEconomy.PERM_COMMAND + ".sell";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
@@ -58,7 +52,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".noconfirm", DefaultPermissionLevel.NONE,
+        APIRegistry.perms.registerPermission(ModuleEconomy.PERM_COMMAND + ".sell.noconfirm", DefaultPermissionLevel.NONE,
                 "Do not confirm selling items to the server.");
     }
 
@@ -153,7 +147,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
         String message = Translator.format("Sell %d x %s each for %s (total: %s)?", amount,
                 itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price),
                 APIRegistry.economy.toString(amount * price));
-        if (APIRegistry.perms.checkPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".noconfirm"))
+        if (APIRegistry.perms.checkPermission(getServerPlayer(ctx.getSource()), ModuleEconomy.PERM_COMMAND + ".sell.noconfirm"))
         {
             handler.respond(true);
             return Command.SINGLE_SUCCESS;

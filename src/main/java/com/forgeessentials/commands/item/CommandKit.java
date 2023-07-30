@@ -75,12 +75,6 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_ADMIN, DefaultPermissionLevel.OP, "Administer kits");

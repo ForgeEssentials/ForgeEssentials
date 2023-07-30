@@ -52,12 +52,6 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleJScripting.PERM + ".manage";
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder.then(Commands.literal("list").executes(CommandContext -> execute(CommandContext, "list")))

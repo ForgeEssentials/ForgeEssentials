@@ -3,7 +3,6 @@ package com.forgeessentials.commands.item;
 import java.util.List;
 import java.util.Objects;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.PlayerUtil;
 import com.google.common.collect.ImmutableList;
@@ -70,12 +69,6 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".virtualchest";
     }
 
     @Override

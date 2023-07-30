@@ -42,12 +42,6 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleEconomy.PERM_COMMAND + ".paidcommand";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.NONE;

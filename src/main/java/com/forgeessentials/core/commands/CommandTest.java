@@ -1,6 +1,5 @@
 package com.forgeessentials.core.commands;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -25,12 +24,6 @@ public class CommandTest extends ForgeEssentialsCommandBuilder
     public @NotNull String getPrimaryAlias()
     {
         return "fetesting";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ForgeEssentials.PERM_CORE + ".testing";
     }
 
     @Override

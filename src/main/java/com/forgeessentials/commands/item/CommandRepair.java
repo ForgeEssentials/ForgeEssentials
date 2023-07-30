@@ -45,15 +45,9 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".repair";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP,
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".repair.others", DefaultPermissionLevel.OP,
                 "Allows repairing items held by another player");
     }
 
@@ -108,7 +102,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
             }
         }
         else if (args[1].equals("others")
-                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".repair.others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (args[0].equals("max"))

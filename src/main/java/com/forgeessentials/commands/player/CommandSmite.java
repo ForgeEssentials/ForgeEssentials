@@ -50,15 +50,9 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".smite";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP,
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".smite.others", DefaultPermissionLevel.OP,
                 "Smite others");
     }
 
@@ -93,7 +87,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
             }
             else
             {
-                if (hasPermission(ctx.getSource(), getPermissionNode() + ".others"))
+                if (hasPermission(ctx.getSource(), ModuleCommands.PERM + ".smite.others"))
                 {
                     LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
                     lightningboltentity.moveTo(Vector3d.atBottomCenterOf(

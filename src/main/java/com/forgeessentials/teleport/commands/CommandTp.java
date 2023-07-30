@@ -168,12 +168,6 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         return true;
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TP;
-    }
-
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

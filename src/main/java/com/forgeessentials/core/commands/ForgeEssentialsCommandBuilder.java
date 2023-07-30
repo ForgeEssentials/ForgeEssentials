@@ -61,12 +61,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     public abstract boolean canConsoleUseCommand();
 
-    /**
-     * @Deprecated formerly of PermissionObject
-     */
-    @Deprecated
-    public abstract String getPermissionNode();
-
     public abstract DefaultPermissionLevel getPermissionLevel();
 
     // ------------------------------------------------------------

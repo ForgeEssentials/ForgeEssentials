@@ -197,7 +197,7 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    private ProtectionEventHandler protectionHandler = new ProtectionEventHandler();
+    public ProtectionEventHandler protectionHandler = new ProtectionEventHandler();
 
     @SubscribeEvent
     public void registerCommands(RegisterCommandsEvent event)

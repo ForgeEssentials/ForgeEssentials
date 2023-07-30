@@ -46,12 +46,6 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_HOME;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder.then(Commands.literal("set").executes(CommandContext -> execute(CommandContext, "set")))

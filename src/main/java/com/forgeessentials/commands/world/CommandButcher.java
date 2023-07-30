@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -64,12 +63,6 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".butcher";
     }
 
     @Override

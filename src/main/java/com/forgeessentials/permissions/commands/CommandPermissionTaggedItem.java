@@ -46,12 +46,6 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PermissionCommandParser.PERM + ".permtaggeditem";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

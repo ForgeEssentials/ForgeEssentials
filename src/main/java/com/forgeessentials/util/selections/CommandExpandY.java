@@ -50,12 +50,6 @@ public class CommandExpandY extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.expandy";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

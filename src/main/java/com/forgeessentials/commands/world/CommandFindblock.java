@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.world;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.mojang.brigadier.Command;
@@ -49,12 +48,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".findblock";
     }
 
     @Override

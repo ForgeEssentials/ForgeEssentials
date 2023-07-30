@@ -100,6 +100,11 @@ public class Environment
         return hasSponge;
     }
 
+    public static boolean hasFTBU()
+    {
+        return hasFTBU;
+    }
+
     public static void registerSpongeCompatPlugin(boolean isWESpongePresent)
     {
         LoggingHandler.felog.info("Sponge environment plugin found, enabling Sponge compat.");

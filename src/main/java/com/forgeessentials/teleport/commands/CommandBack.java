@@ -43,12 +43,6 @@ public class CommandBack extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_BACK;
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));

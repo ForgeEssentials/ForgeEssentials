@@ -234,12 +234,6 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleNetworking.PERM;
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

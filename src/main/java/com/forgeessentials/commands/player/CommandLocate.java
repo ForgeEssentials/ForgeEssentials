@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
@@ -47,12 +46,6 @@ public class CommandLocate extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".locate";
     }
 
     @Override

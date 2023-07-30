@@ -70,12 +70,6 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.economy." + getName();
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
 

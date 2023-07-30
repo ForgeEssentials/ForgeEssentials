@@ -55,12 +55,6 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TPA;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_HERE, DefaultPermissionLevel.ALL,

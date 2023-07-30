@@ -1,6 +1,5 @@
 package com.forgeessentials.core.commands;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -31,12 +30,6 @@ public class CommandFeReload extends ForgeEssentialsCommandBuilder
     public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "reload" };
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ForgeEssentials.PERM_RELOAD;
     }
 
     @Override

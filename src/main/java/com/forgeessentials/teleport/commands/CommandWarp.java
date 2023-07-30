@@ -68,12 +68,6 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_SET, DefaultPermissionLevel.OP, "Allow setting warps");

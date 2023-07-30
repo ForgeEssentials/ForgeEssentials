@@ -46,12 +46,6 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".burn";
-    }
-
-    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
@@ -81,7 +75,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("others"))
         {
-            if (hasPermission(ctx.getSource(), getPermissionNode() + ".others"))
+            if (hasPermission(ctx.getSource(), ModuleCommands.PERM + ".burn.others"))
             {
                 ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
                 if (!player.hasDisconnected())
@@ -104,7 +98,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("othersT"))
         {
-            if (hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), getPermissionNode() + ".others"))
+            if (hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".burn.others"))
             {
                 ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
                 if (!player.hasDisconnected())
@@ -161,7 +155,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP,
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".burn.others", DefaultPermissionLevel.OP,
                 "Apply burn effect on others");
     }
 }

@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -39,12 +38,6 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".fly";
     }
 
     public LiteralArgumentBuilder<CommandSource> setExecution()
