@@ -104,7 +104,7 @@ public class FECommandManager
                             dispatcher.register(Commands.literal(alias).redirect(literalcommandnode)
                                     .requires(source -> source.hasPermission(PermissionManager
                                             .fromDefaultPermissionLevel(commandData.getBuilder().getPermissionLevel()))));
-                            LoggingHandler.felog.info("Registered Command: " + name + "'s alias: " + alias);
+                            //LoggingHandler.felog.info("Registered Command: " + name + "'s alias: " + alias);
                             registeredAiliases.add(alias);
                         }
                     }
