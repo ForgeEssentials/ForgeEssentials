@@ -152,7 +152,14 @@ public class PermissionManager
             // final String redirect = node.getRedirect() == dispatcher.getRoot() ? "..." : "-> " + node.getRedirect().getUsageText();
             // LoggingHandler.felog.debug("Found Command Redirect: "+ (prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix +
             // CommandDispatcher.ARGUMENT_SEPARATOR + redirect));
-            // result.add(prefix.isEmpty() ? node.getUsageText() + CommandDispatcher.ARGUMENT_SEPARATOR + redirect : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + redirect);
+             if (!node.getRedirect().getChildren().isEmpty())
+             {
+                 for (final CommandNode<CommandSource> child : node.getRedirect().getChildren())
+                 {
+                     getAllUsage(child, result, prefix.isEmpty() ? child.getUsageText() : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + child.getUsageText(),
+                             dispatcher, parentLevel);
+                 }
+             }
         }
         else if (!node.getChildren().isEmpty())
         {
