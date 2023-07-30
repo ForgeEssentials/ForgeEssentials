@@ -6,9 +6,7 @@ import java.util.Set;
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
@@ -41,8 +39,6 @@ public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
         {
             ForgeEssentialsClient.permissionOverlay.breakIds.clear();
             ForgeEssentialsClient.permissionOverlay.placeIds.clear();
-            Minecraft instance = Minecraft.getInstance();
-            instance.gui.getChat().addMessage(new StringTextComponent("Resetting Permissions"));
         }
         else
         {
