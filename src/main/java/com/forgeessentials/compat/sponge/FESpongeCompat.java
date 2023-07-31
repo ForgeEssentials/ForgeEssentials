@@ -47,7 +47,7 @@ public class FESpongeCompat
     @Listener
     public void init(GameInitializationEvent e)
     {
-    	if(ModuleLauncher.getModuleList().contains("WEIntegrationTools")) {
+    	if(ModuleLauncher.getModuleList().contains("Economy")) {
     		Sponge.getServiceManager().setProvider(this, EconomyService.class, new FEEconService());
         }
     }
