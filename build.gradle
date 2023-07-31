@@ -305,16 +305,17 @@ sourceSets {
     }
 }
 
-project.compileUtilsJava {
-    doFirst {
-        copy {
-            from ('src/utils/replaceJava') {
-                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.baseVersion])
-            }
-            into 'src/utils/java'
-        }
-    }
+// Configure utils tokens
+task processSource(type: Sync) {
+    from sourceSets.utils.java
+	filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.baseVersion])
+    into "$buildDir/src"
 }
+
+project.compileUtilsJava {
+	source = processSource.outputs
+}
+
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
@@ -372,6 +373,7 @@ task serverLibArchive(type: Zip) {
 
 jar.doLast {
 	delete (serverLibArchive.archivePath)
+	delete (processSource.outputs)
 }
 
 // Configure server jar (default)
