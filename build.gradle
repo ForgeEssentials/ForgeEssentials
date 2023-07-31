@@ -13,6 +13,9 @@ buildscript {
             name = "sponge"
             url = "https://repo.spongepowered.org/maven/"
         }
+        maven {
+      		url = uri("https://plugins.gradle.org/m2/")
+    	}
 		mavenCentral()
 		mavenLocal()
 		maven {
@@ -28,6 +31,7 @@ buildscript {
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
 		classpath "com.discord4j:discord4j-core:3.2.1"
+		classpath("com.diffplug.gradle:goomph:3.42.2")
 	}
 }
 
@@ -35,7 +39,7 @@ plugins {
     id 'org.sonarqube' version '2.5'
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
-
+apply plugin: 'com.diffplug.eclipse.apt'
 apply plugin: 'jacoco'
 
 sonarqube {
@@ -222,6 +226,7 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 	// IRC
+	implementation "org.pircbotx:pircbotx:2.0.1"
 	serverLib("org.pircbotx:pircbotx:2.0.1") {
         // these are all packaged with the minecraft server jar
         exclude module: 'guava'
@@ -229,8 +234,10 @@ dependencies {
         exclude module: 'commons-codec'
     }
 
+	implementation 'net.dv8tion:JDA:5.0.0-beta.8'
     serverLib('net.dv8tion:JDA:5.0.0-beta.8')
     // Shade Mixin library
+    implementation (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT")
     shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
@@ -242,14 +249,15 @@ dependencies {
 	serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
 	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
+	implementation 'javax.persistence:javax.persistence-api:2.2'
     annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.14.Final'
     annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT:processor'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
-    compile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
-    compile "baubles:Baubles:1.12:1.5.2"
+    implementation "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+    implementation "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
+    implementation "baubles:Baubles:1.12:1.5.2"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
 
@@ -263,7 +271,7 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
-    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+    implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 
 	compile 'javax.xml.bind:jaxb-api:2.3.1'
 }
