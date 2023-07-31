@@ -11,7 +11,9 @@ import org.spongepowered.api.service.economy.EconomyService;
 
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.compat.sponge.economy.FEEconService;
+import com.forgeessentials.compat.worldedit.WEIntegration;
 import com.forgeessentials.core.environment.Environment;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.google.inject.Inject;
 
 /**
@@ -45,7 +47,9 @@ public class FESpongeCompat
     @Listener
     public void init(GameInitializationEvent e)
     {
-        Sponge.getServiceManager().setProvider(this, EconomyService.class, new FEEconService());
+    	if(ModuleLauncher.getModuleList().contains("WEIntegrationTools")) {
+    		Sponge.getServiceManager().setProvider(this, EconomyService.class, new FEEconService());
+        }
     }
 
 }
