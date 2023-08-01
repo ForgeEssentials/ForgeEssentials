@@ -7,10 +7,12 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 
 public class FECommandData
 {
-    private String name;
+    final private String name;
     private boolean registered;
-    private ForgeEssentialsCommandBuilder builder;
+    final private ForgeEssentialsCommandBuilder builder;
     private List<String> aliases;
+    private String mainName;
+    private List<String> mainAliases;
 
     public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandBuilder)
     {
@@ -54,5 +56,21 @@ public class FECommandData
 
 	public void setAliases(List<String> aliases) {
 		this.aliases = aliases;
+	}
+
+	public String getMainName() {
+		return mainName;
+	}
+
+	public void setMainName(String mainName) {
+		this.mainName = mainName;
+	}
+
+	public List<String> getMainAliases() {
+		return mainAliases;
+	}
+
+	public void setMainAliases(List<String> mainAliases) {
+		this.mainAliases = mainAliases;
 	}
 }

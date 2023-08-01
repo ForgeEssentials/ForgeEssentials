@@ -1,6 +1,8 @@
 package com.forgeessentials.core.misc.commandTools;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,15 +18,21 @@ public class FEAliasesManager
 	public FEAliasesManager() {
 		loadData();
 	}
-	public AliasesMap aliasMap = new AliasesMap();
+	private AliasesMap aliasMap = new AliasesMap();
 
     public void loadCommandAliases(final FECommandData commandData)
     {
     	if(aliasMap.getList().containsKey(commandData.getName())) {
-    		commandData.setAliases(aliasMap.getList().get(commandData.getName()));
-    		return;
+    		commandData.setAliases(new ArrayList<>(aliasMap.getList().get(commandData.getName())));
     	}
-    	aliasMap.addAliases(commandData.getName(), commandData.getAliases());
+    	else {
+    		aliasMap.addAliases(commandData.getName(), new ArrayList<>(commandData.getAliases()));
+    	}
+    	List<String> alias = new ArrayList<>(commandData.getAliases());
+		alias.add(commandData.getName());
+		alias.sort(Comparator.naturalOrder());
+		commandData.setMainName(alias.remove(0));
+		commandData.setMainAliases(alias);
     }
 
     private static File getAliasFile()

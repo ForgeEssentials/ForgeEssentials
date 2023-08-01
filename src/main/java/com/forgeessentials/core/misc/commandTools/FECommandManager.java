@@ -7,10 +7,12 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FECommandManager
 {
@@ -36,7 +38,7 @@ public class FECommandManager
     {
         final FECommandData command = new FECommandData(commandBuilder);
         loadedFEcommands.add(command);
-        if (!registeredFEcommands.contains(command.getBuilder().getName()))
+        if (!registeredFEcommands.contains(command.getName()))
         {
         	aliaseManager.loadCommandAliases(command);
             register(command, dispatcher);
@@ -63,37 +65,36 @@ public class FECommandManager
      */
     public static void register(FECommandData commandData, CommandDispatcher<CommandSource> dispatcher)
     {
-
-        String name = commandData.getBuilder().getName();
         if (commandData.isRegistered())
         {
             LoggingHandler.felog
-                    .error(String.format("Tried to register command %s, but it is alredy registered", name));
+                    .error(String.format("Tried to register command %s, but it is alredy registered", commandData.getMainName()));
             return;
         }
         if (commandData.getBuilder().setExecution() == null)
         {
-            LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", name));
+            LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", commandData.getMainName()));
             return;
         }
         if (commandData.getBuilder().isEnabled())
         {
-            if (registeredFEcommands.contains(name))
+            if (registeredFEcommands.contains(commandData.getName()))
             {
-                LoggingHandler.felog.error(String.format("Command %s already registered!", name));
+                LoggingHandler.felog.error(String.format("Command %s already registered!", commandData.getMainName()));
                 return;
             }
 
-            LiteralCommandNode<CommandSource> literalcommandnode = dispatcher
-                    .register(commandData.getBuilder().getMainBuilder());
-            //LoggingHandler.felog.debug("Registered Command: " + name);
+            LiteralArgumentBuilder<CommandSource> builder = commandData.getBuilder().getMainBuilder();
+            ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, commandData.getMainName(), "literal");
+            LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(builder);
+            //LoggingHandler.felog.debug("Registered Command: " + commandData.getMainName());
             if (FEConfig.enableCommandAliases)
             {
-                if (commandData.getAliases() != null && !commandData.getAliases().isEmpty())
+                if (commandData.getMainAliases()!= null && !commandData.getMainAliases().isEmpty())
                 {
                     try
                     {
-                        for (String alias : commandData.getAliases())
+                        for (String alias : commandData.getMainAliases())
                         {
                             if (registeredAiliases.contains(alias))
                             {
@@ -104,18 +105,18 @@ public class FECommandManager
                             dispatcher.register(Commands.literal(alias).redirect(literalcommandnode)
                                     .requires(source -> source.hasPermission(PermissionManager
                                             .fromDefaultPermissionLevel(commandData.getBuilder().getPermissionLevel()))));
-                            //LoggingHandler.felog.info("Registered Command: " + name + "'s alias: " + alias);
+                            //LoggingHandler.felog.info("Registered Command: " + commandData.getMainName() + "'s alias: " + alias);
                             registeredAiliases.add(alias);
                         }
                     }
                     catch (NullPointerException e)
                     {
-                        LoggingHandler.felog.error("Failed to register aliases for command: " + name);
+                        LoggingHandler.felog.error("Failed to register aliases for command: " + commandData.getMainName());
                     }
                 }
             }
             commandData.setRegistered(true);
-            registeredFEcommands.add(name);
+            registeredFEcommands.add(commandData.getName());
         }
         commandData.getBuilder().registerExtraPermissions();
     }
