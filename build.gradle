@@ -481,6 +481,7 @@ jar {
 jar.doLast {
 	delete (shadowJar.archivePath)
 	delete (processSource.outputs)
+	delete (annotations.archivePath)
 }
 
 /************************************************************
