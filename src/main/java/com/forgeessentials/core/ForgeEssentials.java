@@ -422,7 +422,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
                 ChatOutputHandler.chatWarning(player,
                         String.format("ForgeEssentials build #%s outdated. Current build is #%s. Consider updating to get latest security and bug fixes.", //
-                                BuildInfo.getCurrentVersion(), BuildInfo.getCurrentVersion()));
+                                BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
         }
     }
 

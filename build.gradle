@@ -274,10 +274,6 @@ dependencies {
     implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 
 	compile 'javax.xml.bind:jaxb-api:2.3.1'
-	
-	//jGit library
-	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
-	serverLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
 }
 
 /************************************************************
