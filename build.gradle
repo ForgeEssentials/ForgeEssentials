@@ -118,13 +118,13 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-version = "$baseVersion.$buildNumber"
+version = "$mod_base.$mod_major.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
+ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-server.jar")
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
@@ -138,7 +138,7 @@ curseforge {
             addGameVersion 'Java 8'
 
             mainArtifact(project.srcFile) {
-                displayName = "$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber"
+                displayName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
                 relations {
                     optionalDependency 'baubles'
                 }
@@ -274,6 +274,10 @@ dependencies {
     implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 
 	compile 'javax.xml.bind:jaxb-api:2.3.1'
+	
+	//jGit library
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
+	serverLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
 }
 
 /************************************************************
@@ -308,7 +312,7 @@ sourceSets {
 // Configure utils tokens
 task processSource(type: Sync) {
     from sourceSets.utils.java
-	filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.baseVersion])
+	filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major])
     into "$buildDir/src"
 }
 
@@ -542,9 +546,9 @@ publishing {
 		mavenJava (MavenPublication) {
 			groupId "com.forgeessentials"
 			artifactId "forgeessentials"
-			version baseVersion + "-SNAPSHOT"
+			version mod_base + "." + mod_major + "-SNAPSHOT"
 			if (System.getenv("PUBLISH_RELEASE"))
-				version baseVersion
+				version mod_base + "." + mod_major
 
 			artifact deobfJar
 			//artifact sourceJar
