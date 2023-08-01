@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.Logger;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
@@ -172,7 +173,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
         if (safeMode)
         {
             LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
@@ -216,19 +217,23 @@ public class ForgeEssentials extends ConfigLoaderBase
             gModules.addPlotter(new ConstantPlotter(module, 1));
 
         LoggingHandler.felog
-                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
-        if (BuildInfo.isOutdated())
-        {
-            LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
-            LoggingHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d", //
-                    BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
-            LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
-            LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
-        }
+                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
 
         isCubicChunksInstalled = Loader.isModLoaded("cubicchunks");
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
+    }
+    
+    @SubscribeEvent
+    public void newVersion(NewVersionEvent e)
+    {
+        LoggingHandler.felog
+                .warn("-------------------------------------------------------------------------------------");
+        LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s",
+                BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
+        LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
+        LoggingHandler.felog
+                .warn("-------------------------------------------------------------------------------------");
     }
 
     @EventHandler
@@ -416,8 +421,8 @@ public class ForgeEssentials extends ConfigLoaderBase
             // Show version notification
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
                 ChatOutputHandler.chatWarning(player,
-                        String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
-                                BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+                        String.format("ForgeEssentials build #%s outdated. Current build is #%s. Consider updating to get latest security and bug fixes.", //
+                                BuildInfo.getCurrentVersion(), BuildInfo.getCurrentVersion()));
         }
     }
 
@@ -474,8 +479,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         if (isReload)
             Translator.translations.clear();
         Translator.load();
-        if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
-            BuildInfo.checkVersion = false;
+        BuildInfo.needCheckVersion = config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean();
+
         configManager.setUseCanonicalConfig(
                 config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.").getBoolean());
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();

@@ -75,7 +75,7 @@ public class ClientProxy extends CommonProxy
     public void doPreInit(FMLPreInitializationEvent event)
     {
         BuildInfo.getBuildInfo(event.getSourceFile());
-        feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
 
         // Initialize configuration
         config = new Configuration(event.getSuggestedConfigurationFile());
@@ -136,7 +136,7 @@ public class ClientProxy extends CommonProxy
         allowAuthAutoLogin = config.get(Configuration.CATEGORY_GENERAL, "allowAuthAutoLogin", true,
                 "Save tokens to automatically log in to servers using FE's Authentication Module.").getBoolean(true);
         if (!config.get(Configuration.CATEGORY_GENERAL, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
-            BuildInfo.checkVersion = false;
+            BuildInfo.needCheckVersion = false;
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);

@@ -11,7 +11,6 @@ import org.spongepowered.api.service.economy.EconomyService;
 
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.compat.sponge.economy.FEEconService;
-import com.forgeessentials.compat.worldedit.WEIntegration;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.google.inject.Inject;
@@ -21,7 +20,7 @@ import com.google.inject.Inject;
  *
  * Watch this space, more to come.
  */
-@Plugin(id = "forgeessentials-sponge", name = "FESpongeCompat", version = BuildInfo.BASE_VERSION,
+@Plugin(id = "forgeessentials-sponge", name = "FESpongeCompat", version = BuildInfo.BASE_VERSION + '.' + BuildInfo.MAJOR_VERSION + ".x",
         description = "ForgeEssentials interoperability module with the Sponge API, providing additional functionality to bridge Forge and Sponge.")
 public class FESpongeCompat
 {
