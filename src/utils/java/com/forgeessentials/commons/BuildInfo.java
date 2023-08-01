@@ -56,8 +56,6 @@ public abstract class BuildInfo
      */
     public static int MINOR_VERSION = 0;
 
-    protected static boolean continueRunning = true;
-
     public static final String DEPENDENCIES = "required-after:forge";
 
     /* ------------------------------------------------------------ */
@@ -75,8 +73,6 @@ public abstract class BuildInfo
 
                 	if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER) {
                 		ServerVersionChecker.doCheckLatestVersion();
-                    	System.out.println(majorNumberLatest +":"+ Integer.parseInt(MAJOR_VERSION) +"::"+ minorNumberLatest +":"+ MINOR_VERSION);
-
                 	}
                 }
             }, "FEversionCheckThread");
@@ -156,13 +152,9 @@ public abstract class BuildInfo
     // }
     // }
 
-    /**
-     * Set to null, which will disable joining of the thread and kill any possible delay
-     **/
-    public static void cancelVersionCheck(boolean isStopping)
+    public static void postNewVersionNotice()
     {
-        continueRunning = false;
-        if (majorNumberLatest != 0 && !isStopping)
+        if (majorNumberLatest != 0)
         {
             MinecraftForge.EVENT_BUS.post(new NewVersionEvent());
         }
