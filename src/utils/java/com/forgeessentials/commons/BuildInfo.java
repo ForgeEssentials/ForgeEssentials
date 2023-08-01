@@ -2,23 +2,17 @@ package com.forgeessentials.commons;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.internal.storage.dfs.DfsRepositoryDescription;
-import org.eclipse.jgit.internal.storage.dfs.InMemoryRepository;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.transport.RefSpec;
 
 import com.forgeessentials.commons.events.NewVersionEvent;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public abstract class BuildInfo
 {
@@ -33,9 +27,9 @@ public abstract class BuildInfo
 
     public static boolean needCheckVersion = false;
 
-    private static int minorNumberLatest = 0;
+    protected static int minorNumberLatest = 0;
 
-    private static int majorNumberLatest = 0;
+    protected static int majorNumberLatest = 0;
 
     private static Thread checkVersionThread;
 
@@ -50,19 +44,17 @@ public abstract class BuildInfo
     /**
      * Base version is the 16 in 16.0.x
      */
-    private static final String BASE_VERSION = "@_BASEVERSION_@";
+    protected static final String BASE_VERSION = "@_BASEVERSION_@";
 
     /**
      * Major version is the 0 in 16.0.x
      */
-    private static final String MAJOR_VERSION = "@_MAJORVERSION_@";
+    protected static final String MAJOR_VERSION = "@_MAJORVERSION_@";
 
     /**
      * Minor version is the x in 16.0.x
      */
-    private static int MINOR_VERSION = 0;
-
-    private static boolean continueRunning = true;
+    protected static int MINOR_VERSION = 0;
 
     /* ------------------------------------------------------------ */
 
@@ -75,7 +67,9 @@ public abstract class BuildInfo
                 @Override
                 public void run()
                 {
-                    doCheckLatestVersion();
+                	if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
+                		ServerVersionChecker.doCheckLatestVersion();
+                	}
                 }
             }, "FEversionCheckThread");
             checkVersionThread.start();
@@ -122,88 +116,6 @@ public abstract class BuildInfo
         }
     }
 
-    private static void doCheckLatestVersion()
-    {
-        try
-        {
-            DfsRepositoryDescription repoDesc = new DfsRepositoryDescription();
-            InMemoryRepository repo = new InMemoryRepository(repoDesc);
-            Git git = new Git(repo);
-            if (!continueRunning)
-            {
-                git.close();
-                repo.close();
-                return;
-            }
-            git.fetch().setRemote("https://github.com/ForgeEssentials/ForgeEssentials")
-                    .setRefSpecs(new RefSpec("+refs/tags/*:refs/tags/*")).setInitialBranch("HEAD").call();
-            repo.getObjectDatabase();
-            List<Ref> call = git.tagList().call();
-            if (call.isEmpty())
-            {
-                febuildinfo.error("Unable to retrieve version info from API");
-                git.close();
-                repo.close();
-                cancelVersionCheck(false);
-                return;
-            }
-            if (!continueRunning)
-            {
-                git.close();
-                repo.close();
-                return;
-            }
-            for (Ref ref : call)
-            {
-                String[] values = StringUtils.split(StringUtils.remove(ref.getName(), "refs/tags/"), '.');
-                if (values.length != 3 || !values[0].matches("[0-9]+") || !values[1].matches("[0-9]+")
-                        || !values[2].matches("[0-9]+") || !values[0].equals(BASE_VERSION))
-                {
-                    continue;
-                }
-                if (!continueRunning)
-                {
-                    git.close();
-                    repo.close();
-                    return;
-                }
-                febuildinfo.debug("Found valid update tag: " + StringUtils.remove(ref.getName(), "refs/tags/"));
-                if (Integer.parseInt(values[1]) > Integer.parseInt(MAJOR_VERSION)
-                        && Integer.parseInt(values[1]) > majorNumberLatest)
-                {
-                    majorNumberLatest = Integer.parseInt(values[1]);
-                    minorNumberLatest = Integer.parseInt(values[2]);
-                    continue;
-                }
-                if (!continueRunning)
-                {
-                    git.close();
-                    repo.close();
-                    return;
-                }
-                if (Integer.parseInt(values[2]) > MINOR_VERSION && Integer.parseInt(values[1]) > minorNumberLatest)
-                {
-                    majorNumberLatest = Integer.parseInt(values[1]);
-                    minorNumberLatest = Integer.parseInt(values[2]);
-                    continue;
-                }
-                if (!continueRunning)
-                {
-                    git.close();
-                    repo.close();
-                    return;
-                }
-            }
-            git.close();
-            repo.close();
-            cancelVersionCheck(false);
-        }
-        catch (GitAPIException e)
-        {
-            febuildinfo.error("Unable to retrieve version info from API");
-        }
-    }
-
     // private static void doCheckBuildTypes()
     // {
     // try
@@ -236,13 +148,9 @@ public abstract class BuildInfo
     // }
     // }
 
-    /**
-     * Set to null, which will disable joining of the thread and kill any possible delay
-     **/
-    public static void cancelVersionCheck(boolean isStopping)
+    public static void postNewVersionNotice()
     {
-        continueRunning = false;
-        if (majorNumberLatest != 0 && !isStopping)
+        if (majorNumberLatest != 0)
         {
             MinecraftForge.EVENT_BUS.post(new NewVersionEvent());
         }

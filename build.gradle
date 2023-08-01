@@ -269,11 +269,6 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
 	implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
-
-	//jGit library
-	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
-	shadowLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
-	shadowClientLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
 }
 
 /************************************************************
@@ -385,16 +380,17 @@ task tsd(type: JavaExec) {
  * Configure client jar
  */
 
-task clientshadowJar(type: ShadowJar) {
-	minimize()
-    description = "ShadowJar for client code"
-    archiveClassifier = 'shadow'
-    from sourceSets.client.output
-    from sourceSets.utils.output
-    configurations = [project.configurations.shadowClientLib]
-}
+//task clientshadowJar(type: ShadowJar) {
+//	minimize()
+//    description = "ShadowJar for client code"
+//    archiveClassifier = 'shadow'
+//    from sourceSets.client.output
+//    from sourceSets.utils.output
+//    configurations = [project.configurations.shadowClientLib]
+//}
 
-task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
+//task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
+task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 	archiveClassifier = "client"
 	archiveAppendix = project.minecraftVersion
 	
@@ -402,20 +398,20 @@ task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
 	from sourceSets.utils.output
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-	from (zipTree(clientshadowJar.archiveFile)) {
-		exclude 'META-INF','META-INF/**'
-		exclude 'assets/**'
-		exclude 'about.html'
-		exclude 'plugin.properties'
-	}
+//	from (zipTree(clientshadowJar.archiveFile)) {
+//		exclude 'META-INF','META-INF/**'
+//		exclude 'assets/**'
+//		exclude 'about.html'
+//		exclude 'plugin.properties'
+//	}
 	exclude 'mixins.forgeessentials.refmap.json'
 	manifest {
 		from clientManifest
 	}
 }
-clientJar.doLast {
-	delete (clientshadowJar.archiveFile)
-}
+//clientJar.doLast {
+//	delete (clientshadowJar.archiveFile)
+//}
 /************************************************************
  * Configure shadow jar
  */
@@ -428,8 +424,6 @@ shadowJar {
  	   exclude(dependency('com.h2database:.*:.*'))
  	   exclude(dependency('javax:.*:.*'))
  	}
-	relocate  'org.eclipse.jgit','com.forgeessentials.thirdparty.org.eclipse.jgit'
-	relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
 	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'

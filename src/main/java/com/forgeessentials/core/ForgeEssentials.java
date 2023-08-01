@@ -372,7 +372,6 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials ServerStopping");
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
-        BuildInfo.cancelVersionCheck(true);
     }
 
     @SubscribeEvent
