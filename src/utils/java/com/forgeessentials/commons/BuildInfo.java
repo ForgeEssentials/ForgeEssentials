@@ -204,21 +204,6 @@ public abstract class BuildInfo
         }
     }
 
-    private static void joinVersionThread()
-    {
-        if (checkVersionThread == null)
-            return;
-        try
-        {
-            checkVersionThread.join();
-            checkVersionThread = null;
-        }
-        catch (InterruptedException e)
-        {
-            /* do nothing */
-        }
-    }
-
     // private static void doCheckBuildTypes()
     // {
     // try
@@ -280,13 +265,11 @@ public abstract class BuildInfo
 
     public static String getLatestVersion()
     {
-        joinVersionThread();
         return BASE_VERSION + '.' + majorNumberLatest + '.' + minorNumberLatest;
     }
 
     public static boolean isOutdated()
     {
-        joinVersionThread();
         return majorNumberLatest > Integer.parseInt(MAJOR_VERSION) || minorNumberLatest > MINOR_VERSION;
     }
 

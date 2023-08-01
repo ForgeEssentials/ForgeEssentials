@@ -26,7 +26,6 @@ buildscript {
 }
 
 plugins {
-    id 'eclipse'
     id 'idea'
     id 'com.diffplug.eclipse.apt' version '3.35.0'
     id 'org.sonarqube' version '2.5'
@@ -41,7 +40,7 @@ sonarqube {
     properties {
         properties['sonar.projectKey'] = "com.forgeessentials:forgeessentials"
         properties['sonar.projectName'] = project.mod_name
-        properties['sonar.projectVersion'] = project.mod_version
+        properties['sonar.projectVersion'] = project.mod_base + "." + project.mod_major
     }
 }
 
@@ -108,7 +107,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-version = "$mod_version.$buildNumber"
+version = "$mod_base.$mod_major.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
@@ -117,7 +116,7 @@ targetCompatibility = 1.8
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Running Tasks: ' +project.gradle.startParameter.taskNames)
 
-ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_version.$buildNumber-server.jar")
+ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-server.jar")
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
@@ -131,7 +130,7 @@ curseforge {
             addGameVersion 'Java 8'
 
             mainArtifact(project.srcFile) {
-                displayName = "$archivesBaseName-$minecraftVersion-$mod_version.$buildNumber"
+                displayName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
                 relations {
                     optionalDependency 'baubles'
                 }
@@ -187,7 +186,7 @@ ext.sharedManifest = manifest {
         "Specification-Vendor": "forgeessentials",
         "Specification-Version": "1", // We are version 1 of ourselves
         "Implementation-Title": project.name,
-        "Implementation-Version": "$mod_version",
+        "Implementation-Version": "$mod_base.$mod_major",
         "Implementation-Vendor" :"forgeessentials",
         "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 	)
@@ -323,7 +322,7 @@ project.processResources {
 		include 'META-INF/mods.toml'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
-			'version': "$mod_version",
+			'version': "$mod_base.$mod_major",
 			'mod_name': mod_name,
 			'mod_download': mod_download,
 			'buildHash': gitCommitHash,
@@ -338,7 +337,7 @@ project.processClientResources {
 		include 'META-INF/mods.toml'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
-			'version': "$mod_version",
+			'version': "$mod_base.$mod_major",
 			'mod_name': mod_name_client
 		)
 	}
