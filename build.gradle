@@ -20,9 +20,7 @@ buildscript {
 	dependencies {
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
 		classpath("com.diffplug.gradle:goomph:3.42.2")
-		classpath "com.discord4j:discord4j-core:3.2.1"
  		classpath files('lib/plugins/mixingradle-0.7.39.jar')//built from https://github.com/CreativeMD/MixinGradle/tree/task_fix
 	}
 }
