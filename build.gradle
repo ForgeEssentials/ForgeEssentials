@@ -30,6 +30,7 @@ plugins {
     id 'com.diffplug.eclipse.apt' version '3.35.0'
     id 'org.sonarqube' version '2.5'
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.modrinth.minotaur" version "2.+"
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
@@ -143,6 +144,26 @@ curseforge {
         javaIntegration = false
     }
 }
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "forge-essentials"
+    versionNumber = "$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+    versionType = project.releaseType
+    versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+    uploadFile = project.srcFile
+    gameVersions = [minecraftVersion]
+    loaders = ["forge"]
+    changelog = project.changelog
+}
+
+project.afterEvaluate {
+    var task = tasks.findByPath("modrinth")
+    task.dependsOn = []
+    task = tasks.findByPath("curseforge")
+    task.dependsOn = []
+}
+
 // Set up forge options
 minecraft {
 	mappings channel: 'official', version: '1.16.5'
@@ -309,7 +330,7 @@ task processSource(type: Sync) {
 
 project.compileUtilsJava {
 	source = processSource.outputs
-} 
+}
 
 // Configure server resource processing
 project.processResources {
@@ -393,7 +414,7 @@ task tsd(type: JavaExec) {
 task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 	archiveClassifier = "client"
 	archiveAppendix = project.minecraftVersion
-	
+
 	from sourceSets.client.output
 	from sourceSets.utils.output
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -446,7 +467,7 @@ shadowJar {
 /************************************************************
  * Configure server jar (default)
  */
- 
+
 jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
@@ -555,7 +576,7 @@ task annotations(type: Jar) {
         exclude "com/forgeessentials/playerlogger/entity/BlockData.class"
         exclude "com/forgeessentials/playerlogger/entity/PlayerData.class"
         exclude "com/forgeessentials/playerlogger/entity/WorldData.class"
-    }  
+    }
 }
 task copyJarToGenerated(type: Copy) {
     from annotations
