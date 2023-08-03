@@ -47,6 +47,6 @@ jobs:
         if: ${{ github.event.release }}
         run: |
           mkdir ./tmp
-          cp ./build/libs/*-server.jar ./tmp
+          cp ./build/libs/*.jar ./tmp
           chmod +x gradlew
           ./gradlew curseforge modrinth
