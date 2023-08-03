@@ -118,6 +118,7 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 println('Running Tasks: ' +project.gradle.startParameter.taskNames)
 
 ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-server.jar")
+ext.set 'clientSrcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-client.jar")
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
@@ -134,6 +135,21 @@ curseforge {
                 displayName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
                 relations {
                     optionalDependency 'baubles'
+                }
+            }
+        }
+        project {
+            id = clientProjectID
+            changelog = project.changelog
+            releaseType = project.releaseType
+            addGameVersion minecraftVersion
+            addGameVersion 'Forge'
+            addGameVersion 'Java 8'
+
+            mainArtifact(project.clientSrcFile) {
+                displayName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+                relations {
+                    tool('forge-essentials')
                 }
             }
         }
