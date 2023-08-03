@@ -42,10 +42,11 @@ jobs:
           path: jscripting/*.d.ts
       - env:
           CF_APIKEY: ${{ secrets.CF_APIKEY }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGE_LOG: ${{ github.event.release.body }}
         if: ${{ github.event.release }}
         run: |
           mkdir ./tmp
           cp ./build/libs/*-server.jar ./tmp
           chmod +x gradlew
-          ./gradlew curseforge
+          ./gradlew curseforge modrinth

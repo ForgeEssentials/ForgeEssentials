@@ -38,6 +38,7 @@ buildscript {
 plugins {
     id 'org.sonarqube' version '2.5'
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.modrinth.minotaur" version "2.+"
 }
 apply plugin: 'com.diffplug.eclipse.apt'
 apply plugin: 'jacoco'
@@ -151,6 +152,26 @@ curseforge {
         javaIntegration = false
     }
 }
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "forge-essentials"
+    versionNumber = "$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+    versionType = project.releaseType
+    versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+    uploadFile = project.srcFile
+    gameVersions = [minecraftVersion]
+    loaders = ["forge"]
+    changelog = project.changelog
+}
+
+project.afterEvaluate {
+    var task = tasks.findByPath("modrinth")
+    task.dependsOn = []
+    task = tasks.findByPath("curseforge")
+    task.dependsOn = []
+}
+
 // Set up forge options
 minecraft {
     mappings channel: 'snapshot', version: "20180304-1.12"
