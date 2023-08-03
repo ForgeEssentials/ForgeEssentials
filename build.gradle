@@ -164,7 +164,7 @@ curseforge {
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "forge-essentials"
-    versionNumber = "$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+    versionNumber = "$mod_base.$mod_major.$buildNumber"
     versionType = project.releaseType
     versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
     uploadFile = project.srcFile
@@ -175,6 +175,10 @@ modrinth {
 
 project.afterEvaluate {
     var task = tasks.findByPath("modrinth")
+    task.dependsOn = []
+    tasks.findByPath("curseforge$projectID")
+    task.dependsOn = []
+    tasks.findByPath("curseforge$clientProjectID")
     task.dependsOn = []
 }
 
