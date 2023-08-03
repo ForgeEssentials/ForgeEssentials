@@ -183,11 +183,11 @@ modrinth {
 
 project.afterEvaluate {
     var task = tasks.findByPath("modrinth")
-    task.dependsOn = []
-    tasks.findByPath("curseforge$projectID")
-    task.dependsOn = []
-    tasks.findByPath("curseforge$clientProjectID")
-    task.dependsOn = []
+    task?.dependsOn = []
+    task = tasks.findByPath("curseforge$projectID")
+    task?.dependsOn = []
+    task = tasks.findByPath("curseforge$clientProjectID")
+    task?.dependsOn = []
 }
 
 // Set up forge options
