@@ -30,7 +30,6 @@ buildscript {
 	}
 
 }
-
 plugins {
 	id 'com.github.johnrengelman.shadow' version '4.0.2'
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -49,7 +48,6 @@ repositories {
 }
 
 apply plugin: "forge"
-
 /************************************************************
  * General configuration
  */
@@ -72,13 +70,14 @@ ext.gitCommitHash = repo.log().find().abbreviatedId
 // Set build properties
 ext.baseVersion = "7.5"
 ext.projectID=74735
+ext.clientProjectID=235928
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
 ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraft.version-$baseVersion.$buildNumber-server.jar")
+ext.set 'clientSrcFile',file("./tmp/$archivesBaseName-$minecraft.version-$baseVersion.$buildNumber-client.jar")
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
@@ -99,6 +98,21 @@ curseforge {
                 }
             }
         }
+        project {
+            id = clientProjectID
+            changelog = project.changelog
+            releaseType = project.releaseType
+            addGameVersion minecraft.version
+            addGameVersion 'Forge'
+            addGameVersion 'Java 8'
+
+            mainArtifact(project.clientSrcFile) {
+                displayName = "$archivesBaseName-$minecraft.version-$baseVersion.$buildNumber"
+                relations {
+                    tool('forge-essentials')
+                }
+            }
+        }
     }
     options {
         javaVersionAutoDetect = false
@@ -107,14 +121,23 @@ curseforge {
     }
 }
 
+project.afterEvaluate {
+    def task = tasks.findByPath("curseforge$projectID")
+    task?.dependsOn = []
+    task = tasks.findByPath("curseforge$clientProjectID")
+    task?.dependsOn = []
+}
+
 // Set up forge options
 minecraft {
 	version = "1.7.10-10.13.4.1558-1.7.10"
 	runDir = "rundir"
-	
+
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace "_VERSION_", project.version
 }
+
+apply plugin: "com.modrinth.minotaur"
 
 // Configure shared manifest
 ext.sharedManifest = manifest {
