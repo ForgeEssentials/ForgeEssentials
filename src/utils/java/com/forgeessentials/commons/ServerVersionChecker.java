@@ -47,7 +47,9 @@ public class ServerVersionChecker {
 	            	BuildInfo.minorNumberLatest = Integer.parseInt(values[2]);
 	                continue;
 	            }
-	            if (Integer.parseInt(values[2]) > BuildInfo.MINOR_VERSION && Integer.parseInt(values[1]) >= Integer.parseInt(BuildInfo.MAJOR_VERSION))
+	            if (Integer.parseInt(values[2]) > BuildInfo.MINOR_VERSION 
+	            		&& Integer.parseInt(values[2]) > BuildInfo.minorNumberLatest
+	            		&& Integer.parseInt(values[1]) >= Integer.parseInt(BuildInfo.MAJOR_VERSION))
 	            {
 	            	BuildInfo.majorNumberLatest = Integer.parseInt(values[1]);
 	            	BuildInfo.minorNumberLatest = Integer.parseInt(values[2]);
