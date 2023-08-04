@@ -7,12 +7,6 @@ import java.util.List;
 
 import javax.script.ScriptException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraft.util.text.ITextComponent;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
@@ -21,6 +15,15 @@ import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
+import com.mojang.brigadier.ParseResults;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * @tsd.interface Server
@@ -39,9 +42,9 @@ public class JsServer
 
     public JsICommandSender getServer()
     {
-        MinecraftServer srv = FMLCommonHandler.instance().getMinecraftServerInstance();
-        if (server == null || server.getThat() != srv)
-            server = JsICommandSender.get(srv);
+        MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
+        if (server == null || server.getThat().getServer() != srv)
+            server = JsICommandSender.get(srv.createCommandSourceStack());
         return server;
     }
 
@@ -70,24 +73,26 @@ public class JsServer
         if (sender == null)
             sender = server;
 
-        ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmd);
-        if (mcCommand == null)
-        {
-            script.chatError("Command \"" + cmd + "\" not found");
-            return;
-        }
-
         String[] strArgs = new String[args.length];
         for (int i = 0; i < args.length; i++)
             strArgs[i] = args[i].toString();
 
         // Join and split again to fix invalid arguments containing spaces
         String cmdLine = StringUtils.join(strArgs, " ");
-        strArgs = cmdLine.split(" ");
+        cmd = cmd + cmdLine;
+
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
+                .parse(cmd, server.createCommandSourceStack());
+        if (!command.getReader().canRead())
+        {
+            script.chatError("Command \"" + cmd + "\" not found");
+            return;
+        }
 
         try
         {
-            mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender.getThat(), strArgs);
+            server.getCommands().performCommand(sender.getThat(), cmd);
         }
         catch (CommandException e)
         {
@@ -168,20 +173,23 @@ public class JsServer
      */
     public int getCurrentPlayerCount()
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        return server == null ? 0 : server.getCurrentPlayerCount();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        return server == null ? 0 : server.getPlayerCount();
     }
+
     /**
      * Returns an array of players online
      */
     public String[] getOnlinePlayers()
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null)
         {
-        	return new String[] {};
-        } else {
-        	return server.getOnlinePlayerNames();
+            return new String[] {};
+        }
+        else
+        {
+            return server.getPlayerNames();
         }
     }
 
@@ -192,32 +200,41 @@ public class JsServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
+
     public List<String> getAllPlayers()
     {
-    	List<String> x = new ArrayList<>();
-    	for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers())
-    	{
-    		x.add(j.getUsername()); 
-    	}
-    	return x;
+        List<String> x = new ArrayList<>();
+        for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers())
+        {
+            x.add(j.getUsername());
+        }
+        return x;
     }
-    public void serverLog(String msg) {
-    	if (msg != null)
+
+    public void serverLog(String msg)
+    {
+        if (msg != null)
         {
             this.getServer().chat(msg);
         }
     }
-    public void tellRaw(String msg) {
-    	MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+
+    public void tellRaw(String msg)
+    {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         try
-        {    
-        	ITextComponent component = ITextComponent.Serializer.jsonToComponent(msg);
-            server.getPlayerList().sendMessage(component);
+        {
+            ITextComponent component = ITextComponent.Serializer.fromJson(msg);
+
+            for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            {
+                server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getGameProfile().getId());
+            }
         }
         catch (JsonParseException jsonparseexception)
         {
-            this.chatError("There is an error in your JSON: "+jsonparseexception.getMessage());
-        } 
+            this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
+        }
     }
 
 }

@@ -8,15 +8,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
 
 public class WorldBorder implements Loadable
 {
@@ -31,19 +31,19 @@ public class WorldBorder implements Loadable
 
     private List<WorldBorderEffect> effects = new ArrayList<>();
 
-    int dimID;
+    String dimID;
 
     @Expose(serialize = false)
     private AreaBase area;
 
     @Expose(serialize = false)
-    private Map<EntityPlayer, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
+    private Map<PlayerEntity, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
 
-    public WorldBorder(Point center, int xSize, int zSize, int dimID)
+    public WorldBorder(Point center, int xSize, int zSize, String registryKey)
     {
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
-        this.dimID = dimID;
+        this.dimID = registryKey;
         updateArea();
     }
 
@@ -118,45 +118,31 @@ public class WorldBorder implements Loadable
 
     public void updateArea()
     {
-        Point minP = new Point( //
-                center.getX() - size.getX(),//
-                center.getY() - size.getY(), //
-                center.getZ() - size.getZ());
-        Point maxP = new Point( //
-                center.getX() + size.getX(),//
-                center.getY() + size.getY(), //
-                center.getZ() + size.getZ());
+        Point minP = new Point(center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ());
+        Point maxP = new Point(center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ());
         area = new AreaBase(minP, maxP);
     }
 
-    public Set<WorldBorderEffect> getOrCreateActiveEffects(EntityPlayer player)
+    public Set<WorldBorderEffect> getOrCreateActiveEffects(PlayerEntity player)
     {
-        Set<WorldBorderEffect> effects = activeEffects.get(player);
-        if (effects == null)
-        {
-            effects = new HashSet<WorldBorderEffect>();
-            activeEffects.put(player, effects);
-        }
-        return effects;
+        return activeEffects.computeIfAbsent(player, k -> new HashSet<>());
     }
 
-    public Set<WorldBorderEffect> getActiveEffects(EntityPlayer player)
+    public Set<WorldBorderEffect> getActiveEffects(PlayerEntity player)
     {
         return activeEffects.get(player);
     }
 
     public void save()
     {
-        // TODO: Better way to identify dimensions
-        String key = Integer.toString(dimID);
-        DataManager.getInstance().save(this, key);
+        String key = dimID;
+        DataManager.getInstance().save(this, key.replace(":", "-"));
     }
 
     public static WorldBorder load(World world)
     {
-        // TODO: Better way to identify dimensions
-        String key = Integer.toString(world.provider.getDimension());
-        return DataManager.getInstance().load(WorldBorder.class, key);
+        String key = world.dimension().location().toString();
+        return DataManager.getInstance().load(WorldBorder.class, key.replace(":", "-"));
     }
 
 }

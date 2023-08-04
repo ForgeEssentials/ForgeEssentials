@@ -1,5 +1,6 @@
 package com.forgeessentials.remote.network;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +19,7 @@ public class QueryPlayerRequest
     public QueryPlayerRequest(String name, String... flags)
     {
         this.name = name;
-        for (int i = 0; i < flags.length; i++)
-        {
-            this.flags.add(flags[i]);
-        }
+        this.flags.addAll(Arrays.asList(flags));
     }
 
     public QueryPlayerRequest(String name, Collection<String> flags)

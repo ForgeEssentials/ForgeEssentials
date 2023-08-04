@@ -1,39 +1,36 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-public class CommandGroupMessage extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
 {
 
-    public static final String PERM = "fe.chat.groupmessage";
+    public CommandGroupMessage(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "gmsg";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/gmsg <group> <msg...>: Send message to a group";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM;
     }
 
     @Override
@@ -49,19 +46,25 @@ public class CommandGroupMessage extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-            throw new WrongUsageException(getUsage(null));
-
-        arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
-        String group = arguments.remove().toLowerCase();
-
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Missing chat message");
-
-        ITextComponent msgComponent = getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
-        ModuleChat.tellGroup(arguments.sender, msgComponent.getUnformattedText(), group, arguments.ident.checkPermission(ModuleChat.PERM_COLOR));
+        return baseBuilder.then(Commands.argument("group", StringArgumentType.string()).suggests(SUGGEST_GROUPS)
+                .then(Commands.argument("message", StringArgumentType.greedyString())
+                        .executes(CommandContext -> execute(CommandContext, "blank"))));
     }
 
+    public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
+        List<String> groups = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
+        return ISuggestionProvider.suggest(groups, builder);
+    };
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        String group = StringArgumentType.getString(ctx, "group");
+
+        ModuleChat.tellGroup(ctx.getSource(), StringArgumentType.getString(ctx, "message"), group,
+                getIdent(ctx.getSource()).checkPermission(ModuleChat.PERM_COLOR));
+        return Command.SINGLE_SUCCESS;
+    }
 }

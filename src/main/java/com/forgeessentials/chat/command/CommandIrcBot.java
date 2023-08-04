@@ -1,32 +1,31 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandIrcBot extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandIrcBot extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandIrcBot(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "ircbot";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/ircbot [reconnect|disconnect] Connect or disconnect the IRC server bot.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.chat.ircbot";
     }
 
     @Override
@@ -42,21 +41,33 @@ public class CommandIrcBot extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        switch(arguments.remove())
-        {
-        case "connect":
-        case "reconnect":
-            IrcHandler.getInstance().connect();
-            break;
-        case "disconnect":
-            IrcHandler.getInstance().disconnect();
-            break;
-        default:
-            arguments.notify("IRC bot is " + (IrcHandler.getInstance().isConnected() ? "online" : "offline"));
-            break;
-        }
+        return baseBuilder
+                .then(Commands.literal("info").executes(CommandContext -> execute(CommandContext, "info")))
+                .then(Commands.literal("reconnect").executes(CommandContext -> execute(CommandContext, "reconnect")))
+                .then(Commands.literal("disconnect").executes(CommandContext -> execute(CommandContext, "disconnect")));
     }
 
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("reconnect"))
+        {
+            IrcHandler.getInstance().connect();
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("disconnect"))
+        {
+            IrcHandler.getInstance().disconnect();
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("info"))
+        {
+            ChatOutputHandler.chatNotification(ctx.getSource(),
+                    Translator.format("IRC bot is "+ (IrcHandler.getInstance().isConnected() ? "online" : "offline")));
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

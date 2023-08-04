@@ -1,51 +1,54 @@
 package com.forgeessentials.playerlogger;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import java.util.TimerTask;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.events.ServerEventHandler;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayerLoggerEventHandler extends ServerEventHandler
 {
-
-    private static PlayerLoggerEventHandler instance = null;
-
-    //public static int pickerRange = 0;
-
-    public static int eventType = 0b1111;
-
-    public static String searchCriteria = "";
+    public static boolean disabled = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
+        ItemStack stack = event.getItemStack();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.CLOCK)
             return;
-        if (event instanceof RightClickEmpty)
+        if (!APIRegistry.perms.checkPermission(event.getPlayer(), ModulePlayerLogger.PERM_WAND))
             return;
-        if (!APIRegistry.perms.checkPermission(event.getEntityPlayer(), ModulePlayerLogger.PERM_WAND))
+        if (disabled)
             return;
+        disabled = true;
         event.setCanceled(true);
-
+        TaskRegistry.schedule(new TimerTask() {
+            @Override
+            public void run()
+            {
+                disabled = false;
+            }
+        }, 500L);
         WorldPoint point;
         if (event instanceof RightClickBlock)
-            point = new WorldPoint(event.getEntityPlayer().dimension, //
-                    event.getPos().getX() + event.getFace().getFrontOffsetX(), //
-                    event.getPos().getY() + event.getFace().getFrontOffsetY(), //
-                    event.getPos().getZ() + event.getFace().getFrontOffsetZ());
+            point = new WorldPoint(event.getPlayer().level, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         else
-            point = new WorldPoint(event.getEntityPlayer().dimension, event.getPos());
+            point = new WorldPoint(event.getPlayer().level, event.getPos());
 
-        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getEntityPlayer())),event.getEntityPlayer());
+        PlayerLoggerChecker.instance.CheckBlock(point,
+                FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())) != null
+                        ? FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer()))
+                        : FilterConfig.globalConfig,
+                event.getPlayer().createCommandSourceStack(), 4, false, event);
     }
 
 }

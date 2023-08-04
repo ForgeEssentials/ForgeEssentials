@@ -13,24 +13,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandMessage;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -39,39 +21,61 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.chat.command.CommandGroupMessage;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
-import com.forgeessentials.chat.command.CommandIrcPm;
-import com.forgeessentials.chat.command.CommandMessageReplacement;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
 import com.forgeessentials.chat.command.CommandPm;
 import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
 import com.forgeessentials.chat.command.CommandUnmute;
+import com.forgeessentials.chat.discord.CommandDiscord;
 import com.forgeessentials.chat.discord.DiscordHandler;
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
+import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
-public class ModuleChat
+public class ModuleChat implements ConfigSaver
 {
+    private static ForgeConfigSpec CHAT_CONFIG;
+    public static final ConfigData data = new ConfigData("Chat", CHAT_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String CONFIG_FILE = "Chat";
-
-    public static final String CONFIG_CATEGORY = "Chat";
 
     public static final String PERM = "fe.chat";
 
@@ -102,29 +106,20 @@ public class ModuleChat
 
     private PrintWriter logWriter;
 
-    public static Censor censor;
+    public static Censor censor = new Censor();
 
-    public Mailer mailer;
+    public Mailer mailer = new Mailer();
 
-    public IrcHandler ircHandler;
+    public static TimedMessages timedMessages = new TimedMessages();
 
-    public DiscordHandler discordHandler;
+    public IrcHandler ircHandler = new IrcHandler();
+
+    public DiscordHandler discordHandler = new DiscordHandler();
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent
-    public void moduleLoad(FEModuleInitEvent e)
+    public ModuleChat()
     {
-        MinecraftForge.EVENT_BUS.register(this);
-
-        ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
-
-        ircHandler = new IrcHandler();
-        discordHandler = new DiscordHandler();
-
-        censor = new Censor();
-        mailer = new Mailer();
-
         setupChatReplacements();
     }
 
@@ -168,38 +163,50 @@ public class ModuleChat
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
-        FECommandManager.registerCommand(new CommandMute());
-        FECommandManager.registerCommand(new CommandNickname());
-        FECommandManager.registerCommand(new CommandPm());
-        FECommandManager.registerCommand(new CommandReply());
-        FECommandManager.registerCommand(new CommandTimedMessages());
-        FECommandManager.registerCommand(new CommandUnmute());
-        FECommandManager.registerCommand(new CommandGroupMessage());
-
-        FECommandManager.registerCommand(new CommandIrc());
-        FECommandManager.registerCommand(new CommandIrcPm());
-        FECommandManager.registerCommand(new CommandIrcBot());
-
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
-        APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL, "Allow players to use the public chat");
-        APIRegistry.perms.registerPermission(PERM_COLOR, DefaultPermissionLevel.ALL, "Allow players to use colors in the public chat");
-        APIRegistry.perms.registerPermission(PERM_URL, DefaultPermissionLevel.ALL, "Allow players to post clickable links in public chat.");
-        APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
-        APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");
-        APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");
+        APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL,
+                "Allow players to use the public chat");
+        APIRegistry.perms.registerPermission(PERM_COLOR, DefaultPermissionLevel.ALL,
+                "Allow players to use colors in the public chat");
+        APIRegistry.perms.registerPermission(PERM_URL, DefaultPermissionLevel.ALL,
+                "Allow players to post clickable links in public chat.");
+        APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "",
+                "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
+        APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "",
+                "Text to show in front of the player name in chat messages");
+        APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "",
+                "Send chat messages only to players in this range of the sender");
     }
 
     @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandMute(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandNickname(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPm(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandReply(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTimedMessages(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandUnmute(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandGroupMessage(true), event.getDispatcher());
+
+        FECommandManager.registerCommand(new CommandIrc(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandIrcBot(true), event.getDispatcher());
+
+        FECommandManager.registerCommand(new CommandDiscord(true), event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void serverStarted(FEModuleServerStartedEvent e)
     {
         discordHandler.serverStarted(e);
-        ServerUtil.replaceCommand(CommandMessage.class, new CommandMessageReplacement());
+        // ServerUtil.replaceCommand(MessageCommand.class, new
+        // CommandMessageReplacement());
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         closeLog();
         ircHandler.disconnect();
@@ -215,31 +222,36 @@ public class ModuleChat
 
         if (!ident.checkPermission(PERM_CHAT))
         {
-            ChatOutputHandler.chatWarning(event.getPlayer(), "You don't have the permission to write in public chat.");
+            ChatOutputHandler.chatWarning(event.getPlayer().createCommandSourceStack(),
+                    "You don't have the permission to write in public chat.");
             event.setCanceled(true);
             return;
         }
 
         if (PlayerUtil.getPersistedTag(event.getPlayer(), false).getBoolean("mute"))
         {
-            ChatOutputHandler.chatWarning(event.getPlayer(), "You are currently muted.");
+            ChatOutputHandler.chatWarning(event.getPlayer().createCommandSourceStack(), "You are currently muted.");
             event.setCanceled(true);
             return;
         }
 
         if (CommandPm.getTarget(event.getPlayer()) != null)
         {
-            tell(event.getPlayer(), event.getComponent(), CommandPm.getTarget(event.getPlayer()));
+            TextComponent message = new StringTextComponent("");
+            message.append(event.getComponent());
+            tell(event.getPlayer().createCommandSourceStack(), message,
+                    CommandPm.getTarget(event.getPlayer()).createCommandSourceStack());
             event.setCanceled(true);
             return;
         }
 
         // Log chat message
-        logChatMessage(event.getPlayer().getName(), event.getMessage());
+        logChatMessage(event.getPlayer().getDisplayName().getString(), event.getMessage());
 
         // Initialize parameters
-        String message = processChatReplacements(event.getPlayer(), censor.filter(event.getMessage(), event.getPlayer()), false);
-        ITextComponent header = getChatHeader(ident);
+        String message = processChatReplacements(event.getPlayer().createCommandSourceStack(),
+                censor.filter(event.getMessage(), event.getPlayer()), false);
+        TextComponent header = getChatHeader(ident);
 
         // Apply colors
         if (event.getMessage().contains("&") && ident.checkPermission(PERM_COLOR))
@@ -247,40 +259,40 @@ public class ModuleChat
             message = ChatOutputHandler.formatColors(message);
         }
 
-        //Apply Text format prefix
+        // Apply Text format prefix
         String textFormats = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_TEXTFORMAT);
         if (textFormats != null)
             message = ChatOutputHandler.formatColors(textFormats) + message;
 
         // Build message part with links
-        ITextComponent messageComponent;
+        TextComponent messageComponent;
         if (ident.checkPermission(PERM_URL))
         {
             messageComponent = filterChatLinks(message);
         }
         else
         {
-            messageComponent = new TextComponentString(message);
+            messageComponent = new StringTextComponent(message);
         }
 
         // Finish complete message
-        event.setComponent(new TextComponentTranslation("%s%s", header, messageComponent));
+        event.setComponent(header.append(messageComponent));
 
         // Handle chat range
         Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
         if (range != null)
         {
             WorldPoint source = new WorldPoint(event.getPlayer());
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
-                if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
-                    ChatOutputHandler.sendMessage(player, event.getComponent());
+                if (player.level == source.getWorld() && source.distance(new WorldPoint(player)) <= range)
+                    ChatOutputHandler.sendMessageI(player.createCommandSourceStack(), event.getComponent());
             }
             event.setCanceled(true);
         }
     }
 
-    public static ITextComponent getChatHeader(UserIdent ident)
+    public static TextComponent getChatHeader(UserIdent ident)
     {
         String playerName = ident.hasPlayer() ? getPlayerNickname(ident.getPlayer()) : ident.getUsernameOrUuid();
 
@@ -291,38 +303,44 @@ public class ModuleChat
 
         // Initialize header
         String playerCmd = "/msg " + ident.getUsernameOrUuid() + " ";
-        ITextComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        ITextComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
-        ITextComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        ITextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
-        ITextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        ITextComponent header = new TextComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
+        TextComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
+        TextComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND,
+                playerCmd);
+        TextComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        TextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND,
+                playerCmd);
+        TextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
+        return new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
                 playerSuffix != null ? playerSuffix : "", //
                 groupSuffix != null ? groupSuffix : "");
-        return header;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.getSender() instanceof EntityPlayerMP))
+        if (event.getParseResults().getContext().getNodes().isEmpty())
             return;
-        EntityPlayerMP player = (EntityPlayerMP) event.getSender();
+        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
+            return;
+        CommandInfo info = CommandUtils.getCommandInfo(event);
+        ServerPlayerEntity player = (ServerPlayerEntity) info.getSource().getEntity();
         if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
-        if (!ChatConfig.mutedCommands.contains(event.getCommand().getName()))
+        if (!ChatConfig.mutedCommands.contains(info.getCommandName()))
             return;
-        ChatOutputHandler.chatWarning(event.getSender(), "You are currently muted.");
+        ChatOutputHandler.chatWarning(info.getSource(), "You are currently muted.");
         event.setCanceled(true);
     }
 
-    public static String processChatReplacements(ICommandSender sender, String message) {
+    public static String processChatReplacements(CommandSource sender, String message)
+    {
         return processChatReplacements(sender, message, true);
     }
-    public static String processChatReplacements(ICommandSender sender, String message, boolean formatColors)
+
+    public static String processChatReplacements(CommandSource sender, String message, boolean formatColors)
     {
         message = ScriptArguments.processSafe(message, sender);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
@@ -334,45 +352,51 @@ public class ModuleChat
         return message;
     }
 
-    public static ITextComponent clickChatComponent(String text, Action action, String uri)
+    public static TextComponent clickChatComponent(String text, Action action, String uri)
     {
-        ITextComponent component = new TextComponentString(ChatOutputHandler.formatColors(text));
-        component.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
+        TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
+        ClickEvent click = new ClickEvent(action, uri);
+        component.withStyle((style) -> style.withClickEvent(click));
         return component;
     }
 
     public static String getPlayerPrefixSuffix(UserIdent player, boolean isSuffix)
     {
-        String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+        String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player,
+                isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
         if (fix == null)
             return "";
         return fix;
     }
 
-    public static ITextComponent appendGroupPrefixSuffix(ITextComponent header, UserIdent ident, boolean isSuffix)
+    public static TextComponent appendGroupPrefixSuffix(TextComponent header, UserIdent ident, boolean isSuffix)
     {
-        WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : new WorldPoint(0, 0, 0, 0);
-        for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident, new WorldPoint(ident.getPlayer())))
+        WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer())
+                : new WorldPoint("minecraft:overworld", 0, 0, 0);
+        for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident,
+                new WorldPoint(ident.getPlayer())))
         {
-            String text = APIRegistry.perms.getGroupPermissionProperty(group.getGroup(), point, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
+            String text = APIRegistry.perms.getGroupPermissionProperty(group.getGroup(), point,
+                    isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
-                ITextComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND, "/gmsg " + group.getGroup() + " ");
+                TextComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND,
+                        "/gmsg " + group.getGroup() + " ");
                 if (header == null)
                     header = component;
                 else
-                    header.appendSibling(component);
+                    header.append(component);
             }
         }
         return header;
     }
 
-    public static ITextComponent filterChatLinks(String text)
+    public static TextComponent filterChatLinks(String text)
     {
         // Includes ipv4 and domain pattern
         // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
         // without a protocol or path.
-        ITextComponent ichat = new TextComponentString("");
+        TextComponent ichat = new StringTextComponent("");
         Matcher matcher = URL_PATTERN.matcher(text);
         int lastEnd = 0;
 
@@ -383,33 +407,35 @@ public class ModuleChat
             int end = matcher.end();
 
             // Append the previous left overs.
-            ichat.appendText(text.substring(lastEnd, start));
+            ichat.append(text.substring(lastEnd, start));
             lastEnd = end;
             String url = text.substring(start, end);
-            ITextComponent link = new TextComponentString(url);
-            link.getStyle().setUnderlined(true);
+            TextComponent link = new StringTextComponent(url);
+            link.withStyle(TextFormatting.UNDERLINE);
 
             try
             {
                 // Add schema so client doesn't crash.
                 if ((new URI(url)).getScheme() == null)
                     url = "http://" + url;
+                LoggingHandler.felog.info("Url made: " + url);
+
             }
             catch (URISyntaxException e)
             {
                 // Bad syntax bail out!
-                ichat.appendText(url);
+                ichat.append(url);
                 continue;
             }
 
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.getStyle().setClickEvent(click);
-            ichat.appendSibling(link);
+            link.withStyle((style) -> style.withClickEvent(click));
+            ichat.append(link);
         }
-
         // Append the rest of the message.
-        ichat.appendText(text.substring(lastEnd));
+        ichat.append(text.substring(lastEnd));
+
         return ichat;
     }
 
@@ -420,7 +446,8 @@ public class ModuleChat
     {
         if (!ChatConfig.welcomeMessage.isEmpty())
         {
-            String message = processChatReplacements(event.getPlayer(), ChatConfig.welcomeMessage);
+            String message = processChatReplacements(event.getPlayer().createCommandSourceStack(),
+                    ChatConfig.welcomeMessage);
             ChatOutputHandler.broadcast(filterChatLinks(message));
         }
     }
@@ -428,11 +455,11 @@ public class ModuleChat
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent e)
     {
-        if (e.player instanceof EntityPlayerMP)
-            sendMotd(e.player);
+        if (e.getPlayer() instanceof ServerPlayerEntity)
+            sendMotd(e.getPlayer().createCommandSourceStack());
     }
 
-    public static void sendMotd(ICommandSender sender)
+    public static void sendMotd(CommandSource sender)
     {
         for (String message : ChatConfig.loginMessage)
         {
@@ -447,7 +474,8 @@ public class ModuleChat
     {
         if (logWriter == null)
             return;
-        String logMessage = String.format("[%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1$tS] %2$s: %3$s", new Date(), sender, message);
+        String logMessage = String.format("[%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1$tS] %2$s: %3$s", new Date(), sender,
+                message);
         logWriter.write(logMessage + "\n");
     }
 
@@ -458,13 +486,15 @@ public class ModuleChat
         closeLog();
         if (enabled)
         {
-            File logFile = new File(ForgeEssentials.getFEDirectory(), String.format("ChatLog/%1$tY-%1$tm-%1$te_%1$tH.%1$tM.log", new Date()));
+            File logFile = new File(ForgeEssentials.getFEDirectory(),
+                    String.format("ChatLog/%1$tY-%1$tm-%1$te_%1$tH.%1$tM.log", new Date()));
             try
             {
                 File dir = logFile.getParentFile();
                 if (!dir.exists() && !dir.mkdirs())
                 {
-                    LoggingHandler.felog.warn(String.format("Could not create chat log directory %s!", logFile.getPath()));
+                    LoggingHandler.felog
+                            .warn(String.format("Could not create chat log directory %s!", logFile.getPath()));
                 }
                 else
                 {
@@ -473,7 +503,8 @@ public class ModuleChat
             }
             catch (FileNotFoundException e)
             {
-                LoggingHandler.felog.error(String.format("Could not create chat log file %s.", logFile.getAbsolutePath()));
+                LoggingHandler.felog
+                        .error(String.format("Could not create chat log file %s.", logFile.getAbsolutePath()));
             }
         }
     }
@@ -489,38 +520,54 @@ public class ModuleChat
 
     /* ------------------------------------------------------------ */
 
-    public static void setPlayerNickname(EntityPlayer player, String nickname)
+    public static void setPlayerNickname(PlayerEntity player, String nickname)
     {
         if (nickname == null)
-            PlayerUtil.getPersistedTag(player, false).removeTag("nickname");
+            PlayerUtil.getPersistedTag(player, false).remove("nickname");
         else
-            PlayerUtil.getPersistedTag(player, true).setString("nickname", nickname);
+            PlayerUtil.getPersistedTag(player, true).putString("nickname", nickname);
     }
 
-    public static String getPlayerNickname(EntityPlayer player)
+    public static String getPlayerNickname(PlayerEntity player)
     {
         String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
         if (nickname == null || nickname.isEmpty())
-            nickname = player.getName();
+            nickname = player.getDisplayName().getString();
         return nickname;
     }
 
+    public static boolean doesPlayerHaveNickname(PlayerEntity player)
+    {
+        String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
+        return nickname != null && !nickname.isEmpty();
+    }
     /* ------------------------------------------------------------ */
 
-    public static void tell(ICommandSender sender, ITextComponent message, ICommandSender target)
+    public static void tell(CommandSource sender, TextComponent message, CommandSource target)
     {
-        TextComponentTranslation sentMsg = new TextComponentTranslation("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
-                message.createCopy() });
-        TextComponentTranslation senderMsg = new TextComponentTranslation("commands.message.display.outgoing",
-                new Object[] { target.getDisplayName(), message });
-        sentMsg.getStyle().setColor(TextFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        senderMsg.getStyle().setColor(TextFormatting.GRAY).setItalic(Boolean.valueOf(true));
+        TranslationTextComponent sentMsg = new TranslationTextComponent("commands.message.display.incoming",
+                new Object[] { sender.getDisplayName().getString(), message.copy() });
+        TranslationTextComponent senderMsg = new TranslationTextComponent("commands.message.display.outgoing",
+                new Object[] { target.getDisplayName().getString(), message });
+        sentMsg.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
+        senderMsg.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
         ChatOutputHandler.sendMessage(target, sentMsg);
         ChatOutputHandler.sendMessage(sender, senderMsg);
-        CommandReply.messageSent(sender, target);
-        ModuleCommandsEventHandler.checkAfkMessage(target, message);
+        if (sender.getEntity() instanceof PlayerEntity && target.getEntity() instanceof PlayerEntity)
+        {
+            CommandReply.messageSent((PlayerEntity) sender.getEntity(), (PlayerEntity) target.getEntity());
+        }
+        try
+        {
+            ModuleCommandsEventHandler.checkAfkMessage(target, message);
+        }
+        catch (CommandSyntaxException e)
+        {
+            ChatOutputHandler.chatError(sender, "Failed to send message");
+        }
     }
-    public static void tellGroup(ICommandSender sender, String message, String group, boolean formatColors)
+
+    public static void tellGroup(CommandSource sender, String message, String group, boolean formatColors)
     {
         ServerZone sz = APIRegistry.perms.getServerZone();
         for (String g : sz.getGroups())
@@ -533,27 +580,61 @@ public class ModuleChat
         if (groupName == null)
             groupName = group;
 
-        ITextComponent msg;
-        EntityPlayer player = sender instanceof EntityPlayer ? (EntityPlayer) sender : null;
-        msg = player != null ? getChatHeader(UserIdent.get((EntityPlayer) sender)) : new TextComponentTranslation("SERVER ");
+        TextComponent msg;
+        PlayerEntity player = sender.getEntity() instanceof PlayerEntity ? (PlayerEntity) sender.getEntity() : null;
+        msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getEntity()))
+                : new StringTextComponent("SERVER ");
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
-        ITextComponent msgGroup = new TextComponentString("@" + groupName + "@ ");
-        msgGroup.getStyle().setColor(TextFormatting.GRAY).setItalic(true);
-        msg.appendSibling(msgGroup);
+        TextComponent msgGroup = new StringTextComponent("@" + groupName + "@ ");
+        msgGroup.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
+        msg.append(msgGroup);
 
-        ITextComponent msgBody = new TextComponentString(formatted);
-        msgBody.getStyle().setColor(TextFormatting.GRAY);
-        msg.appendSibling(msgBody);
+        TextComponent msgBody = new StringTextComponent(formatted);
+        msgBody.withStyle(TextFormatting.GRAY);
+        msg.append(msgBody);
 
-        for (EntityPlayerMP p : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity p : ServerUtil.getPlayerList())
         {
             List<String> groups = GroupEntry.toList(sz.getPlayerGroups(UserIdent.get(p)));
             if (groups.contains(group))
             {
-                ChatOutputHandler.sendMessage(p, msg);
+                ChatOutputHandler.sendMessage(p.createCommandSourceStack(), msg);
             }
         }
+    }
+
+    @Override
+    public void load(Builder BUILDER, boolean isReload)
+    {
+        ChatConfig.load(BUILDER, isReload);
+        censor.load(BUILDER, isReload);
+        timedMessages.load(BUILDER, isReload);
+        ircHandler.load(BUILDER, isReload);
+        discordHandler.load(BUILDER, isReload);
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        censor.bakeConfig(reload);
+        timedMessages.bakeConfig(reload);
+        ircHandler.bakeConfig(reload);
+        discordHandler.bakeConfig(reload);
+        ChatConfig.bakeConfig(reload);
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
+    }
+
+    @Override
+    public void save(boolean reload)
+    {
+        timedMessages.save(reload);
+        discordHandler.save(reload);
     }
 }

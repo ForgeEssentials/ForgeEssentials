@@ -1,47 +1,54 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.ICommandSender;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import com.forgeessentials.util.CommandParserArgs;
-
-public class CommandFEWorldInfo extends ParserCommandBase
+public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
 {
-    
-    @Override
-    public void parse(CommandParserArgs arguments)
+
+    public CommandFEWorldInfo(boolean enabled)
     {
-        arguments.notify("Showing all world provider names:");
-        for (World world : DimensionManager.getWorlds())
-        {
-            arguments.notify("%s - %s", world.provider.getDimension(), world.provider.getClass().getName());
-        }
+        super(enabled);
     }
 
     @Override
-    public String getPrimaryAlias()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Showing all world provider names:");
+        for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+        {
+            ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("%s - %s",
+                    world.dimension().location().getPath(), world.dimension().location().toString()));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    @Override
+    public @NotNull String getPrimaryAlias()
     {
         return "feworldinfo";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/feworldinfo Display the names of all world providers";
     }
 
     @Override
     public boolean canConsoleUseCommand()
     {
         return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.commands.feworldinfo";
     }
 
     @Override

@@ -4,43 +4,60 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.server.CommandMessage;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerPropertiesProvider;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class ServerUtil
 {
+
+    public static ServerPropertiesProvider getServerPropProvider(DedicatedServer currentServer)
+    {
+        return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "field_71340_o");
+    }
+
+    public static void changeFinalFieldStaticField(Field field, Object newValue) throws Exception
+    {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, newValue);
+    }
+
+    public static void changeFinalFieldNonStaticField(Object object, String fieldName, Object newValue)
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    {
+        Field field = object.getClass().getField(fieldName);
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(object, newValue);
+    }
 
     /**
      * Try to parse integer or return defaultValue on failure
@@ -103,21 +120,6 @@ public abstract class ServerUtil
         {
             return defaultValue;
         }
-    }
-
-    public static double parseYLocation(ICommandSender sender, double relative, String value) throws CommandException
-    {
-        boolean isRelative = value.startsWith("~");
-        if (isRelative && Double.isNaN(relative))
-            throw new NumberInvalidException("commands.generic.num.invalid", new Object[] { Double.valueOf(relative) });
-        double d1 = isRelative ? relative : 0.0D;
-        if (!isRelative || value.length() > 1)
-        {
-            if (isRelative)
-                value = value.substring(1);
-            d1 += CommandBase.parseDouble(value);
-        }
-        return d1;
     }
 
     /**
@@ -192,57 +194,20 @@ public abstract class ServerUtil
         }
     }
 
-    public static boolean isNumeric(String string)
-    {
-        try
-        {
-            Integer.parseInt(string);
-            return true;
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-    }
-
     /* ------------------------------------------------------------ */
 
     /**
-     * Drops the first element of the array
-     * 
-     * @param array
-     * @return
-     */
-    public static <T> T[] dropFirst(T[] array)
-    {
-        return Arrays.copyOfRange(array, 1, array.length);
-    }
-
-    /* ------------------------------------------------------------ */
-
-    /**
-     * Returns working directory or minecraft data-directory on client side. <br>
-     * <b>Please use module directory instead!</b>
-     */
-    public static File getBaseDir()
-    {
-        if (FMLCommonHandler.instance().getSide().isClient())
-            return Minecraft.getMinecraft().mcDataDir;
-        else
-            return new File(".");
-    }
-
-    /**
-     * Get's the directory where the world is saved
+     * Get the directory where the world is saved
      * 
      * @return
      */
     public static File getWorldPath()
     {
         if (Environment.isClient())
-            return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return new File(ServerLifecycleHooks.getCurrentServer().getFile("saves"),
+                    ServerLifecycleHooks.getCurrentServer().getWorldData().getLevelName());
         else
-            return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory(), "world");
     }
 
     /* ------------------------------------------------------------ */
@@ -252,27 +217,25 @@ public abstract class ServerUtil
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static List<EntityPlayerMP> getPlayerList()
+    public static List<ServerPlayerEntity> getPlayerList()
     {
-        MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer mc = ServerLifecycleHooks.getCurrentServer();
         return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayers();
     }
 
     /**
      * Get tps per world.
      *
-     * @param dimID
+     * @param World
      * @return -1 if error
      */
-    public static double getWorldTPS(int dimID)
+    public static double getWorldTPS(RegistryKey<World> World)
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
-        long[] ticks = server.worldTickTimes.get(dimID);
-        for (int i = 0; i < ticks.length; ++i)
-        {
-            sum += ticks[i];
+        long[] ticks = server.getTickTime(World);
+        for (long tick : ticks) {
+            sum += tick;
         }
         double tps = (double) sum / (double) ticks.length * 1.0E-6D;
         if (tps < 50)
@@ -288,33 +251,39 @@ public abstract class ServerUtil
      */
     public static double getTPS()
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        double tickSum = 0;
-        for (int i = 0; i < server.tickTimeArray.length; ++i)
-            tickSum += server.tickTimeArray[i];
-        tickSum /= server.tickTimeArray.length;
-        double tps = 1000000000 / tickSum;
-        return tps; // tps > 20 ? 20 : tps;
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final double meanTickTime = mean(server.tickTimes) * 1.0E-6D;
+        return Math.min(1000 / meanTickTime, 20);// tps > 20 ? 20 : tps;
     }
 
-    public static WorldServer getOverworld()
+    private static long mean(final long[] values)
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0];
+        long sum = 0;
+        for (final long v : values)
+        {
+            sum += v;
+        }
+        return sum / values.length;
+    }
+
+    public static ServerWorld getOverworld()
+    {
+        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
     }
 
     public static long getOverworldTime()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0].getWorldInfo().getWorldTime();
+        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getDayTime();
     }
 
     public static boolean isServerRunning()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning();
+        return ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning();
     }
-    
+
     public static boolean isOnlineMode()
     {
-        return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+        return ServerLifecycleHooks.getCurrentServer().usesAuthentication();
     }
 
     public static boolean getMojangServerStatus()
@@ -332,120 +301,81 @@ public abstract class ServerUtil
         }
         catch (MalformedURLException e)
         {
-            Throwables.propagate(e);
-            return false;
+            throw new RuntimeException(e);
         }
         catch (IOException e)
         {
             return false;
         }
     }
-    
-    @SuppressWarnings("unchecked")
-    public static void copyNbt(NBTTagCompound nbt, NBTTagCompound data)
+
+    public static void copyNbt(CompoundNBT nbt, CompoundNBT data)
     {
         // Clear old data
-        for (String key : new HashSet<String>(nbt.getKeySet()))
-            nbt.removeTag(key);
-    
+        for (String key : new HashSet<>(nbt.getAllKeys()))
+            nbt.remove(key);
+
         // Write new data
-        for (String key : (Set<String>) data.getKeySet())
-            nbt.setTag(key, data.getTag(key));
+        for (String key : (Set<String>) data.getAllKeys())
+            nbt.put(key, data.get(key));
     }
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemName(Item item)
-    {
-        return Item.REGISTRY.getNameForObject(item).toString();
-    }
-
     public static String getItemPermission(Item item)
     {
-        ResourceLocation loc = (ResourceLocation) Item.REGISTRY.getNameForObject(item);
-        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) ForgeRegistries.ITEMS.getKey(item);
+        return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
-        Object o = Block.REGISTRY.getNameForObject(block);
-        if(o instanceof ResourceLocation){
+        Object o = ForgeRegistries.BLOCKS.getKey(block).toString();
+        if (o instanceof ResourceLocation)
+        {
             ResourceLocation rl = (ResourceLocation) o;
-            return rl.getResourcePath();
-        } else {
+            return rl.getPath();
+        }
+        else
+        {
             return (String) o;
         }
     }
 
     public static String getBlockPermission(Block block)
     {
-        ResourceLocation loc = (ResourceLocation) Block.REGISTRY.getNameForObject(block);
-        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) ForgeRegistries.BLOCKS.getKey(block);
+        return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
+    }
+
+    public static ServerWorld getWorldFromString(String dim)
+    {
+        return ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKeyFromString(dim));
+    }
+
+    public static RegistryKey<World> getWorldKeyFromString(String dim)
+    {
+        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim));
     }
 
     /* ------------------------------------------------------------ */
-
-    public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand)
-    {
-        try
-        {
-            CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
-            Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
-            Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
-            for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
-            {
-                Entry<String, ICommand> command = it.next();
-                if (clazz.isAssignableFrom(command.getValue().getClass()))
-                {
-                    commandSet.remove(command.getValue());
-                    commandSet.add(newCommand);
-                    command.setValue(newCommand);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            LoggingHandler.felog.error(String.format("Error replacing command /%s", clazz.getName()));
-            e.printStackTrace();
-        }
-        if (newCommand instanceof ForgeEssentialsCommandBase)
-            ((ForgeEssentialsCommandBase) newCommand).register();
-    }
-
-    public static void replaceCommand(ICommand oldCommand, ICommand newCommand)
-    {
-        try
-        {
-            CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
-            Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
-            Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
-            for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
-            {
-                Entry<String, ICommand> command = it.next();
-                if (command.getValue() == oldCommand)
-                {
-                    commandSet.remove(command.getValue());
-                    commandSet.add(newCommand);
-                    command.setValue(newCommand);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            LoggingHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getName()));
-            e.printStackTrace();
-        }
-        if (newCommand instanceof ForgeEssentialsCommandBase)
-            ((ForgeEssentialsCommandBase) newCommand).register();
-    }
-
-    public static void replaceCommand(String command, ICommand newCommand)
-    {
-        ICommand oldCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(command);
-        if (oldCommand != null)
-            replaceCommand(oldCommand, newCommand);
-        else
-            LoggingHandler.felog.error(String.format("Could not find command /%s to replace", command));
-    }
-
+    /*
+     * public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand) { try { CommandHandler commandHandler = (CommandHandler)
+     * FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager(); Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class,
+     * commandHandler, "commandMap", "a", "field_71562_a"); Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler,
+     * CommandSetChecker.FIELDNAME); for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();) { Entry<String, ICommand> command = it.next(); if
+     * (clazz.isAssignableFrom(command.getValue().getClass())) { commandSet.remove(command.getValue()); commandSet.add(newCommand); command.setValue(newCommand); } } } catch
+     * (Exception e) { LoggingHandler.felog.error(String.format("Error replacing command /%s", clazz.getName())); e.printStackTrace(); } if (newCommand instanceof
+     * ForgeEssentialsCommandBuilder) ((ForgeEssentialsCommandBuilder) newCommand).register(); }
+     * 
+     * public static void replaceCommand(ICommand oldCommand, ICommand newCommand) { try { CommandHandler commandHandler = (CommandHandler)
+     * FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager(); for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();) {
+     * Entry<String, ICommand> command = it.next(); if (command.getValue() == oldCommand) { commandSet.remove(command.getValue()); commandSet.add(newCommand);
+     * command.setValue(newCommand); } } } catch (Exception e) { LoggingHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getName()));
+     * e.printStackTrace(); } if (newCommand instanceof ForgeEssentialsCommandBuilder) ((ForgeEssentialsCommandBuilder) newCommand).register(); }
+     * 
+     * public static void replaceCommand(String command, ICommand newCommand) { ICommand oldCommand = (ICommand)
+     * FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager(). getCommands().get(command); if (oldCommand != null) replaceCommand(oldCommand, newCommand);
+     * else LoggingHandler.felog.error(String. format("Could not find command /%s to replace", command)); }
+     */
 }

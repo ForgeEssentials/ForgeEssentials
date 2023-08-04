@@ -1,11 +1,11 @@
 package com.forgeessentials.util;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.world.WorldServer;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * Keeps a WorldPoint linked to a particular multiworld, even if the dim-id changes
@@ -21,19 +21,19 @@ public class NamedWorldPoint extends WorldPoint
     @Expose(serialize = false)
     protected boolean isValid = true;
 
-    public NamedWorldPoint(int dimension, String worldName, int x, int y, int z)
+    public NamedWorldPoint(String dimension, int x, int y, int z, String worldName)
     {
         super(dimension, x, y, z);
         this.worldName = worldName;
         isLinked();
     }
 
-    public NamedWorldPoint(String worldName, int x, int y, int z)
+    public NamedWorldPoint(int x, int y, int z, String worldName)
     {
-        this(0, worldName, x, y, z);
+        this("minecraft:overworld", x, y, z, worldName);
     }
 
-    public NamedWorldPoint(int dimension, int x, int y, int z)
+    public NamedWorldPoint(String dimension, int x, int y, int z)
     {
         super(dimension, x, y, z);
         this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
@@ -66,10 +66,10 @@ public class NamedWorldPoint extends WorldPoint
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
-                    this.dim = world.provider.getDimension();
+                    this.dim = world.dimension().location().toString();
                     isLinked = true;
                     isValid = true;
                 }

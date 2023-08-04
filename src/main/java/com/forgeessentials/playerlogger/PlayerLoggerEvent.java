@@ -5,14 +5,13 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.PlayerData;
-import com.forgeessentials.playerlogger.entity.WorldData;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntity;
 
 public abstract class PlayerLoggerEvent<T>
 {
@@ -33,19 +32,19 @@ public abstract class PlayerLoggerEvent<T>
         return ModulePlayerLogger.getLogger().getBlock(block);
     }
 
-    public WorldData getWorld(int dimensionId)
-    {
-        return ModulePlayerLogger.getLogger().getWorld(dimensionId);
-    }
+    // public WorldData getWorld(String dimensionId)
+    // {
+    // return ModulePlayerLogger.getLogger().getWorld(dimensionId);
+    // }
 
     public PlayerData getPlayer(UserIdent ident)
     {
         return ModulePlayerLogger.getLogger().getPlayer(ident.getUuid(), ident.getUsername());
     }
 
-    public PlayerData getPlayer(EntityPlayer player)
+    public PlayerData getPlayer(PlayerEntity player)
     {
-        return ModulePlayerLogger.getLogger().getPlayer(player.getPersistentID(), player.getDisplayNameString());
+        return ModulePlayerLogger.getLogger().getPlayer(player.getGameProfile().getId(), player.getDisplayName().getString());
     }
 
     public Blob getTileEntityBlob(TileEntity tileEntity)

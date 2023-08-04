@@ -1,21 +1,23 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.PotionArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 
 /**
  * Expected syntax: <interval> <effect> <seconds> <amplifier>
  */
-public class EffectPotion extends WorldBorderEffect implements Loadable
+public class EffectPotion extends WorldBorderEffect
 {
 
     public int id;
@@ -26,58 +28,38 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
 
     public int interval;
 
-    public EffectPotion()
-    {
-    }
-
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing interval argument");
-        interval = args.parseInt();
-
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing potion id argument");
-        id = args.parseInt();
-
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing duration id argument");
-        duration = args.parseInt();
-
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing modifier id argument");
-        modifier = args.parseInt();
-    }
-
-    @Override
-    public void afterLoad()
-    {
-        if (id == 0)
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        try
         {
-            id = 9;
-            duration = 5;
-            modifier = 0;
+            id = Effect.getId(PotionArgument.getEffect(ctx, "effect"));
         }
+        catch (CommandSyntaxException e)
+        {
+            throw new FECommandParsingException("Bad effect argument");
+        }
+        duration = IntegerArgumentType.getInteger(ctx, "seconds");
+        modifier = IntegerArgumentType.getInteger(ctx, "amplifier");
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
-        if (interval <= 0)
-            player.addPotionEffect(new PotionEffect(Potion.getPotionById(id), duration, modifier));
+        player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             return;
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.addPotionEffect(new PotionEffect(Potion.getPotionById(id), duration, modifier));
-            pi.startTimeout(this.getClass().getName(), interval * 1000);
+            player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
+            pi.startTimeout(this.getClass().getName(), interval * 1000L);
         }
     }
 
@@ -90,7 +72,6 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     @Override
     public String toString()
     {
-        return String.format("potion interval: %d1 id: %d2 duration: %d3 amplifier: %d4", interval, id, duration, modifier);
+        return String.format("potion interval: %d id: %d duration: %d amplifier: %d", interval, id, duration, modifier);
     }
-
 }

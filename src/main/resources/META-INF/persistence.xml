@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
-	version="1.0">
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+         http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+         version="2.1">
 	<persistence-unit name="playerlogger_h2">
+		<description> Hibernate H2 configuration</description>
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>com.forgeessentials.playerlogger.entity.Action</class>
+		<class>com.forgeessentials.playerlogger.entity.Action01Block</class>
+		<class>com.forgeessentials.playerlogger.entity.Action02Command</class>
+		<class>com.forgeessentials.playerlogger.entity.Action03PlayerEvent</class>
+		<class>com.forgeessentials.playerlogger.entity.Action04PlayerPosition</class>
+		<class>com.forgeessentials.playerlogger.entity.BlockData</class>
+		<class>com.forgeessentials.playerlogger.entity.PlayerData</class>
+		<class>com.forgeessentials.playerlogger.entity.WorldData</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />

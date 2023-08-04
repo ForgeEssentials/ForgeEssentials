@@ -1,6 +1,6 @@
 package com.forgeessentials.util.events;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 public class ConfigReloadEvent extends Event
 {

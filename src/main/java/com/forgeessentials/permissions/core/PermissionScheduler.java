@@ -8,24 +8,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
+public class PermissionScheduler extends ServerEventHandler
 {
 
     public static final int CHECK_INTERVAL = 1000;
@@ -65,7 +65,7 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
         public String offMessage;
 
-        public List<Integer> times = new ArrayList<Integer>();
+        public List<Integer> times = new ArrayList<>();
 
         public Map<String, PermissionEntry> permissions = new HashMap<>();
 
@@ -75,12 +75,7 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
     protected long lastCheck;
 
-    protected boolean enabled;
-
-    public PermissionScheduler()
-    {
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
-    }
+    protected static boolean enabled;
 
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
@@ -94,7 +89,7 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
     @Override
     @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerPreInitEvent event)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent event)
     {
         if (enabled)
             super.serverAboutToStart(event);
@@ -114,14 +109,16 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
                 int modulo = 24 * 60 * 60; // One day
                 if (timeFrame > modulo)
                     modulo *= 7;
-                time = ((Calendar.getInstance().getTimeInMillis() + TimeZone.getDefault().getRawOffset()) / 1000) % modulo;
+                time = ((Calendar.getInstance().getTimeInMillis() + TimeZone.getDefault().getRawOffset()) / 1000)
+                        % modulo;
             }
             else
             {
+                ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
                 if (schedule.isDelay)
-                    time = DimensionManager.getWorld(0).getWorldInfo().getWorldTotalTime();
+                    time = overworld.getGameTime();
                 else
-                    time = DimensionManager.getWorld(0).getWorldInfo().getWorldTime();
+                    time = overworld.getDayTime();
             }
 
             if (schedule.isDelay)
@@ -142,7 +139,8 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
             Zone zone = APIRegistry.perms.getZoneById(schedule.zoneId);
             for (Entry<String, PermissionEntry> permission : schedule.permissions.entrySet())
-                zone.setGroupPermissionProperty(schedule.group, permission.getKey(), desiredState ? permission.getValue().on : permission.getValue().off);
+                zone.setGroupPermissionProperty(schedule.group, permission.getKey(),
+                        desiredState ? permission.getValue().on : permission.getValue().off);
 
             schedule.state = desiredState;
             if (schedule.state && schedule.onMessage != null)
@@ -178,26 +176,30 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
             DataManager.getInstance().save(task.getValue(), task.getKey());
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.BooleanValue FEenabled;
+
+    public static void load(Builder BUILDER, boolean isReload)
     {
-        enabled = config.get("PermissionScheduler", "enabled", false, HELP).getBoolean();
+        BUILDER.push("PermissionScheduler");
+        FEenabled = BUILDER.comment(HELP).define("enabled", false);
+        BUILDER.pop();
+    }
+
+    public static void bakeConfig(boolean reload)
+    {
+        enabled = FEenabled.get();
+
         if (ServerUtil.isServerRunning())
         {
             if (enabled)
             {
-                register();
-                loadAll();
+                ModulePermissions.getPermissionScheduler().register();
+                ModulePermissions.getPermissionScheduler().loadAll();
             }
             else
-                unregister();
+            {
+                ModulePermissions.getPermissionScheduler().unregister();
+            }
         }
     }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
 }

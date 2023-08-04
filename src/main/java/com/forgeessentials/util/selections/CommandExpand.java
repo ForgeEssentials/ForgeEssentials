@@ -1,227 +1,214 @@
 package com.forgeessentials.util.selections;
 
-//Depreciated
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandExpand extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandExpand extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandExpand()
+    public CommandExpand(boolean enabled)
     {
-        return;
+        super(enabled);
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
-        return "/expand";
+        return "SELexpand";
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
+        return baseBuilder.then(Commands.argument("expand", IntegerArgumentType.integer())
+                .executes(CommandContext -> execute(CommandContext, "expand"))
+                .then(Commands.literal("north").executes(CommandContext -> execute(CommandContext, "north")))
+                .then(Commands.literal("east").executes(CommandContext -> execute(CommandContext, "east")))
+                .then(Commands.literal("south").executes(CommandContext -> execute(CommandContext, "south")))
+                .then(Commands.literal("west").executes(CommandContext -> execute(CommandContext, "west")))
+                .then(Commands.literal("up").executes(CommandContext -> execute(CommandContext, "up")))
+                .then(Commands.literal("down").executes(CommandContext -> execute(CommandContext, "down"))));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
-            throw new TranslatedCommandException("Invalid selection.");
-
-        if (args.length == 1)
         {
-            int x = Math.round((float) player.getLookVec().x);
-            int y = Math.round((float) player.getLookVec().y);
-            int z = Math.round((float) player.getLookVec().z);
-            int expandby = Integer.decode(args[0]);
+            ChatOutputHandler.chatError(player, "Invalid selection.");
+            return Command.SINGLE_SUCCESS;
+        }
+
+        if (params.equals("expand"))
+        {
+            int x = Math.round((float) player.getLookAngle().x);
+            int y = Math.round((float) player.getLookAngle().y);
+            int z = Math.round((float) player.getLookAngle().z);
+            int expandby = IntegerArgumentType.getInteger(ctx, "expand");
 
             if (x == -1)
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
             else if (z == 1)
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
                 }
                 else
                 {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
                 }
             }
             else if (x == 1)
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
             else if (z == -1)
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
                 }
                 else
                 {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
                 }
             }
             else if (y == 1)
             {
                 if (sel.getStart().getY() > sel.getEnd().getY())
                 {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
                 }
             }
             else if (y == -1)
             {
                 if (sel.getStart().getY() < sel.getEnd().getY())
                 {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
                 }
             }
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return;
+            SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
+            return Command.SINGLE_SUCCESS;
         }
-        else if (args.length == 2)
-        {
-            int expandby = 0;
-            try
-            {
-                expandby = Integer.decode(args[0]);
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    expandby = Integer.decode(args[1]);
+        int expandby = IntegerArgumentType.getInteger(ctx, "expand");
+        switch (params) {
+            case "north":
+                if (sel.getStart().getZ() < sel.getEnd().getZ()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
                 }
-                catch (Exception ex)
-                {
-                    throw new TranslatedCommandException("Neither %s or %s is a number", args[0], args[1]);
+                break;
+            case "east":
+                if (sel.getStart().getX() > sel.getEnd().getX()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
-            }
-            if (args[0].equalsIgnoreCase("north") || args[1].equalsIgnoreCase("north"))
-            {
-                if (sel.getStart().getZ() < sel.getEnd().getZ())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
+                break;
+            case "south":
+                if (sel.getStart().getZ() > sel.getEnd().getZ()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
                 }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
+                break;
+            case "west":
+                if (sel.getStart().getX() < sel.getEnd().getX()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
-            }
-            else if (args[0].equalsIgnoreCase("east") || args[1].equalsIgnoreCase("east"))
-            {
-                if (sel.getStart().getX() > sel.getEnd().getX())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
+                break;
+            case "up":
+                if (sel.getStart().getZ() > sel.getEnd().getZ()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
                 }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                break;
+            case "down":
+                if (sel.getStart().getY() < sel.getEnd().getY()) {
+                    SelectionHandler.setStart(player,
+                            new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
+                } else {
+                    SelectionHandler.setEnd(player,
+                            new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
                 }
-            }
-            else if (args[0].equalsIgnoreCase("south") || args[1].equalsIgnoreCase("south"))
-            {
-                if (sel.getStart().getZ() > sel.getEnd().getZ())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
-                }
-            }
-            else if (args[0].equalsIgnoreCase("west") || args[1].equalsIgnoreCase("west"))
-            {
-                if (sel.getStart().getX() < sel.getEnd().getX())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
-                }
-            }
-            else if (args[0].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("up"))
-            {
-                if (sel.getStart().getZ() > sel.getEnd().getZ())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
-                }
-            }
-            else if (args[0].equalsIgnoreCase("down") || args[1].equalsIgnoreCase("down"))
-            {
-                if (sel.getStart().getY() < sel.getEnd().getY())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
-                }
-            }
-            else
-                throw new TranslatedCommandException("Invalid Direction");
-            ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return;
+                break;
         }
-        else
-        {
-            throw new TranslatedCommandException(getUsage(player));
-        }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.expand";
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
+        ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
     }
 
     @Override

@@ -1,10 +1,11 @@
 package com.forgeessentials.worldborder;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.util.events.player.PlayerMoveEvent;
+import com.mojang.brigadier.context.CommandContext;
 
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.events.PlayerMoveEvent;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 public abstract class WorldBorderEffect
 {
@@ -25,21 +26,21 @@ public abstract class WorldBorderEffect
         return triggerDistance;
     }
 
-    public abstract void provideArguments(CommandParserArgs args) throws CommandException;
+    public abstract void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException;
 
     public abstract String getSyntax();
 
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         /* do nothing */
     }
 
-    public void deactivate(WorldBorder border, EntityPlayerMP player)
+    public void deactivate(WorldBorder border, ServerPlayerEntity player)
     {
         /* do nothing */
     }
 
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         /* do nothing */
     }

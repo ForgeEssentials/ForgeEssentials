@@ -1,43 +1,39 @@
 package com.forgeessentials.playerlogger.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumHand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.util.CommandParserArgs;
-
-public class CommandTestPlayerlogger extends ParserCommandBase
+public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
 {
 
-    public EntityPlayerMP player;
+    public CommandTestPlayerlogger(boolean enabled)
+    {
+        super(enabled);
+    }
+
+    public ServerPlayerEntity player;
 
     public boolean place;
 
-    public CommandTestPlayerlogger()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
     @Override
-    public String getPrimaryAlias()
-    {
-        return "testpl";
-    }
-
-    @Override
-    public String getPermissionNode()
+    public @NotNull String getPrimaryAlias()
     {
         return "testpl";
     }
@@ -49,24 +45,25 @@ public class CommandTestPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/testpl";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (player == null)
-            player = arguments.senderPlayer;
+            player = getServerPlayer(ctx.getSource());
         else
             player = null;
+        return Command.SINGLE_SUCCESS;
     }
 
     @SubscribeEvent
@@ -80,9 +77,11 @@ public class CommandTestPlayerlogger extends ParserCommandBase
             BlockPos pos = new BlockPos(x, y, z);
             for (int i = 0; i < 300; i++)
                 if (place)
-                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.world, pos, Blocks.AIR.getDefaultState()), EnumFacing.DOWN, EnumHand.MAIN_HAND);
+                    ForgeEventFactory.onBlockPlace(player,
+                            BlockSnapshot.create(player.level.dimension(), player.level, pos), Direction.DOWN);
                 else
-                    MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(player.world, pos, Blocks.DIRT.getDefaultState(), player));
+                    MinecraftForge.EVENT_BUS.post(
+                            new BlockEvent.BreakEvent(player.level, pos, Blocks.DIRT.defaultBlockState(), player));
             place = !place;
         }
     }

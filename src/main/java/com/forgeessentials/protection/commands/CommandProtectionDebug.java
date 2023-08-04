@@ -1,41 +1,39 @@
 package com.forgeessentials.protection.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandProtectionDebug extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandProtectionDebug(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "protectdebug";
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/protectdebug: Toggles protection-module debug-mode";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.protection.cmd.protectdebug";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
-        return DefaultPermissionLevel.ALL;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -45,32 +43,43 @@ public class CommandProtectionDebug extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isTabCompletion)
-            return;
+        return baseBuilder
+        		.then(Commands.argument("command", StringArgumentType.greedyString())
+        				.executes(CommandContext -> execute(CommandContext, "setCmd")))
+        		.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-        EntityPlayerMP player = arguments.senderPlayer;
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         if (player == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            return Command.SINGLE_SUCCESS;
+        }
 
-        if (ModuleProtection.isDebugMode(player) && arguments.isEmpty())
+        if (ModuleProtection.isDebugMode(player))
         {
             ModuleProtection.setDebugMode(player, null);
-            arguments.confirm("Disabled protection debug-mode");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Disabled protection debug-mode");
         }
         else
         {
-            String cmd = arguments.toString();
-            if (cmd.isEmpty())
-                cmd = "global deny";
-            cmd = "/p " + cmd + " ";
+        	String cmd = "global deny";
+        	if(params.equals("setCmd")) {
+        		cmd = StringArgumentType.getString(ctx, "command");
+        	}
+            cmd = "/feperm " + cmd + " ";
 
             ModuleProtection.setDebugMode(player, cmd);
             if (!ModuleProtection.isDebugMode(player))
-                arguments.confirm("Enabled protection debug-mode");
-            arguments.notify("Command: " + cmd + "<perm>");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Enabled protection debug-mode");
+            ChatOutputHandler.chatNotification(ctx.getSource(), "Command: " + cmd + "<perm>");
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

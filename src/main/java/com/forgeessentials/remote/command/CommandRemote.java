@@ -1,206 +1,253 @@
 package com.forgeessentials.remote.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet7Remote;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.commons.network.packets.Packet07Remote;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRemote extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandRemote extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandRemote(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "remote";
     }
 
-    private static final String[] parseMainArgs = { "regen", "setkey", "kick", "start", "stop", "block", "qr" };
-
-    /**
-     * @param args
-     * @throws CommandException 
-     */
     @Override
-    public void parse(CommandParserArgs args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.isTabCompletion && args.size() == 1)
+        return baseBuilder.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
+                .then(Commands.literal("regen")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "regen"))))
+                .then(Commands.literal("setkey")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("key", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "setkey")))))
+                .then(Commands.literal("block")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "block"))))
+                .then(Commands.literal("kick")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "kick"))))
+                .then(Commands.literal("start").executes(CommandContext -> execute(CommandContext, "start")))
+                .then(Commands.literal("stop").executes(CommandContext -> execute(CommandContext, "stop")))
+                .then(Commands.literal("qr").executes(CommandContext -> execute(CommandContext, "qr")));
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        switch (params)
         {
-            args.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
-            return;
-        }
-        if (args.isEmpty())
+        case "help":
         {
-            if (!args.hasPlayer())
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            showPasskey(args, args.ident, false);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/remote start: Start remote server (= enable)");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/remote stop: Stop remote server (= disable)");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/remote regen [player]: Generate new passkey");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/remote setkey <player> <key>: Set your own passkey");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "/remote block <player>: Block player from remote, until he generates a new passkey");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "/remote kick <player>: Kick player accessing remote right now");
+            return Command.SINGLE_SUCCESS;
         }
-        else
+        case "regen":
         {
-            String arg = args.remove();
-            switch (arg)
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
             {
-            case "help":
-            {
-                args.confirm("/remote start: Start remote server (= enable)");
-                args.confirm("/remote stop: Stop remote server (= disable)");
-                args.confirm("/remote regen [player]: Generate new passkey");
-                args.confirm("/remote setkey <player> <key>: Set your own passkey");
-                args.confirm("/remote block <player>: Block player from remote, until he generates a new passkey");
-                args.confirm("/remote kick <player>: Kick player accessing remote right now");
-                return;
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
             }
-            case "regen":
-            {
-                UserIdent ident = args.parsePlayer(false, false);
-                if (!ident.equals(args.ident))
-                    args.checkPermission(ModuleRemote.PERM_CONTROL);
-                if (args.isTabCompletion)
-                    return;
-                ModuleRemote.getInstance().setPasskey(ident, ModuleRemote.getInstance().generatePasskey());
-                args.confirm("Generated new passkey");
-                showPasskey(args, ident, false);
-                return;
-            }
-            case "setkey":
-            {
-                UserIdent ident = args.parsePlayer(false, false);
-                if (!ident.equals(args.ident))
-                    args.checkPermission(ModuleRemote.PERM_CONTROL);
-                if (args.isEmpty())
-                    throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-                String key = args.remove();
-                if (args.isTabCompletion)
-                    return;
-                ModuleRemote.getInstance().setPasskey(ident, key);
-                args.confirm(Translator.format("Passkey of %s changed to %s", ident.getUsernameOrUuid(), key));
-                showPasskey(args, ident, true);
-                return;
-            }
-            case "block":
-            {
-                UserIdent ident = args.parsePlayer(true, false);
-                if (!ident.hasUuid())
-                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
-                args.checkPermission(ModuleRemote.PERM_CONTROL);
-                if (args.isTabCompletion)
-                    return;
-                ModuleRemote.getInstance().setPasskey(ident, null);
-                args.confirm("User %s has been blocked from remote until he generates a new passkey", ident.getUsernameOrUuid());
-                return;
-            }
-            case "kick":
-            {
-                UserIdent ident = args.parsePlayer(true, false);
-                if (!ident.hasUuid())
-                    throw new TranslatedCommandException("Player %s not found", ident.getUsernameOrUuid());
-                args.checkPermission(ModuleRemote.PERM_CONTROL);
-                if (args.isTabCompletion)
-                    return;
-                RemoteSession session = ModuleRemote.getInstance().getServer().getSession(ident);
-                if (session == null)
-                {
-                    args.confirm("User %s is not logged in on remote", ident.getUsernameOrUuid());
-                    return;
-                }
-                session.close("kick", 0);
-                args.confirm("User %s has been kicked from remote", ident.getUsernameOrUuid());
-                return;
-            }
-            case "start":
-            {
-                args.checkPermission(ModuleRemote.PERM_CONTROL);
-                if (args.isTabCompletion)
-                    return;
-                if (ModuleRemote.getInstance().getServer() != null)
-                    throw new TranslatedCommandException("Server already running on port " + ModuleRemote.getInstance().getPort());
-                ModuleRemote.getInstance().startServer();
-                if (ModuleRemote.getInstance().getServer() == null)
-                    args.confirm("Error starting remote server");
-                else
-                    args.confirm("Server started");
-                return;
-            }
-            case "stop":
-            {
-                args.checkPermission(ModuleRemote.PERM_CONTROL);
-                if (args.isTabCompletion)
-                    return;
-                if (ModuleRemote.getInstance().getServer() == null)
-                    throw new TranslatedCommandException("Server not running");
-                ModuleRemote.getInstance().stopServer();
-                args.confirm("Server stopped");
-                return;
-            }
-            case "qr":
-            {
-                UserIdent ident = args.parsePlayer(true, true);
-                if (!PlayerInfo.get(ident.getPlayerMP()).getHasFEClient())
-                {
-                    showPasskey(args, args.ident, false);
-                }
-                else
-                {
-                    String connectString = ModuleRemote.getInstance().getConnectString(ident);
-                    String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-                    NetworkUtils.netHandler.sendTo(new Packet7Remote(url), ident.getPlayerMP());
-                }
-                return;
-            }
-            default:
-                throw new TranslatedCommandException("Unknown subcommand " + arg);
-            }
+            ModuleRemote.getInstance().setPasskey(getIdent(player), ModuleRemote.getInstance().generatePasskey());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Generated new passkey");
+            showPasskey(ctx.getSource(), getIdent(player), false);
+            return Command.SINGLE_SUCCESS;
         }
+        case "setkey":
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            String key = StringArgumentType.getString(ctx, "key");
+            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
+            ModuleRemote.getInstance().setPasskey(getIdent(player), key);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Passkey of %s changed to %s", getIdent(player).getUsernameOrUuid(), key));
+            showPasskey(ctx.getSource(), getIdent(player), true);
+            return Command.SINGLE_SUCCESS;
+        }
+        case "block":
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!getIdent(player).hasUuid())
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found",
+                        getIdent(player).getUsernameOrUuid());
+                return Command.SINGLE_SUCCESS;
+            }
+            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
+            ModuleRemote.getInstance().setPasskey(getIdent(player), null);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("User %s has been blocked from remote until he generates a new passkey",
+                            getIdent(player).getUsernameOrUuid()));
+            return Command.SINGLE_SUCCESS;
+        }
+        case "kick":
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!getIdent(player).hasUuid())
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found",
+                        getIdent(player).getUsernameOrUuid());
+                return Command.SINGLE_SUCCESS;
+            }
+            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
+            RemoteSession session = ModuleRemote.getInstance().getServer().getSession(getIdent(player));
+            if (session == null)
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("User %s is not logged in on remote", getIdent(player).getUsernameOrUuid()));
+                return Command.SINGLE_SUCCESS;
+            }
+            session.close("kick", 0);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("User %s has been kicked from remote", getIdent(player).getUsernameOrUuid()));
+            return Command.SINGLE_SUCCESS;
+        }
+        case "start":
+        {
+            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
+            if (ModuleRemote.getInstance().getServer() != null)
+            {
+                ChatOutputHandler.chatError(ctx.getSource(),
+                        "Server already running on port " + ModuleRemote.getInstance().getPort());
+                return Command.SINGLE_SUCCESS;
+            }
+            ModuleRemote.getInstance().startServer();
+            if (ModuleRemote.getInstance().getServer() == null)
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Error starting remote server");
+            else
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Server started");
+            return Command.SINGLE_SUCCESS;
+        }
+        case "stop":
+        {
+            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
+            if (ModuleRemote.getInstance().getServer() == null)
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "Server not running");
+                return Command.SINGLE_SUCCESS;
+            }
+            ModuleRemote.getInstance().stopServer();
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Server stopped");
+            return Command.SINGLE_SUCCESS;
+        }
+        case "qr":
+        {
+            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                return Command.SINGLE_SUCCESS;
+            }
+            if (!PlayerInfo.get(getIdent(ctx.getSource()).getPlayerMP()).getHasFEClient())
+            {
+                showPasskey(ctx.getSource(), getIdent(ctx.getSource()), false);
+            }
+            else
+            {
+                String connectString = ModuleRemote.getInstance().getConnectString(getIdent(ctx.getSource()));
+                String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString)
+                        .replaceAll("\\|", "%7C");
+                NetworkUtils.sendTo(new Packet07Remote(url), getIdent(ctx.getSource()).getPlayerMP());
+            }
+            return Command.SINGLE_SUCCESS;
+        }
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     /**
-     * @param sender
-     * @param args
+     * @param source
      * @param ident
+     * @param hideKey
      */
-    public void showPasskey(CommandParserArgs args, UserIdent ident, boolean hideKey)
+    public void showPasskey(CommandSource source, UserIdent ident, boolean hideKey)
     {
         String passkey = ModuleRemote.getInstance().getPasskey(ident);
         if (hideKey && !ident.hasPlayer())
             passkey = passkey.replaceAll(".", "*");
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
-        String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        TextComponentTranslation msg = new TextComponentTranslation("Remote passkey = " + passkey + " ");
+        String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString)
+                .replaceAll("\\|", "%7C");
 
-        ITextComponent qrLink = new TextComponentString("[QR code]");
+        TextComponent qrLink = new StringTextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
-            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
+        {
+            ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr");
+            qrLink.withStyle((style) -> style.withClickEvent(click));
+        }
         else
-            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-        qrLink.getStyle().setColor(TextFormatting.RED);
-        qrLink.getStyle().setUnderlined(true);
-        msg.appendSibling(qrLink);
+        {
+            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+            qrLink.withStyle((style) -> style.withClickEvent(click));
+        }
+        qrLink.withStyle(TextFormatting.RED);
+        qrLink.withStyle(TextFormatting.UNDERLINE);
+        TextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ");
+        msg.append(qrLink);
 
-        ChatOutputHandler.sendMessage(args.sender, msg);
-        ChatOutputHandler.sendMessage(args.sender, new TextComponentString("Port = " + ModuleRemote.getInstance().getPort()));
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleRemote.PERM;
+        ChatOutputHandler.sendMessage(source, msg);
+        ChatOutputHandler.sendMessage(source,
+                new StringTextComponent("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override
@@ -210,15 +257,8 @@ public class CommandRemote extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/remoteqr: Prints a link remote access QR code";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
     }
-
 }

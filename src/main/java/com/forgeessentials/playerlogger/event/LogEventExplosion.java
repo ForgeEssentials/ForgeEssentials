@@ -5,14 +5,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.event.world.ExplosionEvent;
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
-import com.forgeessentials.playerlogger.entity.WorldData;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.event.world.ExplosionEvent;
 
 public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>
 {
@@ -29,16 +28,14 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
     @Override
     public void process(EntityManager em)
     {
-        WorldData worldData = getWorld(event.getWorld().provider.getDimension());
         for (CachedBlockData blockData : blocks)
         {
-            if (blockData.block.getMaterial(blockData.block.getDefaultState()) != Material.AIR)
+            if (blockData.block.getBlock() != Blocks.AIR)
             {
                 Action01Block action = new Action01Block();
                 action.time = date;
-                action.world = worldData;
+                action.world = event.getWorld().dimension().location().toString();
                 action.block = getBlock(blockData.block);
-                action.metadata = blockData.metadata;
                 action.entity = blockData.tileEntityBlob;
                 action.type = ActionBlockType.DETONATE;
                 action.x = blockData.pos.getX();

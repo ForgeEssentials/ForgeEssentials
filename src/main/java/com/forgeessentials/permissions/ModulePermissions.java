@@ -3,24 +3,16 @@ package com.forgeessentials.permissions;
 import java.io.File;
 import java.io.IOException;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.mcstats.Metrics.Plotter;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.permissions.commands.CommandItemPermission;
+import com.forgeessentials.permissions.commands.CommandPermissionTaggedItem;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandPromote;
 import com.forgeessentials.permissions.commands.CommandZone;
@@ -28,7 +20,6 @@ import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
-import com.forgeessentials.permissions.ftbu_compat.FTBURankConfigHandler;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
@@ -36,33 +27,45 @@ import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
 public class ModulePermissions extends ConfigLoaderBase
 {
+    private static ForgeConfigSpec PERMISSIONS_CONFIG;
+    public static final ConfigData data = new ConfigData("Permissions", PERMISSIONS_CONFIG,
+            new ForgeConfigSpec.Builder());
 
-    private static final String CONFIG_CAT = "Permissions";
+    public static final String CONFIG_CAT = "Permissions";
 
     private static final String PERSISTENCE_HELP = "Choose a permission persistence backend (flatfile, sql, json, singlejson). DO NOT use SQL, unless you really need to use it.";
 
     public static ZonedPermissionHelper permissionHelper;
 
-    private String persistenceBackend = "flatfile";
+    private static String persistenceBackend = "flatfile";
 
-    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath()
-            + "/permissions", false);
+    private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials",
+            ForgeEssentials.getFEDirectory().getPath() + "/permissions", false);
 
-    private PermissionScheduler permissionScheduler;
+    private static PermissionScheduler permissionScheduler;
 
-    @SuppressWarnings("unused")
-    private ItemPermissionManager itemPermissionManager;
+    private static ItemPermissionManager itemPermissionManager;
 
     public static boolean fakePlayerIsSpecialBunny = true;
+
+    public static boolean fullcommandNode = false;
 
     public ModulePermissions()
     {
@@ -71,47 +74,39 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms = permissionHelper;
         PermissionAPI.setPermissionHandler(permissionHelper);
 
-        if (Loader.isModLoaded("ftblib"))
+        if (ModList.get().isLoaded("ftblib"))
         {
             try
             {
-                MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+                // MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
                 LoggingHandler.felog.debug("Rank Handler for FTBLib has been registered");
             }
             catch (NoClassDefFoundError e)
             {
                 LoggingHandler.felog.error("FTBU is installed but an error was encountered while loading the compat!");
             }
-        } else {
+        }
+        else
+        {
             LoggingHandler.felog.debug("FTBLib is not loaded!");
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void preLoad(FEModulePreInitEvent e)
-    {
         itemPermissionManager = new ItemPermissionManager();
+        permissionScheduler = new PermissionScheduler();
+    }
 
-        MinecraftForge.EVENT_BUS.register(this);
-
-        FECommandManager.registerCommand(new CommandZone());
-        FECommandManager.registerCommand(new CommandPermissions());
-        FECommandManager.registerCommand(new CommandPromote());
-        FECommandManager.registerCommand(new CommandItemPermission());
-
-        ForgeEssentials.getMcStatsGeneralGraph().addPlotter(new Plotter("Areas") {
-            @Override
-            public int getValue()
-            {
-                return permissionHelper.getZones().size() - permissionHelper.getServerZone().getWorldZones().size() - 2;
-            }
-        });
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandZone(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPermissions(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPromote(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPermissionTaggedItem(true), event.getDispatcher());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
-        permissionScheduler = new PermissionScheduler();
+        // permissionScheduler = new PermissionScheduler();
         // Backup FEData directory
         try
         {
@@ -130,7 +125,8 @@ public class ModulePermissions extends ConfigLoaderBase
         switch (persistenceBackend.toLowerCase())
         {
         case "sql":
-            permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
+            permissionHelper.setPersistenceProvider(
+                    new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
             break;
         case "json":
             permissionHelper.setPersistenceProvider(new JsonProvider());
@@ -149,14 +145,14 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    public void serverStarted(FEModuleServerStartedEvent e)
     {
         permissionHelper.save();
         // permissionHelper.verbosePermissionDebug = true;
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         // permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;
@@ -174,11 +170,15 @@ public class ModulePermissions extends ConfigLoaderBase
                 "(optional) Permission to keep groups saved, even if they have no permissions set.");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_NAME, "Group name for display purposes");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PRIORITY, "Group priority");
-        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_INCLUDES, "Groups that are included using the included group's priority");
-        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PARENTS, "Groups that are included using the including group's priority");
-        APIRegistry.perms.registerPermission(FEPermissions.GROUP_PROMOTION, DefaultPermissionLevel.NONE, "Unlock this group for promotion with /promote");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_INCLUDES,
+                "Groups that are included using the included group's priority");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.GROUP_PARENTS,
+                "Groups that are included using the including group's priority");
+        APIRegistry.perms.registerPermission(FEPermissions.GROUP_PROMOTION, DefaultPermissionLevel.NONE,
+                "Unlock this group for promotion with /promote");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER, "Player information");
-        APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_GROUPS, "Comma separated list of player groups");
+        APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_GROUPS,
+                "Comma separated list of player groups");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_NAME, "Player name");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PLAYER_UUID, "Player UUID");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.PREFIX, "Prefix property node");
@@ -186,49 +186,99 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_ENTRY_MESSAGE, "Zone entry message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.ZONE_EXIT_MESSAGE, "Zone exit message");
         APIRegistry.perms.registerPermissionDescription(FEPermissions.SPAWN_LOC, "Player spawn location property");
-        APIRegistry.perms.registerPermission(FEPermissions.SPAWN_BED, DefaultPermissionLevel.ALL, "Player spawn at bed if available");
+        APIRegistry.perms.registerPermission(FEPermissions.SPAWN_BED, DefaultPermissionLevel.ALL,
+                "Player spawn at bed if available");
 
-        APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE, "Permission nodes for area-management command");
-        APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, DefaultPermissionLevel.OP, "Grants access to ALL area management commands. Use with caution.");
+        APIRegistry.perms.registerPermissionDescription(CommandZone.PERM_NODE,
+                "Permission nodes for area-management command");
+        APIRegistry.perms.registerPermission(CommandZone.PERM_ALL, DefaultPermissionLevel.OP,
+                "Grants access to ALL area management commands. Use with caution.");
         APIRegistry.perms.registerPermission(CommandZone.PERM_LIST, DefaultPermissionLevel.ALL, "List all zones");
         APIRegistry.perms.registerPermission(CommandZone.PERM_INFO, DefaultPermissionLevel.ALL, "Get info of a zone");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM, DefaultPermissionLevel.ALL, "Basic usage of permission-management command");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_ALL, DefaultPermissionLevel.OP, "Grants access to ALL permission management commands. Use with caution.");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM, DefaultPermissionLevel.ALL,
+                "Basic usage of permission-management command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_ALL, DefaultPermissionLevel.OP,
+                "Grants access to ALL permission management commands. Use with caution.");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER, DefaultPermissionLevel.OP, "Allow basic access to users (displays infos)");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_PERMS, DefaultPermissionLevel.OP, "Allow modifying user permissions");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_SPAWN, DefaultPermissionLevel.OP, "Allow setting user spawn");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_FIX, DefaultPermissionLevel.OP, "Allow setting user prefix / suffix");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER, DefaultPermissionLevel.OP,
+                "Allow basic access to users (displays infos)");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_PERMS, DefaultPermissionLevel.OP,
+                "Allow modifying user permissions");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_SPAWN, DefaultPermissionLevel.OP,
+                "Allow setting user spawn");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_USER_FIX, DefaultPermissionLevel.OP,
+                "Allow setting user prefix / suffix");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP, DefaultPermissionLevel.OP, "Allow basic access to groups (displays infos)");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_PERMS, DefaultPermissionLevel.OP, "Allow modifying group permissions");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_SPAWN, DefaultPermissionLevel.OP, "Allow setting group spawn");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_FIX, DefaultPermissionLevel.OP, "Allow setting group prefix / suffix");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP, DefaultPermissionLevel.OP,
+                "Allow basic access to groups (displays infos)");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_PERMS, DefaultPermissionLevel.OP,
+                "Allow modifying group permissions");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_SPAWN, DefaultPermissionLevel.OP,
+                "Allow setting group spawn");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_GROUP_FIX, DefaultPermissionLevel.OP,
+                "Allow setting group prefix / suffix");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_USERS, DefaultPermissionLevel.OP, "Allow listing users");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_GROUPS, DefaultPermissionLevel.OP, "Allow listing groups");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_ZONES, DefaultPermissionLevel.OP, "Allow listing zones");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_USERS, DefaultPermissionLevel.OP,
+                "Allow listing users");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_GROUPS, DefaultPermissionLevel.OP,
+                "Allow listing groups");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_ZONES, DefaultPermissionLevel.OP,
+                "Allow listing zones");
         APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_LIST_PERMS, DefaultPermissionLevel.ALL,
                 "Allow listing all permissions affecting current user");
 
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, DefaultPermissionLevel.ALL, "Allow testing permission nodes");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, DefaultPermissionLevel.OP, "Allow reloading changed permission files");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, DefaultPermissionLevel.OP, "Allow force-saving permission files");
-        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, DefaultPermissionLevel.ALL, "Allow using permission-debug command");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_TEST, DefaultPermissionLevel.ALL,
+                "Allow testing permission nodes");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_RELOAD, DefaultPermissionLevel.OP,
+                "Allow reloading changed permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_SAVE, DefaultPermissionLevel.OP,
+                "Allow force-saving permission files");
+        APIRegistry.perms.registerPermission(PermissionCommandParser.PERM_DEBUG, DefaultPermissionLevel.ALL,
+                "Allow using permission-debug command");
 
         // Other
-        APIRegistry.perms.registerPermission("fe.perm.autoPromote", DefaultPermissionLevel.OP, "Auto-promote a user after some time has passed");
+        APIRegistry.perms.registerPermission("fe.perm.autoPromote", DefaultPermissionLevel.OP,
+                "Auto-promote a user after some time has passed");
         APIRegistry.perms.registerPermission("fe.core.info", DefaultPermissionLevel.OP, "Access FE's /feinfo command");
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "singlejson", PERSISTENCE_HELP).getString();
-        dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+    static ForgeConfigSpec.ConfigValue<String> FEpersistenceBackend;
+    static ForgeConfigSpec.BooleanValue FEfakePlayerIsSpecialBunny;
+    static ForgeConfigSpec.BooleanValue FEfullcommandNode;
 
-        fakePlayerIsSpecialBunny = config.getBoolean(CONFIG_CAT, "fakePlayerIsSpecialBunny", true, "Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!");
+    @Override
+    public void load(Builder BUILDER, boolean isReload)
+    {
+        BUILDER.push(CONFIG_CAT);
+        FEpersistenceBackend = BUILDER.comment(PERSISTENCE_HELP).define("persistenceBackend", "singlejson");
+        FEfakePlayerIsSpecialBunny = BUILDER.comment(
+                "Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!")
+                .define("fakePlayerIsSpecialBunny", true);
+        FEfullcommandNode = BUILDER.comment(
+                "Should we use the entire command node for permission checking? You might have to reset all your command perm settings if you change this!")
+                .define("useEntireCommandNode", false);
+        BUILDER.pop();
+        ItemPermissionManager.load(BUILDER, isReload);
+        PermissionScheduler.load(BUILDER, isReload);
+        dbConnector.loadOrGenerate(BUILDER, CONFIG_CAT + "-DBTypes");
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        persistenceBackend = FEpersistenceBackend.get();
+        fakePlayerIsSpecialBunny = FEfakePlayerIsSpecialBunny.get();
+        fullcommandNode = FEfullcommandNode.get();
+        ItemPermissionManager.bakeConfig(reload);
+        PermissionScheduler.bakeConfig(reload);
+        dbConnector.bakeConfig(reload);
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
     }
 
     public DBConnector getDbConnector()
@@ -236,4 +286,13 @@ public class ModulePermissions extends ConfigLoaderBase
         return dbConnector;
     }
 
+    public static ItemPermissionManager getItemPermissionManager()
+    {
+        return itemPermissionManager;
+    }
+
+    public static PermissionScheduler getPermissionScheduler()
+    {
+        return permissionScheduler;
+    }
 }

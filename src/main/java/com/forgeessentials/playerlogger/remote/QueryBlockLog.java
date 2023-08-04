@@ -21,14 +21,17 @@ public class QueryBlockLog extends GenericRemoteHandler<QueryLogRequest>
     }
 
     @Override
-    protected RemoteResponse<QueryLogResponse<Action01Block>> handleData(RemoteSession session, RemoteRequest<QueryLogRequest> request)
+    protected RemoteResponse<QueryLogResponse<Action01Block>> handleData(RemoteSession session,
+            RemoteRequest<QueryLogRequest> request)
     {
         QueryLogRequest data = request.data == null ? new QueryLogRequest() : request.data;
         List<Action01Block> result;
         if (data.hasArea())
-            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getArea(), data.startTime, data.endTime, 0, data.getLimit());
+            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getArea(), data.startTime, data.endTime,
+                    0, data.getLimit());
         else
-            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getPoint(), data.startTime, data.endTime, 0, data.getLimit());
+            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getPoint(), data.startTime, data.endTime,
+                    0, data.getLimit());
         return new RemoteResponse<>(request, new QueryLogResponse<>(request.data, result));
     }
 

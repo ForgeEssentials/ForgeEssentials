@@ -1,50 +1,58 @@
 package com.forgeessentials.afterlife;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
-
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.WorldPoint;
 
-public class InventoryGrave extends InventoryBasic
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
+public class InventoryGrave extends Inventory
 {
 
     private Grave grave;
+    private String name;
 
     public InventoryGrave(Grave grave)
     {
-        super(UserIdent.get(grave.owner).getUsername() + "'s grave.", false, Math.min(36, ((grave.inventory.size() - 1) / 9 + 1) * 9));
+        super(45);
+        name = UserIdent.get(grave.owner).getUsername() + "'s grave.";
         this.grave = grave;
     }
 
     @Override
-    public void openInventory(EntityPlayer player)
+    public void startOpen(PlayerEntity player)
     {
         grave.setOpen(true);
-        for (int i = 0; i < getSizeInventory(); i++)
-            setInventorySlotContents(i, grave.inventory.size() > 0 ? grave.inventory.remove(0) : ItemStack.EMPTY);
-        super.openInventory(player);
+        for (int i = 0; i < getContainerSize(); i++)
+            setItem(i, grave.inventory.size() > 0 ? grave.inventory.remove(0) : ItemStack.EMPTY);
+        super.startOpen(player);
     }
 
     @Override
-    public void closeInventory(EntityPlayer player)
+    public void stopOpen(PlayerEntity player)
     {
-        for (int i = 0; i < getSizeInventory(); i++)
+        for (int i = 0; i < getContainerSize(); i++)
         {
-            ItemStack is = getStackInSlot(i);
+            ItemStack is = getItem(i);
             if (is != ItemStack.EMPTY)
                 grave.inventory.add(is);
         }
         grave.setOpen(false);
+        super.stopOpen(player);
         if (grave.inventory.isEmpty())
+        {
+            WorldPoint point = grave.point;
             grave.remove(false);
-        super.closeInventory(player);
+            point.getWorld().removeBlock(point.getBlockPos(), false);
+        }
     }
 
-    @Override
-    public boolean isUsableByPlayer(EntityPlayer player)
+    public ITextComponent getDisplayName()
     {
-        return true;
+        return new StringTextComponent(name);
     }
 
 }

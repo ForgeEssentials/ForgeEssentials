@@ -2,40 +2,46 @@ package com.forgeessentials.auth;
 
 import java.util.UUID;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
-import com.forgeessentials.util.events.PlayerAuthLoginEvent;
-import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
+import com.forgeessentials.commons.network.packets.Packet08AuthReply;
+import com.forgeessentials.util.events.player.PlayerAuthLoginEvent;
+import com.forgeessentials.util.events.player.PlayerAuthLoginEvent.Success.Source;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessage>
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+public class AuthNetHandler extends Packet08AuthReply
 {
-    @Override
-    public IMessage onMessage(Packet6AuthLogin message, MessageContext ctx)
+    public AuthNetHandler(String hash)
     {
+        super(hash);
+    }
 
-        if (!ModuleAuth.allowAutoLogin)
-            return null;
-        switch(message.mode)
+    public static AuthNetHandler decode(PacketBuffer buf)
+    {
+        return new AuthNetHandler(buf.readUtf());
+    }
+
+    @Override
+    public void handle(NetworkEvent.Context context)
+    {
+        if (ModuleAuth.allowAutoLogin)
         {
-        case 1:
-            if (!message.hash.isEmpty())
+            if (!hash.isEmpty())
             {
-                if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().player).getUuid(), UUID.fromString(message.hash)))
+                if (PasswordManager.hasSession(UserIdent.get(context.getSender()).getUuid(), UUID.fromString(hash)))
                 {
-                    ModuleAuth.authenticate(UserIdent.get(ctx.getServerHandler().player).getUuid());
-                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().player, Source.AUTOLOGIN));
+                    ModuleAuth.authenticate(context.getSender().getGameProfile().getId());
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
+                    ChatOutputHandler.chatConfirmation(context.getSender(), "AutoAuth Login Successful.");
+                }
+                else
+                {
+                    ChatOutputHandler.chatError(context.getSender(), "Failed to AutoAuth Login, please authenticate and login again for this to go away.");
                 }
             }
-            break;
-        default:
-            break;
-
         }
-        return null;
     }
 }

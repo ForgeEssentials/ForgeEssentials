@@ -14,41 +14,27 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class ScriptUpgrader
 {
 
     public static boolean OVERWRITE_EXISTING = true;
 
-    public static final String[] UPGRADE_EVENTS = {
-            "afk",
-            "afkreturn",
-            "cron",
-            "death",
-            "interact_left",
-            "interact_right",
-            "interact_use",
-            "login",
-            "logout",
-            "playerdeath",
-            "respawn",
-            "sleep",
-            "start",
-            "stop",
-            "wake"
-    };
+    public static final String[] UPGRADE_EVENTS = { "afk", "afkreturn", "cron", "death", "interact_left",
+            "interact_right", "interact_use", "login", "logout", "playerdeath", "respawn", "sleep", "start", "stop",
+            "wake" };
 
-    public static void upgradeOldScripts(ICommandSender sender)
+    public static void upgradeOldScripts(CommandSource sender)
     {
         File baseDir = new File(ForgeEssentials.getFEDirectory(), "Scripting");
         if (!baseDir.exists())
@@ -74,7 +60,7 @@ public class ScriptUpgrader
                 }
                 try
                 {
-                    List<String> lines = FileUtils.readLines(file);
+                    List<String> lines = FileUtils.readLines(file, "UTF-8");
                     if (lines.isEmpty())
                         continue;
 
@@ -93,14 +79,7 @@ public class ScriptUpgrader
                             e.printStackTrace();
                         }
                     }
-                }
-                catch (IOException e)
-                {
-                    String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
-                    LoggingHandler.felog.error(msg);
-                    ChatOutputHandler.chatError(sender, msg);
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
                     LoggingHandler.felog.error(msg);
@@ -183,10 +162,10 @@ public class ScriptUpgrader
         out.append("\n}");
         out.append("\n\t");
         out.append("\nFEServer.registerCommand({");
-        out.append("\n\tname: '" + cmd.name + "',");
-        out.append("\n\tusage: '" + cmd.usage + "',");
-        out.append("\n\tpermission: " + cmd.permission + ",");
-        out.append("\n\topOnly: " + (cmd.permissionLevel == DefaultPermissionLevel.OP ? "true" : "false") + ",");
+        out.append("\n\tname: '").append(cmd.name).append("',");
+        out.append("\n\tusage: '").append(cmd.usage).append("',");
+        out.append("\n\tpermission: ").append(cmd.permission).append(",");
+        out.append("\n\topOnly: ").append(cmd.permissionLevel == DefaultPermissionLevel.OP ? "true" : "false").append(",");
         out.append("\n\tprocessCommand: cmd,");
         // out.append("\n\ttabComplete: processCommand,");
         out.append("\n});");
@@ -249,7 +228,8 @@ public class ScriptUpgrader
                     // argumentTypes.add(ArgumentType.NONE);
                     break;
                 default:
-                    throw new IllegalArgumentException(String.format("Unknown pattern argument type %s ", part.substring(1)));
+                    throw new IllegalArgumentException(
+                            String.format("Unknown pattern argument type %s ", part.substring(1)));
                 }
             }
             else
@@ -442,7 +422,8 @@ public class ScriptUpgrader
                 out.append(", ");
                 args.remove(0);
                 out.append(")) return sender.chatError(");
-                out.append(args.isEmpty() ? "You don't have permission to use this command" : StringUtils.join(args, " + ' ' + "));
+                out.append(args.isEmpty() ? "You don't have permission to use this command"
+                        : StringUtils.join(args, " + ' ' + "));
                 out.append(");");
                 break;
             case "permchecksilent":
@@ -458,7 +439,8 @@ public class ScriptUpgrader
                 out.append(", ");
                 args.remove(0);
                 out.append(")) return sender.chatError(");
-                out.append(args.isEmpty() ? "You don't have permission to use this command" : StringUtils.join(args, " + ' ' + "));
+                out.append(args.isEmpty() ? "You don't have permission to use this command"
+                        : StringUtils.join(args, " + ' ' + "));
                 out.append(");");
                 break;
             case "!permchecksilent":

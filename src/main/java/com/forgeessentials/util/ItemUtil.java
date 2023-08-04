@@ -1,86 +1,98 @@
 package com.forgeessentials.util;
 
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityHanging;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.StandingSignBlock;
+import net.minecraft.block.WallSignBlock;
+import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
-
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.output.LoggingHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public final class ItemUtil
 {
+    public static ITextComponent[] getText(SignTileEntity sign)
+    {
+        return ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign,
+                "field_145915_a");
+    }
+
+    public static void setText(SignTileEntity sign, ITextComponent[] text)
+    {
+        ObfuscationReflectionHelper.setPrivateValue(SignTileEntity.class, sign, text, "field_145915_a");
+    }
 
     public static int getItemDamage(ItemStack stack)
     {
         try
         {
-            return stack.getItemDamage();
+            return stack.getDamageValue();
         }
         catch (Exception e)
         {
             if (stack.getItem() == null)
                 LoggingHandler.felog.error("ItemStack item is null when checking getItemDamage");
             else
-                LoggingHandler.felog.error(String.format("Item %s threw exception on getItemDamage", stack.getItem().getClass().getName()));
+                LoggingHandler.felog.error(String.format("Item %s threw exception on getItemDamage",
+                        stack.getItem().getClass().getName()));
             return 0;
         }
     }
 
-    public static String getItemIdentifier(ItemStack itemStack)
+    public static boolean isItemFrame(HangingEntity entity)
     {
-        String id = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
-        int itemDamage = getItemDamage(itemStack);
-        if (itemDamage == 0 || itemDamage == 32767)
-            return id;
-        else
-            return id + ":" + itemDamage;
-    }
-
-    public static boolean isItemFrame(EntityHanging entity)
-    {
-        return entity instanceof EntityItemFrame;
+        return entity instanceof ItemFrameEntity;
     }
 
     public static boolean isSign(Block block)
     {
-        return block == Blocks.WALL_SIGN;
+        return block instanceof WallSignBlock || block instanceof StandingSignBlock;
     }
 
     public static ITextComponent[] getSignText(WorldPoint point)
     {
         TileEntity te = point.getTileEntity();
-        if (te instanceof TileEntitySign)
+        if (te instanceof SignTileEntity)
         {
-            TileEntitySign sign = (TileEntitySign) te;
-            return sign.signText;
+            SignTileEntity sign = (SignTileEntity) te;
+            return ItemUtil.getText(sign);
         }
         return null;
     }
 
-    public static NBTTagCompound getTagCompound(ItemStack itemStack)
+    public static CompoundNBT getTagCompound(ItemStack itemStack)
     {
-        NBTTagCompound tag = itemStack.getTagCompound();
+        CompoundNBT tag = itemStack.getTag();
         if (tag == null)
         {
-            tag = new NBTTagCompound();
-            itemStack.setTagCompound(tag);
+            tag = new CompoundNBT();
+            itemStack.setTag(tag);
         }
         return tag;
     }
 
-    
-    public static NBTTagCompound getCompoundTag(NBTTagCompound tag, String side)
+    public static CompoundNBT getCompoundTag(CompoundNBT tag, String side)
     {
-        NBTTagCompound subTag = tag.getCompoundTag(side);
-        tag.setTag(side, subTag);
+        CompoundNBT subTag = tag.getCompound(side);
+        tag.put(side, subTag);
         return subTag;
     }
 
+    public static String getItemName(Item item)
+    {
+        return ForgeRegistries.ITEMS.getKey(item).toString();
+    }
+
+    public static String getItemName(ItemStack itemstack)
+    {
+        return getItemName(itemstack.getItem());
+    }
 }

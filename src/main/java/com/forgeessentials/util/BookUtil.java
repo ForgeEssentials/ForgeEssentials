@@ -3,40 +3,39 @@ package com.forgeessentials.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.text.TextFormatting;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.TextFormatting;
 
 public abstract class BookUtil
 {
 
     public static void saveBookToFile(ItemStack book, File savefolder)
     {
-        NBTTagList pages;
+        ListNBT pages;
         String filename = "";
         if (book != null)
         {
-            if (book.hasTagCompound())
+            if (book.hasTag())
             {
-                if (book.getTagCompound().hasKey("title") && book.getTagCompound().hasKey("pages"))
+                if (book.getTag().contains("title") && book.getTag().contains("pages"))
                 {
-                    filename = book.getTagCompound().getString("title") + ".txt";
-                    pages = (NBTTagList) book.getTagCompound().getTag("pages");
+                    filename = book.getTag().getString("title") + ".txt";
+                    pages = (ListNBT) book.getTag().get("pages");
                     File savefile = new File(savefolder, filename);
                     if (savefile.exists())
                     {
@@ -47,17 +46,14 @@ public abstract class BookUtil
                         savefile.createNewFile();
                         try (BufferedWriter out = new BufferedWriter(new FileWriter(savefile)))
                         {
-                            for (int c = 0; c < pages.tagCount(); c++)
-                            {
-                                String line = pages.getCompoundTagAt(c).toString();
-                                while (line.contains("\n"))
-                                {
+                            for (net.minecraft.nbt.INBT page : pages) {
+                                String line = page.toString();
+                                while (line.contains("\n")) {
                                     out.write(line.substring(0, line.indexOf("\n")));
                                     out.newLine();
                                     line = line.substring(line.indexOf("\n") + 1);
                                 }
-                                if (line.length() > 0)
-                                {
+                                if (line.length() > 0) {
                                     out.write(line);
                                 }
                             }
@@ -72,22 +68,21 @@ public abstract class BookUtil
         }
     }
 
-    public static void getBookFromFile(EntityPlayer player, File file)
+    public static void getBookFromFile(PlayerEntity player, File file)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
                     lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                     lines.add("");
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -120,49 +115,48 @@ public abstract class BookUtil
                 while (lines.size() != 0)
                 {
                     part++;
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
-                    map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part + " of "
-                            + parts + TextFormatting.BLACK + "\n\n", temp);
+                    map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY
+                            + "\nPart " + part + " of " + parts + TextFormatting.BLACK + "\n\n", temp.toString());
                 }
             }
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.add(StringNBT.valueOf(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", file.getName().replace(".txt", ""));
-        tag.setTag("pages", pages);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf(file.getName().replace(".txt", "")));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.addTagElement("pages", pages);
+
+        player.inventory.add(is);
     }
 
-    public static void getBookFromFile(EntityPlayer player, File file, String title)
+    public static void getBookFromFile(PlayerEntity player, File file, String title)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
                     lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                     lines.add("");
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -194,47 +188,46 @@ public abstract class BookUtil
                 while (lines.size() != 0)
                 {
                     part++;
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
-                    map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part + " of "
-                            + parts + TextFormatting.BLACK + "\n\n", temp);
+                    map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY
+                            + "\nPart " + part + " of " + parts + TextFormatting.BLACK + "\n\n", temp.toString());
                 }
             }
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.add(StringNBT.valueOf(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", title);
-        tag.setTag("pages", pages);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf(title));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.addTagElement("pages", pages);
+
+        player.inventory.add(is);
     }
 
-    public static void getBookFromFileUnformatted(EntityPlayer player, File file)
+    public static void getBookFromFileUnformatted(PlayerEntity player, File file)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -250,46 +243,45 @@ public abstract class BookUtil
                 }
                 while (lines.size() != 0)
                 {
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
-                    map.put("", temp);
+                    map.put("", temp.toString());
                 }
             }
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.add(StringNBT.valueOf(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", file.getName().replace(".txt", ""));
-        tag.setTag("pages", pages);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf(file.getName().replace(".txt", "")));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.addTagElement("pages", pages);
+
+        player.inventory.add(is);
     }
 
-    public static void getBookFromFileUnformatted(EntityPlayer player, File file, String title)
+    public static void getBookFromFileUnformatted(PlayerEntity player, File file, String title)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (file.isFile())
         {
             if (file.getName().contains(".txt"))
             {
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 try
                 {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))))
                     {
                         String line = reader.readLine();
                         while (line != null)
@@ -305,38 +297,37 @@ public abstract class BookUtil
                 }
                 while (lines.size() != 0)
                 {
-                    String temp = "";
+                    StringBuilder temp = new StringBuilder();
                     for (int i = 0; i < 10 && lines.size() > 0; i++)
                     {
-                        temp += lines.get(0) + "\n";
+                        temp.append(lines.get(0)).append("\n");
                         lines.remove(0);
                     }
-                    map.put("", temp);
+                    map.put("", temp.toString());
                 }
             }
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.add(StringNBT.valueOf(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", title);
-        tag.setTag("pages", pages);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf(title));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.addTagElement("pages", pages);
+
+        player.inventory.add(is);
     }
 
-    public static void getBookFromFolder(EntityPlayer player, File folder)
+    public static void getBookFromFolder(PlayerEntity player, File folder)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         File[] listOfFiles = folder.listFiles();
 
@@ -346,12 +337,13 @@ public abstract class BookUtil
             {
                 if (file.getName().contains(".txt"))
                 {
-                    List<String> lines = new ArrayList<String>();
+                    List<String> lines = new ArrayList<>();
                     try
                     {
                         lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                         lines.add("");
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                        try (BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(Files.newInputStream(file.toPath()))))
                         {
                             String line = reader.readLine();
                             while (line != null)
@@ -383,40 +375,40 @@ public abstract class BookUtil
                     while (lines.size() != 0)
                     {
                         part++;
-                        String temp = "";
+                        StringBuilder temp = new StringBuilder();
                         for (int i = 0; i < 10 && lines.size() > 0; i++)
                         {
-                            temp += lines.get(0) + "\n";
+                            temp.append(lines.get(0)).append("\n");
                             lines.remove(0);
                         }
-                        map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part
-                                + " of " + parts + TextFormatting.BLACK + "\n\n", temp);
+                        map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename
+                                + TextFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + TextFormatting.BLACK
+                                + "\n\n", temp.toString());
                     }
                 }
             }
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.add(StringNBT.valueOf(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", folder.getName());
-        tag.setTag("pages", pages);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf(folder.getName()));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.addTagElement("pages", pages);
+
+        player.inventory.add(is);
     }
 
-    public static void getBookFromFolder(EntityPlayer player, File folder, String title)
+    public static void getBookFromFolder(PlayerEntity player, File folder, String title)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        ListNBT pages = new ListNBT();
 
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         File[] listOfFiles = folder.listFiles();
 
@@ -426,12 +418,13 @@ public abstract class BookUtil
             {
                 if (file.getName().contains(".txt"))
                 {
-                    List<String> lines = new ArrayList<String>();
+                    List<String> lines = new ArrayList<>();
                     try
                     {
                         lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                         lines.add("");
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
+                        try (BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(Files.newInputStream(file.toPath()))))
                         {
                             String line = reader.readLine();
                             while (line != null)
@@ -463,32 +456,33 @@ public abstract class BookUtil
                     while (lines.size() != 0)
                     {
                         part++;
-                        String temp = "";
+                        StringBuilder temp = new StringBuilder();
                         for (int i = 0; i < 10 && lines.size() > 0; i++)
                         {
-                            temp += lines.get(0) + "\n";
+                            temp.append(lines.get(0)).append("\n");
                             lines.remove(0);
                         }
-                        map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part
-                                + " of " + parts + TextFormatting.BLACK + "\n\n", temp);
+                        map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename
+                                + TextFormatting.DARK_GRAY + "\nPart " + part + " of " + parts + TextFormatting.BLACK
+                                + "\n\n", temp.toString());
                     }
                 }
             }
         }
 
-        SortedSet<String> keys = new TreeSet<String>(map.keySet());
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+        SortedSet<String> keys = new TreeSet<>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.add(StringNBT.valueOf(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", title);
-        tag.setTag("pages", pages);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf(title));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.addTagElement("pages", pages);
+
+        player.inventory.add(is);
     }
 
 }

@@ -1,44 +1,35 @@
 package com.forgeessentials.commands.item;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRepair extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandRepair extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandRepair(boolean enabled)
     {
-        return "repair";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @NotNull String getPrimaryAlias()
     {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/repair [player] Repairs the item you or another player is holding.";
-        }
-        else
-        {
-            return "/repair <player> Repairs the item the player is holding.";
-        }
-
+        return "repair";
     }
 
     @Override
@@ -54,79 +45,129 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".repair";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Allows repairing items held by another player");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".repair.others", DefaultPermissionLevel.OP,
+                "Allows repairing items held by another player");
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-        {
-            ItemStack item = sender.getHeldItemMainhand();
-            if (item == null)
-                throw new TranslatedCommandException("You are not holding a reparable item.");
-            item.setItemDamage(0);
-        }
-        else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+        return baseBuilder
+                .then(Commands.literal("self")
+                        .then(Commands.literal("Custom")
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "custom-self"))))
+                        .then(Commands.literal("MaxValue")
+                                .executes(CommandContext -> execute(CommandContext, "max-self"))))
+                .then(Commands.literal("others")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.literal("custom")
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                                .executes(CommandContext -> execute(CommandContext, "custom-others"))))
 
-            ItemStack item = player.getHeldItemMainhand();
-            if (item != null)
-                item.setItemDamage(0);
-        }
-        else
-        {
-            throw new TranslatedCommandException(getUsage(sender));
-        }
+                                .then(Commands.literal("MaxValue")
+                                        .executes(CommandContext -> execute(CommandContext, "max-others")))));
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        String[] args = params.split("-");
+        if (args[1].equals("self"))
         {
-            // PlayerSelector.matchPlayers(sender, args[0])
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
+            if (args[0].equals("max"))
             {
-
-                ItemStack item = player.getHeldItemMainhand();
-
-                if (item != null)
+                ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
+                if (item == null)
                 {
-                    item.setItemDamage(0);
+                    ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
                 }
+                item.setDamageValue(0);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to max.");
 
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            else if (args[0].equals("custom"))
+            {
+                ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
+                if (item == null)
+                {
+                    ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
+                item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to the selected amount.");
+            }
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
+        else if (args[1].equals("others")
+                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".repair.others"))
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (args[0].equals("max"))
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item == null)
+                {
+                    ChatOutputHandler.chatError(ctx.getSource(), "They are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
+                item.setDamageValue(0);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to max.");
+                
+            }
+            else if (args[0].equals("custom"))
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item == null)
+                {
+                    ChatOutputHandler.chatError(ctx.getSource(), "They are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
+                item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to the selected amount.");
+            }
+        }
+        return Command.SINGLE_SUCCESS;
+
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        String[] args = params.split("-");
+        if (args[1].equals("others"))
         {
-            return matchToPlayers(args);
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (args[0].equals("max"))
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item == null)
+                {
+                    ChatOutputHandler.chatError(ctx.getSource(), "They are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
+                item.setDamageValue(0);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to max.");
+            }
+            else if (args[0].equals("custom"))
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item == null)
+                {
+                    ChatOutputHandler.chatError(ctx.getSource(), "They are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
+                item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to the selected amount.");
+            }
         }
         else
         {
-            return null;
-        }
-    }
+            ChatOutputHandler.chatError(ctx.getSource(), "You must select a player!");
 
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

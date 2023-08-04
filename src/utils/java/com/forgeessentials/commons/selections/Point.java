@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class Point
 {
@@ -36,12 +36,12 @@ public class Point
 
     public Point(Entity entity)
     {
-        x = (int) Math.floor(entity.posX);
-        y = (int) Math.floor(entity.posY);
-        z = (int) Math.floor(entity.posZ);
+        x = (int) Math.floor(entity.position().x);
+        y = (int) Math.floor(entity.position().y);
+        z = (int) Math.floor(entity.position().z);
     }
 
-    public Point(Vec3d vector)
+    public Point(Vector3d vector)
     {
         this((int) vector.x, (int) vector.y, (int) vector.z);
     }
@@ -161,9 +161,9 @@ public class Point
         blockPos = null;
     }
 
-    public Vec3d toVec3()
+    public Vector3d toVec3()
     {
-        return new Vec3d(x, y, z);
+        return new Vector3d(x, y, z);
     }
 
     // ------------------------------------------------------------
@@ -174,14 +174,16 @@ public class Point
         return "[" + x + ", " + y + ", " + z + "]";
     }
 
-    private static final Pattern pattern = Pattern.compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\]\\s*");
+    private static final Pattern pattern = Pattern
+            .compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\]\\s*");
 
     public static Point fromString(String value)
     {
         Matcher match = pattern.matcher(value);
         if (!match.matches())
             return null;
-        return new Point(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)));
+        return new Point(Integer.parseInt(match.group(1)), Integer.parseInt(match.group(2)),
+                Integer.parseInt(match.group(3)));
     }
 
     @Override

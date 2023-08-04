@@ -1,14 +1,9 @@
 package com.forgeessentials.jscripting.wrapper.mc.world;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
@@ -16,6 +11,17 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityList;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayerList;
 import com.forgeessentials.jscripting.wrapper.mc.util.JsAxisAlignedBB;
+import com.forgeessentials.util.ServerUtil;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * @tsd.static World
@@ -38,10 +44,10 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     }
 
-    public static JsWorldServer get(int dim)
+    public static JsServerWorld get(String dim)
     {
-        WorldServer world = DimensionManager.getWorld(dim);
-        return world == null ? null : new JsWorldServer(world);
+        ServerWorld world = ServerUtil.getWorldFromString(dim);
+        return world == null ? null : new JsServerWorld(world);
     }
 
     protected Map<TileEntity, JsTileEntity<?>> tileEntityCache = new WeakHashMap<>();
@@ -51,9 +57,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         super(that);
     }
 
-    public int getDimension()
+    public String getDimension()
     {
-        return that.provider.getDimension();
+        return that.dimension().location().toString();
     }
 
     public int getDifficulty()
@@ -61,22 +67,25 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return that.getDifficulty().ordinal();
     }
 
-    @SuppressWarnings("unchecked")
     public JsEntityPlayerList getPlayerEntities()
     {
-        return new JsEntityPlayerList(that.playerEntities);
+        List<PlayerEntity> players = new ArrayList<>();
+        for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        {
+            players.add((PlayerEntity) player);
+        }
+        return new JsEntityPlayerList(players);
     }
 
     // TODO: this should take an entity type somehow
-    @SuppressWarnings("unchecked")
     public JsEntityList getEntitiesWithinAABB(JsAxisAlignedBB axisAlignedBB)
     {
-        return new JsEntityList(that.getEntitiesWithinAABB(Entity.class, axisAlignedBB.getThat()));
+        return new JsEntityList(that.getEntitiesOfClass(Entity.class, axisAlignedBB.getThat()));
     }
 
     public boolean blockExists(int x, int y, int z)
     {
-        return !that.isAirBlock(new BlockPos(x, y, z));
+        return !that.isEmptyBlock(new BlockPos(x, y, z));
     }
 
     public JsBlock getBlock(int x, int y, int z)
@@ -86,17 +95,17 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public void setBlock(int x, int y, int z, JsBlock block)
     {
-        that.setBlockState(new BlockPos(x, y, z), block.getThat().getDefaultState(), 3);
+        that.setBlock(new BlockPos(x, y, z), block.getThat().defaultBlockState(), 3);
     }
 
     public void setBlock(int x, int y, int z, JsBlock block, int meta)
     {
-        that.setBlockState(new BlockPos(x, y, z), block.getThat().getStateFromMeta(meta), 3);
+        that.setBlock(new BlockPos(x, y, z), block.getThat().defaultBlockState(), 3);
     }
 
     public JsTileEntity<?> getTileEntity(int x, int y, int z)
     {
-        TileEntity tileEntity = that.getTileEntity(new BlockPos(x, y, z));
+        TileEntity tileEntity = that.getBlockEntity(new BlockPos(x, y, z));
         if (tileEntityCache.containsKey(tileEntity))
             return tileEntityCache.get(tileEntity);
         JsTileEntity<?> jsTileEntity = new JsTileEntity<>(tileEntity);
@@ -104,32 +113,19 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return jsTileEntity;
     }
 
-    public JsWorldServer asWorldServer()
+    public JsServerWorld asWorldServer()
     {
-        return that instanceof WorldServer ? new JsWorldServer((WorldServer) that) : null;
+        return that instanceof ServerWorld ? new JsServerWorld((ServerWorld) that) : null;
     }
 
     public long getWorldTime()
     {
-        return that.getWorldTime();
+        return that.getDayTime();
     }
 
     public long getTotalWorldTime()
     {
-        return that.getTotalWorldTime();
-    }
-
-    /**
-     * Sets the world time.
-     */
-    public void setWorldTime(long time)
-    {
-        that.setWorldTime(time);
-    }
-
-    public void setSpawnLocation(int x, int y, int z)
-    {
-        that.setSpawnPoint(new BlockPos(x, y, z));
+        return that.getGameTime();
     }
 
     /**
@@ -137,12 +133,12 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean canMineBlock(JsEntityPlayer player, int x, int y, int z)
     {
-        return that.canMineBlockBody(player.getThat(), new BlockPos(x, y, z));
+        return that.mayInteract(player.getThat(), new BlockPos(x, y, z));
     }
 
     public float getWeightedThunderStrength(float weight)
     {
-        return that.getThunderStrength(weight);
+        return that.getThunderLevel(weight);
     }
 
     /**
@@ -150,7 +146,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getRainStrength(float strength)
     {
-        return that.getRainStrength(strength);
+        return that.getRainLevel(strength);
     }
 
     /**
@@ -179,7 +175,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean isBlockHighHumidity(int x, int y, int z)
     {
-        return that.isBlockinHighHumidity(new BlockPos(x, y, z));
+        return that.isHumidAt(new BlockPos(x, y, z));
     }
 
     /**
@@ -195,12 +191,12 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public int getActualHeight()
     {
-        return that.getActualHeight();
+        return that.getMaxBuildHeight();
     }
 
     public JsBlock getTopBlock(int x, int z)
     {
-        return JsBlock.get(that.getBlockState(that.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z))).getBlock());
+        return JsBlock.get(that.getBlockState(new BlockPos(x, getHeightValue(x, z), z)).getBlock());
     }
 
     /**
@@ -208,7 +204,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean isAirBlock(int x, int y, int z)
     {
-        return that.isAirBlock(new BlockPos(x, y, z));
+        return that.isEmptyBlock(new BlockPos(x, y, z));
     }
 
     /**
@@ -216,15 +212,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean canBlockSeeTheSky(int x, int y, int z)
     {
-        return that.canBlockSeeSky(new BlockPos(x, y, z));
-    }
-
-    /**
-     * Does the same as getBlockLightValue_do but without checking if its not a normal block
-     */
-    public int getFullBlockLightValue(int x, int y, int z)
-    {
-        return that.getBlockLightOpacity(new BlockPos(x, y, z));
+        return that.canSeeSky(new BlockPos(x, y, z));
     }
 
     /**
@@ -232,34 +220,32 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public int getBlockLightValue(int x, int y, int z)
     {
-        return that.getLight(new BlockPos(x, y, z));
+        return that.getMaxLocalRawBrightness(new BlockPos(x, y, z));
     }
 
     /**
-     * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag
-     * that indicates if its a half step block to get the maximum light value of a direct neighboring block (left,
-     * right, forward, back, and up)
+     * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag that indicates if its a half step block to get the maximum
+     * light value of a direct neighboring block (left, right, forward, back, and up)
      */
     public int getBlockLightValue_do(int x, int y, int z, boolean isHalfBlock)
     {
-        return that.getLight(new BlockPos(x, y, z), isHalfBlock);
-    }
+        return that.getLightEmission(new BlockPos(x, y, z));// , isHalfBlock);
+    }// Half Slabs have no different properties anymore?
 
     /**
      * Returns the y coordinate with a block in it at this x, z coordinate
      */
     public int getHeightValue(int x, int z)
     {
-        return that.getHeight(new BlockPos(x, 0, z)).getY();
+        return that.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x, z);
     }
 
     /**
-     * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light
-     * values aren't linear for brightness). Args: x, y, z
+     * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light values aren't linear for brightness). Args: x, y, z
      */
     public float getLightBrightness(int x, int y, int z)
     {
-        return that.getLightBrightness(new BlockPos(x, y, z));
+        return that.getBrightness(new BlockPos(x, y, z));
     }
 
     /**
@@ -267,7 +253,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean isDaytime()
     {
-        return that.isDaytime();
+        return that.isDay();
     }
 
     /**
@@ -275,7 +261,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getCelestialAngle(float arg1)
     {
-        return that.getCelestialAngle(arg1);
+        return that.getSunAngle(arg1);
     }
 
     /**
@@ -283,12 +269,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getCurrentMoonPhaseFactor()
     {
-        return that.getCurrentMoonPhaseFactor();
-    }
-
-    public float getCurrentMoonPhaseFactorBody()
-    {
-        return that.getCurrentMoonPhaseFactorBody();
+        return that.getMoonPhase();
     }
 
     /**
@@ -296,7 +277,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getCelestialAngleRadians(float arg1)
     {
-        return that.getCelestialAngleRadians(arg1);
+        return that.getSunAngle(arg1) * (float) (2 * Math.PI);
     }
 
     /**
@@ -304,7 +285,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public JsEntityPlayer getClosestPlayerToEntity(JsEntity<?> entity, double dist)
     {
-        return JsEntityPlayer.get(that.getClosestPlayerToEntity(entity.getThat(), dist));
+        return JsEntityPlayer.get(that.getNearestPlayer(entity.getThat(), dist));
     }
 
     /**
@@ -312,7 +293,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public JsEntityPlayer getClosestPlayer(double x, double y, double z, double dist)
     {
-        return JsEntityPlayer.get(that.getClosestPlayer(x, y, z, dist, false));
+        return JsEntityPlayer.get(that.getNearestPlayer(x, y, z, dist, false));
     }
 
     /**
@@ -320,63 +301,64 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public long getSeed()
     {
-        return that.getSeed();
+        return ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed();
     }
 
-    //    /**
-    //     * Sets the strength of the rain.
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public void setRainStrength(float strength)
-    //    {
-    //        that.setRainStrength(strength);
-    //    }
+    // /**
+    // * Sets the strength of the rain.
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public void setRainStrength(float strength)
+    // {
+    // that.setRainStrength(strength);
+    // }
     //
-    //    /**
-    //     * Sets the strength of the thunder.
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public void setThunderStrength(float strength)
-    //    {
-    //        that.setThunderStrength(strength);
-    //    }
+    // /**
+    // * Sets the strength of the thunder.
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public void setThunderStrength(float strength)
+    // {
+    // that.setThunderStrength(strength);
+    // }
     //
-    //    /**
-    //     * Returns horizon height for use in rendering the sky.
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public double getHorizon()
-    //    {
-    //        return that.getHorizon();
-    //    }
+    // /**
+    // * Returns horizon height for use in rendering the sky.
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public double getHorizon()
+    // {
+    // return that.getHorizon();
+    // }
     //
-    //    /**
-    //     * Returns the sun brightness - checks time of day, rain and thunder
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public float getSunBrightness(float p_72971_1_)
-    //    {
-    //        return that.getSunBrightness(p_72971_1_);
-    //    }
+    // /**
+    // * Returns the sun brightness - checks time of day, rain and thunder
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public float getSunBrightness(float p_72971_1_)
+    // {
+    // return that.getSunBrightness(p_72971_1_);
+    // }
     //
-    //    @SideOnly(Side.CLIENT)
-    //    public float getSunBrightnessBody(float p_72971_1_)
-    //    {
-    //        return that.getSunBrightnessBody(p_72971_1_);
-    //    }
+    // @SideOnly(Side.CLIENT)
+    // public float getSunBrightnessBody(float p_72971_1_)
+    // {
+    // return that.getSunBrightnessBody(p_72971_1_);
+    // }
     //
-    //    @SideOnly(Side.CLIENT)
-    //    public int getMoonPhase()
-    //    {
-    //        return that.getMoonPhase();
-    //    }
+    // @SideOnly(Side.CLIENT)
+    // public int getMoonPhase()
+    // {
+    // return that.getMoonPhase();
+    // }
     //
-    //    /**
-    //     * Returns the name of the current chunk provider, by calling chunkprovider.makeString()
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public String getProviderName()
-    //    {
-    //        return that.getProviderName();
-    //    }
+    // /**
+    // * Returns the name of the current chunk provider, by calling
+    // chunkprovider.makeString()
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public String getProviderName()
+    // {
+    // return that.getProviderName();
+    // }
 }

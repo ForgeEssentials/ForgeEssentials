@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
@@ -20,14 +18,15 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.stats.QueryStatsHandler.Request;
 
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
 @FERemoteHandler(id = RemoteMessageID.QUERY_STATS)
 public class QueryStatsHandler extends GenericRemoteHandler<Request>
 {
 
     public static final String PERM = PERM_REMOTE + ".stats";
 
-    @SuppressWarnings("unused")
-    private StatsManager statsManager = new StatsManager();
+    // private StatsManager statsManager = new StatsManager();
 
     public QueryStatsHandler()
     {
@@ -58,9 +57,13 @@ public class QueryStatsHandler extends GenericRemoteHandler<Request>
             StatTracker<?> tracker = StatsManager.getStats().get(id);
             if (tracker != null)
             {
-                // TODO: Write better RingBuffer that can directly get reverse list and keeps track of internal size
-                int elementCount = Math.max(0, (int) ((tracker.getTimestamp() - request.data.timestamp + tracker.getInterval()) / tracker.getInterval()));
-                ArrayList<?> data = (elementCount <= 0) ? new ArrayList<Integer>() : tracker.getBuffer().getOrderedList(elementCount);
+                // TODO: Write better RingBuffer that can directly get reverse list and keeps
+                // track of internal size
+                int elementCount = Math.max(0,
+                        (int) ((tracker.getTimestamp() - request.data.timestamp + tracker.getInterval())
+                                / tracker.getInterval()));
+                ArrayList<?> data = (elementCount <= 0) ? new ArrayList<Integer>()
+                        : tracker.getBuffer().getOrderedList(elementCount);
                 Collections.reverse(data);
                 stats.put(id, new GraphData(data, tracker.getInterval()));
             }

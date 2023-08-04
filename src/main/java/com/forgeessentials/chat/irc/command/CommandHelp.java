@@ -1,23 +1,22 @@
 package com.forgeessentials.chat.irc.command;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map.Entry;
 
-import net.minecraft.command.CommandException;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import com.forgeessentials.chat.irc.IrcCommand;
-import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandHelp extends IrcCommandParser
+
+public class CommandHelp implements IrcCommand
 {
 
     @Override
     public Collection<String> getCommandNames()
     {
-        return Arrays.asList("help");
+        return Collections.singletonList("help");
     }
 
     @Override
@@ -39,12 +38,14 @@ public class CommandHelp extends IrcCommandParser
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void processCommand(MessageEvent event, String[] args)
     {
-        arguments.confirm("List of commands:");
+    	System.out.println("Running help command");
+    	event.respondWith("List of commands:");
         for (Entry<String, IrcCommand> command : IrcHandler.getInstance().commands.entrySet())
         {
-            arguments.confirm(COMMAND_CHAR + command.getKey() + " " + command.getValue().getUsage() + ": " + command.getValue().getCommandHelp());
+        	event.respondWith(COMMAND_CHAR + command.getKey() + " "
+                    + command.getValue().getUsage() + ": " + command.getValue().getCommandHelp());
         }
     }
 

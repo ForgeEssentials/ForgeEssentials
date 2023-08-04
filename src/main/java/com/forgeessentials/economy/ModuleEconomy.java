@@ -1,33 +1,11 @@
 package com.forgeessentials.economy;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -36,11 +14,12 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
@@ -50,16 +29,37 @@ import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandSellprice;
 import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
-import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.protection.ProtectionEventHandler;
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerXpEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 /**
  * Economy module.
@@ -69,8 +69,11 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
+    private static ForgeConfigSpec ECONOMY_CONFIG;
+    public static final ConfigData data = new ConfigData("Economy", ECONOMY_CONFIG, new ForgeConfigSpec.Builder());
 
-    public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
+    public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec",
+            "$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
     public static final String PERM_COMMAND = PERM + ".command";
@@ -88,41 +91,38 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static final String PERM_BOUNTY_MESSAGE = PERM_BOUNTY + ".message";
 
     public static final String CONFIG_CATEGORY = "Economy";
-    public static final String CATEGORY_ITEM = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "ItemPrices";
 
     public static final int DEFAULT_ITEM_PRICE = 0;
 
     /* ------------------------------------------------------------ */
 
-    protected PlotManager plotManager;
-
-    protected ShopManager shopManager;
+    protected ShopManager shopManager = new ShopManager();
 
     protected HashMap<UserIdent, PlayerWallet> wallets = new HashMap<>();
 
     /* ------------------------------------------------------------ */
     /* Module events */
 
-    @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public ModuleEconomy()
     {
         APIRegistry.economy = this;
-        plotManager = new PlotManager();
-        shopManager = new ShopManager();
-
-        FECommandManager.registerCommand(new CommandWallet());
-        FECommandManager.registerCommand(new CommandPay());
-        FECommandManager.registerCommand(new CommandSell());
-        FECommandManager.registerCommand(new CommandPaidCommand());
-        FECommandManager.registerCommand(new CommandSellCommand());
-        FECommandManager.registerCommand(new CommandTrade());
-        FECommandManager.registerCommand(new CommandSellprice());
-        FECommandManager.registerCommand(new CommandRequestPayment());
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandWallet(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPay(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSell(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPaidCommand(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSellCommand(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTrade(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSellprice(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandRequestPayment(true), event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "0",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
@@ -131,26 +131,26 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(PERM_STARTBUDGET, "100", "Starting amount of money for players");
         APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
 
-        APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
-        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
-        for (Entry<ResourceLocation, EntityEntry> e : ForgeRegistries.ENTITIES.getEntries())
-            if (EntityLiving.class.isAssignableFrom(e.getValue().getEntityClass()))
+        APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY,
+                "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
+        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL,
+                "Whether to show a message if a bounty is given");
+        for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
+            if (LivingEntity.class.isAssignableFrom(e.getValue().getClass()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
                 "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
 
-        CommandFeSettings.addAlias("Economy", "money_per_xp", PERM_XP_MULTIPLIER);
-        CommandFeSettings.addAlias("Economy", "start_budget", PERM_STARTBUDGET);
-        CommandFeSettings.addAlias("Economy", "currency_name", PERM_CURRENCY);
-        CommandFeSettings.addAlias("Economy", "currency_name_singular", PERM_CURRENCY_SINGULAR);
-        CommandFeSettings.addAlias("Economy", "death_toll", PERM_DEATHTOLL);
-
-        PlotManager.serverStarting();
+        CommandFeSettings.addSetting("Economy", "money_per_xp", PERM_XP_MULTIPLIER);
+        CommandFeSettings.addSetting("Economy", "start_budget", PERM_STARTBUDGET);
+        CommandFeSettings.addSetting("Economy", "currency_name", PERM_CURRENCY);
+        CommandFeSettings.addSetting("Economy", "currency_name_singular", PERM_CURRENCY_SINGULAR);
+        CommandFeSettings.addSetting("Economy", "death_toll", PERM_DEATHTOLL);
     }
 
     @SubscribeEvent
-    public void serverStop(FEModuleServerStopEvent e)
+    public void serverStop(FEModuleServerStoppingEvent e)
     {
         for (Entry<UserIdent, PlayerWallet> wallet : wallets.entrySet())
             saveWallet(wallet.getKey().getOrGenerateUuid(), wallet.getValue());
@@ -174,44 +174,47 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
     {
         if (ident.hasPlayer())
-            ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
+            ChatOutputHandler.chatConfirmation(ident.getPlayerMP().createCommandSourceStack(),
+                    Translator.format("You have now %s", wallet.toString()));
     }
 
-    public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
+    public static int tryRemoveItems(PlayerEntity player, ItemStack itemStack, int amount)
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemStack);
-        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
+        for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            ItemStack stack = player.inventory.getItem(slot);
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
+                    && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
                 foundStacks += stack.getCount();
         }
         foundStacks = amount = Math.min(foundStacks, amount);
-        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
+        for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            ItemStack stack = player.inventory.getItem(slot);
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
+                    && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
             {
                 int removeCount = Math.min(stack.getCount(), foundStacks);
-                player.inventory.decrStackSize(slot, removeCount);
+                player.inventory.removeItem(slot, removeCount);
                 foundStacks -= removeCount;
             }
         }
-
-        player.inventoryContainer.detectAndSendChanges();
+        player.containerMenu.broadcastChanges();
 
         return amount;
     }
 
-    public static int countInventoryItems(EntityPlayer player, ItemStack itemType)
+    public static int countInventoryItems(PlayerEntity player, ItemStack itemType)
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemType);
-        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
+        for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            ItemStack stack = player.inventory.getItem(slot);
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemType.getItem()
+                    && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
                 foundStacks += stack.getCount();
         }
         return foundStacks;
@@ -223,33 +226,35 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        UserIdent ident = UserIdent.get(event.player);
+        UserIdent ident = UserIdent.get(event.getPlayer());
         PlayerWallet wallet = getWallet(ident);
         if (wallet != null)
             saveWallet(ident.getOrGenerateUuid(), wallet);
     }
 
     @SubscribeEvent
-    public void onXPPickup(PlayerPickupXpEvent e)
+    public void onXPPickup(PlayerXpEvent.PickupXp e)
     {
-        if (e.getEntityPlayer() instanceof EntityPlayerMP)
+        if (e.getEntity() instanceof ServerPlayerEntity)
         {
-            UserIdent ident = UserIdent.get(e.getEntityPlayer());
-            double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
+            UserIdent ident = UserIdent.get(e.getPlayer().getGameProfile().getId());
+            double xpMultiplier = ServerUtil
+                    .parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
             if (xpMultiplier <= 0)
                 return;
             PlayerWallet wallet = getWallet(ident);
-            wallet.add(xpMultiplier * e.getOrb().xpValue);
+            wallet.add(xpMultiplier * e.getOrb().value);
         }
     }
 
     @SubscribeEvent
     public void onDeath(LivingDeathEvent e)
     {
-        if (e.getEntity() instanceof EntityPlayerMP)
+        if (e.getEntity() instanceof ServerPlayerEntity)
         {
-            UserIdent ident = UserIdent.get((EntityPlayerMP) e.getEntity());
-            Long deathtoll = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
+            UserIdent ident = UserIdent.get((ServerPlayerEntity) e.getEntity());
+            Long deathtoll = ServerUtil
+                    .tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
             Wallet wallet = APIRegistry.economy.getWallet(ident);
@@ -264,21 +269,23 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatOutputHandler.chatNotification((ICommandSender) e.getEntity(), Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
+            ChatOutputHandler.chatNotification(((PlayerEntity) e.getEntity()).createCommandSourceStack(),
+                    Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.getSource().getTrueSource() instanceof EntityPlayerMP)
+        if (e.getSource().getDirectEntity() instanceof ServerPlayerEntity)
         {
-            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getTrueSource());
+            UserIdent killer = UserIdent.get((ServerPlayerEntity) e.getSource().getDirectEntity());
             String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
-            double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
+            double bounty = ServerUtil
+                    .parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
             {
                 Wallet wallet = APIRegistry.economy.getWallet(killer);
                 wallet.add(bounty);
                 if (APIRegistry.perms.checkUserPermission(killer, PERM_BOUNTY_MESSAGE))
-                    ChatOutputHandler.chatNotification(killer.getPlayer(),
-                            Translator.format("You received %s as bounty", APIRegistry.economy.toString((long) bounty)));
+                    ChatOutputHandler.chatNotification(killer.getPlayer().createCommandSourceStack(), Translator
+                            .format("You received %s as bounty", APIRegistry.economy.toString((long) bounty)));
             }
         }
     }
@@ -286,27 +293,28 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.getSender() instanceof EntityPlayerMP))
+        if (event.getParseResults().getContext().getNodes().isEmpty())
             return;
-        UserIdent ident = UserIdent.get((EntityPlayerMP) event.getSender());
+        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
+            return;
+        CommandInfo info = CommandUtils.getCommandInfo(event);
+        UserIdent ident = UserIdent.get((ServerPlayerEntity) info.getSource().getEntity());
 
-        for (int i = event.getParameters().length; i >= 0; i--)
+        if (event.getParseResults().getContext().getArguments().size() >= 0)
         {
-            String permission = PERM_COMMANDPRICE + '.' + event.getCommand().getName() + //
-                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.getParameters(), i), '.')));
+            String permission = PERM_COMMANDPRICE + '.' + info.getPermissionNode();
+            // System.out.println(permission);
             Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
-                continue;
+                return;
 
             Wallet wallet = APIRegistry.economy.getWallet(ident);
             if (!wallet.withdraw(price))
             {
                 event.setCanceled(true);
-                TextComponentTranslation textcomponenttranslation2 = new TextComponentTranslation("You do not have enough money to use this command.", new Object[0]);
-                textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
-                event.getSender().sendMessage(textcomponenttranslation2);
+                info.getSource()
+                        .sendFailure(new StringTextComponent("You do not have enough money to use this command."));
             }
-            break;
         }
     }
 
@@ -320,7 +328,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         if (wallet == null)
             wallet = DataManager.getInstance().load(PlayerWallet.class, ident.getOrGenerateUuid().toString());
         if (wallet == null)
-            wallet = new PlayerWallet(ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
+            wallet = new PlayerWallet(ServerUtil
+                    .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
         wallets.put(ident, wallet);
         return wallet;
     }
@@ -344,57 +353,72 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static String getItemPricePermission(ItemStack itemStack)
     {
-        return PERM_PRICE + "." + ItemUtil.getItemIdentifier(itemStack);
+        return PERM_PRICE + "." + ItemUtil.getItemName(itemStack);
     }
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
     {
-        return ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
+        return ServerUtil
+                .tryParseLong(APIRegistry.perms.getGlobalPermissionProperty(getItemPricePermission(itemStack)));
     }
 
     public static void setItemPrice(ItemStack itemStack, long price)
     {
-        APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
+        setItemPrice(getItemPricePermission(itemStack), Long.toString(price));
+    }
+
+    public static void setItemPrice(String node, String price)
+    {
+        APIRegistry.perms.registerPermissionProperty(node, price);
+    }
+
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> FEitemTables;
+    public static Map<String, Integer> itemTables = new HashMap<>();
+
+    @Override
+    public void load(Builder BUILDER, boolean isReload)
+    {
+        BUILDER.push(CONFIG_CATEGORY);
+        FEitemTables = BUILDER.comment("Itemprices for the economy module").defineList("Itemprices",
+                new ArrayList<>(), ConfigBase.stringValidator);
+        BUILDER.pop();
+        ShopManager.load(BUILDER, isReload);
     }
 
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void bakeConfig(boolean reload)
     {
-        if (config.hasCategory("ItemTables"))
+        for (String itemValue : FEitemTables.get())
         {
-            ConfigCategory category = config.getCategory("ItemTables");
-            for (Entry<String, Property> entry : category.entrySet())
+            String[] values = itemValue.split("=");
+            int price;
+            try
             {
-                for (Item item : ForgeRegistries.ITEMS)
-                    if (entry.getKey().equals(item.getUnlocalizedName()))
-                    {
-                        String id = ServerUtil.getItemName(item);
-                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));
-                        break;
-                    }
+                price = CommandUtils.parseInt(values[1]);
             }
-            config.removeCategory(category);
+            catch (NumberFormatException e)
+            {
+                LoggingHandler.felog.error("Incorrect Price value", e);
+                price = DEFAULT_ITEM_PRICE;
+            }
+            for (Item item : ForgeRegistries.ITEMS)
+                if (values[0].equals(ItemUtil.getItemName(item)))
+                {
+                    itemTables.put(ItemUtil.getItemName(item), price);
+                    break;
+                }
         }
-
-        ConfigCategory category = config.getCategory(CATEGORY_ITEM);
-        for (Entry<String, Property> entry : category.entrySet())
-            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
+        if (!FEitemTables.get().isEmpty())
+        {
+            for (Entry<String, Integer> entry : itemTables.entrySet())
+                setItemPrice(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
+        }
+        ShopManager.bakeConfig(reload);
     }
 
     @Override
-    public boolean supportsCanonicalConfig()
+    public ConfigData returnData()
     {
-        return false;
+        return data;
     }
-
-    /* ------------------------------------------------------------ */
-
-    public static class CantAffordException extends TranslatedCommandException
-    {
-        public CantAffordException()
-        {
-            super("You can't afford that");
-        }
-    }
-
 }

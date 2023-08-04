@@ -4,29 +4,38 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commands.world.CommandWeather.WeatherData;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.misc.commandTools.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTime extends ParserCommandBase implements ConfigurableCommand
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
+
+    public CommandTime(boolean enabled)
+    {
+        super(enabled);
+    }
 
     public static final int dayTimeStart = 1;
     public static final int dayTimeEnd = 11;
@@ -38,36 +47,29 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         Long frozenTime;
     }
 
-    protected static HashMap<Integer, TimeData> timeData = new HashMap<>();
+    protected static HashMap<String, TimeData> timeData = new HashMap<>();
 
-    protected static TimeData getTimeData(int dim)
+    protected static TimeData getTimeData(String worldname)
     {
-        TimeData td = timeData.get(dim);
+        TimeData td = timeData.get(worldname);
         if (td == null)
         {
             td = new TimeData();
-            timeData.put(dim, td);
+            timeData.put(worldname, td);
         }
         return td;
     }
 
+    protected static TimeData getTimeData(RegistryKey<World> dimension)
+    {
+        return getTimeData(dimension.location().toString());
+    }
     /* ------------------------------------------------------------ */
 
-    public CommandTime()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "time";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/time freeze|set|add [day|night|<t>]: Manipulate time.";
     }
 
     @Override
@@ -83,89 +85,135 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + ".time";
+        return baseBuilder
+                .then(Commands.literal("set")
+                        .then(Commands.literal("day")
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "set-day-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "set-day-one"))))
+                        .then(Commands.literal("midday")
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "set-midday-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "set-midday-one"))))
+                        .then(Commands.literal("dusk")
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "set-dusk-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "set-dusk-one"))))
+                        .then(Commands.literal("night")
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "set-night-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "set-night-one"))))
+                        .then(Commands.literal("midnight")
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "set-midnight-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "set-midnight-one"))))
+                        .then(Commands.argument("time", StringArgumentType.string())
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "set-time-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "set-time-one")))))
+                .then(Commands.literal("add")
+                        .then(Commands.argument("time", StringArgumentType.string())
+                                .then(Commands.literal("all")
+                                        .executes(CommandContext -> execute(CommandContext, "add-time-all")))
+                                .then(Commands.argument("dim", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext, "add-time-one")))))
+                .then(Commands.literal("freeze")
+                        .then(Commands.literal("all").executes(CommandContext -> execute(CommandContext, "freeze-all")))
+                        .then(Commands.argument("dim", DimensionArgument.dimension())
+                                .executes(CommandContext -> execute(CommandContext, "freeze-one"))))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.equals("blank"))
         {
-            arguments.confirm("/time set|add <t> [dim]");
-            arguments.confirm("/time freeze [dim]");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time set|add <t> [dim]");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time freeze [dim]");
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("freeze", "set", "add");
-        String subCmd = arguments.remove().toLowerCase();
-        switch (subCmd)
+        String[] arg = params.split("-");
+        switch (arg[0])
         {
         case "freeze":
-            parseFreeze(arguments);
+            parseFreeze(ctx, arg[1]);
             break;
         case "set":
-            parseTime(arguments, false);
+            parseTime(ctx, false, arg);
             break;
         case "add":
-            parseTime(arguments, true);
+            parseTime(ctx, true, arg);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg[0]);
         }
+        return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseFreeze(CommandParserArgs arguments) throws CommandException
+    public static void parseFreeze(CommandContext<CommandSource> ctx, String arg) throws CommandSyntaxException
     {
-        World world = arguments.isEmpty() ? null : arguments.parseWorld();
-        if (arguments.isTabCompletion)
-            return;
 
-        if (world == null)
+        if (arg.equals("all"))
         {
-            boolean freeze = getTimeData(0).frozenTime == null;
-            for (World w : DimensionManager.getWorlds())
+            boolean freeze = getTimeData(ServerWorld.OVERWORLD).frozenTime == null;
+            for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
             {
-                TimeData td = getTimeData(w.provider.getDimension());
-                td.frozenTime = freeze ? w.getWorldInfo().getWorldTime() : null;
+                TimeData td = getTimeData(w.dimension());
+                td.frozenTime = freeze ? w.getLevelData().getDayTime() : null;
             }
             if (freeze)
-                arguments.confirm("Froze time in all worlds");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in all worlds");
             else
-                arguments.confirm("Unfroze time in all worlds");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in all worlds");
         }
         else
         {
-            TimeData td = getTimeData(world.provider.getDimension());
-            td.frozenTime = (td.frozenTime == null) ? world.getWorldInfo().getWorldTime() : null;
+            ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
+            TimeData td = getTimeData(world.dimension());
+            td.frozenTime = (td.frozenTime == null) ? world.getLevelData().getDayTime() : null;
             if (td.frozenTime != null)
-                arguments.confirm("Froze time");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in %s", world.dimension());
             else
-                arguments.confirm("Unfroze time");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in %s", world.dimension());
         }
         save();
     }
 
-    public static void parseTime(CommandParserArgs arguments, boolean addTime) throws CommandException
+    public static void parseTime(CommandContext<CommandSource> ctx, boolean addTime, String[] arg)
+            throws CommandSyntaxException
     {
-        if (arguments.isEmpty()) {
-            throw new TranslatedCommandException("Please Specify a time!");
-        }
         long time;
-        if (CommandParserArgs.timeFormatPattern.matcher(arguments.peek()).find())
+        if (arg[1].equals("time"))
         {
-            time = arguments.mcParseTimeReadable();
+            try
+            {
+                time = mcParseTimeReadable(StringArgumentType.getString(ctx, "time"));
+            }
+            catch (FECommandParsingException e)
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), e.error);
+                return;
+            }
         }
         else
         {
             if (addTime)
             {
-                throw new TranslatedCommandException("Add time does not accept time values in the form of day, midday, etc");
+                ChatOutputHandler.chatError(ctx.getSource(),
+                        "Add time does not accept time values in the form of day, midday, etc");
+                return;
             }
-            arguments.tabComplete("day", "midday", "dusk", "night", "midnight");
-            String timeStr = arguments.remove().toLowerCase();
-            switch (timeStr)
+            switch (arg[1])
             {
             case "day":
                 time = 1000;
@@ -183,38 +231,36 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 time = 18 * 1000;
                 break;
             default:
-                throw new TranslatedCommandException("Invalid Time format");
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid Time format");
+                return;
             }
         }
 
-        World world = arguments.isEmpty() ? null : arguments.parseWorld();
-        if (arguments.isTabCompletion)
-            return;
-
-        if (world == null)
+        if (arg[2].equals("all"))
         {
-            for (World w : DimensionManager.getWorlds())
+            for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
             {
                 if (addTime)
-                    w.getWorldInfo().setWorldTime(w.getWorldInfo().getWorldTime() + time);
+                    w.setDayTime(w.getDayTime() + time);
                 else
-                    w.getWorldInfo().setWorldTime(time);
-                TimeData td = getTimeData(w.provider.getDimension());
+                    w.setDayTime(time);
+                TimeData td = getTimeData(w.dimension());
                 if (td.frozenTime != null)
-                    td.frozenTime = w.getWorldInfo().getWorldTime();
+                    td.frozenTime = w.getDayTime();
             }
-            arguments.confirm("Set time to %s in all worlds", time);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set time to %s in all worlds", time);
         }
         else
         {
+            ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
             if (addTime)
-                world.getWorldInfo().setWorldTime(world.getWorldInfo().getWorldTime() + time);
+                world.setDayTime(world.getDayTime() + time);
             else
-                world.getWorldInfo().setWorldTime(time);
-            TimeData td = getTimeData(world.provider.getDimension());
+                world.setDayTime(time);
+            TimeData td = getTimeData(world.dimension());
             if (td.frozenTime != null)
-                td.frozenTime = world.getWorldInfo().getWorldTime();
-            arguments.confirm("Set time to %s", time);
+                td.frozenTime = world.getDayTime();
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set time to %s", time);
         }
     }
 
@@ -225,25 +271,24 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     {
         if (event.phase == Phase.START)
             return;
-        World world = event.world;
-        WorldInfo wi = world.getWorldInfo();
-        if (wi.getWorldTotalTime() % 10 == 0)
+        ServerWorld world = (ServerWorld) event.world;
+        if (world.getGameTime() % 10 == 0)
             updateWorld(world);
     }
 
-    public static void updateWorld(World world)
+    public static void updateWorld(ServerWorld world)
     {
-        TimeData td = getTimeData(world.provider.getDimension());
+        TimeData td = getTimeData(world.dimension());
         if (td.frozenTime != null)
-            world.getWorldInfo().setWorldTime(td.frozenTime);
+            world.setDayTime(td.frozenTime);
     }
 
     public static void save()
     {
-        DataManager.getInstance().deleteAll(WeatherData.class);
-        for (Entry<Integer, TimeData> state : timeData.entrySet())
+        DataManager.getInstance().deleteAll(TimeData.class);
+        for (Entry<String, TimeData> state : timeData.entrySet())
         {
-            DataManager.getInstance().save(state.getValue(), state.getKey().toString());
+            DataManager.getInstance().save(state.getValue(), state.getKey().toString().replace(":", "-"));
         }
     }
 
@@ -258,7 +303,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 continue;
             try
             {
-                timeData.put(Integer.parseInt(state.getKey()), state.getValue());
+                timeData.put(state.getKey().replace("-", ":"), state.getValue());
             }
             catch (NumberFormatException e)
             {
@@ -266,11 +311,4 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
             }
         }
     }
-
-    @Override
-    public void loadConfig(Configuration config, String category)
-    {
-        /* do nothing */
-    }
-
 }

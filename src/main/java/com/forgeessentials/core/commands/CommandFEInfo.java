@@ -1,38 +1,34 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.mixin.FEMixinConfig;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.preloader.mixin.FEMixinConfig;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFEInfo extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandFEInfo extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandFEInfo(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "feinfo";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/feinfo: Show info about and mange FE";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ForgeEssentials.PERM_INFO;
     }
 
     @Override
@@ -48,40 +44,46 @@ public class CommandFEInfo extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-        {
-            arguments.notify("Running ForgeEssentials %s-%s", BuildInfo.getFullVersion(), BuildInfo.getBuildType());
-            if (BuildInfo.isOutdated())
-                arguments.error(String.format("Outdated! Latest build is #%d", BuildInfo.getBuildNumberLatest()));
-            arguments.confirm("/feinfo reload: Reload FE configs");
-            arguments.confirm("/feinfo modules: Show loaded modules");
-            arguments.confirm("/feinfo mixin: Show loaded mixin patches");
-            return;
-        }
-
-        arguments.tabComplete("reload", "modules", "mixin");
-        String subCmd = arguments.remove().toLowerCase();
-        if (arguments.isTabCompletion)
-            return;
-
-        switch (subCmd)
-        {
-        case "reload":
-            CommandFeReload.reload(arguments.sender);
-            break;
-        case "modules":
-            arguments.confirm("Loaded FE modules: " + StringUtils.join(ModuleLauncher.getModuleList(), ", "));
-            break;
-        case "mixin":
-            arguments.notify("Injected patches:");
-            for (String patch : FEMixinConfig.getInjectedPatches())
-                arguments.confirm("- " + patch);
-            break;
-        default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
-        }
+        return baseBuilder
+                .then(Commands.literal("reload").executes(CommandContext -> execute(CommandContext, "reload")))
+                .then(Commands.literal("modules").executes(CommandContext -> execute(CommandContext, "modules")))
+                .then(Commands.literal("mixin").executes(CommandContext -> execute(CommandContext, "mixin")))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("blank"))
+        {
+            ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Running ForgeEssentials %s (%s)-%s",
+                    BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
+            if (BuildInfo.isOutdated())
+                ChatOutputHandler.chatError(ctx.getSource(),
+                        String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo reload: Reload FE configs");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo modules: Show loaded modules");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo mixin: Show loaded mixin patches");
+            return Command.SINGLE_SUCCESS;
+        }
+
+        switch (params)
+        {
+        case "reload":
+            CommandFeReload.reload(ctx.getSource());
+            return Command.SINGLE_SUCCESS;
+        case "modules":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "Loaded FE modules: " + StringUtils.join(ModuleLauncher.getModuleList(), ", "));
+            return Command.SINGLE_SUCCESS;
+        case "mixin":
+            ChatOutputHandler.chatNotification(ctx.getSource(), "Injected patches:");
+            for (String patch : FEMixinConfig.getInjectedPatches())
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "- " + patch);
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

@@ -2,9 +2,7 @@ package com.forgeessentials.remote.handler.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import java.util.Map;
 
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
@@ -12,6 +10,11 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
+import com.mojang.brigadier.tree.CommandNode;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND_LIST)
 public class CommandListHandler extends GenericRemoteHandler<String>
@@ -27,15 +30,12 @@ public class CommandListHandler extends GenericRemoteHandler<String>
     @Override
     protected RemoteResponse<?> handleData(RemoteSession session, RemoteRequest<String> request)
     {
-        List<String> commands = new ArrayList<String>();
 
-        @SuppressWarnings("unchecked")
-        Set<String> cmds = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().keySet();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher()
+                .getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
 
-        for (String cmd : cmds)
-        {
-            commands.add(cmd);
-        }
+        List<String> commands = new ArrayList<>(map.values());
 
         return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, commands);
     }

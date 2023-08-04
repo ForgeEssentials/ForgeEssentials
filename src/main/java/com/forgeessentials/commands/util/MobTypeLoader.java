@@ -3,31 +3,50 @@ package com.forgeessentials.commands.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.objectweb.asm.Type;
 
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.google.common.collect.Maps;
+
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
 public class MobTypeLoader
 {
-    public static void preLoad(FMLPreInitializationEvent event)
+    private static final Type MOD = Type.getType(FEMob.class);
+
+    public static void init()
     {
         LoggingHandler.felog.info("Discovering and loading FEMob data...");
         // started ASM handling for the module loading.
-        Set<ASMData> data = event.getAsmData().getAll(FEMob.class.getName());
+        // Set<ASMData> data = event.getAsmData().getAll(FEMob.class.getName());
+
+        final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
+                .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
+                .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
+
+        Map<Type, String> classModIds = Maps.newHashMap();
+
+        // Gather all @FEModule classes
+        data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
+                .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
+        LoggingHandler.felog.info("Found {} FEMob annotations", data.size());
 
         String className;
         EnumMobType type;
-        for (ASMData asm : data)
+        for (ModFileScanData.AnnotationData asm : data)
         {
             Class<?> c = null;
-            className = asm.getClassName();
+            className = asm.getClass().getName();
 
             try
             {
@@ -35,7 +54,7 @@ public class MobTypeLoader
             }
             catch (Exception e)
             {
-                LoggingHandler.felog.info("Error trying to load " + asm.getClassName() + " as a FEMob!");
+                LoggingHandler.felog.info("Error trying to load " + asm.getClass() + " as a FEMob!");
                 e.printStackTrace();
                 return;
             }
@@ -56,7 +75,7 @@ public class MobTypeLoader
 
             // continue cuz its a tameable...
 
-            if (EntityTameable.class.isAssignableFrom(c))
+            if (TameableEntity.class.isAssignableFrom(c))
             {
                 // do NOT add to the map.. its unnecessary...
                 continue;
@@ -101,7 +120,8 @@ public class MobTypeLoader
                     }
                     else if (m.getParameterTypes().length > 0)
                     {
-                        throw new RuntimeException(m.getName() + " in " + className + " must take no parameters or arguments!");
+                        throw new RuntimeException(
+                                m.getName() + " in " + className + " must take no parameters or arguments!");
                     }
                     else if (Modifier.isStatic(m.getModifiers()))
                     {
@@ -114,7 +134,8 @@ public class MobTypeLoader
 
             if (isTameableName == null)
             {
-                throw new RuntimeException(className + " MUST have an elemnt marked @isTamed! Override an inhertied method even!");
+                throw new RuntimeException(
+                        className + " MUST have an elemnt marked @isTamed! Override an inhertied method even!");
             }
 
             // add to list and return...

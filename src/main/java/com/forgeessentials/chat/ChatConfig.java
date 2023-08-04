@@ -1,20 +1,23 @@
 package com.forgeessentials.chat;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
+import java.util.List;
 import java.util.Set;
 
-import net.minecraftforge.common.config.Configuration;
+import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.output.LoggingHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-public class ChatConfig extends ConfigLoaderBase
+public class ChatConfig
 {
 
-    private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY;
+    private static final String CATEGORY = "Chat";
 
-    private static final String CAT_GM = CATEGORY + ".Gamemodes";
+    private static final String CAT_GM = "Gamemodes";
 
     public static final String CHAT_FORMAT_HELP = "Format for chat. Always needs to contain all 5 \"%s\" placeholders like the default!";
 
@@ -26,7 +29,12 @@ public class ChatConfig extends ConfigLoaderBase
 
     private static final String DEFAULT_WELCOME_MESSAGE = "New player @player joined the server!";
 
-    private static final String[] DEFAULT_LOGIN_MESSAGE = new String[] { "Welcome @player.", "This server is running ForgeEssentials" };
+    private static final List<String> DEFAULT_LOGIN_MESSAGE = new ArrayList<String>() {
+        {
+            add("Welcome @player.");
+            add("This server is running ForgeEssentials");
+        }
+    };
 
     public static String gamemodeCreative;
 
@@ -38,18 +46,51 @@ public class ChatConfig extends ConfigLoaderBase
 
     public static String welcomeMessage;
 
-    public static String[] loginMessage;
+    public static List<String> loginMessage;
 
     public static Set<String> mutedCommands = new HashSet<>();
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        config.addCustomCategoryComment("Chat", "Chat configuration");
+    static ForgeConfigSpec.ConfigValue<String> FEchatFormat;
+    static ForgeConfigSpec.ConfigValue<String> FEwelcomeMessage;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEloginMessage;
+    static ForgeConfigSpec.ConfigValue<String> FEgamemodeSurvival;
+    static ForgeConfigSpec.ConfigValue<String> FEgamemodeCreative;
+    static ForgeConfigSpec.ConfigValue<String> FEgamemodeAdventure;
+    static ForgeConfigSpec.BooleanValue FELogChat;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmutedCommands;
 
+    public static void load(Builder BUILDER, boolean isReload)
+    {
+        BUILDER.comment("Chat configuration").push(CATEGORY);
+        FEchatFormat = BUILDER.comment(CHAT_FORMAT_HELP).define("ChatFormat", "%s%s<%s>%s%s ");
+        FELogChat = BUILDER.comment("Log all chat messages").define("LogChat", true);
+
+        FEwelcomeMessage = BUILDER.comment(WELCOME_MESSAGE).define("WelcomeMessage", DEFAULT_WELCOME_MESSAGE);
+        FEloginMessage = BUILDER.comment(LOGIN_MESSAGE).defineList("LoginMessage", DEFAULT_LOGIN_MESSAGE,
+                ConfigBase.stringValidator);
+        BUILDER.pop();
+
+        BUILDER.comment("Gamemode names").push(CAT_GM);
+        FEgamemodeSurvival = BUILDER.define("Survival", "survival");
+        FEgamemodeCreative = BUILDER.define("Creative", "creative");
+        FEgamemodeAdventure = BUILDER.define("Adventure", "adventure");
+        BUILDER.pop();
+
+        BUILDER.push("Mute");
+        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).defineList("mutedCommands", new ArrayList<String>() {
+            {
+                add("me");
+                add("say");
+            }
+        }, ConfigBase.stringValidator);
+        BUILDER.pop();
+    }
+
+    public static void bakeConfig(boolean reload)
+    {
         try
         {
-            chatFormat = config.get("Chat", "ChatFormat", "%s%s<%s>%s%s ", CHAT_FORMAT_HELP).getString();
+            chatFormat = FEchatFormat.get();
             String.format(chatFormat, "", "", "", "", "");
         }
         catch (IllegalFormatException e)
@@ -58,24 +99,18 @@ public class ChatConfig extends ConfigLoaderBase
             chatFormat = "%s%s<%s>%s%s ";
         }
 
-        welcomeMessage = config.get("Chat", "WelcomeMessage", DEFAULT_WELCOME_MESSAGE, WELCOME_MESSAGE).getString();
-        loginMessage = config.get("Chat", "LoginMessage", DEFAULT_LOGIN_MESSAGE, LOGIN_MESSAGE).getStringList();
+        welcomeMessage = FEwelcomeMessage.get();
+        loginMessage = new ArrayList<>(FEloginMessage.get());
 
-        config.addCustomCategoryComment(CAT_GM, "Gamemode names");
-        gamemodeSurvival = config.get(CAT_GM, "Survival", "survival").getString();
-        gamemodeCreative = config.get(CAT_GM, "Creative", "creative").getString();
-        gamemodeAdventure = config.get(CAT_GM, "Adventure", "adventure").getString();
+        gamemodeSurvival = FEgamemodeSurvival.get();
+        gamemodeCreative = FEgamemodeCreative.get();
+        gamemodeAdventure = FEgamemodeAdventure.get();
 
         mutedCommands.clear();
-        for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, MUTEDCMD_HELP).getStringList())
-            mutedCommands.add(cmd);
+        mutedCommands.addAll(FEmutedCommands.get());
 
-        ModuleChat.instance.setChatLogging(config.get(CATEGORY, "LogChat", true, "Log all chat messages").getBoolean(true));
-    }
+        ModuleChat.instance.setChatLogging(FELogChat.get());
 
-    @Override
-    public void save(Configuration config)
-    {
     }
 
 }

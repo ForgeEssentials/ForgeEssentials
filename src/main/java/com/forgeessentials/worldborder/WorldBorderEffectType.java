@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder;
 import java.lang.reflect.Type;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectMessage;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -26,14 +26,16 @@ public class WorldBorderEffectType implements DataType<WorldBorderEffect>
     }
 
     @Override
-    public WorldBorderEffect deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public WorldBorderEffect deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException
     {
         JsonObject obj = json.getAsJsonObject();
         String type = obj.get(TYPE).getAsString();
         try
         {
             @SuppressWarnings("unchecked")
-            Class<WorldBorderEffect> clazz = (Class<WorldBorderEffect>) Class.forName(EffectMessage.class.getPackage().getName() + "." + type);
+            Class<WorldBorderEffect> clazz = (Class<WorldBorderEffect>) Class
+                    .forName(EffectMessage.class.getPackage().getName() + "." + type);
             return context.deserialize(json, clazz);
         }
         catch (ClassNotFoundException e)

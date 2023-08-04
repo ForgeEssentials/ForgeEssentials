@@ -2,16 +2,18 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.event.CommandEvent;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action02Command;
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.CommandBlockLogic;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
 {
@@ -24,30 +26,53 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
     @Override
     public void process(EntityManager em)
     {
+        if (event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         Action02Command action = new Action02Command();
         action.time = date;
-        action.command = event.getCommand().getName();
-        if (event.getParameters().length > 0)
-            action.arguments = StringUtils.join(event.getParameters(), ' ');
-        if (event.getSender() instanceof EntityPlayer)
+        CommandInfo info = CommandUtils.getCommandInfo(event);
+        action.command = info.getCommandName();
+        action.arguments = info.getActualArgsString();
+        if (event.getParseResults().getContext().getSource().getEntity() instanceof PlayerEntity)
         {
-            EntityPlayer player = ((EntityPlayer) event.getSender());
+            PlayerEntity player = ((PlayerEntity) event.getParseResults().getContext().getSource().getEntity());
             action.player = getPlayer(player);
-            action.world = getWorld(player.world.provider.getDimension());
-            action.x = (int) player.posX;
-            action.y = (int) player.posY;
-            action.z = (int) player.posZ;
+            action.world = player.level.dimension().location().toString();
+            action.x = (int) player.position().x;
+            action.y = (int) player.position().y;
+            action.z = (int) player.position().z;
         }
-        else if (event.getSender() instanceof CommandBlockBaseLogic)
+        else if (CommandUtils
+                .GetSource(event.getParseResults().getContext().getSource()) instanceof CommandBlockLogic)
         {
-            CommandBlockBaseLogic block = ((CommandBlockBaseLogic) event.getSender());
+            CommandBlockLogic block = ((CommandBlockLogic) CommandUtils
+                    .GetSource(event.getParseResults().getContext().getSource()));
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
-            action.world = getWorld(block.getEntityWorld().provider.getDimension());
-            BlockPos pos = block.getPosition();
+            action.world = block.getLevel().dimension().location().toString();
+            BlockPos pos = new BlockPos(0, 0, 0);
             action.x = pos.getX();
             action.y = pos.getY();
             action.z = pos.getZ();
         }
+        else
+        {
+            action.player = getPlayer(UserIdent.getVirtualPlayer("console"));
+            ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
+            action.world = overworld.dimension().location().toString();
+            BlockPos pos = new BlockPos(0, 0, 0);
+            action.x = pos.getX();
+            action.y = pos.getY();
+            action.z = pos.getZ();
+        }
+        // System.out.println("["+action.time.toGMTString()+"]");
+        // System.out.println("["+action.command+"]");
+        // System.out.println("["+action.arguments+"]");
+        // System.out.println("["+action.player.username+"]");
+        // System.out.println("["+action.world.id+"]");
+        // System.out.println("["+action.x+"]");
+        // System.out.println("["+action.y+"]");
+        // System.out.println("["+action.z+"]");
+        // System.out.println("["+action.id+"]");
         em.persist(action);
     }
 

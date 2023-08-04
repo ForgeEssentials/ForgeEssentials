@@ -1,21 +1,21 @@
 package com.forgeessentials.util.questioner;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 
 public class QuestionData
 {
 
-    private ICommandSender target;
+    private PlayerEntity target;
 
-    private ICommandSender source;
+    private PlayerEntity source;
 
     private String question;
 
@@ -25,7 +25,8 @@ public class QuestionData
 
     private QuestionerCallback callback;
 
-    public QuestionData(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
+    public QuestionData(PlayerEntity target, String question, QuestionerCallback callback, int timeout,
+            PlayerEntity source)
     {
         this.target = target;
         this.timeout = timeout;
@@ -37,29 +38,31 @@ public class QuestionData
 
     public void sendQuestion()
     {
-        ChatOutputHandler.sendMessage(target, question);
+        ChatOutputHandler.sendMessage(target.createCommandSourceStack(), question);
         sendYesNoMessage();
     }
 
     public void sendYesNoMessage()
     {
-        ITextComponent yesMessage = new TextComponentString("/yes");
-        yesMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
-        yesMessage.getStyle().setColor(TextFormatting.RED);
-        yesMessage.getStyle().setUnderlined(true);
+        TextComponent yesMessage = new StringTextComponent("/feyes");
+        ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feyes");
+        yesMessage.withStyle((style) -> style.withClickEvent(click));
+        yesMessage.withStyle(TextFormatting.RED);
+        yesMessage.withStyle(TextFormatting.UNDERLINE);
 
-        ITextComponent noMessage = new TextComponentString("/no");
-        noMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
-        noMessage.getStyle().setColor(TextFormatting.RED);
-        noMessage.getStyle().setUnderlined(true);
+        TextComponent noMessage = new StringTextComponent("/feno");
+        ClickEvent click1 = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feno");
+        noMessage.withStyle((style) -> style.withClickEvent(click1));
+        noMessage.withStyle(TextFormatting.RED);
+        noMessage.withStyle(TextFormatting.UNDERLINE);
 
-        ITextComponent yesNoMessage = new TextComponentString("Type ");
-        yesNoMessage.appendSibling(yesMessage);
-        yesNoMessage.appendSibling(new TextComponentString(" or "));
-        yesNoMessage.appendSibling(noMessage);
-        yesNoMessage.appendSibling(new TextComponentString(" " + Translator.format("(timeout: %d)", timeout)));
+        TextComponent yesNoMessage = new StringTextComponent("Type ");
+        yesNoMessage.append(yesMessage);
+        yesNoMessage.append(new StringTextComponent(" or "));
+        yesNoMessage.append(noMessage);
+        yesNoMessage.append(new StringTextComponent(" " + Translator.format("(timeout: %d)", timeout)));
 
-        ChatOutputHandler.sendMessage(target, yesNoMessage);
+        ChatOutputHandler.sendMessage(target.createCommandSourceStack(), yesNoMessage);
     }
 
     protected void doAnswer(Boolean answer) throws CommandException
@@ -70,29 +73,32 @@ public class QuestionData
     public void confirm() throws CommandException
     {
         Questioner.confirm(target);
-        // TODO: Maybe send a message, because it was not confirmed through user interaction?
+        // TODO: Maybe send a message, because it was not confirmed through user
+        // interaction?
     }
 
     public void deny() throws CommandException
     {
         Questioner.deny(target);
-        // TODO: Maybe send a message, because it was not denied through user interaction?
+        // TODO: Maybe send a message, because it was not denied through user
+        // interaction?
     }
 
     public void cancel() throws CommandException
     {
         Questioner.cancel(target);
-        // TODO: Maybe send a message, because it was not canceled through user interaction?
+        // TODO: Maybe send a message, because it was not canceled through user
+        // interaction?
     }
 
     /* ------------------------------------------------------------ */
 
-    public ICommandSender getTarget()
+    public PlayerEntity getTarget()
     {
         return target;
     }
 
-    public ICommandSender getSource()
+    public PlayerEntity getSource()
     {
         return source;
     }

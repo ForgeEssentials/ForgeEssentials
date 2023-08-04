@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
@@ -19,7 +19,8 @@ public class UserIdentUtils
     {
         if (s.length() != 32)
             throw new IllegalArgumentException();
-        return s.substring(0,8) + "-" + s.substring(8,12) + "-" + s.substring(12,16) + "-" + s.substring(16,20) + "-" + s.substring(20,32);
+        return s.substring(0, 8) + "-" + s.substring(8, 12) + "-" + s.substring(12, 16) + "-" + s.substring(16, 20)
+                + "-" + s.substring(20, 32);
     }
 
     public static UUID stringToUUID(String s)
@@ -53,15 +54,18 @@ public class UserIdentUtils
             URL uri = new URL(url);
             HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
             InputStream is = null;
-            try {
+            try
+            {
                 is = huc.getInputStream();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
-            if (is == null) {
+            if (is == null)
+            {
                 return null;
             }
-
             try (JsonReader jr = new JsonReader(new InputStreamReader(is)))
             {
                 boolean inArray = false;
@@ -113,7 +117,8 @@ public class UserIdentUtils
                         jr.endArray();
                     }
 
-                    if (value != null) {
+                    if (value != null)
+                    {
                         return value;
                     }
                 }

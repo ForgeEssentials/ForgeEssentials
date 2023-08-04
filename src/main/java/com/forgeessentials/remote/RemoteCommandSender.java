@@ -3,12 +3,8 @@ package com.forgeessentials.remote;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.WeakHashMap;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -17,7 +13,13 @@ import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class RemoteCommandSender extends DoAsCommandSender
 {
@@ -51,9 +53,10 @@ public class RemoteCommandSender extends DoAsCommandSender
     {
         super(session.getUserIdent());
         if (session.getUserIdent() != null)
-            this.sender = session.getUserIdent().getFakePlayer();
+            this.sender = session.getUserIdent().getFakePlayer().createCommandSourceStack();
         else
-            this.sender = FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER);
+            this.sender = FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER)
+                    .createCommandSourceStack();
         this.session = session;
     }
 
@@ -69,28 +72,31 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public String getName()
+    public ITextComponent getDisplayName()
     {
-        return session.getUserIdent() != null ? session.getUserIdent().getUsernameOrUuid() : "anonymous";
+        return session.getUserIdent() != null ? new StringTextComponent(session.getUserIdent().getUsernameOrUuid())
+                : new StringTextComponent("anonymous");
     }
 
     @Override
-    public void sendMessage(ITextComponent chatComponent)
+    public void sendMessage(ITextComponent chatComponent, UUID uuid)
     {
-        // TODO: Instead of directly sending the messages to the client, cache them and send them all after the running
+        // TODO: Instead of directly sending the messages to the client, cache them and
+        // send them all after the running
         // command finished (only if enabled)
-        ICommandSender receiver = FMLCommonHandler.instance().getMinecraftServerInstance();
+        CommandSource receiver = ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
-            receiver = session.getUserIdent().getPlayer();
-        ChatOutputHandler.sendMessage(receiver, chatComponent);
+            receiver = session.getUserIdent().getPlayer().createCommandSourceStack();
+        ChatOutputHandler.sendMessageI(receiver, chatComponent);
 
         if (!session.isClosed())
         {
             try
             {
                 // TODO: Add second message WITH formatting
-                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
-                session.sendMessage(new RemoteResponse<ChatResponse>(RemoteMessageID.CHAT, msg));
+                ChatResponse msg = new ChatResponse(null,
+                        ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
+                session.sendMessage(new RemoteResponse<>(RemoteMessageID.CHAT, msg));
             }
             catch (IOException e)
             {
@@ -98,14 +104,23 @@ public class RemoteCommandSender extends DoAsCommandSender
                 e.printStackTrace();
             }
         }
-        
+
         ModuleRemote.getInstance().getServer().cleanSessions();
     }
 
     @Override
-    public boolean canUseCommand(int level, String cmd)
+    public int getPermissionLevel()
     {
-        return sender.canUseCommand(level, cmd);
+        if (sender.getEntity().hasPermissions(4))
+            return 4;
+        else if (sender.getEntity().hasPermissions(3))
+            return 3;
+        else if (sender.getEntity().hasPermissions(2))
+            return 2;
+        else if (sender.getEntity().hasPermissions(1))
+            return 1;
+        else
+            return 0;
     }
 
 }

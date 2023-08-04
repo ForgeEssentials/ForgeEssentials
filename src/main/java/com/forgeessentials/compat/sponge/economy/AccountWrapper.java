@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.account.Account;
@@ -16,11 +16,12 @@ import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.service.economy.transaction.TransactionResult;
 import org.spongepowered.api.service.economy.transaction.TransactionType;
 import org.spongepowered.api.service.economy.transaction.TransferResult;
-import org.spongepowered.api.text.Text;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.economy.ModuleEconomy;
+
+import net.kyori.adventure.text.Component;
 
 public class AccountWrapper implements UniqueAccount, VirtualAccount
 {
@@ -32,13 +33,13 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public Text getDisplayName()
+    public Component displayName()
     {
-        return Text.builder(ident.getUsername()).build();
+        return Component.text(ident.getUsername());
     }
 
     @Override
-    public BigDecimal getDefaultBalance(Currency currency)
+    public BigDecimal defaultBalance(Currency currency)
     {
         return new BigDecimal(APIRegistry.perms.getGlobalPermissionProperty(ModuleEconomy.PERM_STARTBUDGET));
     }
@@ -50,23 +51,24 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public BigDecimal getBalance(Currency currency, Set<Context> contexts)
+    public BigDecimal balance(Currency currency, Set<Context> contexts)
     {
         if (currency instanceof FECurrency)
-        return new BigDecimal(APIRegistry.economy.getWallet(ident).get());
-        else return new BigDecimal(0);
+            return new BigDecimal(APIRegistry.economy.getWallet(ident).get());
+        else
+            return new BigDecimal(0);
     }
 
     @Override
-    public Map<Currency, BigDecimal> getBalances(Set<Context> contexts)
+    public Map<Currency, BigDecimal> balances(Set<Context> contexts)
     {
-        Map returned = new HashMap();
-        returned.put(new FECurrency(), getBalance(new FECurrency(), contexts));
+        Map<Currency, BigDecimal> returned = new HashMap<>();
+        returned.put(new FECurrency(), balance(new FECurrency(), contexts));
         return returned;
     }
 
     @Override
-    public TransactionResult setBalance(Currency currency, BigDecimal amount, Cause cause, Set<Context> contexts)
+    public TransactionResult setBalance(Currency currency, BigDecimal amount, Set<Context> contexts)
     {
         if (currency instanceof FECurrency)
             APIRegistry.economy.getWallet(ident).set(amount.longValue());
@@ -74,28 +76,31 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public Map<Currency, TransactionResult> resetBalances(Cause cause, Set<Context> contexts)
+    public Map<Currency, TransactionResult> resetBalances(Set<Context> contexts)
     {
-        Map<Currency, TransactionResult> returned = new HashMap();
+        Map<Currency, TransactionResult> returned = new HashMap<>();
         Currency currency = new FECurrency();
-        APIRegistry.economy.getWallet(ident).set(getDefaultBalance(currency).longValue());
-        returned.put(currency, new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.SUCCESS, "resetacc"));
+        APIRegistry.economy.getWallet(ident).set(defaultBalance(currency).longValue());
+        returned.put(currency, new FETransaction(this, currency,
+                new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.SUCCESS, "resetacc"));
         return returned;
     }
 
     @Override
-    public TransactionResult resetBalance(Currency currency, Cause cause, Set<Context> contexts)
+    public TransactionResult resetBalance(Currency currency, Set<Context> contexts)
     {
         if (currency instanceof FECurrency)
         {
-            APIRegistry.economy.getWallet(ident).set(getDefaultBalance(currency).longValue());
-            return new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.SUCCESS, "resetacc");
+            APIRegistry.economy.getWallet(ident).set(defaultBalance(currency).longValue());
+            return new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()),
+                    contexts, ResultType.SUCCESS, "resetacc");
         }
-        return new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.FAILED, "resetacc");
+        return new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts,
+                ResultType.FAILED, "resetacc");
     }
 
     @Override
-    public TransactionResult deposit(Currency currency, BigDecimal amount, Cause cause, Set<Context> contexts)
+    public TransactionResult deposit(Currency currency, BigDecimal amount, Set<Context> contexts)
     {
         if (currency instanceof FECurrency)
         {
@@ -106,7 +111,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public TransactionResult withdraw(Currency currency, BigDecimal amount, Cause cause, Set<Context> contexts)
+    public TransactionResult withdraw(Currency currency, BigDecimal amount, Set<Context> contexts)
     {
 
         if (currency instanceof FECurrency)
@@ -125,19 +130,18 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public TransferResult transfer(Account to, Currency currency, BigDecimal amount, Cause cause, Set<Context> contexts)
+    public TransferResult transfer(Account to, Currency currency, BigDecimal amount, Set<Context> contexts)
     {
         if (currency instanceof FECurrency)
         {
             if (APIRegistry.economy.getWallet(ident).withdraw(amount.longValue()))
             {
-                to.deposit(currency, amount, cause);
+                to.deposit(currency, amount, contexts);
                 return new FETransaction(this, currency, amount, contexts, ResultType.SUCCESS, "transferacc");
             }
             else
             {
-                return new FETransaction(this, currency, amount, contexts, ResultType.ACCOUNT_NO_FUNDS,
-                        "transferacc");
+                return new FETransaction(this, currency, amount, contexts, ResultType.ACCOUNT_NO_FUNDS, "transferacc");
             }
 
         }
@@ -145,19 +149,13 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public String getIdentifier()
+    public String identifier()
     {
         return ident.getUuid().toString();
     }
 
     @Override
-    public Set<Context> getActiveContexts()
-    {
-        return null;
-    }
-
-    @Override
-    public UUID getUniqueId()
+    public UUID uniqueId()
     {
         return ident.getUuid();
     }
@@ -168,15 +166,16 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
         private final Account account;
         private final Currency currency;
         private final BigDecimal amount;
-        private final Set contexts;
+        private final Set<Context> contexts;
         private final ResultType result;
         private final TransactionType type;
 
-        //will be null for non-transfer transactions
+        // will be null for non-transfer transactions
         private final Account recipient;
 
         /**
          * non-transfer
+         * 
          * @param account
          * @param currency
          * @param amount
@@ -184,7 +183,8 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
          * @param result
          * @param type
          */
-        public FETransaction(Account account, Currency currency, BigDecimal amount, Set<Context> contexts, ResultType result, String type)
+        public FETransaction(Account account, Currency currency, BigDecimal amount, Set<Context> contexts,
+                ResultType result, String type)
         {
             this.account = account;
             this.currency = currency;
@@ -197,6 +197,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
 
         /**
          * transfer
+         * 
          * @param account
          * @param currency
          * @param amount
@@ -204,7 +205,8 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
          * @param result
          * @param type
          */
-        public FETransaction(Account account, Currency currency, BigDecimal amount, Set<Context> contexts, ResultType result, String type, Account recipient)
+        public FETransaction(Account account, Currency currency, BigDecimal amount, Set<Context> contexts,
+                ResultType result, String type, Account recipient)
         {
             this.account = account;
             this.currency = currency;
@@ -217,43 +219,43 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
         }
 
         @Override
-        public Account getAccount()
+        public Account account()
         {
             return account;
         }
 
         @Override
-        public Currency getCurrency()
+        public Currency currency()
         {
             return currency;
         }
 
         @Override
-        public BigDecimal getAmount()
+        public BigDecimal amount()
         {
             return amount;
         }
 
         @Override
-        public Set<Context> getContexts()
+        public Set<Context> contexts()
         {
             return contexts;
         }
 
         @Override
-        public ResultType getResult()
+        public ResultType result()
         {
             return result;
         }
 
         @Override
-        public TransactionType getType()
+        public TransactionType type()
         {
             return type;
         }
 
         @Override
-        public Account getAccountTo()
+        public Account accountTo()
         {
             return recipient;
         }
@@ -262,21 +264,84 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     public class FETransType implements TransactionType
     {
         private final String name;
+
         public FETransType(String name)
         {
             this.name = name;
 
         }
-        @Override
+
         public String getId()
         {
-            return "fe:"+ name;
+            return "fe:" + name;
         }
 
-        @Override
         public String getName()
         {
             return name;
         }
+    }
+
+    @Override
+    public boolean hasBalance(Currency currency, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public BigDecimal balance(Currency currency, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<Currency, BigDecimal> balances(Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult setBalance(Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<Currency, TransactionResult> resetBalances(Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult resetBalance(Currency currency, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult deposit(Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult withdraw(Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransferResult transfer(Account to, Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

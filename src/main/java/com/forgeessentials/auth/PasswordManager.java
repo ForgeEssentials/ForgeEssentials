@@ -113,6 +113,7 @@ public class PasswordManager
 
     /**
      * Checks if a player has an autologin session
+     * 
      * @param user
      * @param session
      * @return

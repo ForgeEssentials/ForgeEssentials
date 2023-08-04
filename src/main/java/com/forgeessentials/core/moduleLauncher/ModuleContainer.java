@@ -4,31 +4,33 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import net.minecraft.command.ICommandSender;
-
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraft.command.ICommandSource;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
-@SuppressWarnings("rawtypes")
-public class ModuleContainer implements Comparable
+public class ModuleContainer implements Comparable<Object>
 {
 
-    protected static HashSet<Class> modClasses = new HashSet<Class>();
+    protected static HashSet<Class<?>> modClasses = new HashSet<>();
 
     public Object module, mod;
+    Class<?> parentClass;
 
     // methods..
     private String reload;
@@ -43,12 +45,11 @@ public class ModuleContainer implements Comparable
     public boolean isLoadable = true;
     protected boolean doesOverride;
 
-    @SuppressWarnings("unchecked")
-    public ModuleContainer(ASMData data)
+    public ModuleContainer(ModFileScanData.AnnotationData data)
     {
         // get the class....
-        Class c = null;
-        className = data.getClassName();
+        Class<?> c = null;
+        className = data.getMemberName();
 
         try
         {
@@ -56,7 +57,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            LoggingHandler.felog.info("Error trying to load " + data.getClassName() + " as a FEModule!");
+            LoggingHandler.felog.info("Error trying to load " + data.getMemberName() + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;
@@ -80,19 +81,23 @@ public class ModuleContainer implements Comparable
 
         if (annot.canDisable())
         {
-            if (!ForgeEssentials.getConfigManager().getMainConfig().get("Core.Modules", name, annot.defaultModule()).getBoolean(true))
+            if (!ConfigBase.getModuleConfig().get(name, annot.defaultModule()))
             {
-                LoggingHandler.felog.info("Requested to disable module " + name);
+                LoggingHandler.felog.debug("Requested to disable module: " + name);
                 isLoadable = false;
                 return;
+            }
+            else
+            {
+                LoggingHandler.felog.debug("Requested to enable module: " + name);
             }
         }
 
         // try getting the parent mod.. and register it.
-        mod = handleMod(annot.parentMod());
+        parentClass = annot.parentMod();
 
         // check method annotations. they are all optional...
-        Class[] params;
+        Class<?>[] params;
         for (Method m : c.getDeclaredMethods())
         {
             if (m.isAnnotationPresent(Preconditions.class))
@@ -110,7 +115,7 @@ public class ModuleContainer implements Comparable
 
                 try
                 {
-                    if (!(boolean) m.invoke(c.newInstance()))
+                    if (!((boolean) m.invoke(c.getDeclaredConstructor().newInstance())))
                     {
                         LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
@@ -119,7 +124,13 @@ public class ModuleContainer implements Comparable
                 }
                 catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                 {
-                    LoggingHandler.felog.error(String.format("Exception Raised when testing preconditions for module: %s", name), e);
+                    LoggingHandler.felog.error(
+                            String.format("Exception Raised when testing preconditions for module: %s", name), e);
+                }
+                catch (IllegalArgumentException | NoSuchMethodException | SecurityException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
         }
@@ -165,12 +176,12 @@ public class ModuleContainer implements Comparable
     protected void createAndPopulate()
     {
         Field f;
-        Class c;
+        Class<?> c;
         // instantiate.
         try
         {
             c = Class.forName(className);
-            module = c.newInstance();
+            module = c.getDeclaredConstructor().newInstance();
         }
         catch (Throwable e)
         {
@@ -180,7 +191,8 @@ public class ModuleContainer implements Comparable
             return;
         }
 
-        APIRegistry.getFEEventBus().register(module);
+        MinecraftForge.EVENT_BUS.register(module);
+        // APIRegistry.getFEEventBus().register(module);
 
         // now for the fields...
         try
@@ -199,12 +211,12 @@ public class ModuleContainer implements Comparable
                 f.set(module, this);
             }
 
-            if (parentMod != null)
-            {
-                f = c.getDeclaredField(parentMod);
-                f.setAccessible(true);
-                f.set(module, mod);
-            }
+            //if (parentMod != null)
+            //{
+            //    f = c.getDeclaredField(parentMod);
+            //    f.setAccessible(true);
+            //    f.set(module, mod);
+            //}
 
             if (moduleDir != null)
             {
@@ -216,14 +228,14 @@ public class ModuleContainer implements Comparable
                 f.set(module, file);
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LoggingHandler.felog.info("Error populating fields of " + name);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
-    public void runReload(ICommandSender user)
+    public void runReload(ICommandSource user)
     {
         if (!isLoadable || reload == null)
         {
@@ -233,13 +245,13 @@ public class ModuleContainer implements Comparable
         try
         {
             Class<?> c = Class.forName(className);
-            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSender.class });
+            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSource.class });
             m.invoke(module, user);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LoggingHandler.felog.info("Error while invoking Reload method for " + name);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -292,28 +304,58 @@ public class ModuleContainer implements Comparable
         return (11 + name.hashCode()) * 29 + className.hashCode();
     }
 
-    private static Object handleMod(Class modClass)
-    {
-        String modid;
-        Object obj = null;
+	public void handleParentMod() {
+		String modid;
+		Object obj = null;
 
-        ModContainer contain = null;
-        for (ModContainer c : Loader.instance().getModList())
-        {
-            if (c.getMod() != null && c.getMod().getClass().equals(modClass))
-            {
-                contain = c;
-                obj = c.getMod();
-                break;
-            }
-        }
+		ModContainer contain = null;
+		List<ModContainer> modList = new ArrayList<>();
+		for (String id : ModList.get()
+				.applyForEachModContainer(ModContainer::getModId)
+				.collect(Collectors.toList())) {
+			ModContainer temp = ModList.get().getModContainerById(id)
+					.orElse(null);
+			if (temp != null) {
+				modList.add(temp);
+			}
+		}
 
-        if (obj == null || contain == null)
-            throw new RuntimeException(modClass + " isn't an loaded mod class!");
+		for (ModContainer c : modList) {
+			if (c.getMod() != null
+					&& c.getMod().getClass().equals(parentClass)) {
+				contain = c;
+				obj = c.getMod();
+				break;
+			}
+		}
 
-        modid = contain.getModId() + "-" + contain.getVersion();
-        if (modClasses.add(modClass))
-            LoggingHandler.felog.info("Modules from " + modid + " are being loaded");
-        return obj;
-    }
+		if (obj == null || contain == null)
+			throw new RuntimeException(
+					parentClass + " isn't an loaded mod class!");
+
+		modid = contain.getModId() + "-" + contain.getModInfo().getVersion();
+		if (modClasses.add(parentClass))
+			LoggingHandler.felog
+					.info("Modules from " + modid + " are being validated");
+		mod = obj;
+		Field f;
+		Class<?> c;
+		try {
+			c = Class.forName(className);
+		} catch (Throwable e) {
+			LoggingHandler.felog.warn(name + " could not be validated.");
+			e.printStackTrace();
+			return;
+		}
+		try {
+			if (parentMod != null) {
+				f = c.getDeclaredField(parentMod);
+				f.setAccessible(true);
+				f.set(module, mod);
+			}
+		} catch (Exception e) {
+			LoggingHandler.felog.info("Error populating fields of " + name);
+			throw new RuntimeException(e);
+		}
+	}
 }

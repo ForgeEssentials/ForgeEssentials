@@ -6,8 +6,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteHandler;
@@ -18,9 +16,11 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  *
@@ -42,7 +42,7 @@ public class Session implements Runnable, RemoteSession
     public Session(Socket socket)
     {
         this.socket = socket;
-        this.thread = new Thread(this);
+        this.thread = new Thread(this, "FEremoteSession");
         this.thread.start();
     }
 
@@ -62,7 +62,8 @@ public class Session implements Runnable, RemoteSession
                     final String msg = sss.readNext();
                     if (msg == null)
                     {
-                        // LoggingHandler.felog.warn("[remote] Connection closed: " + getRemoteHostname());
+                        // LoggingHandler.felog.warn("[remote] Connection closed: " +
+                        // getRemoteHostname());
                         break;
                     }
                     processMessage(msg);
@@ -93,7 +94,8 @@ public class Session implements Runnable, RemoteSession
         {
             JsonRemoteRequest request = getGson().fromJson(message, JsonRemoteRequest.class);
 
-            LoggingHandler.felog.debug(String.format("[remote] Request [%s]: %s", request.id, request.data == null ? "null" : request.data.toString()));
+            LoggingHandler.felog.debug(String.format("[remote] Request [%s]: %s", request.id,
+                    request.data == null ? "null" : request.data.toString()));
 
             if (request.auth != null)
             {
@@ -106,7 +108,8 @@ public class Session implements Runnable, RemoteSession
             }
 
             // Check if user was banned
-            if (ident != null && FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getBannedPlayers().isBanned(ident.getGameProfile()))
+            if (ident != null && ServerLifecycleHooks.getCurrentServer().getPlayerList().getBans()
+                    .isBanned(ident.getGameProfile()))
             {
                 close("banned", request);
                 return;
@@ -212,9 +215,7 @@ public class Session implements Runnable, RemoteSession
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com.forgeessentials.api.remote.RemoteRequest,
-     * java.lang.Class)
+     * @see com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com. forgeessentials.api.remote.RemoteRequest, java.lang.Class)
      */
     @Override
     public <T> RemoteRequest<T> transformRemoteRequest(JsonRemoteRequest request, Class<T> clazz)
@@ -290,7 +291,8 @@ public class Session implements Runnable, RemoteSession
      */
     public void close(String error, RemoteRequest<?> request)
     {
-        LoggingHandler.felog.warn(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
+        LoggingHandler.felog
+                .warn(String.format("[remote] Error: %s. Terminating session to %s", error, getRemoteAddress()));
         trySendMessage(RemoteResponse.error("close", request.rid, error));
         close();
     }

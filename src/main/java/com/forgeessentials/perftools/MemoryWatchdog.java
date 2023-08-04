@@ -2,14 +2,15 @@ package com.forgeessentials.perftools;
 
 import java.util.TimerTask;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.server.permission.PermissionAPI;
-
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Warns those with permission when the memory usage passes a certain percentage threshold
@@ -31,22 +32,24 @@ public class MemoryWatchdog extends TimerTask
         if (percentage >= PerfToolsModule.percentageWarn)
         {
 
-            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
             try
             {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+                if (FMLEnvironment.dist.isClient())
                 {
                     LoggingHandler.felog.info("High memory use detected. " + percentage + "% of memory in use.");
                 }
                 else
                 {
-                    ChatOutputHandler.sendMessage(server, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                    ChatOutputHandler.sendMessage(server.createCommandSourceStack(),
+                            "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                 }
-                for (EntityPlayerMP player : ServerUtil.getPlayerList())
-                    if (PermissionAPI.hasPermission(player, PerfToolsModule.PERM_WARN))
-                        ChatOutputHandler.chatNotification(player, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                for (ServerPlayerEntity player : ServerUtil.getPlayerList())
+                    if (APIRegistry.perms.checkPermission(player, PerfToolsModule.PERM_WARN))
+                        ChatOutputHandler.chatNotification(player.createCommandSourceStack(),
+                                "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
         }

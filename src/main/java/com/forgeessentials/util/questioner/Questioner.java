@@ -1,134 +1,159 @@
 package com.forgeessentials.util.questioner;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Iterator;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class Questioner extends ServerEventHandler
 {
 
     public static final String MSG_STILL_ACTIVE = "Error. There is still an unanswered question left";
 
-    private static Map<ICommandSender, QuestionData> questions = new HashMap<>();
+    private static Map<PlayerEntity, QuestionData> questions = new HashMap<>();
 
     public static int DEFAULT_TIMEOUT = 120;
 
     public Questioner()
     {
         super();
-        FECommandManager.registerCommand(new CommandQuestioner(true));
-        FECommandManager.registerCommand(new CommandQuestioner(false));
     }
 
-    public static synchronized void add(QuestionData question) throws QuestionerStillActiveException
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandQuestionerYes(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandQuestionerNo(true), event.getDispatcher());
+    }
+
+    public static synchronized void add(QuestionData question) throws QuestionerException
     {
         if (questions.containsKey(question.getTarget()))
-            throw new QuestionerStillActiveException();
+            throw new QuestionerException();
         questions.put(question.getTarget(), question);
         question.sendQuestion();
     }
 
-    public static void add(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
-            throws QuestionerStillActiveException
-    {
-        add(new QuestionData(target, question, callback, timeout, source));
-    }
-
-    public static void add(ICommandSender target, String question, QuestionerCallback callback, int timeout) throws QuestionerStillActiveException
-    {
-        add(target, question, callback, timeout, null);
-    }
-
-    public static void add(ICommandSender target, String question, QuestionerCallback callback) throws QuestionerStillActiveException
-    {
-        add(target, question, callback, DEFAULT_TIMEOUT);
-    }
-
-    public static void addChecked(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
-            throws QuestionerStillActiveException.CommandException
+    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout,
+            PlayerEntity source) throws QuestionerStillActiveException
     {
         try
         {
             add(new QuestionData(target, question, callback, timeout, source));
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+            throw new QuestionerException.QuestionerStillActiveException();
         }
     }
 
-    public static void addChecked(ICommandSender target, String question, QuestionerCallback callback, int timeout)
-            throws QuestionerStillActiveException.CommandException
+    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout)
+            throws QuestionerStillActiveException
+    {
+        add(target, question, callback, timeout, null);
+    }
+
+    public static void add(PlayerEntity target, String question, QuestionerCallback callback)
+            throws QuestionerStillActiveException
+    {
+        add(target, question, callback, DEFAULT_TIMEOUT);
+    }
+
+    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout,
+            PlayerEntity source) throws QuestionerStillActiveException
+    {
+        try
+        {
+            add(new QuestionData(target, question, callback, timeout, source));
+        }
+        catch (QuestionerException e)
+        {
+            throw new QuestionerException.QuestionerStillActiveException();
+        }
+    }
+
+    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout)
+            throws QuestionerStillActiveException
     {
         try
         {
             add(target, question, callback, timeout, null);
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+            throw new QuestionerException.QuestionerStillActiveException();
         }
     }
 
-    public static void addChecked(ICommandSender target, String question, QuestionerCallback callback) throws QuestionerStillActiveException.CommandException
+    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback)
+            throws QuestionerStillActiveException
     {
         try
         {
             add(target, question, callback, DEFAULT_TIMEOUT);
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+            throw new QuestionerException.QuestionerStillActiveException();
         }
     }
 
-    public static synchronized void answer(ICommandSender target, Boolean answer) throws CommandException
+    public static synchronized void answer(PlayerEntity playerAnswering, Boolean answer) throws CommandException
     {
-        QuestionData question = questions.remove(target);
+        QuestionData question = questions.remove(playerAnswering);
         if (question != null)
+        {
             question.doAnswer(answer);
+            ChatOutputHandler.chatConfirmation(playerAnswering, "Responded: " + (answer ? "yes" : "no"));
+        }
         else
-            ChatOutputHandler.chatError(target, Translator.translate("There is no question to answer!"));
+            ChatOutputHandler.chatError(playerAnswering, "There is no question to answer!");
     }
 
     public static synchronized void tick()
     {
-        Iterator<Entry<ICommandSender, QuestionData>> it = questions.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<ICommandSender, QuestionData> question = it.next();
-            if (question.getValue().isTimeout()) {
-				it.remove();
-				try{
+        Iterator<Entry<PlayerEntity, QuestionData>> it = questions.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Entry<PlayerEntity, QuestionData> question = it.next();
+            if (question.getValue().isTimeout())
+            {
+                it.remove();
+                try
+                {
                     question.getValue().doAnswer(null);
-                } catch (CommandException e){}
+                }
+                catch (CommandException ignored)
+                {
+                }
 
             }
         }
     }
 
-    public static void cancel(ICommandSender target) throws CommandException
+    public static void cancel(PlayerEntity target) throws CommandException
     {
         answer(target, null);
     }
 
-    public static void confirm(ICommandSender target) throws CommandException
+    public static void confirm(PlayerEntity target) throws CommandException
     {
         answer(target, true);
     }
 
-    public static void deny(ICommandSender target) throws CommandException
+    public static void deny(PlayerEntity target) throws CommandException
     {
         answer(target, false);
     }

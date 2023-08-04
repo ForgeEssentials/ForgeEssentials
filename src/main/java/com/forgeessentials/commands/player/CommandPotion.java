@@ -1,26 +1,39 @@
 package com.forgeessentials.commands.player;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandPotion extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.PotionArgument;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandPotion extends ForgeEssentialsCommandBuilder
 {
+    public CommandPotion(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static HashMap<String, Integer> names;
 
     static
@@ -29,35 +42,41 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         names.put("speed", 1);
         names.put("slowness", 2);
         names.put("haste", 3);
-        names.put("miningfatigue", 4);
+        names.put("mining_fatigue", 4);
         names.put("strength", 5);
-        names.put("heal", 6);
-        names.put("damage", 7);
-        names.put("jumpboost", 8);
+        names.put("instant_health", 6);
+        names.put("instant_damage", 7);
+        names.put("jump_boost", 8);
         names.put("nausea", 9);
         names.put("regeneration", 10);
         names.put("resistance", 11);
-        names.put("fireresistance", 12);
-        names.put("waterbreathing", 13);
+        names.put("fire_resistance", 12);
+        names.put("water_breathing", 13);
         names.put("invisibility", 14);
         names.put("blindness", 15);
-        names.put("nightvision", 16);
+        names.put("night_vision", 16);
         names.put("hunger", 17);
         names.put("weakness", 18);
         names.put("poison", 19);
         names.put("wither", 20);
+        names.put("health_boost", 21);
+        names.put("absorption", 22);
+        names.put("saturation", 23);
+        names.put("glowing", 24);
+        names.put("levitation", 25);
+        names.put("luck", 26);
+        names.put("unluck", 27);
+        names.put("slow_falling", 28);
+        names.put("conduit_power", 29);
+        names.put("dolphins_grace", 30);
+        names.put("bad_omen", 31);
+        names.put("hero_of_the_village", 32);
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "potion";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
     }
 
     @Override
@@ -73,99 +92,233 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".potion";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Use potions on others");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".potion.others", DefaultPermissionLevel.OP,
+                "Use potions on others");
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        int ID = 0;
-        int dur = 0;
-        int ampl = 0;
+        return baseBuilder
+                .then(Commands.literal("clear")
+                        .then(Commands.argument("targets", EntityArgument.entities())
+                                .then(Commands.argument("effect", PotionArgument.effect())
+                                        .executes(CommandContext -> execute(CommandContext, "clear-effect")))
+                                .executes(CommandContext -> execute(CommandContext, "clear-target"))))
+                .then(Commands.literal("give").then(Commands.argument("targets", EntityArgument.entities())
+                        .then(Commands.argument("effect", PotionArgument.effect()).then(Commands
+                                .argument("seconds", IntegerArgumentType.integer(1, 1000000))
+                                .then(Commands.argument("amplifier", IntegerArgumentType.integer(0, 255))
+                                        .then(Commands.argument("hideParticles", BoolArgumentType.bool())
+                                                .executes(CommandContext -> execute(CommandContext, "give-part")))
+                                        .executes(CommandContext -> execute(CommandContext, "give-amp")))
+                                .executes(CommandContext -> execute(CommandContext, "give-sec")))
+                                .executes(CommandContext -> execute(CommandContext, "give-target")))));
+    }
 
-        if (args.length == 4)
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("clear-target"))
         {
-            ampl = parseInt(args[3], 0, Integer.MAX_VALUE);
-        }
-        else if (args.length != 3)
-        {
-            throw new TranslatedCommandException(getUsage(sender));
-        }
-
-        if (!names.containsKey(args[1]))
-            throw new TranslatedCommandException("That potion effect was not found.");
-
-        ID = names.get(args[1]);
-        dur = parseInt(args[2], 0, Integer.MAX_VALUE) * 20;
-
-        PotionEffect eff = new PotionEffect(Potion.getPotionById(ID), dur, ampl);
-        if (args[0].equalsIgnoreCase("me"))
-        {
-            sender.addPotionEffect(eff);
-        }
-        else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-
-            if (player != null)
+            for (Entity entity : EntityArgument.getEntities(ctx, "targets"))
             {
-                player.addPotionEffect(eff);
+                if (entity instanceof LivingEntity)
+                {
+                    if (entity instanceof PlayerEntity
+                            && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource())))
+                    {
+                        ((LivingEntity) entity).removeAllEffects();
+                    }
+                    else
+                    {
+                        if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".potion.others"))
+                        {
+                            ChatOutputHandler.chatWarning(ctx.getSource(),
+                                    Translator.format("You dont have permission to remove effects from %s",
+                                            entity.getDisplayName().getString()));
+                            continue;
+                        }
+                        ((LivingEntity) entity).removeAllEffects();
+                    }
+                }
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed all effects from all target(s)");
+            return Command.SINGLE_SUCCESS;
         }
-    }
-
-    @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-    {
-        int ID = 0;
-        int dur = 0;
+        if (params.equals("clear-effect"))
+        {
+            for (Entity entity : EntityArgument.getEntities(ctx, "targets"))
+            {
+                if (entity instanceof LivingEntity)
+                {
+                    if (entity instanceof PlayerEntity
+                            && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource())))
+                    {
+                        ((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
+                    }
+                    else
+                    {
+                        if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".potion.others"))
+                        {
+                            ChatOutputHandler.chatWarning(ctx.getSource(),
+                                    Translator.format("You dont have permission to remove effects from %s",
+                                            entity.getDisplayName().getString()));
+                            continue;
+                        }
+                        ((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
+                    }
+                }
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Removed effect %s from all target(s)",
+                            PotionArgument.getEffect(ctx, "effect").getDisplayName().getString()));
+            return Command.SINGLE_SUCCESS;
+        }
+        Collection<? extends Entity> targets = EntityArgument.getEntities(ctx, "targets");
+        Effect ID = PotionArgument.getEffect(ctx, "effect");
+        Integer dur = null;
         int ampl = 0;
+        boolean hideParticals = true;
 
-        if (args.length == 4)
+        if (params.equals("give-sec"))
         {
-            ampl = parseInt(args[3], 0, Integer.MAX_VALUE);
+            dur = IntegerArgumentType.getInteger(ctx, "seconds");
         }
-        else if (args.length != 3)
-            throw new TranslatedCommandException(getUsage(sender), Integer.MAX_VALUE);
-
-        dur = parseInt(args[2], 0, Integer.MAX_VALUE) * 20;
-        PotionEffect eff = new PotionEffect(Potion.getPotionById(ID), dur, ampl);
-
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-
-        if (player != null)
+        if (params.equals("give-amp"))
         {
-            player.addPotionEffect(eff);
+            dur = IntegerArgumentType.getInteger(ctx, "seconds");
+            ampl = IntegerArgumentType.getInteger(ctx, "amplifier");
+        }
+        if (params.equals("give-part"))
+        {
+            dur = IntegerArgumentType.getInteger(ctx, "seconds");
+            ampl = IntegerArgumentType.getInteger(ctx, "amplifier");
+            hideParticals = BoolArgumentType.getBool(ctx, "hideParticles");
+        }
+
+        if (dur != null)
+        {
+            if (!ID.isInstantenous())
+            {
+                dur = dur * 20;
+            }
+        }
+        else if (ID.isInstantenous())
+        {
+            dur = 1;
         }
         else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+        {
+            dur = 600;
+        }
+
+        for (Entity entity : targets)
+        {
+            if (entity instanceof LivingEntity)
+            {
+                if (entity instanceof PlayerEntity
+                        && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource())))
+                {
+                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
+                    ((LivingEntity) entity).addEffect(effectinstance);
+                }
+                else
+                {
+                    if (!hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".potion.others"))
+                    {
+                        ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
+                                "You dont have permission to give effects to %s", entity.getDisplayName().getString()));
+                        continue;
+                    }
+                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
+                    ((LivingEntity) entity).addEffect(effectinstance);
+                }
+            }
+        }
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                Translator.format("Added effect %s to all target(s)", ID.getDisplayName().getString()));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params.equals("clear-target"))
         {
-            return matchToPlayers(args);
+            for (Entity entity : EntityArgument.getEntities(ctx, "targets"))
+            {
+                if (entity instanceof LivingEntity)
+                {
+                    ((LivingEntity) entity).removeAllEffects();
+                }
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed all effects from all target(s)");
+            return Command.SINGLE_SUCCESS;
         }
-        else if (args.length == 2)
+        if (params.equals("clear-effect"))
         {
-            return getListOfStringsMatchingLastWord(args, names.keySet());
+            for (Entity entity : EntityArgument.getEntities(ctx, "targets"))
+            {
+                if (entity instanceof LivingEntity)
+                    ((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Removed effect %s from all target(s)",
+                            PotionArgument.getEffect(ctx, "effect").getDisplayName().getString()));
+            return Command.SINGLE_SUCCESS;
+        }
+        Collection<? extends Entity> targets = EntityArgument.getEntities(ctx, "targets");
+        Effect ID = PotionArgument.getEffect(ctx, "effect");
+        Integer dur = null;
+        int ampl = 0;
+        boolean hideParticals = true;
+
+        if (params.equals("give-sec"))
+        {
+            dur = IntegerArgumentType.getInteger(ctx, "seconds");
+        }
+        if (params.equals("give-amp"))
+        {
+            dur = IntegerArgumentType.getInteger(ctx, "seconds");
+            ampl = IntegerArgumentType.getInteger(ctx, "amplifier");
+        }
+        if (params.equals("give-part"))
+        {
+            dur = IntegerArgumentType.getInteger(ctx, "seconds");
+            ampl = IntegerArgumentType.getInteger(ctx, "amplifier");
+            hideParticals = BoolArgumentType.getBool(ctx, "hideParticles");
+        }
+
+        if (dur != null)
+        {
+            if (!ID.isInstantenous())
+            {
+                dur = dur * 20;
+            }
+        }
+        else if (ID.isInstantenous())
+        {
+            dur = 1;
         }
         else
         {
-            return null;
+            dur = 600;
         }
+
+        for (Entity entity : targets)
+        {
+            if (entity instanceof LivingEntity)
+            {
+                EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, hideParticals);
+                ((LivingEntity) entity).addEffect(effectinstance);
+            }
+        }
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                Translator.format("Added effect %s to all target(s)", ID.getDisplayName().getString()));
+        return Command.SINGLE_SUCCESS;
     }
 
 }

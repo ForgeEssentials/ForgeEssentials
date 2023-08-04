@@ -25,11 +25,13 @@ public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonEle
     {
         super(null, JsonElement.class);
         // APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL,
-        // "Allows querying capabilities (allowed handlers - should ALWAYS be granted)");
+        // "Allows querying capabilities (allowed handlers - should ALWAYS be
+        // granted)");
     }
 
     @Override
-    protected RemoteResponse<QueryRemoteCapabilitiesHandler.Response> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
+    protected RemoteResponse<QueryRemoteCapabilitiesHandler.Response> handleData(RemoteSession session,
+            RemoteRequest<JsonElement> request)
     {
         Response response = new Response();
         for (Entry<String, RemoteHandler> handler : ModuleRemote.getInstance().getHandlers().entrySet())
@@ -38,7 +40,7 @@ public class QueryRemoteCapabilitiesHandler extends GenericRemoteHandler<JsonEle
             if (p == null || APIRegistry.perms.checkUserPermission(session.getUserIdent(), p))
                 response.handlers.add(handler.getKey());
         }
-        return new RemoteResponse<QueryRemoteCapabilitiesHandler.Response>(request, response);
+        return new RemoteResponse<>(request, response);
     }
 
     public static class Response

@@ -5,7 +5,7 @@ import com.forgeessentials.playerlogger.entity.BlockData;
 public class RemoteBlockData
 {
 
-    public long id;
+    public String id;
 
     public String name;
 

@@ -1,67 +1,67 @@
 package com.forgeessentials.commands.server;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
-import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
 
-public class CommandHelp extends ParserCommandBase implements ConfigLoader
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandHelp extends ForgeEssentialsCommandBuilder
 {
+    CommandDispatcher<CommandSource> dispatcher;
 
-    private static final String CONFIG_HELP = "Add custom messages here that will appear when /help is run";
-
-    private String[] messages;
-
-    private HelpFixer fixer;
-
-    public CommandHelp()
+    public CommandHelp(boolean enabled, CommandDispatcher<CommandSource> disp)
     {
-        fixer = new HelpFixer();
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        this(enabled);
+        dispatcher = disp;
     }
 
+    public CommandHelp(boolean enabled)
+    {
+        super(enabled);
+
+    }
+
+    public static List<String> messages = new ArrayList<>();
+
+    public static Integer entriesPerPage = 8;
+
+    public static Integer commandColor = 2;
+
+    public static Integer subCommandColor = 7;
+
+    public HelpFixer fixer;
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "help";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "?" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/help <page|text>: List or search for commands";
     }
 
     @Override
@@ -71,122 +71,102 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.commands.help";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "empty"))
+                .then(Commands.argument("page", IntegerArgumentType.integer(0, 1000))
+                        .executes(CommandContext -> execute(CommandContext, "page")));
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("empty"))
         {
-            if (arguments.isTabCompletion)
-                return;
-            showHelpPage(arguments.server, arguments.sender);
+            showHelpPage(ctx);
         }
         else
         {
-            String name = arguments.remove().toLowerCase();
-            try
+            int page = IntegerArgumentType.getInteger(ctx, "page");
+            showHelpPage(ctx, page);
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+    /*
+     * public void sendCommandUsageMessage(CommandSource sender, ICommand command, TextFormatting color) { ITextComponent chatMsg = new
+     * TranslationTextComponent(command.getUsage(sender)); chatMsg.withStyle(color); chatMsg.withClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
+     * ChatOutputHandler.sendMessage(sender, chatMsg); }
+     */
+
+    public void showHelpPage(CommandContext<CommandSource> ctx) throws CommandException
+    {
+        if (messages == null || messages.size() == 0)
+            showHelpPage(ctx, 1);
+        for (String message : messages)
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    ScriptArguments.processSafe(message, ctx.getSource()));
+    }
+
+    public void showHelpPage(CommandContext<CommandSource> ctx, int page) throws CommandException
+    {
+        List<String> scmds = new ArrayList<>();
+        Map<CommandNode<CommandSource>, String> map = dispatcher.getSmartUsage(dispatcher.getRoot(), ctx.getSource());
+        for (String s : map.values())
+        {
+            String scmd = "/" + s;
+            scmds.add(scmd);
+        }
+        // TODO add worldedit command filtering
+        Collections.sort(scmds);
+        int amountperpage = entriesPerPage;
+        int totalcount = scmds.size();
+        int totalpages = (int) Math.ceil(totalcount / (float) amountperpage);
+
+        if (page > totalpages)
+        {
+            page = totalpages;
+        }
+
+        TextFormatting commandcolour = TextFormatting.getById(commandColor);
+        TextFormatting subcommandcolour = TextFormatting.getById(subCommandColor);
+
+        ChatOutputHandler.sendMessage(ctx.getSource(), "#####################################################",
+                TextFormatting.WHITE);
+
+        for (int n = 0; n < ((amountperpage * page)); n++)
+        {
+            if (n >= ((amountperpage * page) - amountperpage))
             {
-                int page = Integer.parseInt(name);
-                if (arguments.isTabCompletion)
-                    return;
-                showHelpPage(arguments.server, arguments.sender, page);
-            }
-            catch (NumberFormatException e)
-            {
-                if (arguments.isTabCompletion)
+                if (scmds.size() < n + 1)
                 {
-                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletions(arguments.sender, name, BlockPos.ORIGIN);
-                    return;
+                    break;
                 }
 
-                ICommand command = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(name);
+                String commandline = scmds.get(n);
+                String[] cmdlspl = commandline.split(" ");
+                String acmd = cmdlspl[0];
+                String csuffix = commandline.replaceAll(acmd, "");
 
-                SortedSet<ICommand> results = new TreeSet<>(new Comparator<ICommand>() {
-                    @Override
-                    public int compare(ICommand a, ICommand b)
-                    {
-                        return a.getName().compareTo(b.getName());
-                    }
-                });
-                Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().entrySet();
-                for (Entry<String, ICommand> cmd : commands)
-                {
-                    String usage = cmd.getValue().getUsage(arguments.sender);
-                    if (cmd.getKey().toLowerCase().contains(name) || (usage != null && usage.contains(name)))
-                        results.add(cmd.getValue());
-                }
+                TextComponent tc = new StringTextComponent("");
 
-                TextFormatting color = ChatOutputHandler.chatConfirmationColor;
-                if (results.size() > 1 || command == null)
-                    arguments.confirm("Searching commands by \"%s\"", name);
+                TextComponent tc0 = new StringTextComponent(acmd);
+                tc0.withStyle(commandcolour);
+                tc.append(tc0);
 
-                if (command != null)
-                {
-                    sendCommandUsageMessage(arguments.sender, command, color);
-                    results.remove(command);
-                    color = TextFormatting.GRAY;
-                }
+                TextComponent tc1 = new StringTextComponent(csuffix);
+                tc1.withStyle(subcommandcolour);
+                tc.append(tc1);
 
-                int count = command == null ? 0 : 1;
-                for (ICommand cmd : results)
-                {
-                    if (++count > 7)
-                    {
-                        arguments.notify("...too many search results");
-                        break;
-                    }
-                    sendCommandUsageMessage(arguments.sender, cmd, color);
-                }
+                ChatOutputHandler.sendMessage(ctx.getSource(), tc);
             }
         }
+        ChatOutputHandler.sendMessage(ctx.getSource(), " Page " + page + " / " + totalpages + ", /help <page>",
+                TextFormatting.YELLOW);
     }
-
-    public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
-    {
-        ITextComponent chatMsg = new TextComponentTranslation(command.getUsage(sender));
-        chatMsg.getStyle().setColor(color);
-        chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
-        ChatOutputHandler.sendMessage(sender, chatMsg);
-    }
-
-    public void showHelpPage(MinecraftServer server, ICommandSender sender) throws CommandException
-    {
-        if (messages.length == 0)
-            showHelpPage(server, sender, 1);
-        for (int i = 0; i < messages.length; i++)
-            ChatOutputHandler.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
-    }
-
-    public void showHelpPage(MinecraftServer server, ICommandSender sender, int page) throws CommandException
-    {
-        fixer.execute(server, sender, new String[] { Integer.toString(page) });
-    }
-
-    protected List<ICommand> getSortedPossibleCommands(ICommandSender sender, MinecraftServer server)
-    {
-        return fixer.getSortedPossibleCommands(sender, server);
-    }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        messages = config.get(FEConfig.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
 }

@@ -4,13 +4,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
@@ -21,6 +14,15 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.handler.chat.PushChatHandler.Request;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
+
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.PUSH_CHAT)
 public class PushChatHandler extends GenericRemoteHandler<Request>
@@ -80,7 +82,12 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
                 if (format == null)
                     format = ChatFormat.PLAINTEXT;
                 if (messages[format.ordinal()] == null)
-                    messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(username, format.format(message)));
+                {
+                    TextComponent mes = new StringTextComponent("");
+                    format.format(mes);
+                    messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT,
+                            new ChatResponse(username, format.format(mes)));
+                }
                 session.trySendMessage(messages[format.ordinal()]);
             }
         }

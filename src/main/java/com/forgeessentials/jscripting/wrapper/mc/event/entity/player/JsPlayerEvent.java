@@ -1,10 +1,10 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.event.entity.JsLivingEvent;
+
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent<T>
 {
@@ -12,16 +12,16 @@ public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent
     @Override
     public JsEntityPlayer getPlayer()
     {
-        return JsEntityPlayer.get(_event.getEntityPlayer());
+        return JsEntityPlayer.get(_event.getPlayer());
     }
 
     /**
      * @tsd.ignore
      */
     @Override
-    public ICommandSender _getSender()
+    public CommandSource _getSender()
     {
-        return _event.getEntityPlayer();
+        return _event.getPlayer().createCommandSourceStack();
     }
 
 }

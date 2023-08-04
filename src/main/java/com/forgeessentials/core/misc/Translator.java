@@ -3,17 +3,20 @@ package com.forgeessentials.core.misc;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Charsets;
+
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 
 public final class Translator
 {
@@ -21,10 +24,11 @@ public final class Translator
     public static final String TRANSLATOR_FILE = "translations.cfg";
 
     public static final String COMMENT = "This is the automatically generated translation file.\n"
-            + "All texts appearing here are found dynamically while running the server.\n" + "You can put translations after the \"=\" beind each entry.\n"
+            + "All texts appearing here are found dynamically while running the server.\n"
+            + "You can put translations after the \"=\" beind each entry.\n"
             + "FE is NOT responsible for translations and we do NOT guarantee that all texts can be translated.";
 
-    public static final TreeMap<String, String> translations = new TreeMap<String, String>();
+    public static final TreeMap<String, String> translations = new TreeMap<>();
 
     public static String format(String text, Object... args)
     {
@@ -41,10 +45,31 @@ public final class Translator
         return text;
     }
 
+    public static TextComponent translateITC(String text)
+    {
+        String translated = translations.get(text);
+        if (translated != null)
+            return new StringTextComponent(translated);
+        translations.put(text, null);
+        save();
+        return new StringTextComponent(text);
+    }
+
+    public static TextComponent translateITC(String text, Object[] args)
+    {
+        String translated = translations.get(text);
+        if (translated != null)
+            return new StringTextComponent(translated + Arrays.toString(args));
+        translations.put(text, null);
+        save();
+        return new StringTextComponent(text + Arrays.toString(args));
+    }
+
     public static void save()
     {
         File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);
-        try (OutputStreamWriter w = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)), Charsets.UTF_8))
+        try (OutputStreamWriter w = new OutputStreamWriter(new BufferedOutputStream(Files.newOutputStream(file.toPath())),
+                Charsets.UTF_8))
         {
             for (String line : COMMENT.split("\n"))
             {
@@ -70,7 +95,7 @@ public final class Translator
     public static void load()
     {
         File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), Charsets.UTF_8)))
         {
             String line;
             while ((line = r.readLine()) != null)

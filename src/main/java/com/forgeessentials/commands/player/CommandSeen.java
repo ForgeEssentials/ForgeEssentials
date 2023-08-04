@@ -1,33 +1,39 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-public class CommandSeen extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
+public class CommandSeen extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandSeen(boolean enabled)
     {
-        return "seen";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/seen <player>: Check when a player has been last seen online";
+        return "seen";
     }
 
     @Override
@@ -43,33 +49,46 @@ public class CommandSeen extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + ".seen";
+        return baseBuilder
+        		.then(Commands.argument("player", StringArgumentType.word())
+        				.suggests(SUGGEST_PLAYERS)
+        				.executes(CommandContext -> execute(CommandContext, "player")));
     }
 
+    public final SuggestionProvider<CommandSource> SUGGEST_PLAYERS = (ctx, builder) -> {
+    	List<String> names = new ArrayList<>();;
+    	for(String s : getAllPlayernames()) {
+    		if(!(s.contains("$")||s.contains("_"))) {
+    			names.add(s);
+    		}
+    	}
+        return ISuggestionProvider.suggest(names, builder);
+    };
+
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        UserIdent player = UserIdent.get(StringArgumentType.getString(ctx, "player"), false);
 
-        UserIdent player = arguments.parsePlayer(false, false);
-
-        if (player.hasPlayer())
+        if (player.hasPlayer() && !player.getPlayerMP().hasDisconnected())
         {
-            arguments.confirm("Player %s is currently online", player.getUsernameOrUuid());
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Player %s is currently online", player.getUsernameOrUuid()));
+            return Command.SINGLE_SUCCESS;
         }
 
         if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid()))
-            throw new PlayerNotFoundException("commands.generic.player.notFound");
-
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Player not found");
+            return Command.SINGLE_SUCCESS;
+        }
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
         long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;
-        arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(),
-                ChatOutputHandler.formatTimeDurationReadable(t, false)));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Player %s was last seen %s ago",
+                player.getUsernameOrUuid(), ChatOutputHandler.formatTimeDurationReadable(t, false)));
         PlayerInfo.discard(pi.ident.getUuid());
+        return Command.SINGLE_SUCCESS;
     }
-
 }

@@ -3,38 +3,41 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.block.Block;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.event.world.BlockEvent;
-
 import com.google.gson.annotations.Expose;
+
+import net.minecraft.block.Block;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Point which stores dimension as well
  */
 public class WorldPoint extends Point
 {
-
-    protected int dim;
+    protected String dim;
 
     @Expose(serialize = false)
     protected World world;
 
     // ------------------------------------------------------------
 
-    public WorldPoint(int dimension, int x, int y, int z)
+    public WorldPoint(String dim2, int x, int y, int z)
     {
         super(x, y, z);
-        dim = dimension;
+        dim = dim2;
     }
 
-    public WorldPoint(int dimension, BlockPos location)
+    public WorldPoint(String dimension, BlockPos location)
     {
         this(dimension, location.getX(), location.getY(), location.getZ());
     }
@@ -42,7 +45,7 @@ public class WorldPoint extends Point
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
-        this.dim = world.provider.getDimension();
+        this.dim = world.dimension().location().toString();
         this.world = world;
     }
 
@@ -54,14 +57,14 @@ public class WorldPoint extends Point
     public WorldPoint(Entity entity)
     {
         super(entity);
-        this.dim = entity.dimension;
-        this.world = entity.world;
+        this.dim = entity.level.dimension().location().toString();
+        this.world = entity.level;
     }
 
-    public WorldPoint(int dim, Vec3d vector)
+    public WorldPoint(RegistryKey<World> dim, Vector3d vector)
     {
         super(vector);
-        this.dim = dim;
+        this.dim = dim.location().toString();
     }
 
     public WorldPoint(WorldPoint other)
@@ -69,7 +72,7 @@ public class WorldPoint extends Point
         this(other.dim, other.x, other.y, other.z);
     }
 
-    public WorldPoint(int dimension, Point point)
+    public WorldPoint(String dimension, Point point)
     {
         this(dimension, point.x, point.y, point.z);
     }
@@ -79,26 +82,31 @@ public class WorldPoint extends Point
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
     }
 
-    public WorldPoint(BlockEvent event)
+    public WorldPoint(IWorld world2, BlockPos pos)
     {
-        this(event.getWorld(), event.getPos());
+        this(((ServerWorld) world2), pos);
     }
 
-    public static WorldPoint create(ICommandSender sender)
+    public static WorldPoint create(CommandSource sender)
     {
-        return new WorldPoint(sender.getEntityWorld(), sender.getPosition());
+        return new WorldPoint(sender.getLevel().dimension(), sender.getPosition());
     }
 
     // ------------------------------------------------------------
 
-    public int getDimension()
+    public String getDimension()
     {
         return dim;
     }
 
-    public void setDimension(int dim)
+    public void setDimension(String dim)
     {
         this.dim = dim;
+    }
+
+    public void setDimension(ServerWorld dim)
+    {
+        this.dim = dim.dimension().location().toString();
     }
 
     @Override
@@ -121,10 +129,19 @@ public class WorldPoint extends Point
 
     public World getWorld()
     {
-        if (world != null && world.provider.getDimension() != dim)
+        if (world != null && world.dimension().location().toString().equals(dim))
             return world;
-        world = DimensionManager.getWorld(dim);
-        return world;
+        world = ServerLifecycleHooks.getCurrentServer()
+                .getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+        if (world == null)
+        {
+            System.out.println("argument.dimension.invalid" + dim);
+            return null;
+        }
+        else
+        {
+            return world;
+        }
     }
 
     public WarpPoint toWarpPoint(float rotationPitch, float rotationYaw)
@@ -139,7 +156,7 @@ public class WorldPoint extends Point
 
     public TileEntity getTileEntity()
     {
-        return getWorld().getTileEntity(getBlockPos());
+        return getWorld().getBlockEntity(getBlockPos());
     }
 
     // ------------------------------------------------------------
@@ -150,7 +167,8 @@ public class WorldPoint extends Point
         return "[" + x + "," + y + "," + z + ",dim=" + dim + "]";
     }
 
-    private static final Pattern fromStringPattern = Pattern.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+)\\]");
+    private static final Pattern fromStringPattern = Pattern
+            .compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=([A-Za-z0-9:]+)\\]");
 
     public static WorldPoint fromString(String value)
     {
@@ -160,15 +178,12 @@ public class WorldPoint extends Point
         {
             try
             {
-                return new WorldPoint(
-                        Integer.parseInt(m.group(4)),
-                        (int) Double.parseDouble(m.group(1)),
-                        (int) Double.parseDouble(m.group(2)),
-                        (int) Double.parseDouble(m.group(3)));
+                return new WorldPoint(m.group(4), (int) Double.parseDouble(m.group(1)),
+                        (int) Double.parseDouble(m.group(2)), (int) Double.parseDouble(m.group(3)));
             }
             catch (NumberFormatException e)
             {
-                /* do nothing */
+                // do nothing
             }
         }
         return null;
@@ -180,12 +195,12 @@ public class WorldPoint extends Point
         if (object instanceof WorldPoint)
         {
             WorldPoint p = (WorldPoint) object;
-            return dim == p.dim && x == p.x && y == p.y && z == p.z;
+            return dim.equals(p.dim) && x == p.x && y == p.y && z == p.z;
         }
         if (object instanceof WarpPoint)
         {
             WarpPoint p = (WarpPoint) object;
-            return dim == p.dim && x == p.getBlockX() && y == p.getBlockY() && z == p.getBlockZ();
+            return dim.equals(p.dim) && x == p.getBlockX() && y == p.getBlockY() && z == p.getBlockZ();
         }
         return false;
     }
@@ -196,7 +211,7 @@ public class WorldPoint extends Point
         int h = 1 + x;
         h = h * 31 + y;
         h = h * 31 + z;
-        h = h * 31 + dim;
+        h = h * 31 + dim.hashCode();
         return h;
     }
 

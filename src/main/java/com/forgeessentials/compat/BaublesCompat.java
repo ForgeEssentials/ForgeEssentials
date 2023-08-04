@@ -1,29 +1,32 @@
 package com.forgeessentials.compat;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.items.IItemHandlerModifiable;
-
-import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.events.player.FEPlayerEvent.InventoryGroupChange;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import baubles.api.BaublesApi;
+import lazy.baubles.api.BaublesAPI;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class BaublesCompat extends ServerEventHandler
 {
+    // TODO get the proper Mod id. I don't know "Baubles" anymore, the Wiki page for
+    // the Mod is down.
     public BaublesCompat()
     {
-        if (Loader.isModLoaded("Baubles"))
+        if (ModList.get().isLoaded("Baubles")) {
             LoggingHandler.felog.info("Baubles compatibility enabled.");
-        register();
+            register();
+        }
     }
-    @Method(modid = "Baubles")
+
+    // @Optional(modid = "Baubles") //Use capabilities instead of directly
+    // implementing interfaces.
     @SubscribeEvent
     public void updateInventory(InventoryGroupChange e)
     {
-        IItemHandlerModifiable inventory = BaublesApi.getBaublesHandler(e.getPlayer());
+        IItemHandlerModifiable inventory = BaublesAPI.getBaublesHandler(e.getPlayer()).orElse(null);
         e.swapInventory("baubles", inventory);
     }
 }

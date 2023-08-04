@@ -24,7 +24,8 @@ public abstract class ZonePersistenceProvider
 
         // Add groups to players
         for (Entry<UserIdent, Set<String>> entry : serverZone.getPlayerGroups().entrySet())
-            serverZone.setPlayerPermissionProperty(entry.getKey(), FEPermissions.PLAYER_GROUPS, StringUtils.join(entry.getValue(), ","));
+            serverZone.setPlayerPermissionProperty(entry.getKey(), FEPermissions.PLAYER_GROUPS,
+                    StringUtils.join(entry.getValue(), ","));
     }
 
     public static void readUserGroupPermissions(ServerZone serverZone)

@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
+
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
@@ -22,16 +22,16 @@ public class WorldZone extends Zone implements Loadable
     @Expose(serialize = false)
     protected ServerZone serverZone;
 
-    private int dimensionID;
+    private String dimensionID;
 
-    private List<AreaZone> areaZones = new ArrayList<AreaZone>();
+    private List<AreaZone> areaZones = new ArrayList<>();
 
     public WorldZone(int id)
     {
         super(id);
     }
 
-    public WorldZone(ServerZone serverZone, int dimensionID, int id)
+    public WorldZone(ServerZone serverZone, String dimensionID, int id)
     {
         this(id);
         this.dimensionID = dimensionID;
@@ -39,7 +39,7 @@ public class WorldZone extends Zone implements Loadable
         this.serverZone.addWorldZone(this);
     }
 
-    public WorldZone(ServerZone serverZone, int dimensionID)
+    public WorldZone(ServerZone serverZone, String dimensionID)
     {
         this(serverZone, dimensionID, serverZone.nextZoneID());
     }
@@ -50,35 +50,35 @@ public class WorldZone extends Zone implements Loadable
         for (AreaZone zone : areaZones)
             zone.worldZone = this;
     }
-    
+
     @Override
-    public boolean isPlayerInZone(EntityPlayer player)
+    public boolean isPlayerInZone(PlayerEntity player)
     {
-        return player.dimension == dimensionID;
+        return player.level.dimension().location().toString().equals(dimensionID);
     }
 
     @Override
     public boolean isInZone(WorldPoint point)
     {
-        return point.getDimension() == dimensionID;
+        return point.getDimension().equals(dimensionID);
     }
 
     @Override
     public boolean isInZone(WorldArea area)
     {
-        return area.getDimension() == dimensionID;
+        return area.getDimension().equals(dimensionID);
     }
 
     @Override
     public boolean isPartOfZone(WorldArea area)
     {
-        return area.getDimension() == dimensionID;
+        return area.getDimension().equals(dimensionID);
     }
 
     @Override
     public String getName()
     {
-        return "WORLD_" + dimensionID;
+        return dimensionID;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class WorldZone extends Zone implements Loadable
         return serverZone;
     }
 
-    public int getDimensionID()
+    public String getDimensionID()
     {
         return dimensionID;
     }
@@ -134,6 +134,5 @@ public class WorldZone extends Zone implements Loadable
         sortAreaZones();
         setDirty();
     }
-
 
 }

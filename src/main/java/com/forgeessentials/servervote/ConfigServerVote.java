@@ -11,49 +11,67 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
-import javax.xml.bind.DatatypeConverter;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.servervote.Votifier.VoteReceiver;
-import com.forgeessentials.util.output.LoggingHandler;
-
-public class ConfigServerVote extends ConfigLoaderBase
+public class ConfigServerVote
 {
     private static final String category = "ServerVote";
+    private static final String subcat = category + "_Votifier";
 
     public static boolean allowOfflineVotes;
     public static String msgAll = "";
     public static String msgVoter = "";
 
-    public File keyFolder;
+    public static File keyFolder;
 
-    public KeyPair keyPair;
+    public static KeyPair keyPair;
     public static PrivateKey privateKey;
-    public PublicKey publicKey;
+    public static PublicKey publicKey;
 
     public static String hostname;
     public static Integer port;
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.ConfigValue<String> FEhostname;
+    static ForgeConfigSpec.IntValue FEport;
+    static ForgeConfigSpec.BooleanValue FEallowOfflineVotes;
+    static ForgeConfigSpec.ConfigValue<String> FEmsgAll;
+    static ForgeConfigSpec.ConfigValue<String> FEmsgVoter;
+
+    public static void load(Builder BUILDER, boolean isReload)
     {
-        String subcat = category + ".Votifier";
-        config.addCustomCategoryComment(subcat, "This is for votifier compatibility only.");
+        BUILDER.push(category);
+        FEallowOfflineVotes = BUILDER.comment("If false, votes of offline players will be canceled.")
+                .define("allowOfflineVotes", true);
+        FEmsgAll = BUILDER.comment("You can use color codes (&), %player and %service").define("msgAll",
+                "%player has voted for this server on %service.");
+        FEmsgVoter = BUILDER.comment("You can use color codes (&), %player and %service").define("msgVoter",
+                "Thanks for voting for our server!");
+        BUILDER.pop();
 
-        hostname = config.get(subcat, "hostname", "", "Set this to the hostname (or IP address) of your server.").getString();
-        port = config.get(subcat, "port", "8192", "The port which the vote receiver should listen on.").getInt();
+        BUILDER.comment("This is for votifier compatibility only.").push(subcat);
+        FEhostname = BUILDER.comment("Set this to the hostname (or IP address) of your server.").define("hostname", "");
+        FEport = BUILDER.comment("The port which the vote receiver should listen on.").defineInRange("port", 8192, 0,
+                65535);
+        BUILDER.pop();
+    }
 
-        allowOfflineVotes = config.get(category, "allowOfflineVotes", true, "If false, votes of offline players will be canceled.").getBoolean(true);
-        msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service")
-                .getString();
-        msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
+    public static void bakeConfig(boolean reload)
+    {
+        hostname = FEhostname.get();
+        port = FEport.get();
+
+        allowOfflineVotes = FEallowOfflineVotes.get();
+        msgAll = FEmsgAll.get();
+        msgVoter = FEmsgVoter.get();
 
         loadKeys();
 
-        if (isReload)
+        if (reload)
         {
             try
             {
@@ -69,9 +87,9 @@ public class ConfigServerVote extends ConfigLoaderBase
         }
     }
 
-    private void loadKeys()
+    private static void loadKeys()
     {
-        keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
+        ConfigServerVote.keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
         File publicFile = new File(keyFolder, "public.key");
         File privateFile = new File(keyFolder, "private.key");
 
@@ -91,12 +109,12 @@ public class ConfigServerVote extends ConfigLoaderBase
 
                 X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(publicKey.getEncoded());
                 FileOutputStream out = new FileOutputStream(publicFile);
-                out.write(DatatypeConverter.printBase64Binary(publicSpec.getEncoded()).getBytes());
+                out.write(Base64.getEncoder().encode(publicSpec.getEncoded()));
                 out.close();
 
                 PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
                 out = new FileOutputStream(privateFile);
-                out.write(DatatypeConverter.printBase64Binary(privateSpec.getEncoded()).getBytes());
+                out.write(Base64.getEncoder().encode(privateSpec.getEncoded()));
                 out.close();
 
                 LoggingHandler.felog.info("RSA key pair made!");
@@ -115,13 +133,13 @@ public class ConfigServerVote extends ConfigLoaderBase
                 FileInputStream in = new FileInputStream(publicFile);
                 byte[] encodedPublicKey = new byte[(int) publicFile.length()];
                 in.read(encodedPublicKey);
-                encodedPublicKey = DatatypeConverter.parseBase64Binary(new String(encodedPublicKey));
+                encodedPublicKey = Base64.getDecoder().decode(new String(encodedPublicKey));
                 in.close();
 
                 in = new FileInputStream(privateFile);
                 byte[] encodedPrivateKey = new byte[(int) privateFile.length()];
                 in.read(encodedPrivateKey);
-                encodedPrivateKey = DatatypeConverter.parseBase64Binary(new String(encodedPrivateKey));
+                encodedPrivateKey = Base64.getDecoder().decode(new String(encodedPrivateKey));
                 in.close();
 
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -139,5 +157,4 @@ public class ConfigServerVote extends ConfigLoaderBase
             }
         }
     }
-
 }

@@ -1,36 +1,39 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandHeal extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandHeal extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandHeal(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "heal";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
+    public String getUsage(ServerPlayerEntity sender)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof PlayerEntity)
         {
             return "/heal <player> Heal yourself or other players (if you have permission).";
         }
@@ -53,79 +56,81 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".heal";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Heal others");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".heal.others", DefaultPermissionLevel.OP, "Heal others");
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
+        return baseBuilder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "others")))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("blank"))
         {
-            heal(sender);
+            heal(ctx.getSource().getPlayerOrException());
         }
-        else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
+        else if (params.equals("others")
+                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".heal.others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!player.hasDisconnected())
             {
                 heal(player);
             }
             else
             {
-                ChatOutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                ChatOutputHandler.chatError(ctx.getSource(), String
+                        .format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
             }
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+            ChatOutputHandler.chatError(ctx.getSource(), getUsage(getServerPlayer(ctx.getSource())));
+            return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params.equals("others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!player.hasDisconnected())
             {
                 heal(player);
             }
             else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), String
+                        .format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
+            }
         }
         else
-            throw new TranslatedCommandException(getUsage(sender));
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), getUsage(getServerPlayer(ctx.getSource())));
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
-    public void heal(EntityPlayer target)
+    public void heal(PlayerEntity target)
     {
         float toHealBy = target.getMaxHealth() - target.getHealth();
         target.heal(toHealBy);
-        target.extinguish();
-        target.getFoodStats().addStats(20, 1.0F);
+        target.clearFire();
+        target.getFoodData().eat(20, 1.0F);
         ChatOutputHandler.chatConfirmation(target, "You were healed.");
     }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
 }

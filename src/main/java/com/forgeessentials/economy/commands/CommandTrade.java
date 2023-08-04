@@ -1,38 +1,43 @@
 package com.forgeessentials.economy.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTrade extends ParserCommandBase
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandTrade extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandTrade(boolean enabled)
     {
-        return "trade";
+        super(enabled);
     }
 
     @Override
-    public String getPermissionNode()
+    public @NotNull String getPrimaryAlias()
     {
-        return ModuleEconomy.PERM_COMMAND + ".trade";
+        return "trade";
     }
 
     @Override
@@ -42,55 +47,63 @@ public class CommandTrade extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/trade <player> <price>: Trade item in hand for money";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws net.minecraft.command.CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return baseBuilder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("price", LongArgumentType.longArg())
+                                .executes(CommandContext -> execute(CommandContext, "tradeP")))
+                        .executes(CommandContext -> execute(CommandContext, "getdef")))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("blank"))
         {
-            arguments.confirm("/trade <player> [price-per-item]:");
-            arguments.confirm("  Trade the item you are holding in your hand");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/trade <player> [price-per-item]:");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Trade the item you are holding in your main hand");
+            return Command.SINGLE_SUCCESS;
         }
 
-        final UserIdent buyer = arguments.parsePlayer(true, true);
+        final UserIdent buyer = getIdent(EntityArgument.getPlayer(ctx, "player"));
 
-        // if (arguments.isEmpty())
-        // throw new TranslatedCommandException("Missing argument");
-        // final int amount = arguments.parseInt();
-
-        final ItemStack itemStack = arguments.senderPlayer.getHeldItemMainhand();
+        final ItemStack itemStack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (itemStack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You need to hold an item first!");
-
-        // if (arguments.isEmpty())
-        // throw new TranslatedCommandException("Missing argument");
-        final long price;
-        if (arguments.isEmpty())
         {
-            Long p = ModuleEconomy.getItemPrice(itemStack, arguments.ident);
+            ChatOutputHandler.chatError(ctx.getSource(), "You need to hold an item first!");
+            return Command.SINGLE_SUCCESS;
+        }
+
+        final long price;
+        if (params.equals("getdef"))
+        {
+            Long p = ModuleEconomy.getItemPrice(itemStack, getIdent(ctx.getSource()));
             if (p == null)
-                throw new TranslatedCommandException("No default price available. Please specify price.");
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "No default price available. Please specify price.");
+                return Command.SINGLE_SUCCESS;
+            }
             price = p;
         }
         else
-            price = arguments.parseLong();
+            price = LongArgumentType.getLong(ctx, "price");
 
-        final Wallet sellerWallet = APIRegistry.economy.getWallet(arguments.ident);
+        final Wallet sellerWallet = APIRegistry.economy.getWallet(getIdent(ctx.getSource()));
         final Wallet buyerWallet = APIRegistry.economy.getWallet(buyer);
 
         if (!buyerWallet.covers(price * itemStack.getCount()))
-            throw new TranslatedCommandException("%s can't affort that!", buyer.getUsernameOrUuid());
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "%s can't affort that!", buyer.getUsernameOrUuid());
+            return Command.SINGLE_SUCCESS;
+        }
 
         QuestionerCallback sellerHandler = new QuestionerCallback() {
             @Override
@@ -98,12 +111,12 @@ public class CommandTrade extends ParserCommandBase
             {
                 if (response == null)
                 {
-                    arguments.error("Trade request timed out");
+                    ChatOutputHandler.chatError(ctx.getSource(), "Trade request timed out");
                     return;
                 }
-                else if (response == false)
+                else if (!response)
                 {
-                    arguments.error("Canceled");
+                    ChatOutputHandler.chatError(ctx.getSource(), "Canceled");
                     return;
                 }
                 QuestionerCallback buyerHandler = new QuestionerCallback() {
@@ -112,46 +125,51 @@ public class CommandTrade extends ParserCommandBase
                     {
                         if (response == null)
                         {
-                            arguments.error("Trade request timed out");
+                            ChatOutputHandler.chatError(ctx.getSource(), "Trade request timed out");
                             return;
                         }
-                        else if (response == false)
+                        else if (!response)
                         {
                             ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Trade declined"));
-                            arguments.confirm("Player %s declined the trade", buyer.getUsernameOrUuid());
+                            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player %s declined the trade",
+                                    buyer.getUsernameOrUuid());
                             return;
                         }
 
-                        ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
-                        if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
+                        ItemStack currentItemStack = getServerPlayer(ctx.getSource()).getMainHandItem();
+                        if (!ItemStack.isSame(currentItemStack, itemStack)
+                                || !ItemStack.isSame(currentItemStack, itemStack))
                         {
-                            ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Error in transaction"));
-                            arguments.error(Translator.translate("You need to keep the item equipped until trade is finished!"));
+                            ChatOutputHandler.chatError(buyer.getPlayerMP(),
+                                    Translator.translate("Error in transaction"));
+                            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator
+                                    .translate("You need to keep the item equipped until trade is finished!"));
                             return;
                         }
 
                         if (!buyerWallet.withdraw(price * itemStack.getCount()))
                         {
-                            ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("You can't afford that"));
+                            ChatOutputHandler.chatError(buyer.getPlayerMP(),
+                                    Translator.translate("You can't afford that"));
                             return;
                         }
                         sellerWallet.add(price * itemStack.getCount());
 
-                        InventoryPlayer inventory = arguments.senderPlayer.inventory;
-                        inventory.mainInventory.set(inventory.currentItem, ItemStack.EMPTY);
+                        PlayerInventory inventory = getServerPlayer(ctx.getSource()).inventory;
+                        inventory.items.set(inventory.selected, ItemStack.EMPTY);
                         PlayerUtil.give(buyer.getPlayerMP(), currentItemStack);
 
                         String priceStr = APIRegistry.economy.toString(price);
                         String totalPriceStr = APIRegistry.economy.toString(price * itemStack.getCount());
                         String buyerMsg = Translator.format("Bought %d x %s from %s for %s each (%s)", //
-                                itemStack.getCount(), itemStack.getDisplayName(), //
-                                arguments.ident.getUsernameOrUuid(), //
+                                itemStack.getCount(), itemStack.getDisplayName().getString(), //
+                                getIdent(ctx.getSource()).getUsernameOrUuid(), //
                                 priceStr, totalPriceStr);
                         String sellerMsg = Translator.format("Sold %d x %s to %s for %s each (%s)", //
-                                itemStack.getCount(), itemStack.getDisplayName(), //
+                                itemStack.getCount(), itemStack.getDisplayName().getString(), //
                                 buyer.getUsernameOrUuid(), //
                                 priceStr, totalPriceStr);
-                        arguments.notify(sellerMsg);
+                        ChatOutputHandler.chatNotification(ctx.getSource(), sellerMsg);
                         ChatOutputHandler.chatNotification(buyer.getPlayerMP(), buyerMsg);
                     }
                 };
@@ -159,29 +177,45 @@ public class CommandTrade extends ParserCommandBase
                 {
                     String message;
                     if (itemStack.getCount() == 1)
-                        message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                                arguments.sender.getName());
+                        message = Translator.format("Buy one %s for %s from %s?",
+                                itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price),
+                                getServerPlayer(ctx.getSource()).getDisplayName().getString());
                     else
-                        message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.getCount(), itemStack.getDisplayName(),
-                                APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()),
-                                arguments.sender.getName());
+                        message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?",
+                                itemStack.getCount(), itemStack.getDisplayName().getString(),
+                                APIRegistry.economy.toString(price),
+                                APIRegistry.economy.toString(price * itemStack.getCount()),
+                                getServerPlayer(ctx.getSource()).getDisplayName().getString());
                     Questioner.addChecked(buyer.getPlayerMP(), message, buyerHandler, 60);
-                    arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                            Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
-                catch (QuestionerStillActiveException.CommandException e)
+                catch (QuestionerStillActiveException e)
                 {
-                    throw new QuestionerStillActiveException.CommandException();
+                    ChatOutputHandler.chatError(ctx.getSource(),
+                            "Cannot run command because player is still answering a question. Please wait a moment");
+                    return;
                 }
             }
         };
         String message;
         if (itemStack.getCount() == 1)
-            message = Translator
-                    .format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
+            message = Translator.format("Sell one %s for %s to %s?", itemStack.getDisplayName().getString(),
+                    APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
         else
-            message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(), itemStack.getDisplayName(),
-                    APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
-        Questioner.addChecked(arguments.sender, message, sellerHandler, 20);
+            message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(),
+                    itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price),
+                    APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
+        try
+        {
+            Questioner.addChecked(getServerPlayer(ctx.getSource()), message, sellerHandler, 20);
+        }
+        catch (QuestionerStillActiveException e)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(),
+                    "Cannot run command because player is still answering a question. Please wait a moment");
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
     }
-    
 }

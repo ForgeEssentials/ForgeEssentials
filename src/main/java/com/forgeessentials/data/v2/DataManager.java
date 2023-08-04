@@ -6,23 +6,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-
-import net.minecraft.util.text.ITextComponent;
 
 import org.apache.commons.io.FileUtils;
 
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.data.v2.types.BlockType;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -31,7 +28,14 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
+
+import net.minecraft.util.text.TextComponent;
 
 public class DataManager
 {
@@ -53,7 +57,7 @@ public class DataManager
 
     private static boolean formatsChanged;
 
-    private static Set<String> defaultSerializationGroups = new HashSet<>(Arrays.asList(DEFAULT_GROUP));
+    private static Set<String> defaultSerializationGroups = new HashSet<>(Collections.singletonList(DEFAULT_GROUP));
 
     private static Set<String> serializationGroups = defaultSerializationGroups;
 
@@ -65,12 +69,13 @@ public class DataManager
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
         addDataType(new BlockType());
-        addDataType(ITextComponent.class, new ITextComponent.Serializer());
+        addDataType(TextComponent.class, new TextComponent.Serializer());
     }
 
     public DataManager(File basePath)
     {
         this.basePath = basePath;
+        LoggingHandler.felog.debug("ForgeEssentials: Created new Datamanager Instance");
     }
 
     public static DataManager getInstance()
@@ -124,10 +129,10 @@ public class DataManager
         {
             toJson(src, out);
         }
-        catch (Throwable e)
+        catch (RuntimeException | Error | IOException e)
         {
             LoggingHandler.felog.error(String.format("Error saving data to %s", file.getName()), e);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -210,6 +215,7 @@ public class DataManager
         {
             LoggingHandler.felog.error(String.format("Error parsing data file \"%s\"", file.getAbsolutePath()));
             e.printStackTrace();
+            throw e;
         }
         catch (IOException e)
         {
@@ -243,12 +249,94 @@ public class DataManager
         return null;
     }
 
+    // Modified Copy of DateTypeAdapter
+    static class FEDateAdapter extends TypeAdapter<Date>
+    {
+        private final java.text.DateFormat enUsFormat;
+        private final DateFormat localFormat;
+        private final DateFormat iso8601Format;
+
+        public FEDateAdapter()
+        {
+            this.enUsFormat = java.text.DateFormat.getDateTimeInstance(2, 2, Locale.US);
+            this.localFormat = java.text.DateFormat.getDateTimeInstance(2, 2);
+            this.iso8601Format = buildIso8601Format();
+        }
+
+        private static DateFormat buildIso8601Format()
+        {
+            DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+            iso8601Format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return iso8601Format;
+        }
+
+        public Date read(JsonReader in) throws IOException
+        {
+            if (in.peek() == JsonToken.NULL)
+            {
+                in.nextNull();
+                return null;
+            }
+            else
+            {
+                return this.deserializeToDate(in.nextString());
+            }
+        }
+
+        private synchronized Date deserializeToDate(String json)
+        {
+            try
+            {
+                return this.localFormat.parse(json);
+            }
+            catch (ParseException var5)
+            {
+                try
+                {
+                    return this.enUsFormat.parse(json);
+                }
+                catch (ParseException var4)
+                {
+                    try
+                    {
+                        return this.iso8601Format.parse(json);
+                    }
+                    catch (ParseException var3)
+                    {
+                        try
+                        {
+                            return FEConfig.FORMAT_GSON_COMPAT.parse(json);
+                        }
+                        catch (ParseException e)
+                        {
+                            throw new JsonSyntaxException(json, e);
+                        }
+                    }
+                }
+            }
+        }
+
+        public synchronized void write(JsonWriter out, Date value) throws IOException
+        {
+            if (value == null)
+            {
+                out.nullValue();
+            }
+            else
+            {
+                String dateFormatAsString = this.enUsFormat.format(value);
+                out.value(dateFormatAsString);
+            }
+        }
+    }
+
     public static Gson getGson()
     {
         if (gson == null || formatsChanged)
         {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
+            builder.registerTypeHierarchyAdapter(Date.class, new FEDateAdapter());
             builder.setExclusionStrategies(new ExclusionStrategy() {
                 @Override
                 public boolean shouldSkipField(FieldAttributes f)
@@ -258,10 +346,7 @@ public class DataManager
                         return true;
 
                     SerializationGroup groupAnnot = f.getAnnotation(SerializationGroup.class);
-                    if (groupAnnot != null && !serializationGroups.contains(groupAnnot.name()))
-                        return true;
-
-                    return false;
+                    return groupAnnot != null && !serializationGroups.contains(groupAnnot.name());
                 }
 
                 @Override

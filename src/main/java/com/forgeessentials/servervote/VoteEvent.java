@@ -9,8 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Event triggered when the snooper gets a vote from a service.
@@ -27,7 +27,7 @@ public class VoteEvent extends Event
     public String serviceName;
     public String ip;
     public String timeStamp;
-    List<String> feedback = new ArrayList<String>();
+    List<String> feedback = new ArrayList<>();
     private boolean sane = false;
 
     public VoteEvent(String player, String serviceName, String ip, String timeStamp)

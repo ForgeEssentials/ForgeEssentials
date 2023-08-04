@@ -7,12 +7,12 @@ import java.util.TimerTask;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class TaskRegistry extends ServerEventHandler
 {
@@ -35,8 +35,7 @@ public class TaskRegistry extends ServerEventHandler
             if (taskRunning)
                 return;
             taskRunning = true;
-            TaskRegistry.runLater(() ->
-            {
+            TaskRegistry.runLater(() -> {
                 try
                 {
                     task.run();
@@ -67,7 +66,7 @@ public class TaskRegistry extends ServerEventHandler
 
     protected static ConcurrentLinkedQueue<Runnable> runLater = new ConcurrentLinkedQueue<>();
 
-    protected static Timer timer = new Timer();
+    protected static Timer timer = new Timer("FEtaskRegistry");
 
     protected static Map<Runnable, TimerTask> runnableTasks = new WeakHashMap<>();
 
@@ -85,12 +84,12 @@ public class TaskRegistry extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void onServerStop(FEModuleServerStopEvent event)
+    public void onServerStop(FEModuleServerStoppingEvent event)
     {
         tickTasks.clear();
         runnableTasks.clear();
         timer.cancel();
-        timer = new Timer(true);
+        // timer = new Timer(true);
     }
 
     /* ------------------------------------------------------------ */
@@ -118,7 +117,7 @@ public class TaskRegistry extends ServerEventHandler
         runLater.clear();
 
         int blockTaskCount = 0;
-        for (Iterator<TickTask> iterator = tickTasks.iterator(); iterator.hasNext(); )
+        for (Iterator<TickTask> iterator = tickTasks.iterator(); iterator.hasNext();)
         {
             TickTask task = iterator.next();
             if (task.editsBlocks())
@@ -180,8 +179,7 @@ public class TaskRegistry extends ServerEventHandler
         TimerTask timerTask = runnableTasks.get(task);
         if (timerTask == null)
         {
-            timerTask = new TimerTask()
-            {
+            timerTask = new TimerTask() {
                 @Override
                 public void run()
                 {
@@ -221,7 +219,7 @@ public class TaskRegistry extends ServerEventHandler
 
     public static long getMilliseconds(int h, int m, int s, int ms)
     {
-        return ((h * 60 + m) * 60 + s) * 1000 + ms;
+        return ((h * 60L + m) * 60 + s) * 1000 + ms;
     }
 
 }

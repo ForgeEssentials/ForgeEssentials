@@ -2,9 +2,9 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import java.util.List;
 
-import net.minecraft.entity.Entity;
-
 import com.forgeessentials.util.MappedList;
+
+import net.minecraft.entity.Entity;
 
 public class JsEntityList extends MappedList<Entity, JsEntity<?>>
 {

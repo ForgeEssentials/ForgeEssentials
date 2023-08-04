@@ -6,13 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
@@ -23,6 +16,15 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.handler.chat.QueryChatHandler.Request;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
 @FERemoteHandler(id = RemoteMessageID.QUERY_CHAT)
 public class QueryChatHandler extends GenericRemoteHandler<Request>
 {
@@ -31,7 +33,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
 
     public static final String PERM = PERM_REMOTE + ".chat.query";
 
-    private static Map<Long, ITextComponent> chatLog = new TreeMap<>();
+    private static Map<Long, TextComponent> chatLog = new TreeMap<>();
 
     public QueryChatHandler()
     {
@@ -45,7 +47,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     {
         ChatFormat format = request.data == null ? ChatFormat.PLAINTEXT : ChatFormat.fromString(request.data.format);
         Map<Long, Object> messages = new HashMap<>();
-        for (Entry<Long, ITextComponent> message : chatLog.entrySet())
+        for (Entry<Long, TextComponent> message : chatLog.entrySet())
         {
             if (request.data != null && message.getKey() < request.data.timestamp)
                 continue;
@@ -65,7 +67,9 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
         Long key = System.currentTimeMillis();
         while (chatLog.containsKey(key))
             key++;
-        chatLog.put(key, message);
+        TextComponent me = new StringTextComponent("");
+        me.append(message);
+        chatLog.put(key, me);
         while (chatLog.size() > BUFFER_SIZE)
         {
             Iterator<?> it = chatLog.entrySet().iterator();

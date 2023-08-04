@@ -8,32 +8,15 @@ import java.util.UUID;
 
 import javax.script.ScriptException;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.IInteractionObject;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInteractionObject;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
 import com.forgeessentials.util.PlayerInfo;
+
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * @tsd.interface FEServer
@@ -78,7 +61,7 @@ public class JsFEServer
     public void registerCommand(Object options) throws ScriptException
     {
         JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
-        script.registerScriptCommand(new CommandJScriptCommand(script, opt));
+        // script.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
 
     /**
@@ -88,6 +71,7 @@ public class JsFEServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
+
     /**
      * Returns the list of players who have ever connected.
      */
@@ -95,6 +79,7 @@ public class JsFEServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers();
     }
+
     /**
      * Returns the amount of time this player was active on the server in seconds
      */
@@ -135,13 +120,12 @@ public class JsFEServer
     }
 
     @SubscribeEvent
-    public void _onTick(ServerTickEvent e)
+    public void _onTick(TickEvent.ServerTickEvent e)
     {
         if (e.phase == Phase.START)
         {
             Iterator<CORoutine> iterator = coRoutineHashSet.iterator();
-            for (; iterator.hasNext(); )
-            {
+            while (iterator.hasNext()) {
                 CORoutine c = iterator.next();
                 try
                 {
@@ -173,16 +157,11 @@ public class JsFEServer
      * @param stacks
      * @return
      */
-    public JsInventory<InventoryBasic> createCustomInventory(final String name, boolean hasCustom, JsItemStack[] stacks)
-    {
-        InventoryBasic inventoryBasic = new InventoryBasic(name, hasCustom, stacks.length);
-        for (int i = 0; i < stacks.length; i++)
-        {
-            inventoryBasic.setInventorySlotContents(i, stacks[i].getThat());
-        }
-        return JsInventory.get(inventoryBasic);
-    }
-
+    /*
+     * public JsInventory<InventoryBasic> createCustomInventory(final String name, boolean hasCustom, JsItemStack[] stacks) { InventoryBasic inventoryBasic = new
+     * InventoryBasic(name, hasCustom, stacks.length); for (int i = 0; i < stacks.length; i++) { inventoryBasic.setInventorySlotContents(i, stacks[i].getThat()); } return
+     * JsInventory.get(inventoryBasic); }
+     */
     /**
      * Clones an existing inventory
      *
@@ -192,38 +171,22 @@ public class JsFEServer
      * @param size
      * @return
      */
-    public JsInventory<InventoryBasic> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size)
-    {
-        if (size > inventory.getSize())
-        {
-            size = inventory.getSize();
-        }
-
-        InventoryBasic inventoryBasic = new InventoryBasic(name, hasCustom, size);
-        for (int i = 0; i < size; i++)
-        {
-            inventoryBasic.setInventorySlotContents(i, inventory.getThat().getStackInSlot(i));
-
-        }
-        return JsInventory.get(inventoryBasic);
-    }
-
-    private abstract class BasicInteraction extends InventoryBasic implements IInteractionObject
-    {
-
-        public BasicInteraction(String p_i1561_1_, boolean p_i1561_2_, IInventory source)
-        {
-            super(p_i1561_1_, p_i1561_2_, ((source.getSizeInventory() - 1) / 9 + 1) * 9);
-            for (int i = 0; i < source.getSizeInventory(); i++)
-            {
-                this.setInventorySlotContents(i, source.getStackInSlot(i));
-            }
-        }
-    }
-
+    /*
+     * public JsInventory<Inventory> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size) { if (size > inventory.getSize()) { size =
+     * inventory.getSize(); }
+     * 
+     * InventoryBasic inventoryBasic = new InventoryBasic(name, hasCustom, size); for (int i = 0; i < size; i++) { inventoryBasic.setInventorySlotContents(i,
+     * inventory.getThat().getStackInSlot(i));
+     * 
+     * } return JsInventory.get(inventoryBasic); }
+     * 
+     * private abstract class BasicInteraction extends Inventory implements IInteractionObject {
+     * 
+     * public BasicInteraction(String p_i1561_1_, boolean p_i1561_2_, IInventory source) { super(p_i1561_1_, p_i1561_2_, ((source.getContainerSize() - 1) / 9 + 1) * 9); for (int i
+     * = 0; i < source.getSizeInventory(); i++) { this.setInventorySlotContents(i, source.getStackInSlot(i)); } } }
+     */
     /**
-     * Gets a Special Interaction Object that is designed to be used as a menu
-     * WARNING: Do not close the screen during the callback. This causes a desync!
+     * Gets a Special Interaction Object that is designed to be used as a menu WARNING: Do not close the screen during the callback. This causes a desync!
      *
      * @param name
      * @param displayName
@@ -231,81 +194,36 @@ public class JsFEServer
      * @param callbackMethod
      * @return
      */
-    public JsInteractionObject<IInteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory, final String callbackMethod)
-    {
-        final boolean hasCustomName = displayName != null;
-
-        final IInteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat())
-        {
-            @Override public Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer)
-            {
-                return new ContainerChest(inventoryPlayer, this, entityPlayer)
-                {
-                    @Override public ItemStack slotClick(int p_slotClick_1_, int p_slotClick_2_, ClickType p_slotClick_3_, EntityPlayer p_slotClick_4_)
-                    {
-                        JsItemStack stack = JsItemStack.EMPTY;
-                        try
-                        {
-                            JsInventory<IInventory> inv = null;
-                            JsItemStack itemStack = null;
-                            if (p_slotClick_1_ >= 0 && p_slotClick_1_ < inventorySlots.size())
-                            {
-                                Slot slot = inventorySlots.get(p_slotClick_1_);
-                                itemStack = JsItemStack.get(slot.getStack());
-                                inv = JsInventory.get(slot.inventory);
-                            }
-                            Object _stack = script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_, p_slotClick_3_, inv, itemStack);
-                            if (_stack instanceof JsItemStack)
-                            {
-                                stack = (JsItemStack) _stack;
-                            }
-                        }
-                        catch (ScriptException e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                        return stack.getThat();
-                    }
-
-                    @Override public ItemStack transferStackInSlot(EntityPlayer p_transferStackInSlot_1_, int p_transferStackInSlot_2_)
-                    {
-                        return ItemStack.EMPTY;
-                    }
-
-                    @Override public boolean canMergeSlot(ItemStack p_canMergeSlot_1_, Slot p_canMergeSlot_2_)
-                    {
-                        return false;
-                    }
-
-                    @Override public boolean canDragIntoSlot(Slot p_canDragIntoSlot_1_)
-                    {
-                        return false;
-                    }
-                };
-            }
-
-            @Override public String getGuiID()
-            {
-                return "minecraft:chest";
-            }
-
-            @Override public String getName()
-            {
-                return name;
-            }
-
-            @Override public boolean hasCustomName()
-            {
-                return hasCustomName;
-            }
-
-            @Override public ITextComponent getDisplayName()
-            {
-                return displayName != null ? new TextComponentString(displayName) : null;
-            }
-        };
-
-        return new JsInteractionObject<>(menuChest);
-    }
+    /*
+     * public JsInteractionObject<InteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory, final String callbackMethod)
+     * { final boolean hasCustomName = displayName != null;
+     * 
+     * final InteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat()) {
+     * 
+     * @Override public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer) { return new ChestContainer(inventoryPlayer, this, entityPlayer) {
+     * 
+     * @Override public ItemStack slotClick(int p_slotClick_1_, int p_slotClick_2_, ClickType p_slotClick_3_, EntityPlayer p_slotClick_4_) { JsItemStack stack = JsItemStack.EMPTY;
+     * try { JsInventory<IInventory> inv = null; JsItemStack itemStack = null; if (p_slotClick_1_ >= 0 && p_slotClick_1_ < inventorySlots.size()) { Slot slot =
+     * inventorySlots.get(p_slotClick_1_); itemStack = JsItemStack.get(slot.getItem()); inv = JsInventory.get(slot.container); } Object _stack =
+     * script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_, p_slotClick_3_, inv, itemStack); if (_stack instanceof JsItemStack)
+     * { stack = (JsItemStack) _stack; } } catch (ScriptException e) { e.printStackTrace(); }
+     * 
+     * return stack.getThat(); }
+     * 
+     * @Override public ItemStack transferStackInSlot(PlayerEntity p_transferStackInSlot_1_, int p_transferStackInSlot_2_) { return ItemStack.EMPTY; }
+     * 
+     * @Override public boolean canMergeSlot(ItemStack p_canMergeSlot_1_, Slot p_canMergeSlot_2_) { return false; }
+     * 
+     * @Override public boolean canDragIntoSlot(Slot p_canDragIntoSlot_1_) { return false; } }; }
+     * 
+     * @Override public String getGuiID() { return "minecraft:chest"; }
+     * 
+     * @Override public String getName() { return name; }
+     * 
+     * @Override public boolean hasCustomName() { return hasCustomName; }
+     * 
+     * @Override public ITextComponent getDisplayName() { return displayName != null ? new StringTextComponent(displayName) : null; } };
+     * 
+     * return new JsInteractionObject<>(menuChest); }
+     */
 }

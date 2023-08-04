@@ -1,36 +1,32 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandIrc extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandIrc extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandIrc(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "irc";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/irc <message...>: Send a message to a client on IRC.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.chat.irc";
     }
 
     @Override
@@ -46,19 +42,22 @@ public class CommandIrc extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (!IrcHandler.getInstance().isConnected())
-            throw new TranslatedCommandException("Not connected to IRC!");
-        if (args.length < 1)
-        {
-            throw new WrongUsageException("commands.message.usage");
-        }
-        else
-        {
-            ITextComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer));
-            IrcHandler.getInstance().sendPlayerMessage(sender, message);
-        }
+        return baseBuilder.then(Commands.argument("message", StringArgumentType.greedyString())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (!IrcHandler.getInstance().isConnected())
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Not connected to IRC!");
+            return Command.SINGLE_SUCCESS;
+        }
+        IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(),
+                new StringTextComponent(StringArgumentType.getString(ctx, "message")));
+        return Command.SINGLE_SUCCESS;
+    }
 }

@@ -4,36 +4,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandWeather extends ParserCommandBase implements ConfigurableCommand
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandWeather extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
+
+    public CommandWeather(boolean enabled)
+    {
+        super(enabled);
+    }
 
     public static enum WeatherType
     {
         RAIN, THUNDER;
 
-        public static WeatherType fromString(String name) throws CommandException
+        public static WeatherType fromString(CommandSource source, String name) throws CommandException
         {
             name = name.toLowerCase();
             switch (name)
@@ -44,7 +49,8 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
             case "storm":
                 return WeatherType.THUNDER;
             default:
-                throw new TranslatedCommandException("Unknown weather type %s", name);
+                ChatOutputHandler.chatError(source, "Unknown weather type %s", name);
+                return null;
             }
         }
 
@@ -54,7 +60,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     {
         FORCE, ENABLED, DISABLED, START, STOP;
 
-        public static WeatherState fromString(String name) throws CommandException
+        public static WeatherState fromString(CommandSource source, String name) throws CommandException
         {
             name = name.toLowerCase();
             switch (name)
@@ -72,7 +78,8 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
             case "stop":
                 return WeatherState.STOP;
             default:
-                throw new TranslatedCommandException("Unknown weather state %s", name);
+                ChatOutputHandler.chatError(source, "Unknown weather state %s", name);
+                return null;
             }
         }
 
@@ -86,23 +93,12 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
         }
     }
 
-    protected static Map<Integer, WeatherData> weatherStates = new HashMap<>();
-
-    public CommandWeather()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
+    protected static Map<String, WeatherData> weatherStates = new HashMap<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "weather";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/weather rain|storm [enable|disable|force]: Weather manipulation";
     }
 
     @Override
@@ -117,13 +113,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".weather";
-    }
-
-    public static WeatherState getWeatherState(int dim, WeatherType type)
+    public static WeatherState getWeatherState(String dim, WeatherType type)
     {
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);
         if (worldData != null)
@@ -136,58 +126,76 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return baseBuilder.then(Commands.literal("rain")
+                .then(Commands.literal("enable").executes(CommandContext -> execute(CommandContext, "rain-enable")))
+                .then(Commands.literal("disable").executes(CommandContext -> execute(CommandContext, "rain-disable")))
+                .then(Commands.literal("force").executes(CommandContext -> execute(CommandContext, "rain-force")))
+                .then(Commands.literal("start").executes(CommandContext -> execute(CommandContext, "rain-start")))
+                .then(Commands.literal("stop").executes(CommandContext -> execute(CommandContext, "rain-stop")))
+                .executes(CommandContext -> execute(CommandContext, "rain-info"))
+
+        ).then(Commands.literal("storm")
+                .then(Commands.literal("enable").executes(CommandContext -> execute(CommandContext, "storm-enable")))
+                .then(Commands.literal("disable").executes(CommandContext -> execute(CommandContext, "storm-disable")))
+                .then(Commands.literal("force").executes(CommandContext -> execute(CommandContext, "storm-force")))
+                .then(Commands.literal("start").executes(CommandContext -> execute(CommandContext, "storm-start")))
+                .then(Commands.literal("stop").executes(CommandContext -> execute(CommandContext, "storm-stop")))
+                .executes(CommandContext -> execute(CommandContext, "storm-info"))
+
+        ).executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("blank"))
         {
-            arguments.confirm("/weather rain|storm enable|disable|force");
-            return;
-        }
-        if (arguments.senderPlayer == null)
-        {
-            arguments.error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/weather rain|storm enable|disable|force");
+            return Command.SINGLE_SUCCESS;
         }
 
-        World world = arguments.senderPlayer.world;
-        int dim = world.provider.getDimension();
+        ServerWorld world = getServerPlayer(ctx.getSource()).getLevel();
+        String dim = world.dimension().location().toString();
 
-        arguments.tabComplete("rain", "thunder");
-        WeatherType type = WeatherType.fromString(arguments.remove());
+        String[] args = params.split("-");
+        WeatherType type = WeatherType.fromString(ctx.getSource(), args[0]);
+        if (type == null)
+        {
+            return Command.SINGLE_SUCCESS;
+        }
         String typeName = type.toString().toLowerCase();
 
-        if (arguments.isEmpty())
+        if (args[1].equals("info"))
         {
             WeatherState state = getWeatherState(dim, type);
-            arguments.confirm(Translator.format("%s is %s in world %d", StringUtils.capitalize(typeName), state.toString().toLowerCase(), dim));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is %s in world %s",
+                    StringUtils.capitalize(typeName), state.toString().toLowerCase(), dim));
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("enable", "disable", "force", "start", "stop");
-        WeatherState state = WeatherState.fromString(arguments.remove());
+        WeatherState state = WeatherState.fromString(ctx.getSource(), args[1]);
+        if (state == null)
+        {
+            return Command.SINGLE_SUCCESS;
+        }
 
-        if (arguments.isTabCompletion)
-            return;
-
-        WorldInfo wi = world.getWorldInfo();
         switch (state)
         {
         case START:
-            if (type == WeatherType.RAIN)
-                wi.setRaining(true);
-            else
-            {
-                wi.setRaining(true);
-                wi.setThundering(true);
-            }
-            arguments.confirm("Started %s in world %d", typeName, dim);
+            world.setWeatherParameters(0, 0, true, type != WeatherType.RAIN);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started %s in world %s", typeName, dim);
             break;
         case STOP:
             if (type == WeatherType.RAIN)
-                wi.setRaining(false);
+                world.setWeatherParameters(0, 0, false, false);
             else
-                wi.setThundering(false);
-            arguments.confirm("Stopped %s in world %d", typeName, dim);
+            {
+                boolean rain = world.isRaining();
+                world.setWeatherParameters(0, 0, rain, false);
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped %s in world %s", typeName, dim);
             break;
         default:
             WeatherData worldData = weatherStates.get(dim);
@@ -199,10 +207,12 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
 
             worldData.put(type, state);
             save();
-            arguments.confirm(Translator.format("%s %s in world %d", StringUtils.capitalize(state.toString().toLowerCase()), typeName, dim));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s %s in world %s",
+                    StringUtils.capitalize(state.toString().toLowerCase()), typeName, dim));
             updateWorld(world);
             break;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @SubscribeEvent
@@ -210,20 +220,17 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     {
         if (event.phase == Phase.START)
             return;
-        World world = event.world;
-        WorldInfo wi = world.getWorldInfo();
-        if (wi.getWorldTotalTime() % 60 == 0)
+        ServerWorld world = (ServerWorld) event.world;
+        if (world.getGameTime() % 60 == 0)
             updateWorld(world);
     }
 
-    public static void updateWorld(World world)
+    public static void updateWorld(ServerWorld world)
     {
-        int dim = world.provider.getDimension();
+        String dim = world.dimension().location().toString();
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);
         if (worldData == null)
             return;
-
-        WorldInfo wi = world.getWorldInfo();
 
         WeatherState rainState = worldData.get(WeatherType.RAIN);
         if (rainState != null)
@@ -231,12 +238,10 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
             switch (rainState)
             {
             case FORCE:
-                wi.setRainTime(20 * 70);
-                wi.setRaining(true);
+                world.setWeatherParameters(0, 20 * 70, true, false);
                 break;
             case DISABLED:
-                wi.setRainTime(20 * 70);
-                wi.setRaining(false);
+                world.setWeatherParameters(0, 20 * 70, false, false);
                 break;
             default:
                 break;
@@ -249,14 +254,10 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
             switch (thunderState)
             {
             case FORCE:
-                wi.setRainTime(20 * 70);
-                wi.setRaining(true);
-                wi.setThunderTime(20 * 70);
-                wi.setThundering(true);
+                world.setWeatherParameters(0, 20 * 70, true, true);
                 break;
             case DISABLED:
-                wi.setThunderTime(20 * 70);
-                wi.setThundering(false);
+                world.setWeatherParameters(0, 20 * 70, false, false);
                 break;
             default:
                 break;
@@ -267,9 +268,9 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     public static void save()
     {
         DataManager.getInstance().deleteAll(WeatherData.class);
-        for (Entry<Integer, WeatherData> state : weatherStates.entrySet())
+        for (Entry<String, WeatherData> state : weatherStates.entrySet())
         {
-            DataManager.getInstance().save(state.getValue(), state.getKey().toString());
+            DataManager.getInstance().save(state.getValue(), state.getKey().toString().replace(":", "-"));
         }
     }
 
@@ -284,7 +285,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
                 continue;
             try
             {
-                weatherStates.put(Integer.parseInt(state.getKey()), state.getValue());
+                weatherStates.put(state.getKey().replace("-", ":"), state.getValue());
             }
             catch (NumberFormatException e)
             {
@@ -292,10 +293,4 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
             }
         }
     }
-
-    @Override
-    public void loadConfig(Configuration config, String category)
-    {
-    }
-
 }

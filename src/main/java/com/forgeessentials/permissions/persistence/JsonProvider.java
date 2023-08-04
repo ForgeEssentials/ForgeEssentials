@@ -28,7 +28,7 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,7 +41,8 @@ public class JsonProvider extends ZonePersistenceProvider
     public JsonProvider()
     {
         path = new File(ServerUtil.getWorldPath(), "FEData/json/Permissions");
-        gson = new GsonBuilder().disableHtmlEscaping().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
+        gson = new GsonBuilder().disableHtmlEscaping()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
     }
 
     @Override
@@ -113,7 +114,7 @@ public class JsonProvider extends ZonePersistenceProvider
 
     private void loadWorlds(ServerZone serverZone)
     {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         Path p = FileSystems.getDefault().getPath(path.getAbsolutePath());
         try (DirectoryStream<Path> ds = Files.newDirectoryStream(p, "world_*.json"))
         {
@@ -136,7 +137,8 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             catch (IOException e)
             {
-                LoggingHandler.felog.error(String.format("Failed to load world file %s: %s", file.getName(), e.getMessage()));
+                LoggingHandler.felog
+                        .error(String.format("Failed to load world file %s: %s", file.getName(), e.getMessage()));
                 return;
             }
             WorldZone wz = new WorldZone(serverZone, wzd.dimId, wzd.id);
@@ -146,7 +148,8 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             for (String uuid : wzd.players.keySet())
             {
-                wz.getPlayerPermissions().put(UserIdent.get(uuid, wzd.players.get(uuid).username), PermissionList.fromList(wzd.players.get(uuid).permissions));
+                wz.getPlayerPermissions().put(UserIdent.get(uuid, wzd.players.get(uuid).username),
+                        PermissionList.fromList(wzd.players.get(uuid).permissions));
             }
             for (AreaZoneData azd : wzd.zones)
             {
@@ -215,18 +218,19 @@ public class JsonProvider extends ZonePersistenceProvider
 
     public void saveWorlds(ServerZone serverZone)
     {
-        for (Entry<Integer, WorldZone> wzEntry : serverZone.getWorldZones().entrySet())
+        for (Entry<String, WorldZone> wzEntry : serverZone.getWorldZones().entrySet())
         {
-            Integer wzDimId = wzEntry.getKey();
+            String wzDimId = wzEntry.getKey();
             WorldZone wz = wzEntry.getValue();
-            String pathName = String.format("/world_%d.json", wzDimId);
+            String pathName = String.format("/world_%s.json", wzDimId);
             File newPath = new File(path + pathName);
             WorldZoneData worldZoneData = new WorldZoneData(wz.getId(), wzDimId);
             worldZoneData.groups.putAll(getGroupDataMap(wz, wz.getGroupPermissions().keySet()));
             worldZoneData.players.putAll(getUserDataMap(wz, wz.getPlayerPermissions().keySet()));
             for (AreaZone az : wz.getAreaZones())
             {
-                AreaZoneData areaZoneData = new AreaZoneData(az.getId(), az.getPriority(), az.isHidden(), az.getName(), az.getArea(), az.getShape());
+                AreaZoneData areaZoneData = new AreaZoneData(az.getId(), az.getPriority(), az.isHidden(), az.getName(),
+                        az.getArea(), az.getShape());
                 areaZoneData.groups.putAll(getGroupDataMap(az, az.getGroupPermissions().keySet()));
                 areaZoneData.players.putAll(getUserDataMap(az, az.getPlayerPermissions().keySet()));
                 worldZoneData.zones.add(areaZoneData);
@@ -240,7 +244,7 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             catch (IOException e)
             {
-                LoggingHandler.felog.error(String.format("Failed to save world_%d.json: %s", wzDimId, e.getMessage()));
+                LoggingHandler.felog.error(String.format("Failed to save world_%s.json: %s", wzDimId, e.getMessage()));
             }
         }
     }
@@ -259,7 +263,7 @@ public class JsonProvider extends ZonePersistenceProvider
     private Map<String, GroupData> getGroupDataMap(Zone zone, Set<String> groups)
     {
         boolean global = zone instanceof ServerZone;
-        Map<String, GroupData> groupDataMap = new HashMap<String, GroupData>();
+        Map<String, GroupData> groupDataMap = new HashMap<>();
         for (String group : groups)
         {
             PermissionList groupList = new PermissionList(zone.getGroupPermissions(group));
@@ -297,7 +301,7 @@ public class JsonProvider extends ZonePersistenceProvider
     private Map<String, UserData> getUserDataMap(Zone zone, Set<UserIdent> users)
     {
         boolean global = zone instanceof ServerZone;
-        Map<String, UserData> userDataMap = new HashMap<String, UserData>();
+        Map<String, UserData> userDataMap = new HashMap<>();
         for (UserIdent user : users)
         {
             String uuid = (user.getUuid() == null ? null : user.getUuid().toString());
@@ -343,7 +347,7 @@ public class JsonProvider extends ZonePersistenceProvider
 
         public GroupsData()
         {
-            groups = new HashMap<String, GroupData>();
+            groups = new HashMap<>();
         }
     }
 
@@ -361,7 +365,7 @@ public class JsonProvider extends ZonePersistenceProvider
             this.suffix = suffix;
             this.Default = Default;
             this.priority = priority;
-            permissions = new ArrayList<String>();
+            permissions = new ArrayList<>();
         }
     }
 
@@ -373,23 +377,24 @@ public class JsonProvider extends ZonePersistenceProvider
         public GroupMembers(String name)
         {
             this.name = name;
-            members = new ArrayList<String>();
+            members = new ArrayList<>();
         }
     }
 
     public static class WorldZoneData
     {
-        public int id, dimId;
+        public int id;
+        public String dimId;
         public List<AreaZoneData> zones;
         public Map<String, GroupData> groups;
         public Map<String, UserData> players;
 
-        public WorldZoneData(int id, int dimId)
+        public WorldZoneData(int id, String dimId)
         {
             this.id = id;
-            groups = new HashMap<String, GroupData>();
-            players = new HashMap<String, UserData>();
-            zones = new ArrayList<AreaZoneData>();
+            groups = new HashMap<>();
+            players = new HashMap<>();
+            zones = new ArrayList<>();
         }
     }
 
@@ -412,8 +417,8 @@ public class JsonProvider extends ZonePersistenceProvider
             this.name = name;
             this.area = area;
             this.shape = shape;
-            groups = new HashMap<String, GroupData>();
-            players = new HashMap<String, UserData>();
+            groups = new HashMap<>();
+            players = new HashMap<>();
         }
     }
 
@@ -423,7 +428,7 @@ public class JsonProvider extends ZonePersistenceProvider
 
         public UsersData()
         {
-            users = new HashMap<String, UserData>();
+            users = new HashMap<>();
         }
     }
 
@@ -440,8 +445,8 @@ public class JsonProvider extends ZonePersistenceProvider
             this.username = username;
             this.prefix = prefix;
             this.suffix = suffix;
-            groups = new ArrayList<String>();
-            permissions = new ArrayList<String>();
+            groups = new ArrayList<>();
+            permissions = new ArrayList<>();
         }
     }
 }

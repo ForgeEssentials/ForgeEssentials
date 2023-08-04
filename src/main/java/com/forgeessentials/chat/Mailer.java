@@ -10,15 +10,16 @@ import java.util.Set;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.command.CommandMail;
-import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class Mailer extends ServerEventHandler
 {
@@ -26,7 +27,13 @@ public class Mailer extends ServerEventHandler
     public Mailer()
     {
         super();
-        FECommandManager.registerCommand(new CommandMail());
+    }
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandMail(true), event.getDispatcher());
+
     }
 
     public static class Mail
@@ -51,7 +58,7 @@ public class Mailer extends ServerEventHandler
 
         public UserIdent user;
 
-        public List<Mail> mails = new ArrayList<Mail>();
+        public List<Mail> mails = new ArrayList<>();
 
         public Mails(UserIdent user)
         {
@@ -63,7 +70,7 @@ public class Mailer extends ServerEventHandler
     private static Map<UserIdent, Mails> mailBags = new HashMap<>();
 
     @SubscribeEvent
-    public void serverStartingEvent(FEModuleServerInitEvent event)
+    public void serverStartingEvent(FEModuleServerStartingEvent event)
     {
         loadAllMails();
     }
@@ -71,15 +78,16 @@ public class Mailer extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
-        UserIdent user = UserIdent.get(event.player);
+        UserIdent user = UserIdent.get(event.getPlayer());
         Mails mailBag = getMailBag(user);
         if (mailBag.mails.isEmpty())
             return;
         Set<UserIdent> senders = new HashSet<>();
         for (Mail mail : mailBag.mails)
             senders.add(mail.sender);
-        String message = Translator.format("You hav unread mails from %s. Use /mail to read.", UserIdent.join(senders, ", ", " and "));
-        ChatOutputHandler.chatConfirmation(event.player, message);
+        String message = Translator.format("You have unread mails from %s. Use /mail to read.",
+                UserIdent.join(senders, ", ", " and "));
+        ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
     }
 
     public static void loadAllMails()
@@ -119,8 +127,8 @@ public class Mailer extends ServerEventHandler
         mailBag.mails.add(new Mail(sender, message));
         saveMails(recipent, mailBag);
         if (recipent.hasPlayer())
-            ChatOutputHandler.chatNotification(recipent.getPlayer(),
-                    Translator.format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
+            ChatOutputHandler.chatNotification(recipent.getPlayer().createCommandSourceStack(), Translator
+                    .format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
     }
 
 }

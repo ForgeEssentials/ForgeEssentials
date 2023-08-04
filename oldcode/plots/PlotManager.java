@@ -1,0 +1,97 @@
+package com.forgeessentials.economy.plots;
+
+import java.util.Set;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.PermissionEvent;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.events.FERegisterCommandsEvent;
+import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.player.PlayerChangedZone;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.CommandDispatcher;
+
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+public class PlotManager extends ServerEventHandler
+{
+
+    public PlotManager()
+    {
+    }
+
+    public static void serverStarting()
+    {
+        Plot.registerPermissions();
+    }
+
+    @SubscribeEvent
+    public void registerCommands(FERegisterCommandsEvent event)
+    {
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandPlot(true), dispatcher);
+
+    }
+
+    /* ------------------------------------------------------------ */
+
+    @SubscribeEvent
+    public void permissionAfterLoadEvent(PermissionEvent.AfterLoad event)
+    {
+        Plot.loadPlots();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onZoneChange(PlayerChangedZone event)
+    {
+        Plot oldPlot = Plot.getPlot(event.beforePoint.toWorldPoint());
+        Plot plot = Plot.getPlot(event.afterPoint.toWorldPoint());
+        // TODO: This could fail, another (non-plot) zone starts on the same plane as
+        // the plot!!!
+        // Plot plot = Plot.getPlot(event.afterZone.getId());
+        if (oldPlot != plot && plot != null)
+        {
+            String message = Translator.format("You entered \"%s\"", plot.getNameNotNull());
+
+            UserIdent ident = UserIdent.get(event.getPlayer());
+            Set<String> groups = plot.getZone().getStoredPlayerGroups(ident);
+            if (groups.contains(Plot.GROUP_PLOT_OWNER))
+            {
+                message += " " + Translator.translate("as owner");
+                ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
+            }
+            else if (groups.contains(Plot.GROUP_PLOT_USER))
+            {
+                message += " " + Translator.translate("with user access");
+                ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
+            }
+            else if (!plot.hasOwner())
+            {
+                if (plot.isForSale())
+                    message = Translator.translate("You have entered neutral plot which is open for sale");
+                else
+                    message = Translator.translate("You have entered a plot owned by the server");
+                ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
+            }
+            else
+            {
+                message += " " + Translator.format("owned by %s", plot.getOwnerName());
+                ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
+            }
+
+            // TODO: fee check
+
+            long price = plot.getPrice();
+            if (price == 0)
+                ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(),
+                        Translator.translate("You can buy this plot for free"));
+            else if (price > 0)
+                ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(),
+                        Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
+        }
+    }
+}

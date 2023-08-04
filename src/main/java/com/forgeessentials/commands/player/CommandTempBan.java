@@ -1,36 +1,38 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTempBan extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandTempBan extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandTempBan(boolean enabled)
+    {
+        super(enabled);
+    }
 
     public static final String PERM_BAN_REASON = "tempban.reason";
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "tempban";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/tempban <player> <duration>[s|m|h|d|w|months]: Tempban a player";
     }
 
     @Override
@@ -46,40 +48,60 @@ public class CommandTempBan extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + ".tempban";
+        return baseBuilder.then(Commands.argument("player", StringArgumentType.word())
+                .then(Commands.argument("duration", StringArgumentType.word())
+                        .then(Commands.argument("reasion", StringArgumentType.greedyString())
+                                .executes(CommandContext -> execute(CommandContext)))));
     }
 
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        UserIdent player = arguments.parsePlayer(true, false);
+        String name = StringArgumentType.getString(ctx, "player");
+        String reason = StringArgumentType.getString(ctx, "reasion");
+        String durationS = StringArgumentType.getString(ctx, "duration");
+        UserIdent ident = UserIdent.get(name, ctx.getSource(), true);
+        if (ident == null || !ident.hasUuid())
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found", name);
+        }
+        else if (!ident.hasPlayer())
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Player %s is not online", name);
+        }
 
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        long duration = arguments.parseTimeReadable();
+        long duration;
+        try
+        {
+            duration = parseTimeReadable(durationS);
+        }
+        catch (FECommandParsingException e)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), e.error);
+            return Command.SINGLE_SUCCESS;
+        }
 
-        PlayerInfo pi = PlayerInfo.get(player.getUuid());
+        PlayerInfo pi = PlayerInfo.get(ident.getUuid());
         pi.startTimeout("tempban", duration);
 
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
-        if (player.hasPlayer())
-            player.getPlayerMP().connection.disconnect(new TextComponentTranslation(Translator.format("You have been banned for %s", durationString)));
+        if (ident.hasPlayer())
+            ident.getPlayerMP().connection.disconnect(
+                    new StringTextComponent(Translator.format("You have been banned for %s", durationString)));
 
-        if (!arguments.isEmpty())
+        if (!reason.isEmpty())
         {
-            String reason = arguments.toString();
-            ChatOutputHandler.sendMessage(arguments.server,
-                    Translator.format("Player %s, has been temporarily banned for %s. Reason: %s", player.getUsername(), durationString, reason));
-            APIRegistry.perms.setPlayerPermissionProperty(player, PERM_BAN_REASON, reason);
+            ChatOutputHandler.sendMessage(ctx.getSource(),
+                    Translator.format("Player %s, has been temporarily banned for %s. Reason: %s", ident.getUsername(),
+                            durationString, reason));
+            APIRegistry.perms.setPlayerPermissionProperty(ident, PERM_BAN_REASON, reason);
         }
         else
         {
-            ChatOutputHandler.sendMessage(arguments.server,
-                    Translator.format("Player %s, has been temporarily banned for %s", player.getUsername(), durationString));
+            ChatOutputHandler.sendMessage(ctx.getSource(), Translator
+                    .format("Player %s, has been temporarily banned for %s", ident.getUsername(), durationString));
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

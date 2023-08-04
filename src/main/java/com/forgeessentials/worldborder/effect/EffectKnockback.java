@@ -1,28 +1,29 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.WorldUtil;
-import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
+import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.context.CommandContext;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 public class EffectKnockback extends WorldBorderEffect
 {
 
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
     }
 
     @Override
     public void playerMove(WorldBorder border, PlayerMoveEvent event)
     {
-        EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-        if (event.before.getDimension() != event.after.getDimension())
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        if (!event.before.getDimension().equals(event.after.getDimension()))
         {
             // Cancel event if player was teleported
             event.setCanceled(true);
@@ -39,9 +40,10 @@ public class EffectKnockback extends WorldBorderEffect
         if (!WorldUtil.isFree(p.getWorld(), p.getBlockX(), p.getBlockY(), p.getBlockZ(), 2))
             p.setY(WorldUtil.placeInWorld(p.getWorld(), p.getBlockX(), p.getBlockY(), p.getBlockZ()));
 
-        if (player.getRidingEntity() != null)
-            player.getRidingEntity().setLocationAndAngles(p.getX(), p.getY(), p.getZ(), player.getRidingEntity().rotationYaw, player.getRidingEntity().rotationPitch);
-        player.connection.setPlayerLocation(p.getX(), p.getY(), p.getZ(), player.rotationYaw, player.rotationPitch);
+        if (player.getVehicle() != null)
+            player.getVehicle().absMoveTo(p.getX(), p.getY(), p.getZ(), player.getVehicle().xRot,
+                    player.getVehicle().yRot);
+        player.connection.teleport(p.getX(), p.getY(), p.getZ(), player.xRot, player.yRot);
     }
 
     public String toString()
@@ -53,5 +55,5 @@ public class EffectKnockback extends WorldBorderEffect
     {
         return "";
     }
-    
+
 }

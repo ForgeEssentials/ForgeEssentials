@@ -1,43 +1,43 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandNickname extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandNickname extends ForgeEssentialsCommandBuilder
 {
 
-    public static final String PERM = ModuleChat.PERM + ".nickname";
-
-    public static final String PERM_OTHERS = PERM + ".others";
+    public CommandNickname(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "nickname";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "nick" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/nick <username> [nickname|del> Edit a player's nickname.";
     }
 
     @Override
@@ -47,15 +47,9 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Edit other players' nicknames");
+        APIRegistry.perms.registerPermission(ModuleChat.PERM + ".nickname.others", DefaultPermissionLevel.OP, "Edit other players' nicknames");
     }
 
     @Override
@@ -65,65 +59,88 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 1)
-        {
-            if (args[0].equalsIgnoreCase("del"))
-            {
-                ModuleChat.setPlayerNickname(sender, null);
-                ChatOutputHandler.chatConfirmation(sender, "Nickname removed.");
-            }
-            else
-            {
-                ModuleChat.setPlayerNickname(sender, args[0]);
-                ChatOutputHandler.chatConfirmation(sender, "Nickname set to " + args[0]);
-            }
-        }
-        else if (args.length == 2)
-        {
-            if (!PermissionAPI.hasPermission(sender, PERM_OTHERS))
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-
-            EntityPlayerMP player = getPlayer(server, sender, args[0]);
-            if (args[1].equalsIgnoreCase("del"))
-            {
-                ModuleChat.setPlayerNickname(player, null);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Removed nickname of %s", args[0]));
-            }
-            else
-            {
-                ModuleChat.setPlayerNickname(player, args[1]);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Set nickname of %s to %s", args[0], args[1]));
-            }
-        }
-        else
-        {
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <username> [nickname|del]");
-        }
+        return baseBuilder
+                .then(Commands.literal("clearSelf").executes(CommandContext -> execute(CommandContext, "delS")))
+                .then(Commands.literal("clearPlayer")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "delO"))))
+                .then(Commands.literal("setSelf")
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .executes(CommandContext -> execute(CommandContext, "setS"))))
+                .then(Commands.literal("setPlayer")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("name", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "setO")))));
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 2)
+        if (params.equals("delS"))
         {
-            EntityPlayerMP player = getPlayer(server, sender, args[0]);
-            if (args[1].equalsIgnoreCase("del"))
-            {
-                ModuleChat.setPlayerNickname(player, null);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Removed nickname of %s", args[0]));
-            }
-            else
-            {
-                ModuleChat.setPlayerNickname(player, args[1]);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Set nickname of %s to %s", args[0], args[1]));
-            }
+            ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), null);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname removed.");
+            return Command.SINGLE_SUCCESS;
         }
-        else
+        if (params.equals("setS"))
         {
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <username> [nickname|del]");
+            String name = StringArgumentType.getString(ctx, "name");
+            ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname set to " + name);
+            return Command.SINGLE_SUCCESS;
         }
+
+        if (!hasPermission(((PlayerEntity) ctx.getSource().getEntity()).createCommandSourceStack(), ModuleChat.PERM + ".nickname.others"))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            return Command.SINGLE_SUCCESS;
+        }
+
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (params.equals("delO"))
+        {
+            ModuleChat.setPlayerNickname(player, null);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed nickname of %s", player));
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("setO"))
+        {
+            String name = StringArgumentType.getString(ctx, "name");
+            ModuleChat.setPlayerNickname(player, name);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Set nickname of %s to %s", player, name));
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("delS") || params.equals("setS"))
+        {
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Console can only modify player nicknames!"));
+            return Command.SINGLE_SUCCESS;
+        }
+
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (params.equals("delO"))
+        {
+            ModuleChat.setPlayerNickname(player, null);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed nickname of %s", player));
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("setO"))
+        {
+            String name = StringArgumentType.getString(ctx, "name");
+            ModuleChat.setPlayerNickname(player, name);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    Translator.format("Set nickname of %s to %s", player, name));
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

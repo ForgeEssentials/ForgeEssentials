@@ -30,9 +30,7 @@ public class PlayerWallet implements Wallet
     @Override
     public boolean covers(long value)
     {
-        if (amount < value)
-            return false;
-        return true;
+        return amount >= value;
     }
 
     @Override

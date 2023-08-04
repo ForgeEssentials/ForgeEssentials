@@ -1,6 +1,7 @@
 package com.forgeessentials.playerlogger;
 
 import java.sql.Blob;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,10 +12,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,50 +24,28 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.rowset.serial.SerialBlob;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBed;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDoor;
-import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameType;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
-import net.minecraftforge.fe.event.world.FireEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.playerlogger.persistenceProviders.HibernatePersistenceUnitInfo;
+import com.forgeessentials.playerlogger.persistenceProviders.PersistenceSelector;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action02Command;
+import com.forgeessentials.playerlogger.entity.Action03PlayerEvent;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
+import com.forgeessentials.playerlogger.entity.Action04PlayerPosition;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.BlockData_;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.PlayerData_;
-import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.playerlogger.event.LogEventBreak;
 import com.forgeessentials.playerlogger.event.LogEventBurn;
 import com.forgeessentials.playerlogger.event.LogEventCommand;
@@ -75,13 +55,40 @@ import com.forgeessentials.playerlogger.event.LogEventPlace;
 import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
 import com.forgeessentials.playerlogger.event.LogEventPlayerPositions;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
-import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.events.player.PlayerPostInteractEvent;
+import com.forgeessentials.util.events.world.FireEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BedItem;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.SkullItem;
+import net.minecraft.item.TallBlockItem;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityMultiPlaceEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -92,17 +99,21 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     private EntityManager em;
 
-    private Map<String, Integer> blockCache = new HashMap<>();
+    private Map<String, String> blockCache = new HashMap<>();
 
-    private Map<Block, Integer> blockTypeCache = new HashMap<>();
+    private Map<Block, String> blockTypeCache = new HashMap<>();
 
     private Map<UUID, Long> playerCache = new HashMap<>();
+
+    boolean purging = false;
 
     /* ------------------------------------------------------------ */
 
     private ConcurrentLinkedQueue<PlayerLoggerEvent<?>> eventQueue = new ConcurrentLinkedQueue<>();
 
     /* ------------------------------------------------------------ */
+
+    public PlayerLogger() {}
 
     /**
      * Closes any existing database connection and frees resources
@@ -139,34 +150,57 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         Properties properties = new Properties();
-        switch (PlayerLoggerConfig.databaseType)
+        switch (PlayerLoggerConfig.getDatabaseType())
         {
         case "h2":
-            if (!PlayerLoggerConfig.databaseUrl.startsWith("./"))
-                PlayerLoggerConfig.databaseUrl = "./" + PlayerLoggerConfig.databaseUrl;
+            if (!PlayerLoggerConfig.getDatabaseUrl().startsWith("./"))
+                PlayerLoggerConfig.setDatabaseUrl("./" + PlayerLoggerConfig.getDatabaseUrl());
 
-            properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.databaseUrl);
+            properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.getDatabaseUrl());
             break;
         case "mysql":
             // e.g.: jdbc:mysql://localhost:3306/forgeessentials
-            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.databaseUrl);
+            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.getDatabaseUrl());
             break;
         default:
             throw new RuntimeException("PlayerLogger database type must be either h2 or mysql.");
         }
-        properties.setProperty("hibernate.connection.username", PlayerLoggerConfig.databaseUsername);
-        properties.setProperty("hibernate.connection.password", PlayerLoggerConfig.databasePassword);
+        properties.setProperty("hibernate.connection.username", PlayerLoggerConfig.getDatabaseUsername());
+        properties.setProperty("hibernate.connection.password", PlayerLoggerConfig.getDatabasePassword());
         // properties.setProperty("hibernate.hbm2ddl.auto", "update");
         // properties.setProperty("hibernate.format_sql", "false");
         // properties.setProperty("hibernate.show_sql", "true");
 
-        entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.databaseType, properties);
-        // entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" +
-        // PlayerLoggerConfig.databaseType, properties);
+        try
+        {
+            // entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_"
+            // + PlayerLoggerConfig.getDatabaseType(), properties);
+            PersistenceUnitInfo info = new HibernatePersistenceUnitInfo(
+                    "playerlogger_" + PlayerLoggerConfig.getDatabaseType(), getPersistanceClasses(),
+                    PersistenceSelector.getPersistenceProps("playerlogger_" + PlayerLoggerConfig.getDatabaseType()));
+            entityManagerFactory = new HibernatePersistenceProvider().createContainerEntityManagerFactory(info,
+                    properties);
+        }
+        catch (PersistenceException e)
+        {
+            e.printStackTrace();
+            LoggingHandler.felog.error("PLAYERLOGGER failed to create Database");
+            return;
+        }
         em = entityManagerFactory.createEntityManager();
 
-        if (PlayerLoggerConfig.playerPositionInterval > 0)
-            TaskRegistry.scheduleRepeated(playerPositionTimer, (int) (PlayerLoggerConfig.playerPositionInterval * 1000));
+        //if (PlayerLoggerConfig.getPlayerPositionInterval() > 0)
+        //    TaskRegistry.scheduleRepeated(playerPositionTimer,
+        //            (int) (PlayerLoggerConfig.getPlayerPositionInterval() * 1000));
+        LoggingHandler.felog.info("PLAYERLOGGER created Database");
+
+    }
+
+    public List<String> getPersistanceClasses()
+    {
+        return Arrays.asList(Action.class.getName(), Action01Block.class.getName(), Action02Command.class.getName(),
+                Action03PlayerEvent.class.getName(), Action04PlayerPosition.class.getName(), BlockData.class.getName(),
+                PlayerData.class.getName()/* , WorldData.class.getName() */);
     }
 
     @Override
@@ -176,60 +210,64 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         {
             synchronized (this)
             {
-                if (em == null)
-                    return;
-                if (!em.isOpen())
+                if (!purging)
                 {
-                    LoggingHandler.felog.error("[PL] Playerlogger database closed. Trying to reconnect...");
+                    if (em == null)
+                        return;
+                    if (!em.isOpen())
+                    {
+                        LoggingHandler.felog.error("[PL] Playerlogger database closed. Trying to reconnect...");
+                        try
+                        {
+                            em = entityManagerFactory.createEntityManager();
+                        }
+                        catch (IllegalStateException e)
+                        {
+                            LoggingHandler.felog.error(
+                                    "[PL] ------------------------------------------------------------------------");
+                            LoggingHandler.felog.error(
+                                    "[PL] Fatal error! Database connection was lost and could not be reestablished");
+                            LoggingHandler.felog.error("[PL] Stopping playerlogger!");
+                            LoggingHandler.felog.error(
+                                    "[PL] ------------------------------------------------------------------------");
+                            em = null;
+                            eventQueue.clear();
+                            return;
+                        }
+                    }
                     try
                     {
-                        em = entityManagerFactory.createEntityManager();
+                        em.getTransaction().begin();
+                        int count;
+                        for (count = 0; count < 1000; count++)
+                        {
+                            PlayerLoggerEvent<?> logEvent = eventQueue.poll();
+                            if (logEvent == null)
+                                break;
+                            logEvent.process(em);
+                        }
+                        em.getTransaction().commit();
                     }
-                    catch (IllegalStateException e)
+                    catch (Exception e1)
                     {
-                        LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
-                        LoggingHandler.felog.error("[PL] Fatal error! Database connection was lost and could not be reestablished");
-                        LoggingHandler.felog.error("[PL] Stopping playerlogger!");
-                        LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
-                        em = null;
-                        eventQueue.clear();
-                        return;
+                        LoggingHandler.felog.error("[PL] Exception while persisting playerlogger entries");
+                        e1.printStackTrace();
+                        try
+                        {
+                            em.getTransaction().rollback();
+                        }
+                        catch (Exception e2)
+                        {
+                            LoggingHandler.felog.error("[PL] Exception while rolling back changes!");
+                            e2.printStackTrace();
+                            em.close();
+                            return;
+                        }
                     }
-                }
-                try
-                {
-                    em.getTransaction().begin();
-                    int count;
-                    for (count = 0; count < 1000; count++)
+                    finally
                     {
-                        PlayerLoggerEvent<?> logEvent = eventQueue.poll();
-                        if (logEvent == null)
-                            break;
-                        logEvent.process(em);
+                        em.clear();
                     }
-                    em.getTransaction().commit();
-                    // System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis()
-                    // % (1000 * 60), count));
-                }
-                catch (Exception e1)
-                {
-                    LoggingHandler.felog.error("[PL] Exception while persisting playerlogger entries");
-                    e1.printStackTrace();
-                    try
-                    {
-                        em.getTransaction().rollback();
-                    }
-                    catch (Exception e2)
-                    {
-                        LoggingHandler.felog.error("[PL] Exception while rolling back changes!");
-                        e2.printStackTrace();
-                        em.close();
-                        return;
-                    }
-                }
-                finally
-                {
-                    em.clear();
                 }
             }
             try
@@ -246,29 +284,44 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected void startThread()
     {
-        // TODO: Instead of creating a new thread all the time, try to use one single thread in waiting mode
+        // TODO: Instead of creating a new thread all the time, try to use one single
+        // thread in waiting mode
         if (thread != null && thread.isAlive())
             return;
-        thread = new Thread(this, "Playerlogger");
+        thread = new Thread(this, "FEPlayerlogger");
         thread.start();
     }
 
     // ============================================================
 
-    public synchronized void purgeOldData(Date startTime)
+    public synchronized void purgeOldData(Date startTime, PlayerEntity player)
     {
-        String hql = "delete from Action where time < :startTime";
-        Query q = em.createQuery(hql).setParameter("startTime", startTime);
-        try
-        {
-            em.getTransaction().begin();
-            int count = q.executeUpdate();
-            LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
-        }
-        finally
-        {
-            em.getTransaction().commit();
-        }
+        purging = true;
+        Thread purgeData = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                String hql = "delete from Action where time < :startTime";
+                Query q = em.createQuery(hql).setParameter("startTime", startTime);
+                try
+                {
+                    em.getTransaction().begin();
+                    int count = q.executeUpdate();
+                    LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
+                    if (player != null)
+                    {
+                        ChatOutputHandler.chatConfirmation(player,
+                                String.format("Purged %d old Playerlogger entries", count));
+                    }
+                }
+                finally
+                {
+                    em.getTransaction().commit();
+                    purging = false;
+                }
+            }
+        }, "FEPlayerLoggerPurgeThread");
+        purgeData.start();
     }
 
     // ============================================================
@@ -338,10 +391,10 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         startThread();
     }
 
-    protected synchronized WorldData getWorld(int dimensionId)
-    {
-        return em.getReference(WorldData.class, dimensionId);
-    }
+    // protected synchronized WorldData getWorld(String dimensionId)
+    // {
+    // return em.getReference(WorldData.class, dimensionId);
+    // }
 
     protected synchronized PlayerData getPlayer(String uuid, String username)
     {
@@ -372,7 +425,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected synchronized BlockData getBlock(String name)
     {
-        Integer id = blockCache.get(name);
+        String id = blockCache.get(name);
         if (id != null)
             return em.getReference(BlockData.class, id);
 
@@ -389,7 +442,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected synchronized BlockData getBlock(Block block)
     {
-        Integer id = blockTypeCache.get(block);
+        String id = blockTypeCache.get(block);
         if (id != null)
             return em.getReference(BlockData.class, id);
         BlockData data = getBlock(ServerUtil.getBlockName(block));
@@ -405,11 +458,11 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         {
             if (tileEntity == null)
                 return null;
-            NBTTagCompound nbt = new NBTTagCompound();
-            tileEntity.writeToNBT(nbt);
-            nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
+            CompoundNBT nbt = new CompoundNBT();
+            tileEntity.save(nbt);
+            nbt.putString("ENTITY_CLASS", tileEntity.getClass().getName());
             ByteBuf buf = Unpooled.buffer();
-            ByteBufUtils.writeTag(buf, nbt);
+            writeTag(buf, nbt);
             return new SerialBlob(buf.array());
         }
         catch (Exception e)
@@ -429,7 +482,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return null;
 
             ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
-            NBTTagCompound nbt = ByteBufUtils.readTag(buf);
+            CompoundNBT nbt = readTag(buf);
             if (nbt == null)
                 return null;
 
@@ -443,7 +496,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             Class<TileEntity> teClazz = (Class<TileEntity>) clazz;
 
             TileEntity entity = teClazz.newInstance();
-            entity.readFromNBT(nbt);
+            entity.deserializeNBT(nbt);
             return entity;
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
@@ -458,6 +511,18 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return null;
     }
 
+    public static void writeTag(ByteBuf to, CompoundNBT tag)
+    {
+        PacketBuffer pb = new PacketBuffer(to);
+        pb.writeNbt(tag);
+    }
+
+    @Nullable
+    public static CompoundNBT readTag(ByteBuf from)
+    {
+        PacketBuffer pb = new PacketBuffer(from);
+        return pb.readNbt();
+    }
     /* ------------------------------------------------------------ */
     /* data retrieval */
 
@@ -472,23 +537,30 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * @param root
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @return
      */
-    protected Predicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime, long fromId)
+    protected Predicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime,
+            long fromId)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         Predicate predicate = cb.and();
         if (area != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<String> get(Action_.world), cb.literal(area.getDimension())));
             Point lp = area.getLowPoint();
             Point hp = area.getHighPoint();
-            predicate.getExpressions().add(cb.between(root.get(Action_.x), cb.literal(lp.getX()), cb.literal(hp.getX())));
-            predicate.getExpressions().add(cb.between(root.get(Action_.y), cb.literal(lp.getY()), cb.literal(hp.getY())));
-            predicate.getExpressions().add(cb.between(root.get(Action_.z), cb.literal(lp.getZ()), cb.literal(hp.getZ())));
+            predicate.getExpressions()
+                    .add(cb.between(root.get(Action_.x), cb.literal(lp.getX()), cb.literal(hp.getX())));
+            predicate.getExpressions()
+                    .add(cb.between(root.get(Action_.y), cb.literal(lp.getY()), cb.literal(hp.getY())));
+            predicate.getExpressions()
+                    .add(cb.between(root.get(Action_.z), cb.literal(lp.getZ()), cb.literal(hp.getZ())));
         }
         if (startTime != null)
             predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
@@ -502,18 +574,22 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * @param root
      * @param point
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @return
      */
-    protected Predicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime, long fromId)
+    protected Predicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime,
+            long fromId)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         Predicate predicate = cb.and();
         if (point != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<String> get(Action_.world), cb.literal(point.getDimension())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.x), cb.literal(point.getX())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.y), cb.literal(point.getY())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.z), cb.literal(point.getZ())));
@@ -529,9 +605,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -551,9 +630,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param point
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -573,13 +655,17 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
-    public List<Action01Block> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, long fromId, int maxResults)
+    public List<Action01Block> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, long fromId,
+            int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action01Block> cQuery = cBuilder.createQuery(Action01Block.class);
@@ -593,7 +679,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action01Block> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, long fromId, int maxResults)
+    public List<Action01Block> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, long fromId,
+            int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action01Block> cQuery = cBuilder.createQuery(Action01Block.class);
@@ -607,7 +694,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action02Command> getLoggedCommands(WorldArea area, Date startTime, Date endTime, long fromId, int maxResults)
+    public List<Action02Command> getLoggedCommands(WorldArea area, Date startTime, Date endTime, long fromId,
+            int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action02Command> cQuery = cBuilder.createQuery(Action02Command.class);
@@ -621,7 +709,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action02Command> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, long fromId, int maxResults)
+    public List<Action02Command> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, long fromId,
+            int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action02Command> cQuery = cBuilder.createQuery(Action02Command.class);
@@ -643,31 +732,31 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         public void run()
         {
             logEvent(new LogEventPlayerPositions());
-            startThread();
         }
     };
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void worldLoad(WorldEvent.Load event)
-    {
-        logEvent(new LogEventWorldLoad(event));
-        startThread();
-    }
+//    @SubscribeEvent(priority = EventPriority.LOWEST)
+//    public void worldLoad(WorldEvent.Load event)
+//    {
+//        logEvent(new LogEventWorldLoad(event));
+//        startThread();
+//    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void placeEvent(BlockEvent.PlaceEvent event)
+    public void placeEvent(EntityPlaceEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER || em == null)
+        if (FMLEnvironment.dist.isClient() || em == null)
             return;
-        if (event instanceof BlockEvent.MultiPlaceEvent)
+        if (!(event.getEntity() instanceof PlayerEntity))
+            return;
+        if (event instanceof EntityMultiPlaceEvent)
         {
             // Get only last state of all changes
             Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
-            for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
+            for (BlockSnapshot snapshot : ((EntityMultiPlaceEvent) event).getReplacedBlockSnapshots())
                 changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, event.getPlacedAgainst(), event.getPlayer(), event.getHand())));
-            startThread();
+            	logEvent(new LogEventPlace(new EntityPlaceEvent(snapshot, event.getPlacedAgainst(), event.getEntity())));
         }
         else
         {
@@ -678,6 +767,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void breakEvent(BlockEvent.BreakEvent event)
     {
+        if (!(event.getPlayer() instanceof PlayerEntity))
+            return;
         logEvent(new LogEventBreak(event));
     }
 
@@ -690,13 +781,19 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
+        if (FMLEnvironment.dist.isClient() || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        GameType gameType = ((EntityPlayerMP) event.getEntityPlayer()).interactionManager.getGameType();
-        if (gameType != GameType.CREATIVE)
+        if (((ServerPlayerEntity) event.getEntity()).gameMode.getGameModeForPlayer() != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
         }
+    }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
+    {
+        if (FMLEnvironment.dist.isClient() || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
+            return;
+        logEvent(new LogEventInteract(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -705,7 +802,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event.stack != null)
         {
             Item item = event.stack.getItem();
-            if (item instanceof ItemBlock || item instanceof ItemRedstone || item instanceof ItemBed || item instanceof ItemDoor || item instanceof ItemSkull)
+            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem
+                    || item instanceof TallBlockItem || item instanceof SkullItem)
                 return;
         }
         logEvent(new LogEventPostInteract(event));

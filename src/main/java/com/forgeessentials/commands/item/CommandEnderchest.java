@@ -1,45 +1,62 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Opens your enderchest.
  */
-public class CommandEnderchest extends ForgeEssentialsCommandBase
+public class CommandEnderchest extends ForgeEssentialsCommandBuilder
 {
+    public CommandEnderchest(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "enderchest";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "echest" };
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        EntityPlayerMP player = sender;
-        if (player.openContainer != player.inventoryContainer)
-        {
-            player.closeScreen();
-        }
-        player.getNextWindowId();
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
 
-        InventoryEnderChest chest = player.getInventoryEnderChest();
-        chest.setChestTileEntity(null);
-        player.displayGUIChest(chest);
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+        if (player.containerMenu != player.inventoryMenu)
+        {
+            player.closeContainer();
+        }
+        player.nextContainerCounter();
+
+        // player.getEnderChestInventory().startOpen(player);
+        player.openMenu(new SimpleNamedContainerProvider(
+                (i, inv, p) -> ChestContainer.threeRows(i, inv, player.getEnderChestInventory()),
+                new TranslationTextComponent("container.enderchest")));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -52,18 +69,6 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".enderchest";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/enderchest Opens your enderchest.";
     }
 
 }

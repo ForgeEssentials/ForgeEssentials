@@ -3,12 +3,13 @@ package com.forgeessentials.chat.irc.command;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.command.CommandException;
+import org.pircbotx.hooks.events.MessageEvent;
 
-import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.chat.irc.IrcCommand;
 
-public class CommandListPlayers extends IrcCommandParser
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+public class CommandListPlayers implements IrcCommand
 {
 
     @Override
@@ -36,11 +37,12 @@ public class CommandListPlayers extends IrcCommandParser
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void processCommand(MessageEvent event, String[] args)
     {
-        arguments.confirm("List of players:");
-        for (String username : arguments.server.getPlayerList().getOnlinePlayerNames())
-            arguments.confirm(" - " + username);
+    	System.out.println("Running list command");
+    	event.respondWith("List of players:");
+        for (String username : ServerLifecycleHooks.getCurrentServer().getPlayerNames())
+        	event.respondWith(" - " + username);
     }
 
 }

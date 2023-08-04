@@ -2,8 +2,7 @@ package com.forgeessentials.util;
 
 import java.util.IllegalFormatException;
 
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public enum EnumDBType
 {
@@ -36,8 +35,9 @@ public enum EnumDBType
         }
         catch (ClassNotFoundException e)
         {
-            LoggingHandler.felog.error("Could not load the " + this + " JDBC Driver! Does it exist in the lib directory?");
-            Throwables.propagateIfPossible(e);
+            LoggingHandler.felog
+                    .error("Could not load the " + this + " JDBC Driver! Does it exist in the lib directory?");
+            throw new RuntimeException(e);
         }
     }
 
@@ -48,8 +48,7 @@ public enum EnumDBType
      */
     public String getConnectionString(Object... data) throws IllegalFormatException
     {
-        String formatted = String.format(connect, data);
-        return formatted;
+        return String.format(connect, data);
     }
 
     public boolean isRemote;

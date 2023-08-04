@@ -7,8 +7,6 @@ import java.security.SecureRandom;
 
 import org.apache.commons.codec.binary.Hex;
 
-import com.google.common.base.Throwables;
-
 public class EncryptionHelper
 {
 
@@ -30,7 +28,7 @@ public class EncryptionHelper
         }
         catch (NoSuchAlgorithmException e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -52,7 +50,7 @@ public class EncryptionHelper
         }
         catch (UnsupportedEncodingException e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

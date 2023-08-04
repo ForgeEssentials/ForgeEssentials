@@ -4,44 +4,67 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public interface NamedWorldHandler
 {
 
-    static final String WORLD_NAME_END = "end";
-    static final String WORLD_NAME_NETHER = "nether";
-    static final String WORLD_NAME_SURFACE = "surface";
+    static final String WORLD_NAME_END = "minecarft:the_end";
+    static final String WORLD_NAME_NETHER = "minecarft:the_nether";
+    static final String WORLD_NAME_OVERWORLD = "minecarft:overworld";
 
-    WorldServer getWorld(String name);
+    static final String SHORT_WORLD_NAME_END = "the_end";
+    static final String SHORT_WORLD_NAME_NETHER = "the_nether";
+    static final String SHORT_WORLD_NAME_OVERWORLD = "overworld";
 
-    String getWorldName(int dimId);
+    ServerWorld getWorld(String name);
+
+    String getWorldName(String dimId);
 
     List<String> getWorldNames();
+
+    List<String> getShortWorldNames();
 
     public static class DefaultNamedWorldHandler implements NamedWorldHandler
     {
 
         @Override
-        public WorldServer getWorld(String name)
+        public ServerWorld getWorld(String regName)
         {
-            name = name.toLowerCase();
-            switch (name)
+            regName = regName.toLowerCase();
+            switch (regName)
             {
-            case WORLD_NAME_SURFACE:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
+            case SHORT_WORLD_NAME_OVERWORLD:
+            case WORLD_NAME_OVERWORLD:
+                return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
+            case SHORT_WORLD_NAME_NETHER:
             case WORLD_NAME_NETHER:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(-1);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(World.NETHER);
+            case SHORT_WORLD_NAME_END:
             case WORLD_NAME_END:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(1);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(World.END);
             default:
             {
                 try
                 {
-                    return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(Integer.parseInt(name));
+                    ServerWorld world = ServerUtil.getWorldFromString(regName);
+
+                    if (world == null)
+                    {
+                        LoggingHandler.felog.debug("argument.dimension.invalid" + world);
+                        throw new Exception("argument.dimension.invalid" + world);
+                    }
+                    else
+                    {
+                        return world;
+                    }
                 }
-                catch (NumberFormatException e)
+                catch (Exception e)
                 {
                     return null;
                 }
@@ -50,27 +73,35 @@ public interface NamedWorldHandler
         }
 
         @Override
-        public String getWorldName(int dimId)
+        public String getWorldName(String dim)
         {
-            switch (dimId)
+            switch (dim)
             {
-            case 0:
-                return WORLD_NAME_SURFACE;
-            case -1:
-                return WORLD_NAME_NETHER;
-            case 1:
-                return WORLD_NAME_END;
+            case WORLD_NAME_OVERWORLD:
+                return "overworld";
+            case WORLD_NAME_NETHER:
+                return "the_nether";
+            case WORLD_NAME_END:
+                return "the_end";
             default:
-                return Integer.toString(dimId);
+                return dim;
             }
         }
 
         @Override
         public List<String> getWorldNames()
         {
-            return new ArrayList<>(Arrays.asList(WORLD_NAME_SURFACE, WORLD_NAME_NETHER, WORLD_NAME_END));
+            return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
+        }
+
+        @Override
+        public List<String> getShortWorldNames()
+        {
+            return new ArrayList<>(
+                    Arrays.asList(SHORT_WORLD_NAME_OVERWORLD, SHORT_WORLD_NAME_NETHER, SHORT_WORLD_NAME_END));
+
         }
 
     }
-    
+
 }

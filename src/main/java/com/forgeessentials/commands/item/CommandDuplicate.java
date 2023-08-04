@@ -1,30 +1,33 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.PlayerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDuplicate extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandDuplicate extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandDuplicate(boolean enabled)
     {
-        return "duplicate";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender par1ICommandSender)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/duplicate [amount]: Duplicates your current item";
+        return "duplicate";
     }
 
     @Override
@@ -40,27 +43,35 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + "." + getName();
+        return baseBuilder
+                .then(Commands.argument("size", IntegerArgumentType.integer(0, 64))
+                        .executes(CommandContext -> execute(CommandContext, "size")))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        ItemStack stack = player.getHeldItemMainhand();
+        PlayerEntity player = (PlayerEntity) ctx.getSource().getEntity();
+        ItemStack stack = player.getMainHandItem();
         if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("No item equipped");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No item equipped");
+            return Command.SINGLE_SUCCESS;
+        }
 
         int stackSize = 0;
-        if (args.length > 0)
-            stackSize = parseInt(args[0]);
-
+        if (params.equals("size"))
+        {
+            stackSize = IntegerArgumentType.getInteger(ctx, "size");
+        }
         ItemStack newStack = stack.copy();
         if (stackSize > 0)
             newStack.setCount(stackSize);
 
         PlayerUtil.give(player, newStack);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

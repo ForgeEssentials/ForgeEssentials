@@ -2,61 +2,61 @@ package com.forgeessentials.playerlogger.command;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRollback extends ParserCommandBase
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandRollback extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandRollback(boolean enabled)
+    {
+        super(enabled);
+    }
 
     public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
     public static final String PERM_PREVIEW = PERM + ".preview";
 
-    private static final String[] subCommands = { "help", "start", "cancel", "confirm", "play", "stop", "+", "-" };
+    static private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
 
-    private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
-
-    private Timer playbackTimer = new Timer();
+    static private Map<UUID, Timer> playbackTimers = new HashMap<>();
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "rollback";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "rb" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/rb: Rollback changes in the world with playerlogger";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM;
     }
 
     @Override
@@ -72,186 +72,256 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.isEmpty())
-        {
-            startRollback(args);
-            return;
-        }
-
-        args.tabComplete(subCommands);
-        String arg = args.remove().toLowerCase();
-        switch (arg)
-        {
-        case "help":
-            help(args.sender);
-            break;
-        case "start":
-            startRollback(args);
-            break;
-        case "cancel":
-            cancelRollback(args);
-            break;
-        case "confirm":
-            confirmRollback(args);
-            break;
-        case "+":
-            stepRollback(args, 1);
-            break;
-        case "-":
-            stepRollback(args, -1);
-            break;
-        case "play":
-            playRollback(args);
-            break;
-        case "stop":
-            stopRollback(args);
-            break;
-        default:
-            throw new TranslatedCommandException("Unknown subcommand");
-        }
+        return baseBuilder
+                .then(Commands.literal("start")
+                		.then(Commands.literal("currentTime")
+                				.executes(CommandContext -> execute(CommandContext, "startN")))
+                		.then(Commands.literal("customTime")
+                				.then(Commands.argument("time", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "start")))))
+                .then(Commands.literal("cancel").executes(CommandContext -> execute(CommandContext, "cancel")))
+                .then(Commands.literal("confirm").executes(CommandContext -> execute(CommandContext, "confirm")))
+                .then(Commands.literal("+")
+                        .then(Commands.argument("time", StringArgumentType.string())
+                                .executes(CommandContext -> execute(CommandContext, "+"))))
+                .then(Commands.literal("-")
+                        .then(Commands.argument("time", StringArgumentType.string())
+                                .executes(CommandContext -> execute(CommandContext, "-"))))
+                .then(Commands.literal("play")
+                        .then(Commands.argument("speed", IntegerArgumentType.integer())
+                                .executes(CommandContext -> execute(CommandContext, "play"))))
+                .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
+                .then(Commands.literal("stop").executes(CommandContext -> execute(CommandContext, "stop")))
+                .executes(CommandContext -> execute(CommandContext, "help"));
     }
 
-    @SuppressWarnings("deprecation")
-    private void startRollback(CommandParserArgs args) throws CommandException
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        args.checkPermission(PERM_PREVIEW);
+        switch (params)
+        {
+        case "help":
+            help(ctx.getSource());
+            break;
+        case "startN":
+        	startRollback(ctx, true);
+            break;
+        case "start":
+            startRollback(ctx, false);
+            break;
+        case "cancel":
+            cancelRollback(ctx);
+            break;
+        case "confirm":
+            confirmRollback(ctx);
+            break;
+        case "+":
+            stepRollback(ctx, 1);
+            break;
+        case "-":
+            stepRollback(ctx, -1);
+            break;
+        case "play":
+            playRollback(ctx);
+            break;
+        case "stop":
+            stopRollback(ctx);
+            break;
+        default:
+            ChatOutputHandler.chatError(ctx.getSource(), "Unknown subcommand %s", params);
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 
-        if (args.isTabCompletion)
+    private void startRollback(CommandContext<CommandSource> ctx, boolean useCurrentTime) throws CommandException
+    {
+        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return;
+        }
 
-        if (rollbacks.containsKey(args.senderPlayer.getPersistentID()))
-            cancelRollback(args);
+        if (rollbacks.containsKey(getServerPlayer(ctx.getSource()).getGameProfile().getId()))
+            cancelRollback(ctx);
 
-        Selection area = SelectionHandler.getSelection(args.senderPlayer);
+        Selection area = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
         if (area == null)
-            throw new TranslatedCommandException("No selection available. Please select a region first.");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No selection available. Please select a region first.");
+            return;
+        }
 
         int step = -60;
-        if (!args.isEmpty()) {
-            String time = args.remove();
+        if(!useCurrentTime) {
+        	String time = StringArgumentType.getString(ctx, "time");
             try
             {
                 SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
                 Date parsedDate = format.parse(time);
-                Date currentDate = new Date();
+                Date currentDate = Date.from(Instant.now());
                 Date date = new Date();
                 date.setSeconds(parsedDate.getSeconds());
                 date.setMinutes(parsedDate.getMinutes());
                 date.setHours(parsedDate.getHours());
-                step = (int)((date.getTime() - currentDate.getTime()) / 1000);
+                step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
             }
             catch (ParseException e)
             {
-                throw new TranslatedCommandException("Invalid time format: %s", time);
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid time format: %s, use HH:mm:ss format!", time);
+                return;
             }
         }
 
-        RollbackInfo rb = new RollbackInfo(args.senderPlayer, area);
-        rollbacks.put(args.senderPlayer.getPersistentID(), rb);
+        RollbackInfo rb = new RollbackInfo(getServerPlayer(ctx.getSource()), area);
+        rollbacks.put(getServerPlayer(ctx.getSource()).getGameProfile().getId(), rb);
         rb.step(step);
         rb.previewChanges();
 
-        ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void stepRollback(CommandParserArgs args, int sec) throws CommandException
+    private void stepRollback(CommandContext<CommandSource> ctx, int sec) throws CommandException
     {
-        args.checkPermission(PERM_PREVIEW);
-
-        if (!args.isEmpty())
-            sec = (int) (args.parseTimeReadable() / 1000) * sec;
-
-        if (args.isTabCompletion)
+        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return;
+        }
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        try
+        {
+            sec = (int) (parseTimeReadable(StringArgumentType.getString(ctx, "time")) / 1000) * sec;
+        }
+        catch (FECommandParsingException e)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), e.error);
+            return;
+        }
+
+        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+            return;
+        }
 
         rb.step(sec);
         rb.previewChanges();
-        ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void confirmRollback(CommandParserArgs args) throws CommandException
+    private void confirmRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        args.checkPermission(PERM);
-
-        if (args.isTabCompletion)
+        if (!hasPermission(ctx.getSource(), PERM))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return;
+        }
 
-        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+            return;
+        }
 
         rb.confirm();
-        ChatOutputHandler.chatConfirmation(args.sender, "Successfully restored changes");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Successfully restored changes");
     }
 
-    private void cancelRollback(CommandParserArgs args) throws CommandException
+    private void cancelRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress.");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress.");
+            return;
+        }
 
         rb.cancel();
-        ChatOutputHandler.chatConfirmation(args.sender, "Cancelled active rollback");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cancelled active rollback");
     }
 
-    private void playRollback(CommandParserArgs args) throws CommandException
+    private void playRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        args.checkPermission(PERM_PREVIEW);
+        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            return;
+        }
 
         int speed = 1;
-        if (!args.isEmpty())
-            speed = parseInt(args.remove());
+        speed = IntegerArgumentType.getInteger(ctx, "speed");
         if (speed == 0)
             speed = 1;
         if (Math.abs(speed) > 10)
             speed = (int) (Math.signum(speed) * 10);
 
-        if (args.isTabCompletion)
-            return;
-
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
+        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
-
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+            return;
+        }
+        if (playbackTimer != null)
+        {
+            playbackTimer.cancel();
+            playbackTimer = null;
+        }
         if (rb.task != null)
         {
             rb.task.cancel();
             rb.task = null;
-            ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped playback");
         }
         else
         {
             rb.task = new RollbackInfo.PlaybackTask(rb, (int) (Math.signum(speed)));
+            playbackTimer = new Timer("FERollbackTimer");
             playbackTimer.schedule(rb.task, 1000, 1000 / Math.abs(speed));
-            ChatOutputHandler.chatConfirmation(args.sender, "Started playback");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started playback");
         }
     }
 
-    private void stopRollback(CommandParserArgs args) throws CommandException
+    private void stopRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        args.checkPermission(PERM_PREVIEW);
-
-        if (args.isTabCompletion)
+        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return;
+        }
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
+        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
+
+        if (playbackTimer != null)
+        {
+            playbackTimer.cancel();
+            playbackTimer = null;
+        }
         if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+            return;
+        }
         if (rb.task == null)
-            throw new TranslatedCommandException("No playback running");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No playback running");
+            return;
+        }
 
         rb.task.cancel();
         rb.task = null;
-        ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped playback");
     }
 
-    private static void help(ICommandSender sender)
+    private static void help(CommandSource sender)
     {
         ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
         ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
@@ -262,5 +332,4 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
         ChatOutputHandler.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
     }
-
 }

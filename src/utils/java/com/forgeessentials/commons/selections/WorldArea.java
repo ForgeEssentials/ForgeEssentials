@@ -4,41 +4,29 @@ import net.minecraft.world.World;
 
 public class WorldArea extends AreaBase
 {
-	
-    protected int dim;
 
-    public WorldArea(World world, Point start, Point end)
+    protected String dim;
+
+    public WorldArea(String world, Point start, Point end)
     {
         super(start, end);
-        dim = world.provider.getDimension();
+        dim = world;
     }
 
-    public WorldArea(int dim, Point start, Point end)
-    {
-        super(start, end);
-        this.dim = dim;
-    }
-
-    public WorldArea(int dim, AreaBase area)
+    public WorldArea(String world, AreaBase area)
     {
         super(area.getHighPoint(), area.getLowPoint());
-        this.dim = dim;
+        dim = world;
     }
 
-    public WorldArea(World world, AreaBase area)
+    public String getDimension()
     {
-        super(area.getHighPoint(), area.getLowPoint());
-        dim = world.provider.getDimension();
+        return dim;
     }
 
-    public int getDimension()
-	{
-		return dim;
-	}
-
-    public void setDimension(int dimensionId)
+    public void setDimension(World dimensionId)
     {
-        this.dim = dimensionId;
+        this.dim = dimensionId.dimension().location().toString();
     }
 
     @Override
@@ -47,9 +35,9 @@ public class WorldArea extends AreaBase
         return new WorldPoint(dim, (high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
     }
 
-	public boolean contains(WorldPoint point)
+    public boolean contains(WorldPoint point)
     {
-        if (point.dim == dim)
+        if (point.dim.equals(dim))
         {
             return super.contains(point);
         }
@@ -61,7 +49,7 @@ public class WorldArea extends AreaBase
 
     public boolean contains(WorldArea area)
     {
-        if (area.dim == dim)
+        if (area.dim.equals(dim))
         {
             return super.contains(area);
         }
@@ -73,7 +61,7 @@ public class WorldArea extends AreaBase
 
     public boolean intersectsWith(WorldArea area)
     {
-        if (area.dim == dim)
+        if (area.dim.equals(dim))
         {
             return super.intersectsWith(area);
         }
@@ -85,7 +73,7 @@ public class WorldArea extends AreaBase
 
     public AreaBase getIntersection(WorldArea area)
     {
-        if (area.dim == dim)
+        if (area.dim.equals(dim))
         {
             return super.getIntersection(area);
         }
@@ -97,7 +85,7 @@ public class WorldArea extends AreaBase
 
     public boolean makesCuboidWith(WorldArea area)
     {
-        if (area.dim == dim)
+        if (area.dim.equals(dim))
         {
             return super.makesCuboidWith(area);
         }

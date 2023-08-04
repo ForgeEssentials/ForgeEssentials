@@ -1,33 +1,35 @@
 package com.forgeessentials.economy.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandPay extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandPay extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandPay(boolean enabled)
     {
-        return "pay";
+        super(enabled);
     }
 
     @Override
-    public String getPermissionNode()
+    public @NotNull String getPrimaryAlias()
     {
-        return ModuleEconomy.PERM_COMMAND + ".pay";
+        return "pay";
     }
 
     @Override
@@ -37,45 +39,41 @@ public class CommandPay extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pay <player> <amount>: Pay another player from your wallet";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Player needed");
-        UserIdent player = arguments.parsePlayer(true, false);
+        return baseBuilder.then(Commands.argument("player", EntityArgument.entity())
+                .then(Commands.argument("amount", LongArgumentType.longArg(1))
+                        .executes(CommandContext -> execute(CommandContext, "blank"))));
+    }
 
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Missing value");
-        Long amount = ServerUtil.tryParseLong(arguments.remove());
-        if (amount == null)
-            throw new TranslatedCommandException("Invalid number");
-        if (amount < 1)
-            throw new TranslatedCommandException("Invalid number");
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
+        long amount = LongArgumentType.getLong(ctx, "amount");
 
-        if (arguments.isTabCompletion)
-            return;
-
-        Wallet sender = APIRegistry.economy.getWallet(arguments.ident);
+        Wallet sender = APIRegistry.economy.getWallet(getIdent(getServerPlayer(ctx.getSource())));
         if (!sender.withdraw(amount))
-            throw new TranslatedCommandException("You do not have enough %s in your wallet", APIRegistry.economy.currency(2));
-        arguments.confirm(Translator.format("You paid %s to %s. You now have %s", //
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "You do not have enough %s in your wallet",
+                    APIRegistry.economy.currency(2));
+            return Command.SINGLE_SUCCESS;
+        }
+
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("You paid %s to %s. You now have %s",
                 APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), sender.toString()));
 
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
-        ChatOutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
-                APIRegistry.economy.toString(amount), arguments.sender.getName(), receiver.toString()));
+        ChatOutputHandler.chatConfirmation(player.getPlayerMP(),
+                Translator.format("You were paid %s from %s. You now have %s", APIRegistry.economy.toString(amount),
+                        getServerPlayer(ctx.getSource()).getDisplayName().getString(), receiver.toString()));
+        return Command.SINGLE_SUCCESS;
     }
-
 }

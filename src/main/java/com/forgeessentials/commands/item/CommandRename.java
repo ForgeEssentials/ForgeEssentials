@@ -1,29 +1,33 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-
-public class CommandRename extends ForgeEssentialsCommandBase
+public class CommandRename extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandRename(boolean enabled)
     {
-        return "rename";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/rename <new name> Renames the item you are currently holding.";
+        return "rename";
     }
 
     @Override
@@ -39,27 +43,25 @@ public class CommandRename extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + ".rename";
+        return baseBuilder.then(Commands.argument("name", StringArgumentType.greedyString())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 0)
-            throw new TranslatedCommandException(getUsage(sender));
 
-        ItemStack is = sender.inventory.getCurrentItem();
+        ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (is == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item.");
-
-        StringBuilder sb = new StringBuilder();
-        for (String arg : args)
         {
-            sb.append(arg + " ");
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not holding a valid item."));
+            return Command.SINGLE_SUCCESS;
         }
-        is.setStackDisplayName(sb.toString().trim());
-    }
 
+        String nameS = StringArgumentType.getString(ctx, "name").trim();
+        is.setHoverName(new StringTextComponent(nameS));
+        return Command.SINGLE_SUCCESS;
+    }
 }

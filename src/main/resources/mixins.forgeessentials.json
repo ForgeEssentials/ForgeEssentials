@@ -1,20 +1,23 @@
 {
-	"package": "com.forgeessentials.core.preloader.mixin",
-	"plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
-    "refmap": "mixins.forgeessentials.refmap.json",
-	"mixins": [
-        "block.MixinBlockPortal",
-        "block.MixinBlockFire",
-        "block.MixinBlockEndPortal",
-        "command.MixinCommandHandler",
-        "command.MixinICommandSender",
-        "entity.MixinEntity",
-        "entity.player.MixinEntityPlayer",
-        "item.crafting.MixinCraftingManager",
-        "network.MixinNetHandlerPlayServer",
-        "network.MixinSimpleChannelHandlerWrapper",
-        "MixinDimensionManager"
-        //"tileentity.MixinMobSpawnerBaseLogic"
+	"required": true,
+	"package": "com.forgeessentials.core.mixin",
+	"plugin": "com.forgeessentials.core.mixin.FEMixinConfig",
+	"refmap": "mixins.forgeessentials.refmap.json",
+	"compatibilityLevel": "JAVA_8",
+	"server": [
+		"block.MixinEndPortalBlock",
+		"block.MixinNetherPortalBlock",
+		"block.MixinFireBlock",
+		"command.MixinCommands",
+		"entity.MixinEntity",
+		"entity.MixinItemFrameEntity",
+		"entity.player.MixinPlayerEntity",
+		"network.MixinServerPlayNetHandler",
+		"network.MixinServerLoginNetHandler",
+		"network.MixinMinecraftServer"
 	],
-    "minVersion": "0.8"
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"minVersion": "0.8"
 }

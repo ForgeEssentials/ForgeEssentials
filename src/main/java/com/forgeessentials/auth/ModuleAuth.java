@@ -4,38 +4,39 @@ import java.util.HashSet;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import net.minecraft.command.CommandHelp;
-import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet0Handshake;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
-import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet06AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet09AuthRequest;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleAuth extends ConfigLoaderBase
 {
+    private static ForgeConfigSpec AUTH_CONFIG;
+    private static final ConfigData data = new ConfigData("Auth", AUTH_CONFIG, new ForgeConfigSpec.Builder());
 
-    private static final String CONFIG_CATEGORY = "Auth";
-    private static final String CONFIG_CATEGORY_LISTS = "Authlists";
+    public static final String CONFIG_CATEGORY = "Auth";
+    public static final String CONFIG_CATEGORY_LISTS = "Authlists";
     protected static final String SCRIPT_KEY_SUCCESS = "AuthLoginSuccess";
     protected static final String SCRIPT_KEY_FAILURE = "AuthLoginFailure";
 
@@ -63,21 +64,26 @@ public class ModuleAuth extends ConfigLoaderBase
     @Preconditions
     public boolean preInit()
     {
-        if (FMLCommonHandler.instance().getSide().isClient())
-            return false;
-        return true;
+        return !FMLEnvironment.dist.isClient();
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandAuth());
-        FECommandManager.registerCommand(new CommandVIP());
-        NetworkUtils.registerMessage(new AuthNetHandler(), Packet6AuthLogin.class, 6, Side.SERVER);
+        FECommandManager.registerCommand(new CommandAuth(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandVIP(true), event.getDispatcher());
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void registerPacket(RegisterPacketEvent event)
+    {
+        NetworkUtils.registerServerToClient(6, Packet06AuthLogin.class, Packet06AuthLogin::encode, Packet06AuthLogin::decode, Packet06AuthLogin::handler);
+        NetworkUtils.registerClientToServer(8, AuthNetHandler.class, AuthNetHandler::encode, AuthNetHandler::decode, AuthNetHandler::handler);
+        NetworkUtils.registerServerToClient(9, Packet09AuthRequest.class, Packet09AuthRequest::encode, Packet09AuthRequest::decode, Packet09AuthRequest::handler);
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         APIRegistry.perms.registerPermission("fe.auth.admin", DefaultPermissionLevel.OP, "Administer the auth module");
         APIRegistry.perms.registerPermission("fe.auth", DefaultPermissionLevel.ALL, "Auth module command");
@@ -103,8 +109,7 @@ public class ModuleAuth extends ConfigLoaderBase
         isOnline = ServerUtil.getMojangServerStatus();
         if (lastOnline == isOnline)
             return;
-
-        FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(isOnline);
+        ServerLifecycleHooks.getCurrentServer().setUsesAuthentication(isOnline);
         if (lastEnabled == isEnabled())
             return;
 
@@ -141,17 +146,19 @@ public class ModuleAuth extends ConfigLoaderBase
         return authenticatedUsers.contains(player);
     }
 
-    public static boolean isAuthenticated(EntityPlayer player)
+    public static boolean isAuthenticated(PlayerEntity player)
     {
-        if (player == null) {
+        if (player == null)
+        {
             return true;
         }
-        return isAuthenticated(player.getPersistentID());
+        return isAuthenticated(player.getGameProfile().getId());
     }
 
-    public static boolean isAllowedMethod(IMessage msg) {
-        return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
-    }
+    // public static boolean isAllowedMethod(IPacket<?> msg) {
+    // return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
+    // }
+
     public static void authenticate(UUID player)
     {
         authenticatedUsers.add(player);
@@ -165,13 +172,13 @@ public class ModuleAuth extends ConfigLoaderBase
     /**
      * Check, if unauthenticated users are allowed to use this command
      * 
-     * @param command
+     * @param info
      * @return
      */
-    public static boolean isGuestCommand(ICommand command)
+    public static boolean isGuestCommand(CommandInfo info)
     {
-        return command instanceof CommandAuth || //
-                command instanceof CommandHelp;
+        return info.getCommandName().equals("auth") || info.getCommandName().equals("feauth")
+                || info.getCommandName().equals("help") || info.getCommandName().equals("fehelp");
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";
@@ -186,32 +193,75 @@ public class ModuleAuth extends ConfigLoaderBase
     private static final String CFG_DESC_autologin = "Allow players with the FEClient and the correct keys to automatically identify themselves with the auth engine.";
     private static final String CFG_DESC_encryption = "Encryption standard to use. Note that changing this will invalidate all passwords. Accepts the following: SHA1, SHA-256, MD5";
 
+    static ForgeConfigSpec.ConfigValue<String> FEalgorithm;
+    static ForgeConfigSpec.BooleanValue FEcanMoveWithoutLogin;
+    static ForgeConfigSpec.BooleanValue FEallowOfflineRegistration;
+    static ForgeConfigSpec.BooleanValue FEforceEnabled;
+    static ForgeConfigSpec.ConfigValue<String> FEsalt;
+    static ForgeConfigSpec.BooleanValue FEallowAutoLogin;
+    static ForgeConfigSpec.BooleanValue FEcheckVanillaAuthStatus;
+    static ForgeConfigSpec.IntValue FEauthCheckerInterval;
+
+    static ForgeConfigSpec.IntValue FEreservedSlots;
+    static ForgeConfigSpec.IntValue FEvipSlots;
+
+    static ForgeConfigSpec.ConfigValue<String> FEplayerBannedMessage;
+    static ForgeConfigSpec.ConfigValue<String> FEnonVipKickMessage;
+
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void load(Builder BUILDER, boolean isReload)
     {
-        config.addCustomCategoryComment(CONFIG_CATEGORY, "AuthModule configuration");
-        EncryptionHelper.algorithm = config.get(CONFIG_CATEGORY, "encryptionAlgorithm", "SHA1", CFG_DESC_encryption).getString();
-        canMoveWithoutLogin = config.get(CONFIG_CATEGORY, "canMoveWithoutLogin", false, CFG_DESC_canMoveWithoutLogin).getBoolean(false);
-        allowOfflineRegistration = config.get(CONFIG_CATEGORY, "allowOfflineReg", false, CFG_DESC_allowOfflineReg).getBoolean(false);
-        forceEnabled = config.get(CONFIG_CATEGORY, "forceEnable", false, CFG_DESC_forceEnable).getBoolean(false);
-        PasswordManager.setSalt(config.get(CONFIG_CATEGORY, "salt", EncryptionHelper.generateSalt(), CFG_DESC_salt).getString());
+        BUILDER.comment("AuthModule configuration").push(CONFIG_CATEGORY);
+        FEalgorithm = BUILDER.comment(CFG_DESC_encryption).define("encryptionAlgorithm", "SHA1");
+        FEcanMoveWithoutLogin = BUILDER.comment(CFG_DESC_canMoveWithoutLogin).define("canMoveWithoutLogin", false);
+        FEallowOfflineRegistration = BUILDER.comment(CFG_DESC_allowOfflineReg).define("allowOfflineReg", false);
+        FEforceEnabled = BUILDER.comment(CFG_DESC_forceEnable).define("forceEnable", false);
+        FEsalt = BUILDER.comment(CFG_DESC_salt).define("salt", EncryptionHelper.generateSalt());
+        FEallowAutoLogin = BUILDER.comment(CFG_DESC_autologin).define("allowAutoLogin", false);
+        FEcheckVanillaAuthStatus = BUILDER.comment(CFG_DESC_autoEnable).define("autoEnable", false);
+        FEauthCheckerInterval = BUILDER.comment(CFG_DESC_checkInterval).defineInRange("checkInterval", 10, 0,
+                Integer.MAX_VALUE);
+        BUILDER.pop();
 
-        config.addCustomCategoryComment(CONFIG_CATEGORY_LISTS, CFG_DESC_authlists);
-        AuthEventHandler.reservedSlots = config.get(CONFIG_CATEGORY_LISTS, "offset", 0, CFG_DESC_offset).getInt();
-        AuthEventHandler.vipSlots = config.get(CONFIG_CATEGORY_LISTS, "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
+        BUILDER.comment(CFG_DESC_authlists).push(CONFIG_CATEGORY_LISTS);
+        FEreservedSlots = BUILDER.comment(CFG_DESC_offset).defineInRange("offset", 0, 0, Integer.MAX_VALUE);
+        FEvipSlots = BUILDER.comment("Amount of slots reserved for VIP players.").defineInRange("vipslots", 0, 0,
+                Integer.MAX_VALUE);
+        BUILDER.pop();
 
-        config.addCustomCategoryComment(CONFIG_CATEGORY_LISTS + ".kickmsg", CFG_DESC_kickMsg);
-        AuthEventHandler.playerBannedMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "bannedmsg", "You have been banned from this server.").getString();
-        AuthEventHandler.nonVipKickMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.")
-                .getString();
-        allowAutoLogin = config.get(CONFIG_CATEGORY, "allowAutoLogin", false, CFG_DESC_autologin).getBoolean();
+        BUILDER.comment(CFG_DESC_kickMsg).push(CONFIG_CATEGORY_LISTS + "_kickmsg");
+        FEplayerBannedMessage = BUILDER.define("bannedmsg", "You have been banned from this server.");
+        FEnonVipKickMessage = BUILDER.define("notVIPmsg", "This server is full, and you are not a VIP.");
+        BUILDER.pop();
+    }
 
-        checkVanillaAuthStatus = config.get(CONFIG_CATEGORY, "autoEnable", false, CFG_DESC_autoEnable).getBoolean(false);
-        int authCheckerInterval = config.get(CONFIG_CATEGORY, "checkInterval", 10, CFG_DESC_checkInterval).getInt();
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        EncryptionHelper.algorithm = FEalgorithm.get();
+        canMoveWithoutLogin = FEcanMoveWithoutLogin.get();
+        allowOfflineRegistration = FEallowOfflineRegistration.get();
+        forceEnabled = FEforceEnabled.get();
+        PasswordManager.setSalt(FEsalt.get());
+
+        AuthEventHandler.reservedSlots = FEreservedSlots.get();
+        AuthEventHandler.vipSlots = FEvipSlots.get();
+        AuthEventHandler.playerBannedMessage = FEplayerBannedMessage.get();
+        AuthEventHandler.nonVipKickMessage = FEnonVipKickMessage.get();
+
+        allowAutoLogin = FEallowAutoLogin.get();
+        checkVanillaAuthStatus = FEcheckVanillaAuthStatus.get();
+        int authCheckerInterval = FEauthCheckerInterval.get();
+
         if (checkVanillaAuthStatus && !forceEnabled)
-            TaskRegistry.scheduleRepeated(mojangServiceChecker, authCheckerInterval * 60 * 1000);
+            TaskRegistry.scheduleRepeated(mojangServiceChecker, (long) authCheckerInterval * 60 * 1000);
         else
             TaskRegistry.remove(mojangServiceChecker);
     }
 
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
+    }
 }

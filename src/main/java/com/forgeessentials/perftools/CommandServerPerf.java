@@ -2,37 +2,59 @@ package com.forgeessentials.perftools;
 
 import java.text.DecimalFormat;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandServerPerf extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandServerPerf extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandServerPerf(boolean enabled)
+    {
+        super(enabled);
+    }
 
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "perfstats";
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        ChatOutputHandler.chatNotification(sender, "Memory usage:");
-        ChatOutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
-        long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        ChatOutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(sender,
-                "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimeArray) * 1.0E-6D) + " ms");
-        ChatOutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Max Allowed: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Total Allocated: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Amount Used: "
+                + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Amount Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "For Better TPS information, run /forge tps.");
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -42,31 +64,17 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.perftools.perfstats";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/perfstats Displays server performance stats (memory usage, average tick time).";
     }
 
     private double func_120035_a(long[] p_120035_1_)
     {
         long i = 0L;
 
-        for (int j = 0; j < p_120035_1_.length; ++j)
-        {
-            i += p_120035_1_[j];
+        for (long l : p_120035_1_) {
+            i += l;
         }
 
         return (double) i / (double) p_120035_1_.length;

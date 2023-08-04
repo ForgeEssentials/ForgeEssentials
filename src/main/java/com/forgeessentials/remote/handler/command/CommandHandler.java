@@ -1,23 +1,21 @@
 package com.forgeessentials.remote.handler.command;
 
-import java.util.Arrays;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
+import com.mojang.brigadier.ParseResults;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND)
 public class CommandHandler extends GenericRemoteHandler<String>
@@ -37,15 +35,15 @@ public class CommandHandler extends GenericRemoteHandler<String>
         if (request.data == null)
             error("Missing command");
 
-        String[] cmdLine = request.data.split(" ");
-        String commandName = cmdLine[0];
-        final String[] args = Arrays.copyOfRange(cmdLine, 1, cmdLine.length);
+        String commandName = request.data;
 
-        final ICommand command = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(commandName);
-        if (command == null)
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final ParseResults<CommandSource> command = server.getCommands().getDispatcher()
+                .parse(commandName, server.createCommandSourceStack());
+        if (!command.getReader().canRead())
             error(String.format("Command \"/%s\" not found", commandName));
 
-        checkPermission(session, PermissionManager.getCommandPermission(command));
+        checkPermission(session, command.getReader().getString().substring(1));
 
         TaskRegistry.runLater(new Runnable() {
             @Override
@@ -53,12 +51,12 @@ public class CommandHandler extends GenericRemoteHandler<String>
             {
                 try
                 {
-                    ICommandSender sender;
+                    CommandSource sender;
                     if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
-                        sender = session.getUserIdent().getPlayer();
+                        sender = session.getUserIdent().getPlayer().createCommandSourceStack();
                     else
-                        sender = RemoteCommandSender.get(session);
-                    command.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender, args);
+                        sender = RemoteCommandSender.get(session).createCommandSourceStack();
+                    server.getCommands().performCommand(sender, commandName);
                     session.trySendMessage(RemoteResponse.success(request));
                 }
                 catch (CommandException e)

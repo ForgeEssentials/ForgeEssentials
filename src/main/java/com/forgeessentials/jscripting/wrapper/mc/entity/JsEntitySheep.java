@@ -1,9 +1,9 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.item.DyeColor;
 
-public class JsEntitySheep<T extends EntitySheep> extends JsEntity<T>
+public class JsEntitySheep<T extends SheepEntity> extends JsEntity<T>
 {
 
     public JsEntitySheep(T that)
@@ -13,17 +13,17 @@ public class JsEntitySheep<T extends EntitySheep> extends JsEntity<T>
 
     public int getFleeceColor()
     {
-        return that.getFleeceColor().ordinal();
+        return that.getColor().ordinal();
     }
 
     public void setFleeceColor(int color)
     {
-        that.setFleeceColor(EnumDyeColor.byMetadata(color));
+        that.setColor(DyeColor.byId(color));
     }
 
     public boolean isSheared()
     {
-        return that.getSheared();
+        return that.isSheared();
     }
 
     public void setSheared(boolean sheared)

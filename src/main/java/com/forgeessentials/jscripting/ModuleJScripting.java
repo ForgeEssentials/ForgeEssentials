@@ -14,18 +14,13 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
@@ -33,14 +28,18 @@ import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -70,9 +69,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static boolean isRhino;
 
-    static {
+    static
+    {
         nashornArgs = System.getProperty("fe.nashorn.args");
-        if (nashornArgs == null) {
+        if (nashornArgs == null)
+        {
             nashornArgs = DEFAULT_NASHORN_ARGS;
         }
     }
@@ -83,6 +84,12 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     protected static Map<File, ScriptInstance> scripts = new HashMap<>();
 
     /* ------------------------------------------------------------ */
+
+    public ModuleJScripting()
+    {
+        APIRegistry.scripts = this;
+        init();
+    }
 
     public static ModuleJScripting instance()
     {
@@ -101,16 +108,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return factory != null;
     }
 
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent event)
+    public void init()
     {
-        APIRegistry.scripts = this;
-    }
-
-    @SubscribeEvent
-    public void load(FEModuleInitEvent event)
-    {
-        FECommandManager.registerCommand(new CommandJScript());
         try
         {
             copyResourceFileIfNotExists("mc.d.ts");
@@ -126,6 +125,12 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandJScript(true), event.getDispatcher());
+    }
+
     private void copyResourceFileIfNotExists(String fileName) throws IOException
     {
         File file = new File(moduleDir, fileName);
@@ -134,14 +139,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         JsLocalStorage.load();
-        loadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
+        loadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
     @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent event)
+    public void serverStarted(FEModuleServerStartedEvent event)
     {
         // loadScripts();
     }
@@ -157,10 +162,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        reloadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
+        LoggingHandler.felog.info("Reloading scripts");
+        reloadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
-    public void reloadScripts(ICommandSender sender)
+    public void reloadScripts(CommandSource sender)
     {
         unloadScripts();
         loadScripts(sender);
@@ -173,14 +179,25 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         scripts.clear();
     }
 
-    public void loadScripts(ICommandSender sender)
+    public void loadScripts(CommandSource sender)
     {
-        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true); it.hasNext(); )
-        {
+        Iterator<File> it;
+        try {
+            it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true);
+        }catch(NullPointerException e) {
+            ChatOutputHandler.chatError(sender, "FE error loading all scripts");
+            ChatOutputHandler.chatError(sender, e.getMessage());
+            LoggingHandler.felog.error(String.format("FE error loading all scripts: %s", e.getMessage()));
+            return;
+        }
+        while (it.hasNext()) {
             File file = it.next();
             String name = file.getName();
-            if (!name.endsWith("d.ts") && name.endsWith("ts")) {
-                LoggingHandler.felog.warn("Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.", name);
+            if (!name.endsWith("d.ts") && name.endsWith("ts"))
+            {
+                LoggingHandler.felog.warn(
+                        "Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.",
+                        name);
                 continue;
             }
             if (name.endsWith("d.ts") || scripts.containsKey(file))
@@ -210,12 +227,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             try
             {
-                return (ScriptEngine) factory.getClass().getMethod("getScriptEngine", new Class[] { String[].class }).invoke(factory,
-                        (Object) nashornArgs.split("\\s+"));
+                return (ScriptEngine) factory.getClass().getMethod("getScriptEngine", new Class[] { String[].class })
+                        .invoke(factory, (Object) nashornArgs.split("\\s+"));
             }
             catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
             {
-                LoggingHandler.felog.error("Error Initializing Scripting Engine with Custom Args...  Failing back to Default Args!", e);
+                LoggingHandler.felog.error(
+                        "Error Initializing Scripting Engine with Custom Args...  Failing back to Default Args!", e);
             }
         }
 
@@ -227,7 +245,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return (Compilable) getEngine();
     }
 
-    public static synchronized ScriptInstance getScript(File file) throws IOException, ScriptException, CommandException
+    public static synchronized ScriptInstance getScript(File file)
+            throws IOException, ScriptException, CommandException
     {
         ScriptInstance result = scripts.get(file);
         if (result == null)
@@ -288,13 +307,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Override
-    public boolean runEventScripts(String key, ICommandSender sender)
+    public boolean runEventScripts(String key, CommandSource sender)
     {
         return runEventScripts(key, sender, null);
     }
 
     @Override
-    public boolean runEventScripts(String key, ICommandSender sender, Object additionalData)
+    public boolean runEventScripts(String key, CommandSource sender, Object additionalData)
     {
         JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);

@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -22,6 +19,9 @@ import com.forgeessentials.remote.network.QueryPlayerRequest;
 import com.forgeessentials.util.ServerUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
 public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
@@ -39,7 +39,8 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         super(PERM, QueryPlayerRequest.class);
         APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows querying player data");
         APIRegistry.perms.registerPermission(PERM_LOCATION, DefaultPermissionLevel.OP, "View location");
-        APIRegistry.perms.registerPermission(PERM_DETAIL, DefaultPermissionLevel.OP, "View details (health, armor, etc.)");
+        APIRegistry.perms.registerPermission(PERM_DETAIL, DefaultPermissionLevel.OP,
+                "View details (health, armor, etc.)");
     }
 
     @Override
@@ -56,10 +57,11 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
                 UserIdent ident = UserIdent.get(player);
-                players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));
+                players.put(ident.getUuid(),
+                        getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));
             }
         }
         else
@@ -87,9 +89,9 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
                 break;
             case FLAG_DETAIL:
                 pi.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
-                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
-                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
-                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
+                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getArmorValue()));
+                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodData().getFoodLevel()));
+                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodData().getSaturationLevel()));
                 break;
             }
         }

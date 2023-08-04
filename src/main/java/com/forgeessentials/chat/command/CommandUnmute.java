@@ -1,40 +1,33 @@
 package com.forgeessentials.chat.command;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandUnmute extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandUnmute extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandUnmute(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "unmute";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/unmute <player>: Unmutes the specified player.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.chat.mute";
     }
 
     @Override
@@ -50,31 +43,28 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 1)
-        {
-            EntityPlayerMP receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (receiver == null)
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-
-            PlayerUtil.getPersistedTag(receiver, false).removeTag("mute");
-            ChatOutputHandler.chatError(sender, Translator.format("You unmuted %s.", args[0]));
-            ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", sender.getName()));
-        }
+        return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        ServerPlayerEntity receiver = EntityArgument.getPlayer(ctx, "player");
+        if (receiver.hasDisconnected())
         {
-            return matchToPlayers(args);
+            ChatOutputHandler.chatError(ctx.getSource(), Translator
+                    .format("Player %s does not exist, or is not online.", receiver.getDisplayName().getString()));
+            return Command.SINGLE_SUCCESS;
         }
-        else
-        {
-            return null;
-        }
-    }
 
+        PlayerUtil.getPersistedTag(receiver, false).remove("mute");
+        ChatOutputHandler.chatError(ctx.getSource(),
+                Translator.format("You unmuted %s.", receiver.getDisplayName().getString()));
+        ChatOutputHandler.chatError(receiver,
+                Translator.format("You were unmuted by %s.", ctx.getSource().getDisplayName().getString()));
+        return Command.SINGLE_SUCCESS;
+    }
 }

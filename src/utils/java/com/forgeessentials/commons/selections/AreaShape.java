@@ -1,6 +1,7 @@
 package com.forgeessentials.commons.selections;
 
-public enum AreaShape {
+public enum AreaShape
+{
 
     BOX, ELLIPSOID, CYLINDER;
 
@@ -39,8 +40,8 @@ public enum AreaShape {
         Point p6 = new Point(otherArea.high.x, otherArea.low.y, otherArea.high.z);
         Point p7 = new Point(otherArea.high.x, otherArea.high.y, otherArea.low.z);
         Point p8 = new Point(otherArea.high.x, otherArea.high.y, otherArea.high.z);
-        return (contains(area, p1) && contains(area, p2) && contains(area, p3) && contains(area, p4) && contains(area, p5) && contains(area, p6)
-                && contains(area, p7) && contains(area, p8));
+        return (contains(area, p1) && contains(area, p2) && contains(area, p3) && contains(area, p4)
+                && contains(area, p5) && contains(area, p6) && contains(area, p7) && contains(area, p8));
     }
 
     public static AreaShape getByName(String name)

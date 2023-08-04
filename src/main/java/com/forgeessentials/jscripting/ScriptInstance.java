@@ -2,13 +2,12 @@ package com.forgeessentials.jscripting;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,20 +25,18 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.ITextComponent;
-
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.util.text.TextComponent;
 
 public class ScriptInstance
 {
@@ -65,7 +62,8 @@ public class ScriptInstance
                     fields.add(field);
                 }
             }
-            String scriptSrc = fields.stream().map((f) -> "o." + f.getName()).collect(Collectors.joining(",", "[", "]"));
+            String scriptSrc = fields.stream().map((f) -> "o." + f.getName())
+                    .collect(Collectors.joining(",", "[", "]"));
             script = ScriptInstance.propertyEngine.compile(scriptSrc);
         }
 
@@ -89,7 +87,8 @@ public class ScriptInstance
                     }
                 }
             }
-            String scriptSrc = fields.stream().map((f) -> "o." + f.getName()).collect(Collectors.joining(",", "[", "]"));
+            String scriptSrc = fields.stream().map((f) -> "o." + f.getName())
+                    .collect(Collectors.joining(",", "[", "]"));
             script = ScriptInstance.propertyEngine.compile(scriptSrc);
         }
     }
@@ -106,7 +105,6 @@ public class ScriptInstance
 
     private Invocable invocable;
 
-    @SuppressWarnings("unused")
     private Bindings exports;
 
     private Set<String> illegalFunctions = new HashSet<>();
@@ -117,7 +115,7 @@ public class ScriptInstance
 
     private Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
 
-    private WeakReference<ICommandSender> lastSender;
+    private WeakReference<CommandSource> lastSender;
 
     /* ************************************************************ */
     /* PROPERTY ACCESSING */
@@ -146,11 +144,9 @@ public class ScriptInstance
         for (TimerTask task : tasks.values())
             TaskRegistry.remove(task);
         tasks.clear();
-
-        for (ParserCommandBase command : commands)
-            FECommandManager.deegisterCommand(command.getName());
-        commands.clear();
-
+        /*
+         * for (ParserCommandBase command : commands) FECommandManager.deegisterCommand(command.getName()); commands.clear();
+         */
         for (JsEvent<?> eventHandler : eventHandlers.values())
             eventHandler._unregister();
         eventHandlers.clear();
@@ -160,7 +156,8 @@ public class ScriptInstance
     {
         illegalFunctions.clear();
         script = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(Files.newInputStream(file.toPath()), Charsets.UTF_8)))
         {
             // Load and compile script
             script = ModuleJScripting.getCompilable().compile(reader);
@@ -186,7 +183,7 @@ public class ScriptInstance
         lastModified = file.lastModified();
     }
 
-    public void checkIfModified() throws IOException, FileNotFoundException, ScriptException
+    public void checkIfModified() throws IOException, ScriptException
     {
         if (file.exists() && file.lastModified() != lastModified)
             compileScript();
@@ -195,7 +192,8 @@ public class ScriptInstance
     /* ************************************************************ */
     /* Script invocation */
 
-    public Object callGlobal(String fn, Object... args) throws NoSuchMethodException, ScriptException, CommandException
+    public Object callGlobal(String fn, Object... args)
+            throws NoSuchMethodException, ScriptException, CommandException
     {
         try
         {
@@ -219,7 +217,7 @@ public class ScriptInstance
         }
     }
 
-    public Object  tryCallGlobal(String fn, Object... args) throws ScriptException
+    public Object tryCallGlobal(String fn, Object... args) throws ScriptException
     {
         try
         {
@@ -435,14 +433,9 @@ public class ScriptInstance
 
     /* ************************************************************ */
     /* Event handling */
-
-    public void registerScriptCommand(CommandJScriptCommand command)
-    {
-        commands.add(command);
-        FECommandManager.registerCommand(command, true);
-    }
-
-    @SuppressWarnings({ "rawtypes" })
+    /*
+     * public void registerScriptCommand(CommandJScriptCommand command) { commands.add(command); FECommandManager.registerCommand(command, true); }
+     */
     public void registerEventHandler(String event, Object handler)
     {
         Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);
@@ -453,7 +446,8 @@ public class ScriptInstance
         }
         try
         {
-            // Constructor<? extends JsEvent> constructor = eventType.getConstructor(ScriptInstance.class, Object.class);
+            // Constructor<? extends JsEvent> constructor =
+            // eventType.getConstructor(ScriptInstance.class, Object.class);
             // JsEvent<?> eventHandler = constructor.newInstance(this, handler);
             JsEvent<?> eventHandler = eventType.newInstance();
             eventHandler._script = this;
@@ -490,7 +484,8 @@ public class ScriptInstance
 
     public String getName()
     {
-        String fileName = file.getAbsolutePath().substring(ModuleJScripting.getModuleDir().getAbsolutePath().length() + 1).replace('\\', '/');
+        String fileName = file.getAbsolutePath()
+                .substring(ModuleJScripting.getModuleDir().getAbsolutePath().length() + 1).replace('\\', '/');
         return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
@@ -515,9 +510,9 @@ public class ScriptInstance
         chatError(lastSender == null ? null : lastSender.get(), message);
     }
 
-    public void chatError(ICommandSender sender, String message)
+    public void chatError(CommandSource sender, String message)
     {
-        ITextComponent msg = ChatOutputHandler.error(message);
+        TextComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
@@ -529,7 +524,7 @@ public class ScriptInstance
      *
      * @param sender
      */
-    public void setLastSender(ICommandSender sender)
+    public void setLastSender(CommandSource sender)
     {
         this.lastSender = new WeakReference<>(sender);
     }

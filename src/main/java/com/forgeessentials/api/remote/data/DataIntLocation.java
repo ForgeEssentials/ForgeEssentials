@@ -1,8 +1,8 @@
 package com.forgeessentials.api.remote.data;
 
-import net.minecraft.entity.Entity;
-
 import com.forgeessentials.commons.selections.WorldPoint;
+
+import net.minecraft.entity.Entity;
 
 /**
  *
@@ -10,7 +10,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 public class DataIntLocation
 {
 
-    public int dim;
+    public String dim;
 
     public int x;
 
@@ -20,10 +20,10 @@ public class DataIntLocation
 
     public DataIntLocation(Entity entity)
     {
-        dim = entity.dimension;
-        x = (int) Math.floor(entity.posX);
-        y = (int) Math.floor(entity.posY);
-        z = (int) Math.floor(entity.posZ);
+        dim = entity.level.dimension().location().toString();
+        x = (int) Math.floor(entity.position().x);
+        y = (int) Math.floor(entity.position().y);
+        z = (int) Math.floor(entity.position().z);
     }
 
     public DataIntLocation(WorldPoint point)

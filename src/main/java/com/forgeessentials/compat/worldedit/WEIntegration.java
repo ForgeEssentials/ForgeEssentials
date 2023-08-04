@@ -1,21 +1,35 @@
 package com.forgeessentials.compat.worldedit;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
-@FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)
+@FEModule(name = WEIntegration.weModule, parentMod = ForgeEssentials.class)
 public class WEIntegration
 {
+	public static final String weModule = "WEIntegrationTools";
+
+	@FEModule.Instance
+    public static WEIntegration instance;
 
     protected static boolean disable;
+
+    WEIntegrationHandler handler;
+
+    public void postLoad()
+    {
+        handler = new WEIntegrationHandler();
+        if (handler.postLoad())
+        {
+            handler = null;
+            ModuleLauncher.instance.unregister(weModule);
+            return;
+        }
+    }
 
     private static boolean getDevOverride()
     {
@@ -43,8 +57,11 @@ public class WEIntegration
 
         if (!Environment.hasWorldEdit())
         {
-            LoggingHandler.felog.error("The FE integration tools for WorldEdit will not work without installing WorldEdit Forge.");
-            LoggingHandler.felog.error("You are highly recommended to install WorldEdit Forge for the optimal FE experience.");
+            disable = true;
+            LoggingHandler.felog
+                    .error("The FE integration tools for WorldEdit will not work without installing WorldEdit Forge.");
+            LoggingHandler.felog
+                    .error("You are highly recommended to install WorldEdit Forge for the optimal FE experience.");
             return false;
         }
 
@@ -56,17 +73,14 @@ public class WEIntegration
             }
             catch (ClassNotFoundException e)
             {
-                LoggingHandler.felog.error("ForgePermissionsProvider not found, are you using an old version of WorldEdit?");
-                LoggingHandler.felog.error("The FE integration tools for WorldEdit will not be loaded as your version of WorldEdit may be too old.");
+                disable = true;
+                LoggingHandler.felog
+                        .error("ForgePermissionsProvider not found, are you using an old version of WorldEdit?");
+                LoggingHandler.felog.error(
+                        "The FE integration tools for WorldEdit will not be loaded as your version of WorldEdit may be too old.");
                 return false;
             }
         }
         return true;
-    }
-
-    @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
-    {
-        APIRegistry.getFEEventBus().register(new WEIntegrationHandler());
     }
 }

@@ -1,29 +1,33 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandKill extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandKill extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandKill(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "kill";
     }
@@ -40,74 +44,67 @@ public class CommandKill extends ForgeEssentialsCommandBase
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
+    public String getUsage(CommandSource sender)
     {
         return "/kill <player> Commit suicide or kill other players (with special permission).";
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".kill";
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Use /kill on other players");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + ".kill.others", DefaultPermissionLevel.OP,
+                "Use /kill on other players");
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length >= 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
+        return baseBuilder.then(Commands.argument("victim", EntityArgument.player())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (EntityArgument.getPlayer(ctx, "victim") != getServerPlayer(ctx.getSource())
+                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".kill.others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
+            if (!player.hasDisconnected())
             {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+                player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else
-        {
-            sender.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
-            ChatOutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
-        }
-    }
-
-    @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
-    {
-        if (args.length >= 1)
-        {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
             {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
-                ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
+                ChatOutputHandler.chatError(ctx.getSource(), "Player %s does not exist, or is not online.",
+                        player.getDisplayName().getString());
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            return Command.SINGLE_SUCCESS;
         }
         else
-            throw new TranslatedCommandException(getUsage(sender));
+        {
+            getServerPlayer(ctx.getSource()).hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+            ChatOutputHandler.chatError(ctx.getSource(),
+                    Translator.translate("You were killed. You probably deserved it."));
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
+        if (!player.hasDisconnected())
         {
-            return matchToPlayers(args);
+            player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+            ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
         }
         else
         {
-            return null;
+            ChatOutputHandler.chatError(ctx.getSource(), "Player %s does not exist, or is not online.",
+                    player.getDisplayName().getString());
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

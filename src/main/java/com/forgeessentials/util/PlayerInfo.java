@@ -10,26 +10,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
-import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
-import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.events.player.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.events.player.FEPlayerEvent.InventoryGroupChange;
+import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.gson.annotations.Expose;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 public class PlayerInfo implements Loadable
 {
 
-    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<UUID, PlayerInfo>();
+    private static HashMap<UUID, PlayerInfo> playerInfoMap = new HashMap<>();
 
     /* ------------------------------------------------------------ */
     /* General */
@@ -57,7 +56,7 @@ public class PlayerInfo implements Loadable
 
     private Point sel2;
 
-    private int selDim;
+    private String selDim;
 
     /* ------------------------------------------------------------ */
     /* Selection wand */
@@ -67,9 +66,6 @@ public class PlayerInfo implements Loadable
 
     @Expose(serialize = false)
     private String wandID;
-
-    @Expose(serialize = false)
-    private int wandDmg;
 
     /* ------------------------------------------------------------ */
     /* Inventory groups */
@@ -98,7 +94,7 @@ public class PlayerInfo implements Loadable
     @Expose(serialize = false)
     private long lastActivity = System.currentTimeMillis();
 
-    private HashMap<String, Date> namedTimeout = new HashMap<String, Date>();
+    private HashMap<String, Date> namedTimeout = new HashMap<>();
 
     @Expose(serialize = false)
     private boolean noClip = false;
@@ -114,7 +110,7 @@ public class PlayerInfo implements Loadable
     public void afterLoad()
     {
         if (namedTimeout == null)
-            namedTimeout = new HashMap<String, Date>();
+            namedTimeout = new HashMap<>();
         lastActivity = System.currentTimeMillis();
         if (activeInventoryGroup == null || activeInventoryGroup.isEmpty())
             activeInventoryGroup = "default";
@@ -131,7 +127,7 @@ public class PlayerInfo implements Loadable
                 List<ItemStack> portInv = inventoryGroups.get(name);
                 if (portInv != null)
                 {
-                    Map ig = modInventoryGroups.getOrDefault(name, new HashMap<>());
+                    Map<String, List<ItemStack>> ig = modInventoryGroups.getOrDefault(name, new HashMap<>());
                     if (ig.get("vanilla") == null)
                     {
                         ig.put("vanilla", portInv);
@@ -140,7 +136,8 @@ public class PlayerInfo implements Loadable
                     }
                 }
             }
-            for (String name : groupsToRemove) {
+            for (String name : groupsToRemove)
+            {
 
                 inventoryGroups.remove(name);
             }
@@ -183,7 +180,7 @@ public class PlayerInfo implements Loadable
         }
 
         // Create new player info data
-        EntityPlayerMP player = UserIdent.get(uuid, username).getPlayerMP();
+        PlayerEntity player = UserIdent.get(uuid, username).getPlayerMP();
         info = new PlayerInfo(uuid);
         playerInfoMap.put(uuid, info);
         if (player != null)
@@ -191,9 +188,9 @@ public class PlayerInfo implements Loadable
         return info;
     }
 
-    public static PlayerInfo get(EntityPlayer player)
+    public static PlayerInfo get(PlayerEntity player)
     {
-        return get(player.getPersistentID(), player.getName());
+        return get(player.getGameProfile().getId(), player.getDisplayName().getString());
     }
 
     public static PlayerInfo get(UserIdent ident)
@@ -231,9 +228,7 @@ public class PlayerInfo implements Loadable
     {
         if (playerInfoMap.containsKey(uuid))
             return true;
-        if (DataManager.getInstance().exists(PlayerInfo.class, uuid.toString()))
-            return true;
-        return false;
+        return DataManager.getInstance().exists(PlayerInfo.class, uuid.toString());
     }
 
     /**
@@ -340,8 +335,10 @@ public class PlayerInfo implements Loadable
     /**
      * Start a named timeout. Use {@link #checkTimeout(String)} to check if the timeout has passed.
      *
-     * @param name         Unique name of the timeout
-     * @param milliseconds Timeout in milliseconds
+     * @param name
+     *            Unique name of the timeout
+     * @param milliseconds
+     *            Timeout in milliseconds
      */
     public void startTimeout(String name, long milliseconds)
     {
@@ -373,16 +370,6 @@ public class PlayerInfo implements Loadable
         this.wandID = wandID;
     }
 
-    public int getWandDmg()
-    {
-        return wandDmg;
-    }
-
-    public void setWandDmg(int wandDmg)
-    {
-        this.wandDmg = wandDmg;
-    }
-
     /* ------------------------------------------------------------ */
     /* Selection */
 
@@ -396,7 +383,7 @@ public class PlayerInfo implements Loadable
         return sel2;
     }
 
-    public int getSelDim()
+    public String getSelDim()
     {
         return selDim;
     }
@@ -411,9 +398,9 @@ public class PlayerInfo implements Loadable
         sel2 = point;
     }
 
-    public void setSelDim(int dimension)
+    public void setSelDim(String dim)
     {
-        selDim = dimension;
+        selDim = dim;
     }
 
     /* ------------------------------------------------------------ */
@@ -443,19 +430,19 @@ public class PlayerInfo implements Loadable
             if (newInventory == null)
                 newInventory = new HashMap<>();
 
-            // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
+            // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s
+            // from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
             /*
-             * ChatOutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i <
-             * ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
-             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != ItemStack.EMPTY) ChatOutputHandler.felog.info("  " +
-             * itemStack.getDisplayName()); } ChatOutputHandler.felog.info("Items in new inventory:"); for (ItemStack
-             * itemStack : newInventory) if (itemStack != ItemStack.EMPTY) ChatOutputHandler.felog.info("  " +
-             * itemStack.getDisplayName());
+             * ChatOutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i < ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
+             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != ItemStack.EMPTY) ChatOutputHandler.felog.info("  " + itemStack.getDisplayName()); }
+             * ChatOutputHandler.felog.info("Items in new inventory:"); for (ItemStack itemStack : newInventory) if (itemStack != ItemStack.EMPTY) ChatOutputHandler.felog.info("  "
+             * + itemStack.getDisplayName());
              */
 
             // Swap player inventory and store the old one
-            newInventory.put("vanilla", PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory.getOrDefault("vanilla", new ArrayList<>())));
+            newInventory.put("vanilla", PlayerUtil.swapInventory(this.ident.getPlayerMP(),
+                    newInventory.getOrDefault("vanilla", new ArrayList<>())));
             MinecraftForge.EVENT_BUS.post(new InventoryGroupChange(ident.getPlayer(), name, newInventory));
             modInventoryGroups.put(activeInventoryGroup, newInventory);
             // Clear the inventory-group that was assigned to the player (optional)
@@ -520,7 +507,9 @@ public class PlayerInfo implements Loadable
     public void setHasFEClient(boolean status)
     {
         this.hasFEClient = status;
-        APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
+        if(status) {
+            APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
+        }
     }
 
     public boolean isNoClip()

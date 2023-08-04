@@ -1,8 +1,8 @@
 package com.forgeessentials.jscripting.wrapper.mc.item;
 
-import net.minecraft.inventory.IInventory;
-
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
+
+import net.minecraft.inventory.IInventory;
 
 public class JsInventory<T extends IInventory> extends JsWrapper<T>
 {
@@ -12,7 +12,7 @@ public class JsInventory<T extends IInventory> extends JsWrapper<T>
      */
     public static <T extends IInventory> JsInventory<T> get(T inventory)
     {
-        return inventory == null ? null : new JsInventory(inventory);
+        return inventory == null ? null : new JsInventory<>(inventory);
     }
 
     protected JsInventory(T that)
@@ -22,37 +22,26 @@ public class JsInventory<T extends IInventory> extends JsWrapper<T>
 
     public JsItemStack getStackInSlot(int slot)
     {
-        return JsItemStack.get(that.getStackInSlot(slot));
+        return JsItemStack.get(that.getItem(slot));
     }
 
     public void setStackInSlot(int slot, JsItemStack stack)
     {
-        that.setInventorySlotContents(slot, stack.getThat());
+        that.setItem(slot, stack.getThat());
     }
 
     public boolean isStackValidForSlot(int slot, JsItemStack stack)
     {
-        return that.isItemValidForSlot(slot, stack.getThat());
+        return that.canPlaceItem(slot, stack.getThat());
     }
 
     public int getSize()
     {
-        return that.getSizeInventory();
+        return that.getContainerSize();
     }
 
     public int getStackLimit()
     {
-        return that.getInventoryStackLimit();
+        return that.getMaxStackSize();
     }
-
-    public String getName()
-    {
-        return that.getName();
-    }
-
-    public boolean hasCustomName()
-    {
-        return that.hasCustomName();
-    }
-
 }

@@ -2,13 +2,16 @@ package com.forgeessentials.core.environment;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.CrashReportExtender;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Environment
 {
@@ -25,19 +28,11 @@ public class Environment
 
     public static void check()
     {
-        FMLCommonHandler.instance().registerCrashCallable(new FECrashCallable());
+        CrashReportExtender.registerCrashCallable(new FECrashCallable());
         // Check if dedicated or integrated server
-        try
-        {
-            Class.forName("net.minecraft.client.Minecraft");
-            isClient = true;
-        }
-        catch (ClassNotFoundException e)
-        {
-            isClient = false;
-        }
+        isClient = FMLEnvironment.dist == Dist.CLIENT;
 
-        if (Loader.isModLoaded("worldedit"))
+        if (ModList.get().isLoaded("worldedit"))
         {
             hasWorldEdit = true;
             try
@@ -46,11 +41,12 @@ public class Environment
             }
             catch (ClassNotFoundException cnfe)
             {
-                LoggingHandler.felog.warn("Found WorldEdit Forge, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
+                LoggingHandler.felog.warn(
+                        "Found WorldEdit Forge, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
             }
         }
 
-        if (Loader.isModLoaded("ftbu"))
+        if (ModList.get().isLoaded("ftbu"))
         {
             LoggingHandler.felog.warn("FTB Utilities is installed. Forge Essentials may not work as expected.");
             LoggingHandler.felog.warn("Please uninstall FTB Utilities to regain full FE functionality.");
@@ -69,17 +65,20 @@ public class Environment
         // Some additional checks
 
         // Check for Cauldron or LavaBukkit
-        String modName = FMLCommonHandler.instance().getModName();
-        if (modName.contains("cauldron"))
+        // String modName = ServerLifecycleHooks.getCurrentServer().getServerModName();
+        if (ModList.get().isLoaded("cauldron"))
         {
             LoggingHandler.felog.error("You are attempting to run FE on Cauldron. This is completely unsupported.");
 
-            LoggingHandler.felog.error("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
-            LoggingHandler.felog.error("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
+            LoggingHandler.felog
+                    .error("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
+            LoggingHandler.felog.error(
+                    "Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
             if (!ForgeEssentials.isSafeMode())
             {
                 LoggingHandler.felog.error("The server will now shut down as a precaution against data loss.");
-                throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
+                throw new RuntimeException(
+                        "Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
             }
             LoggingHandler.felog.error("FE safe mode has been enabled, you are proceeding at your own risk.");
             LoggingHandler.felog.error("Sanity check failed: Detected Cauldron, bad things may happen to your server.");
@@ -101,22 +100,30 @@ public class Environment
         return hasSponge;
     }
 
+    public static boolean hasFTBU()
+    {
+        return hasFTBU;
+    }
+
     public static void registerSpongeCompatPlugin(boolean isWESpongePresent)
     {
         LoggingHandler.felog.info("Sponge environment plugin found, enabling Sponge compat.");
         hasSponge = true;
         hasWorldEdit = isWESpongePresent;
     }
+
     public static class FTBUNagHandler
     {
 
         @SubscribeEvent
         public void playerLogIn(PlayerLoggedInEvent e)
         {
-            if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(e.player.getGameProfile()))
+            if (ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(e.getPlayer().getGameProfile()))
             {
-                ChatOutputHandler.chatWarning(e.player, "FTB Utilities is installed. Forge Essentials may not work as expected.");
-                ChatOutputHandler.chatWarning(e.player, "Please uninstall FTB Utilities to regain full FE functionality.");
+                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(),
+                        "FTB Utilities is installed. Forge Essentials may not work as expected.");
+                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(),
+                        "Please uninstall FTB Utilities to regain full FE functionality.");
             }
         }
     }

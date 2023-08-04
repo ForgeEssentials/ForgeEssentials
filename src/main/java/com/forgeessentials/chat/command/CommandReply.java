@@ -4,30 +4,41 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandReply extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandReply extends ForgeEssentialsCommandBuilder
 {
 
-    public static Map<ICommandSender, WeakReference<ICommandSender>> replyMap = new WeakHashMap<>();
-
-    public static void messageSent(ICommandSender argFrom, ICommandSender argTo)
+    public CommandReply(boolean enabled)
     {
-        replyMap.put(argTo, new WeakReference<ICommandSender>(argFrom));
+        super(enabled);
     }
 
-    public static ICommandSender getReplyTarget(ICommandSender sender)
+    public static Map<PlayerEntity, WeakReference<PlayerEntity>> replyMap = new WeakHashMap<>();
+
+    public static void messageSent(PlayerEntity argFrom, PlayerEntity argTo)
     {
-        WeakReference<ICommandSender> replyTarget = replyMap.get(sender);
+        replyMap.put(argTo, new WeakReference<>(argFrom));
+    }
+
+    public static PlayerEntity getReplyTarget(PlayerEntity sender)
+    {
+        WeakReference<PlayerEntity> replyTarget = replyMap.get(sender);
         if (replyTarget == null)
             return null;
         return replyTarget.get();
@@ -36,27 +47,15 @@ public class CommandReply extends ForgeEssentialsCommandBase
     /* ------------------------------------------------------------ */
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "reply";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "r" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/r <message>: Reply to last player that sent you a message";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleChat.PERM + ".reply";
     }
 
     @Override
@@ -72,19 +71,28 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length < 1)
-            throw new WrongUsageException("commands.message.usage", new Object[0]);
-
-        ICommandSender target = getReplyTarget(sender);
-        if (target == null)
-            throw new PlayerNotFoundException("No reply target found");
-
-        if (target == sender)
-            throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
-
-        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
+        return baseBuilder.then(Commands.argument("message", StringArgumentType.greedyString())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerEntity target = getReplyTarget(getServerPlayer(ctx.getSource()));
+        if (target == null)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "No reply target found");
+            return Command.SINGLE_SUCCESS;
+        }
+        if (target.equals(getServerPlayer(ctx.getSource())))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "You can't be the recipient");
+            return Command.SINGLE_SUCCESS;
+        }
+        TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
+        ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
+        return Command.SINGLE_SUCCESS;
+    }
 }

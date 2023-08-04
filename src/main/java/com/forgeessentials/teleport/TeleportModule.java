@@ -1,29 +1,45 @@
 package com.forgeessentials.teleport;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer.SleepResult;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.teleport.portal.CommandPortal;
+import com.forgeessentials.teleport.commands.CommandBack;
+import com.forgeessentials.teleport.commands.CommandBed;
+import com.forgeessentials.teleport.commands.CommandHome;
+import com.forgeessentials.teleport.commands.CommandJump;
+import com.forgeessentials.teleport.commands.CommandPersonalWarp;
+import com.forgeessentials.teleport.commands.CommandSetSpawn;
+import com.forgeessentials.teleport.commands.CommandSpawn;
+import com.forgeessentials.teleport.commands.CommandTPA;
+import com.forgeessentials.teleport.commands.CommandTop;
+import com.forgeessentials.teleport.commands.CommandTp;
+import com.forgeessentials.teleport.commands.CommandTppos;
+import com.forgeessentials.teleport.commands.CommandWarp;
 import com.forgeessentials.teleport.portal.PortalManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule extends ConfigLoaderBase
 {
+
+    private static ForgeConfigSpec TELEPORT_CONFIG;
+    private static final ConfigData data = new ConfigData("Teleport", TELEPORT_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String PERM_TP = "fe.teleport.tp";
     public static final String PERM_TP_OTHERS = "fe.teleport.tp.others";
@@ -62,74 +78,106 @@ public class TeleportModule extends ConfigLoaderBase
     public static final String PERM_JUMP = "fe.teleport.jump";
     public static final String PERM_JUMP_TOOL = PERM_JUMP + ".tool";
 
-    private PortalManager portalManager;
+    private PortalManager portalManager = new PortalManager();
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        FECommandManager.registerCommand(new CommandBack(true), event.getDispatcher());
 
-        portalManager = new PortalManager();
+        CommandBed bed = new CommandBed(true);
+        FECommandManager.registerCommand(bed, event.getDispatcher());
+        MinecraftForge.EVENT_BUS.register(bed);
+
+        FECommandManager.registerCommand(new CommandHome(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandSpawn(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTp(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTppos(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandWarp(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTPA(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandPersonalWarp(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandTop(true), event.getDispatcher());
+        // FECommandManager.registerCommand(new CommandPortal());
+        FECommandManager.registerCommand(new CommandSetSpawn(true), event.getDispatcher());
+
+        CommandJump jump = new CommandJump(true);
+        FECommandManager.registerCommand(jump, event.getDispatcher());
+        MinecraftForge.EVENT_BUS.register(jump);
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         portalManager.load();
 
-        FECommandManager.registerCommand(new CommandBack());
-        FECommandManager.registerCommand(new CommandBed());
-        FECommandManager.registerCommand(new CommandHome());
-        FECommandManager.registerCommand(new CommandSpawn());
-        FECommandManager.registerCommand(new CommandTp());
-        FECommandManager.registerCommand(new CommandTppos());
-        FECommandManager.registerCommand(new CommandWarp());
-        FECommandManager.registerCommand(new CommandTPA());
-        FECommandManager.registerCommand(new CommandPersonalWarp());
-        FECommandManager.registerCommand(new CommandTop());
-        FECommandManager.registerCommand(new CommandPortal());
-        FECommandManager.registerCommand(new CommandSetSpawn());
-        FECommandManager.registerCommand(new CommandJump());
+        APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20",
+                "Amount of sec a user has to accept a TPA request");
 
-        APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
-
-        APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, DefaultPermissionLevel.ALL, "Allow returning to the last death location with back-command");
-        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL, "Allow returning to the last location before teleport with back-command");
-        APIRegistry.perms.registerPermission(PERM_BED_OTHERS, DefaultPermissionLevel.OP, "Allow teleporting to other player's bed location");
+        APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, DefaultPermissionLevel.ALL,
+                "Allow returning to the last death location with back-command");
+        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL,
+                "Allow returning to the last location before teleport with back-command");
+        APIRegistry.perms.registerPermission(PERM_BED_OTHERS, DefaultPermissionLevel.OP,
+                "Allow teleporting to other player's bed location");
 
         APIRegistry.perms.registerPermission(PERM_HOME, DefaultPermissionLevel.ALL, "Allow usage of /home");
-        APIRegistry.perms.registerPermission(PERM_HOME_SET, DefaultPermissionLevel.ALL, "Allow setting of home location");
-        APIRegistry.perms.registerPermission(PERM_HOME_OTHER, DefaultPermissionLevel.OP, "Allow setting other players home location");
+        APIRegistry.perms.registerPermission(PERM_HOME_SET, DefaultPermissionLevel.ALL,
+                "Allow setting of home location");
+        APIRegistry.perms.registerPermission(PERM_HOME_OTHER, DefaultPermissionLevel.OP,
+                "Allow setting other players home location");
 
-        APIRegistry.perms.registerPermission(PERM_SPAWN_OTHERS, DefaultPermissionLevel.OP, "Allow setting other player's spawn");
+        APIRegistry.perms.registerPermission(PERM_SPAWN_OTHERS, DefaultPermissionLevel.OP,
+                "Allow setting other player's spawn");
         APIRegistry.perms.registerPermission(PERM_TOP_OTHERS, DefaultPermissionLevel.OP, "Use /top on others");
-        APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, DefaultPermissionLevel.ALL, "Allow sending teleport-to requests");
-        APIRegistry.perms.registerPermission(PERM_TPAHERE_SENDREQUEST, DefaultPermissionLevel.ALL, "Allow sending teleport-here requests");
+        APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, DefaultPermissionLevel.ALL,
+                "Allow sending teleport-to requests");
+        APIRegistry.perms.registerPermission(PERM_TPAHERE_SENDREQUEST, DefaultPermissionLevel.ALL,
+                "Allow sending teleport-here requests");
         APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, DefaultPermissionLevel.OP, "Administer warps");
 
-        APIRegistry.perms.registerPermission(PERM_JUMP_TOOL, DefaultPermissionLevel.OP, "Allow jumping with a tool (default compass)");
+        APIRegistry.perms.registerPermission(PERM_JUMP_TOOL, DefaultPermissionLevel.OP,
+                "Allow jumping with a tool (default compass)");
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerSleepInBed(PlayerSleepInBedEvent e) {
-        if (e.getEntityPlayer().world.isRemote)
+    public void playerSleepInBed(PlayerSleepInBedEvent e)
+    {
+        if (e.getPlayer().level.isClientSide)
         {
             return;
         }
 
-        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getEntityPlayer(), e.getPos()) || e.getEntityPlayer().isSneaking())
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingLocationCheck(e.getPlayer(), e.getPos())
+                || (e.getPlayer().isCrouching()))
         {
-            e.getEntityPlayer().setSpawnPoint(e.getPos(), false);
-            ChatOutputHandler.chatConfirmation(e.getEntityPlayer(), "Bed Position Set!");
-            e.setResult(SleepResult.OTHER_PROBLEM);
+            ((ServerPlayerEntity) e.getPlayer()).setRespawnPosition(e.getPlayer().level.dimension(), e.getPos(), 0,
+                    false, false);
+            ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
         }
     }
 
+    static ForgeConfigSpec.ConfigValue<String> FEportalBlock;
+
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void load(Builder BUILDER, boolean isReload)
     {
-        String portalBlockId = config.get(Configuration.CATEGORY_GENERAL, "portalBlock", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
-                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.").getString();
-        PortalManager.portalBlock = Block.REGISTRY.getObject(new ResourceLocation(portalBlockId));
+        BUILDER.push("General");
+        FEportalBlock = BUILDER.comment("Name of the block to use as material for new portals.\n"
+                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.")
+                .define("portalBlock", "minecraft:glass_pane");
+        BUILDER.pop();
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        String portalBlockId = FEportalBlock.get();
+        PortalManager.portalBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(portalBlockId));
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
     }
 }

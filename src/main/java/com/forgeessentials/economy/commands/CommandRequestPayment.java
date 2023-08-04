@@ -1,101 +1,72 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRequestPayment extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandRequestPayment(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "requestpayment";
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length != 2)
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-        if (player == null)
-        {
-            ChatOutputHandler.chatError(sender, args[0] + " not found!");
-        }
-        else
-        {
-            int amount = parseInt(args[1], 0, Integer.MAX_VALUE);
-            ChatOutputHandler.chatConfirmation(sender,
-                    Translator.format("You requested %s to pay %s", player.getName(), APIRegistry.economy.toString(amount)));
-            ChatOutputHandler.chatConfirmation(player,
-                    Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), sender.getName()));
-        }
+        return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+                .then(Commands.argument("amount", IntegerArgumentType.integer())
+                        .executes(CommandContext -> execute(CommandContext, "blank"))));
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (args.length != 2)
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        int amount = IntegerArgumentType.getInteger(ctx, "amount");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("You requested %s to pay %s",
+                player.getDisplayName().getString(), APIRegistry.economy.toString(amount)));
+        ChatOutputHandler.chatNotification(player, "You have been requested to pay %s by %s",
+                APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString());
+        return Command.SINGLE_SUCCESS;
+    }
 
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-        if (player == null)
-        {
-            ChatOutputHandler.chatError(sender, args[0] + " not found!");
-        }
-        else
-        {
-            int amount = parseInt(args[1], 0, Integer.MAX_VALUE);
-            ChatOutputHandler.chatConfirmation(sender,
-                    Translator.format("You requested %s to pay %s", player.getName(), APIRegistry.economy.toString(amount)));
-            ChatOutputHandler
-                    .chatConfirmation(player, Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount)));
-        }
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        int amount = IntegerArgumentType.getInteger(ctx, "amount");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("You requested %s to pay %s",
+                player.getDisplayName().getString(), APIRegistry.economy.toString(amount)));
+        ChatOutputHandler.chatNotification(player, "You have been requested to pay %s by the server",
+                APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString());
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.economy." + getName();
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/requestpayment <player> <amountRequested> Request a player to pay you a specified amount.";
     }
 
     @Override

@@ -2,31 +2,34 @@ package com.forgeessentials.commands.server;
 
 import java.util.TimerTask;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDelayedAction extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandDelayedAction(boolean enabled)
     {
-        return "delayedaction";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/delayedaction [time] [command] Run a command after a specified timeout.";
+        return "delayedaction";
     }
 
     @Override
@@ -42,27 +45,36 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + ".delayedaction";
+        return baseBuilder.then(Commands.argument("time", StringArgumentType.string())
+                .then(Commands.argument("command", StringArgumentType.greedyString())
+                        .executes(CommandContext -> execute(CommandContext, "blank"))));
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        long time = arguments.parseTimeReadable();
-        final String execute = StringUtils.join(arguments.args.iterator(), " ");
-        if (arguments.isTabCompletion)
-            return;
+        long time;
+        try
+        {
+            time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
+        }
+        catch (FECommandParsingException e)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), e.error);
+            return Command.SINGLE_SUCCESS;
+        }
+        final String execute = StringArgumentType.getString(ctx, "command");
         TaskRegistry.schedule(new TimerTask() {
             @Override
             public void run()
             {
-                arguments.server.getCommandManager().executeCommand(arguments.sender, execute);
+                ctx.getSource().getServer().getCommands().performCommand(ctx.getSource(), execute);
             }
         }, time);
-        arguments.notify("Timer set to run command '%s' in %s", execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true));
-
+        ChatOutputHandler.chatNotification(ctx.getSource(),
+                Translator.format(execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true)));
+        return Command.SINGLE_SUCCESS;
     }
-
 }

@@ -1,21 +1,7 @@
 package com.forgeessentials.api.permissions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,6 +11,12 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
@@ -36,17 +28,16 @@ public class ServerZone extends Zone implements Loadable
     private RootZone rootZone;
 
     @Expose(serialize = false)
-    private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
+    private Map<Integer, Zone> zones = new HashMap<>();
 
-    private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
+    private Map<String, WorldZone> worldZones = new HashMap<>();
 
-    @Expose(serialize = false)
+    private Map<UserIdent, Set<String>> playerGroups = new HashMap<>();
+
     private int maxZoneID;
 
-    private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
-
     @Expose(serialize = false)
-    private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
+    private Set<UserIdent> knownPlayers = new HashSet<>();
 
     // ------------------------------------------------------------
 
@@ -142,7 +133,7 @@ public class ServerZone extends Zone implements Loadable
 
     // ------------------------------------------------------------
 
-    public Map<Integer, WorldZone> getWorldZones()
+    public Map<String, WorldZone> getWorldZones()
     {
         return worldZones;
     }
@@ -154,21 +145,26 @@ public class ServerZone extends Zone implements Loadable
         setDirty();
     }
 
-    public WorldZone getWorldZone(int dimensionId)
+    public WorldZone getWorldZone(String registryKey)
     {
-        WorldZone zone = getWorldZones().get(dimensionId);
+        WorldZone zone = getWorldZones().get(registryKey);
         if (zone == null)
         {
-            zone = new WorldZone(getServerZone(), dimensionId);
+            zone = new WorldZone(getServerZone(), registryKey);
         }
         return zone;
     }
 
     public WorldZone getWorldZone(World world)
     {
-        return getWorldZone(world.provider.getDimension());
+        return getWorldZone(world.dimension().location().toString());
     }
 
+    public WorldZone getWorldZone(IWorld world)
+    {
+        return getWorldZone((ServerWorld) world);
+
+    }
     // ------------------------------------------------------------
 
     public Set<String> getGroups()
@@ -186,7 +182,8 @@ public class ServerZone extends Zone implements Loadable
         if (APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
             return false;
         setGroupPermission(name, FEPermissions.GROUP, true);
-        setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
+        setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY,
+                Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
         setDirty();
         return true;
     }
@@ -208,14 +205,16 @@ public class ServerZone extends Zone implements Loadable
     {
         Set<String> groups = getIncludedGroups(group);
         groups.add(otherGroup);
-        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(groups, ","));
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES,
+                StringUtils.join(groups, ","));
     }
 
     public void groupIncludeRemove(String group, String otherGroup)
     {
         Set<String> groups = getIncludedGroups(group);
         groups.remove(otherGroup);
-        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES, StringUtils.join(groups, ","));
+        APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_INCLUDES,
+                StringUtils.join(groups, ","));
     }
 
     // ------------------------------------------------------------
@@ -251,15 +250,11 @@ public class ServerZone extends Zone implements Loadable
     public boolean addPlayerToGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        Set<String> groupSet = playerGroups.get(ident);
-        if (groupSet == null)
-        {
-            groupSet = new HashSet<String>();
-            playerGroups.put(ident, groupSet);
-        }
+        Set<String> groupSet = playerGroups.computeIfAbsent(ident, k -> new HashSet<>());
         if (!groupSet.contains(group))
         {
-            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident,
+                    PermissionEvent.User.ModifyGroups.Action.ADD, group)))
                 return false;
             groupSet.add(group);
         }
@@ -270,7 +265,8 @@ public class ServerZone extends Zone implements Loadable
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident,
+                PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
@@ -288,17 +284,12 @@ public class ServerZone extends Zone implements Loadable
 
     public Map<String, Set<UserIdent>> getGroupPlayers()
     {
-        Map<String, Set<UserIdent>> groupPlayers = new HashMap<String, Set<UserIdent>>();
+        Map<String, Set<UserIdent>> groupPlayers = new HashMap<>();
         for (Entry<UserIdent, Set<String>> player : playerGroups.entrySet())
         {
             for (String group : player.getValue())
             {
-                Set<UserIdent> players = groupPlayers.get(group);
-                if (players == null)
-                {
-                    players = new HashSet<UserIdent>();
-                    groupPlayers.put(group, players);
-                }
+                Set<UserIdent> players = groupPlayers.computeIfAbsent(group, k -> new HashSet<>());
                 players.add(player.getKey());
             }
         }
@@ -310,7 +301,7 @@ public class ServerZone extends Zone implements Loadable
     {
         registerPlayer(ident);
         Set<String> pgs = playerGroups.get(ident);
-        SortedSet<GroupEntry> result = new TreeSet<GroupEntry>();
+        SortedSet<GroupEntry> result = new TreeSet<>();
         if (pgs != null)
             for (String group : pgs)
                 result.add(new GroupEntry(this, group));
@@ -323,7 +314,7 @@ public class ServerZone extends Zone implements Loadable
         if (ident != null)
         {
             // Include special groups
-            if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(ident.getGameProfile()))
+            if (ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
@@ -338,9 +329,9 @@ public class ServerZone extends Zone implements Loadable
             if (ident.isNpc())
                 result.add(new GroupEntry(GROUP_NPC, 1, 1));
 
-            EntityPlayerMP player = ident.getPlayerMP();
-            if (player != null && player.interactionManager != null)
-                switch (player.interactionManager.getGameType())
+            ServerPlayerEntity player = ident.getPlayerMP();
+            if (player != null && player.abilities != null)
+                switch (player.gameMode.getGameModeForPlayer())
                 {
                 case ADVENTURE:
                     result.add(new GroupEntry(this, GROUP_ADVENTURE));
@@ -371,7 +362,7 @@ public class ServerZone extends Zone implements Loadable
         do
         {
             addedGroup = false;
-            for (GroupEntry existingGroup : new ArrayList<GroupEntry>(groups))
+            for (GroupEntry existingGroup : new ArrayList<>(groups))
             {
                 // Check if group was already checked for inclusion
                 if (!checkedGroups.add(existingGroup.getGroup()))
@@ -462,10 +453,14 @@ public class ServerZone extends Zone implements Loadable
     public List<Zone> getZonesAt(WorldPoint worldPoint)
     {
         WorldZone w = getWorldZone(worldPoint.getDimension());
-        List<Zone> result = new ArrayList<Zone>();
+        List<Zone> result = new ArrayList<>();
         for (AreaZone zone : w.getAreaZones())
+        {
             if (zone.isInZone(worldPoint))
+            {
                 result.add(zone);
+            }
+        }
         result.add(w);
         result.add(this);
         result.add(rootZone);
@@ -499,7 +494,7 @@ public class ServerZone extends Zone implements Loadable
     public List<AreaZone> getAreaZonesAt(WorldPoint worldPoint)
     {
         WorldZone w = getWorldZone(worldPoint.getDimension());
-        List<AreaZone> result = new ArrayList<AreaZone>();
+        List<AreaZone> result = new ArrayList<>();
         for (AreaZone zone : w.getAreaZones())
             if (zone.isInZone(worldPoint))
                 result.add(zone);
@@ -531,18 +526,19 @@ public class ServerZone extends Zone implements Loadable
 
     // ------------------------------------------------------------
 
-    public String getPermission(Collection<Zone> zones, UserIdent ident, List<String> groups, String permissionNode, WorldPoint point)
+    public String getPermission(Collection<Zone> zones, UserIdent ident, List<String> groups, String permissionNode,
+            WorldPoint point)
     {
         // Build node list
-        List<String> nodes = new ArrayList<String>();
+        List<String> nodes = new ArrayList<>();
         nodes.add(permissionNode);
         String[] nodeParts = permissionNode.split("\\.");
         for (int i = nodeParts.length; i > 0; i--)
         {
-            String node = "";
+            StringBuilder node = new StringBuilder();
             for (int j = 0; j < i; j++)
             {
-                node += nodeParts[j] + ".";
+                node.append(nodeParts[j]).append(".");
             }
             nodes.add(node + PERMISSION_ASTERIX);
         }
@@ -563,7 +559,8 @@ public class ServerZone extends Zone implements Loadable
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result, point, false);
+                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result,
+                                    point, false);
                         return result;
                     }
                 }
@@ -590,7 +587,8 @@ public class ServerZone extends Zone implements Loadable
                         if (result != null)
                         {
                             if (rootZone.permissionDebugger != null)
-                                rootZone.permissionDebugger.debugPermission(zone, ident, group, permissionNode, node, result, point, true);
+                                rootZone.permissionDebugger.debugPermission(zone, ident, group, permissionNode, node,
+                                        result, point, true);
                             return result;
                         }
                     }
@@ -598,13 +596,15 @@ public class ServerZone extends Zone implements Loadable
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, ident, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE, point, true);
+            rootZone.permissionDebugger.debugPermission(null, ident, GROUP_DEFAULT, permissionNode, permissionNode,
+                    PERMISSION_TRUE, point, true);
         return null;
     }
 
-    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, List<String> groups, String node, WorldPoint point)
+    public String getPermissionProperty(Collection<Zone> zones, UserIdent ident, List<String> groups, String node,
+            WorldPoint point)
     {
-        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, Arrays.asList(node), true);
+        PermissionCheckEvent event = postPermissionCheckEvent(zones, ident, groups, Collections.singletonList(node), true);
         if (event.result != null)
             return event.result;
 
@@ -617,7 +617,8 @@ public class ServerZone extends Zone implements Loadable
                 if (result != null)
                 {
                     if (rootZone.permissionDebugger != null)
-                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result, point, false);
+                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result, point,
+                                false);
                     return result;
                 }
             }
@@ -641,7 +642,8 @@ public class ServerZone extends Zone implements Loadable
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, ident, group, node, node, result, point, true);
+                            rootZone.permissionDebugger.debugPermission(zone, ident, group, node, node, result, point,
+                                    true);
                         return result;
                     }
                 }
@@ -652,8 +654,8 @@ public class ServerZone extends Zone implements Loadable
         return null;
     }
 
-    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes,
-            boolean isProperty)
+    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident,
+            List<String> groups, List<String> nodes, boolean isProperty)
     {
         PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes, isProperty);
         APIRegistry.FE_EVENTBUS.post(event);
@@ -663,8 +665,8 @@ public class ServerZone extends Zone implements Loadable
     public static interface PermissionDebugger
     {
 
-        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value, WorldPoint point,
-                boolean isGroupPermission);
+        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value,
+                WorldPoint point, boolean isGroupPermission);
 
     }
 

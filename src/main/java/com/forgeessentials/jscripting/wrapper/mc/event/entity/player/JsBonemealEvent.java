@@ -1,8 +1,7 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
 
 import net.minecraftforge.event.entity.player.BonemealEvent;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class JsBonemealEvent extends JsPlayerEvent<BonemealEvent>
 {

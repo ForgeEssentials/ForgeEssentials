@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class AreaBase {
+public class AreaBase
+{
 
     protected Point high;
 
@@ -58,7 +59,8 @@ public class AreaBase {
      */
     public static Point getMinPoint(Point p1, Point p2)
     {
-        return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ()));
+        return new Point(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
+                Math.min(p1.getZ(), p2.getZ()));
     }
 
     /**
@@ -66,7 +68,8 @@ public class AreaBase {
      */
     public static Point getMaxPoint(Point p1, Point p2)
     {
-        return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+        return new Point(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),
+                Math.max(p1.getZ(), p2.getZ()));
     }
 
     /**

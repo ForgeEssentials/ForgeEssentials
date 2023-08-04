@@ -1,15 +1,17 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 /**
  * Expected syntax: <interval> <message>
@@ -22,26 +24,21 @@ public class EffectMessage extends WorldBorderEffect
     public int interval = 6000;
 
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing interval argument");
-        interval = args.parseInt();
-
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing message argument");
-        message = args.toString();
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        message = StringArgumentType.getString(ctx, "message");
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             return;
@@ -49,13 +46,14 @@ public class EffectMessage extends WorldBorderEffect
         if (pi.checkTimeout(this.getClass().getName()))
         {
             doEffect(player);
-            pi.startTimeout(this.getClass().getName(), interval * 1000);
+            pi.startTimeout(this.getClass().getName(), interval * 1000L);
         }
     }
 
-    public void doEffect(EntityPlayerMP player)
+    public void doEffect(ServerPlayerEntity player)
     {
-        ChatOutputHandler.chatError(player, ModuleChat.processChatReplacements(player, message));
+        ChatOutputHandler.chatError(player,
+                ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
     }
 
     @Override

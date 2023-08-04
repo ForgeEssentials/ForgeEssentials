@@ -1,45 +1,50 @@
 package com.forgeessentials.compat.worldedit;
 
-
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModList;
 
 public class WEIntegrationHandler
 {
 
-    @SuppressWarnings("unused")
-    private CUIComms cuiComms;
+    public CUIComms cuiComms;
 
-    @SubscribeEvent
-    public void postLoad(FEModulePostInitEvent e)
+    public boolean postLoad()
     {
         if (WEIntegration.disable)
         {
             LoggingHandler.felog.error("Requested to force-disable WorldEdit.");
-            // if (Loader.isModLoaded("WorldEdit"))
-            // MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
-            ModuleLauncher.instance.unregister("WEIntegrationTools");
+            if (ModList.get().isLoaded("worldedit"))
+            {
+                try
+                {
+                    MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); // forces worldedit forge NOT to load
+                }
+                catch (IllegalArgumentException e1)
+                {
+                    LoggingHandler.felog.error("WorldEdit not found, unregistering WEIntegrationTools");
+                    return true;
+                }
+            }
+            return true;
         }
         else
         {
-            SelectionHandler.selectionProvider = new WESelectionHandler();
+            if (ModList.get().isLoaded("worldedit"))
+            {
+                SelectionHandler.selectionProvider = new WESelectionHandler();
+                ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
+                cuiComms = new CUIComms();
+                return false;
+            }
+            else
+            {
+                LoggingHandler.felog.error("WorldEdit not found, unregistering WEIntegrationTools");
+                return true;
+            }
         }
     }
-
-    @SubscribeEvent
-    public void serverStart(FEModuleServerInitEvent e)
-    {
-        cuiComms = new CUIComms();
-        ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
-        PermissionAPI.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
-    }
-
 }

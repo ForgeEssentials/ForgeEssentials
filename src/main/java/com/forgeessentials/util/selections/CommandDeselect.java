@@ -1,56 +1,58 @@
 package com.forgeessentials.util.selections;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDeselect extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandDeselect extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandDeselect(boolean enabled)
     {
-        return "/desel";
+        super(enabled);
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public @NotNull String getPrimaryAlias()
     {
-        return new String[] { "/deselect", "/deselect", "/sel" };
+        return "SELdesel";
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
+        return new String[] { "/deselect", "/sel" };
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         info.setSel1(null);
         info.setSel2(null);
-        SelectionHandler.sendUpdate(sender);
-        ChatOutputHandler.chatConfirmation(sender, "Selection cleared.");
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection cleared.");
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.deselect";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//fedesel Deselects the selection";
     }
 
     @Override

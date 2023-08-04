@@ -1,44 +1,42 @@
 package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
-
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-public class CommandPromote extends ParserCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandPromote extends ForgeEssentialsCommandBuilder
 {
 
-    public static final String PERM_NODE = "fe.perm.promote";
+    public CommandPromote(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "promote";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/promote <player> <group>: Promote a user to another group";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM_NODE;
     }
 
     @Override
@@ -54,53 +52,66 @@ public class CommandPromote extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return baseBuilder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("group", StringArgumentType.string()).suggests(SUGGEST_GROUPS)
+                                .executes(context -> execute(context, "group"))))
+                .executes(CommandContext -> execute(CommandContext, "help"));
+    }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
+        List<String> completeList = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
+        return ISuggestionProvider.suggest(completeList, builder);
+    };
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params.equals("help"))
         {
-            ChatOutputHandler.chatConfirmation(arguments.sender, "/promote <player> <group>");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/promote <player> <group>");
+            return Command.SINGLE_SUCCESS;
         }
 
-        UserIdent ident = arguments.parsePlayer(false, false);
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Wrong syntax. Use \"/promote <player> <group>\"");
+        UserIdent ident = getIdent(EntityArgument.getPlayer(ctx, "player"));
 
-        if (arguments.isTabCompletion)
-        {
-            if (arguments.args.size() == 1)
-            {
-                arguments.tabCompletion = new ArrayList<String>();
-                for (String group : APIRegistry.perms.getServerZone().getGroups())
-                    if (CommandBase.doesStringStartWith(arguments.args.peek(), group))
-                        arguments.tabCompletion.add(group);
-            }
-            return;
-        }
-
-        String groupName = arguments.remove();
-        if (!arguments.isEmpty())
-            throw new TranslatedCommandException("Wrong syntax. Use Syntax is \"/promote <player> <group>\"");
+        String groupName = StringArgumentType.getString(ctx, "group");
 
         if (!APIRegistry.perms.groupExists(groupName))
-            throw new TranslatedCommandException("Group %s does not exist", groupName);
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Group %s does not exist", groupName);
+            return Command.SINGLE_SUCCESS;
+        }
 
-        if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
-            throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName,
+        if (!Zone.PERMISSION_TRUE.equals(
+                APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(),
+                    "Group %s is not available for promotion. Allow %s on the group first.", groupName,
                     FEPermissions.GROUP_PROMOTION);
+            return Command.SINGLE_SUCCESS;
+        }
 
         for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroupEntries(ident))
-            if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
+            if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(),
+                    FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
-                ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                        Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
                 if (ident.hasPlayer())
-                    ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been removed from the %s group", group));
+                    ChatOutputHandler.chatConfirmation(ident.getPlayer().createCommandSourceStack(),
+                            Translator.format("You have been removed from the %s group", group));
             }
         APIRegistry.perms.addPlayerToGroup(ident, groupName);
-        ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
         if (ident.hasPlayer())
-            ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
+            ChatOutputHandler.chatConfirmation(ident.getPlayer().createCommandSourceStack(),
+                    Translator.format("You have been added to the %s group", groupName));
+        return Command.SINGLE_SUCCESS;
     }
 
 }

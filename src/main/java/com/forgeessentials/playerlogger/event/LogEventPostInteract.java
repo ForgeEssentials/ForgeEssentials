@@ -4,11 +4,10 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
+import com.forgeessentials.util.events.player.PlayerPostInteractEvent;
 
 public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEvent>
 {
@@ -23,15 +22,12 @@ public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEv
     {
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.getEntityPlayer());
-        action.world = getWorld(event.world.provider.getDimension());
-        // action.block = getBlock(block);
-        // action.metadata = metadata;
+        action.player = getPlayer(event.getPlayer());
+        action.world = event.world.dimension().location().toString();
         action.type = ActionBlockType.USE_RIGHT;
         action.x = event.pos.getX();
         action.y = event.pos.getY();
         action.z = event.pos.getZ();
         em.persist(action);
     }
-    
 }

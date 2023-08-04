@@ -1,30 +1,37 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.server.MinecraftServer;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import java.util.UUID;
 
-public class CommandSpeed extends ForgeEssentialsCommandBase
+import org.jetbrains.annotations.NotNull;
+
+public class CommandSpeed extends ForgeEssentialsCommandBuilder
 {
-
-    @Override
-    public String getPrimaryAlias()
+	private static final UUID FE_SPEED_MODIFER = UUID.fromString("eb224087-0848-4d12-9b93-2a4a5cf4bafa");
+    public CommandSpeed(boolean enabled)
     {
-        return "speed";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/speed <speed> Set or change the player's speed.";
+        return "speed";
     }
 
     @Override
@@ -40,52 +47,74 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return ModuleCommands.PERM + ".speed";
+        return baseBuilder
+        		.then(Commands.literal("reset")
+        				.executes(CommandContext -> execute(CommandContext, "reset")))
+                .then(Commands.literal("set")
+                        .then(Commands.argument("multiplier", IntegerArgumentType.integer(0))
+                                .executes(CommandContext -> execute(CommandContext, "set"))))
+                .then(Commands.literal("current")
+        				.executes(CommandContext -> execute(CommandContext, "current")));
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        ChatOutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
-        if (args.length >= 1)
+        ChatOutputHandler.chatWarning(ctx.getSource(),
+                "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
+        // float speed = Float.parseFloat(args[0]);
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        if (params.equals("current"))
         {
-            // float speed = Float.parseFloat(args[0]);
-
-            if (args[0].equals("reset"))
+            if (((player.getAttributeBaseValue(Attributes.MOVEMENT_SPEED)) / 0.05F) == 2.0)
             {
-                ChatOutputHandler.chatNotification(player, "Resetting speed to regular walking speed.");
-                // NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                player.capabilities.writeCapabilitiesToNBT(tagCompound);
-                tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(0.05F));
-                tagCompound.getCompoundTag("abilities").setTag("walkSpeed", new NBTTagFloat(0.1F));
-                player.capabilities.readCapabilitiesFromNBT(tagCompound);
-                player.sendPlayerAbilities();
-                return;
+                ChatOutputHandler.chatNotification(ctx.getSource(), "You are currently at the base movement speed");
             }
-
-            float speed = 0.05F;
-
-            int multiplier = parseInt(args[0]);
-
-            if (multiplier >= 10)
+            else
             {
-                ChatOutputHandler.chatWarning(player, "Multiplier set too high. Bad things may happen, so we're throttling your speed to 10x walking speed.");
-                multiplier = 10;
+                ChatOutputHandler.chatNotification(ctx.getSource(), "Current movement speed is at a multiplier of x"
+                        + Double.toString(((player.getAttributeBaseValue(Attributes.MOVEMENT_SPEED)) / 0.05F)));
             }
-            speed = speed * multiplier;
-            NBTTagCompound tagCompound = new NBTTagCompound();
-            player.capabilities.writeCapabilitiesToNBT(tagCompound);
-            tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(speed));
-            tagCompound.getCompoundTag("abilities").setTag("walkSpeed", new NBTTagFloat(speed));
-            player.capabilities.readCapabilitiesFromNBT(tagCompound);
-            player.sendPlayerAbilities();
-
-            ChatOutputHandler.chatNotification(player, "Walk/fly speed set to " + speed);
-            // NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
+            return Command.SINGLE_SUCCESS;
         }
-    }
+        if (params.equals("reset"))
+        {
+            ChatOutputHandler.chatNotification(ctx.getSource(), "Resetting speed to regular walking speed.");
+            ModifiableAttributeInstance modifiableattributeinstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (modifiableattributeinstance != null) {
+               if (modifiableattributeinstance.getModifier(FE_SPEED_MODIFER) != null) {
+                  modifiableattributeinstance.removeModifier(FE_SPEED_MODIFER);
+               }
 
+            }
+            return Command.SINGLE_SUCCESS;
+        }
+
+        int multiplier = IntegerArgumentType.getInteger(ctx, "multiplier");
+
+        if (multiplier >= 10)
+        {
+            ChatOutputHandler.chatWarning(ctx.getSource(),
+                    "Multiplier set too high. Bad things may happen, so we're throttling your speed to 10x walking speed.");
+            multiplier = 10;
+        }
+
+        ModifiableAttributeInstance modifiableattributeinstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (modifiableattributeinstance != null) {
+            if (modifiableattributeinstance.getModifier(FE_SPEED_MODIFER) != null) {
+               modifiableattributeinstance.removeModifier(FE_SPEED_MODIFER);
+            }
+        }
+        else {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Failed to set movement speed!.");
+        	return Command.SINGLE_SUCCESS;
+        }
+
+        modifiableattributeinstance.addTransientModifier(new AttributeModifier(FE_SPEED_MODIFER, "FE speed command boost", (double) multiplier, AttributeModifier.Operation.MULTIPLY_TOTAL));
+
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Walk/fly speed set to x" + multiplier + " base speed");
+        return Command.SINGLE_SUCCESS;
+    }
 }

@@ -1,13 +1,12 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-
-import net.minecraft.entity.Entity;
-
-import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsWorldServer;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
+
+import net.minecraft.entity.Entity;
 
 public class JsWarpPoint extends JsWrapper<WarpPoint>
 {
@@ -21,9 +20,9 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
         return new JsWorldPoint<>(that.toWorldPoint());
     }
 
-    private JsWorldServer getWorld()
+    private JsServerWorld getWorld()
     {
-        return new JsWorldServer(that.getWorld());
+        return new JsServerWorld(that.getWorld());
     }
 
     public int getBlockX()
@@ -51,12 +50,12 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
         return that.getY();
     }
 
-    public  double getZ()
+    public double getZ()
     {
         return that.getZ();
     }
 
-    public int getDimension()
+    public String getDimension()
     {
         return that.getDimension();
     }
@@ -71,12 +70,12 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
         return that.getYaw();
     }
 
-    public void set(int dim, double xd, double yd, double zd, float pitch, float yaw)
+    public void set(String dim, double xd, double yd, double zd, float pitch, float yaw)
     {
         that.set(dim, xd, yd, zd, pitch, yaw);
     }
 
-    public void setDimension(int dim)
+    public void setDimension(String dim)
     {
         that.setDimension(dim);
     }

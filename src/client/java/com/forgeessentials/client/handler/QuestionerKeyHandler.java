@@ -1,23 +1,22 @@
 package com.forgeessentials.client.handler;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
-
-import org.lwjgl.input.Keyboard;
-
+import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 /**
  * Just a utility class. Pressing the buttons while there is no question asked will only give you an error message.
  */
 public class QuestionerKeyHandler
 {
-    private static final String category = "keys.fe.questioner";
-    private static final KeyBinding yes = new KeyBinding("keys.fe.yes", Keyboard.KEY_F8, category);
-    private static final KeyBinding no = new KeyBinding("keys.fe.no", Keyboard.KEY_F9, category);
+    private static final String category = I18n.get("forgeessentialsclient.questioner");
+    private static final KeyBinding yes = new KeyBinding(I18n.get("forgeessentialsclient.yes"), 297, category);
+    private static final KeyBinding no = new KeyBinding(I18n.get("forgeessentialsclient.no"), 298, category);
 
     public QuestionerKeyHandler()
     {
@@ -25,20 +24,31 @@ public class QuestionerKeyHandler
         ClientRegistry.registerKeyBinding(no);
         MinecraftForge.EVENT_BUS.register(this);
     }
+
+    @SubscribeEvent
+    public void onKeyPress(ClickInputEvent e)
+    {
+        if (Packet07RemoteQRRenderer.qrCode != null)
+        {
+            Packet07RemoteQRRenderer.qrCode = null;
+        }
+    }
+
     @SubscribeEvent
     public void onKeyPress(KeyInputEvent e)
     {
-        if (!FMLClientHandler.instance().getClient().inGameHasFocus)
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!minecraft.isWindowActive())
         {
             return;
         }
-        if (yes.isPressed())
+        if (yes.isDown())
         {
-            FMLClientHandler.instance().getClientPlayerEntity().sendChatMessage("/yes");
+            minecraft.player.chat("/feyes");
         }
-        else if (no.isPressed())
+        else if (no.isDown())
         {
-            FMLClientHandler.instance().getClientPlayerEntity().sendChatMessage("/no");
+            minecraft.player.chat("/feno");
         }
     }
 }

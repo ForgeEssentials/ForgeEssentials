@@ -1,154 +1,137 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.GameType;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.Collection;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandGameMode extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.GameType;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandGameMode extends ForgeEssentialsCommandBuilder
 {
+    public CommandGameMode(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "gamemode";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "gm" };
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        GameType gm;
-        switch (args.length)
+        for (GameType gametype : GameType.values())
         {
-        case 0:
-            setGameMode(sender);
-            break;
-        case 1:
-            gm = getGameTypeFromString(args[0]);
-            if (gm != null)
+            if (gametype != GameType.NOT_SET)
             {
-                setGameMode(sender, sender, gm);
+                baseBuilder
+                        .then(Commands.literal(gametype.getName())
+                                .executes(CommandContext -> execute(CommandContext, "single-" + gametype.getName()))
+                                .then(Commands.argument("target", EntityArgument.players()).executes(
+                                        CommandContext -> execute(CommandContext, "other-" + gametype.getName()))))
+                        .executes(CommandContext -> execute(CommandContext, "blank"));
             }
-            else
-            {
-                setGameMode(sender, args[0]);
-            }
-            break;
-        default:
-            gm = getGameTypeFromString(args[0]);
-            if (gm != null)
-            {
-                for (int i = 1; i < args.length; i++)
-                {
-                    setGameMode(sender, args[i], gm);
-                }
-            }
-            else
-                throw new CommandException("commands.gamemode.usage");
         }
+        return baseBuilder;
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        GameType gm;
-        switch (args.length)
+        if (params.equals("blank"))
         {
-        case 0:
-            throw new CommandException("commands.gamemode.usage");
-        case 1:
-            gm = getGameTypeFromString(args[0]);
-            if (gm != null)
+            setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()));
+            return Command.SINGLE_SUCCESS;
+        }
+        String[] args = params.split("-");
+        if (args[0].equals("single"))
+        {
+            setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()), GameType.byName(args[1]));
+            return Command.SINGLE_SUCCESS;
+        }
+        Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
+        setGameModes(ctx.getSource(), players, GameType.byName(args[1]), true);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (params == null)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");
+            return Command.SINGLE_SUCCESS;
+        }
+        String[] args = params.split("-");
+        if (args[0].equals("single"))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");
+            return Command.SINGLE_SUCCESS;
+        }
+        Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
+        setGameModes(ctx.getSource(), players, GameType.byName(args[1]), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public void setGameMode(CommandSource sender, ServerPlayerEntity target)
+    {
+
+        setGameMode(sender, target, target.isCreative() ? GameType.SURVIVAL : GameType.CREATIVE);
+    }
+
+    public void setGameMode(CommandSource sender, ServerPlayerEntity target, GameType mode)
+    {
+        if (target.gameMode.getGameModeForPlayer() != mode)
+        {
+            target.setGameMode(mode);
+            target.fallDistance = 0.0F;
+            ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.",
+                    target.getDisplayName().getString(), mode.getName()));
+        }
+    }
+
+    public void setGameModes(CommandSource source, Collection<ServerPlayerEntity> players, GameType mode,
+            boolean isPlayer)
+    {
+        for (ServerPlayerEntity serverplayerentity : players)
+        {
+            if (isPlayer)
             {
-                throw new CommandException("commands.gamemode.usage");
-            }
-            else
-            {
-                setGameMode(sender, args[0]);
-            }
-            break;
-        default:
-            gm = getGameTypeFromString(args[0]);
-            if (gm != null)
-            {
-                for (int i = 1; i < args.length; i++)
+                if (serverplayerentity != getServerPlayer(source)
+                        && !hasPermission(source, ModuleCommands.PERM + "." + getName() + ".others"))
                 {
-                    setGameMode(sender, args[i], gm);
+                    ChatOutputHandler.chatError(source, "You dont have permission to change others gamemodes.");
+                    return;
                 }
             }
-            else
+            if (serverplayerentity.gameMode.getGameModeForPlayer() != mode)
             {
-                throw new CommandException("commands.gamemode.usage");
+                serverplayerentity.setGameMode(mode);
+                ChatOutputHandler.chatNotification(source, Translator.format("%1$s's gamemode was changed to %2$s.",
+                        serverplayerentity.getDisplayName().getString(), mode.getName()));
             }
-            break;
-        }
-    }
-
-    public void setGameMode(EntityPlayer sender)
-    {
-        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
-    }
-
-    public void setGameMode(ICommandSender sender, String target)
-    {
-        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
-        if (player == null)
-        {
-            ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
-            return;
-        }
-        setGameMode(sender, target, player.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
-    }
-
-    public void setGameMode(ICommandSender sender, String target, GameType mode)
-    {
-        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
-        if (player == null)
-        {
-            ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
-            return;
-        }
-        setGameMode(sender, player, mode);
-    }
-
-    public void setGameMode(ICommandSender sender, EntityPlayer target, GameType mode)
-    {
-        target.setGameType(mode);
-        target.fallDistance = 0.0F;
-        String modeName = I18n.translateToLocal("gameMode." + mode.getName());
-        ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), modeName));
-    }
-
-    private GameType getGameTypeFromString(String string)
-    {
-        if(StringUtils.isNumeric(string))
-        {
-            return GameType.getByID(Integer.parseInt(string));
-        }
-        else
-        {
-            return GameType.parseGameTypeWithDefault(string, GameType.SURVIVAL);
         }
     }
 
@@ -159,23 +142,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure", "spectator" });
-        }
-        else
-        {
-            return matchToPlayers(args);
-        }
-
-    }
-
-    @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Change others' game modes");
+        APIRegistry.perms.registerPermission(ModuleCommands.PERM + "." + getName() + ".others", DefaultPermissionLevel.OP,
+                "Change others' game modes");
     }
 
     @Override
@@ -184,22 +154,4 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/gamemode [gamemode] [player(s)] Change a player's gamemode.";
-        }
-        else
-        {
-            return "/gamemode [gamemode] <player(s)> Change a player's gamemode.";
-        }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getName();
-    }
 }

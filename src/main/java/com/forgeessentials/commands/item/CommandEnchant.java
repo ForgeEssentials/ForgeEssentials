@@ -1,39 +1,36 @@
 package com.forgeessentials.commands.item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EnchantmentArgument;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
-
-public class CommandEnchant extends ParserCommandBase
+public class CommandEnchant extends ForgeEssentialsCommandBuilder
 {
-    private static final String PERM = ModuleCommands.PERM + ".enchant";
-
-    @Override
-    public String getPrimaryAlias()
+    public CommandEnchant(boolean enabled)
     {
-        return "enchant";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/enchant (<name> [lvl])*: Enchants the current item";
+        return "enchant";
     }
 
     @Override
@@ -49,53 +46,44 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return PERM;
+        return baseBuilder
+                .then(Commands.argument("name", EnchantmentArgument.enchantment()).then(
+                        Commands.literal("maxlevel").executes(CommandContext -> execute(CommandContext, "maxlevel"))))
+                .then(Commands.argument("level", IntegerArgumentType.integer(1, Integer.MAX_VALUE))
+                        .then(Commands.literal("custom").executes(CommandContext -> execute(CommandContext, "level"))));
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
+        ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item");
-
-        List<String> validEnchantmentNames = new ArrayList<>();
-        Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : Enchantment.REGISTRY)
-            if (enchantment != null && enchantment.canApplyAtEnchantingTable(stack))
-            {
-                String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
-                validEnchantmentNames.add(name);
-                validEnchantments.put(name.toLowerCase(), enchantment);
-            }
-
-        if (arguments.isEmpty())
         {
-            if (arguments.isTabCompletion)
-                return;
-            arguments.confirm("Possible enchantments: %s", StringUtils.join(validEnchantmentNames, ", "));
-            return;
+            ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item");
+            return Command.SINGLE_SUCCESS;
         }
 
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
-        while (!arguments.isEmpty())
-        {
-            arguments.tabComplete(validEnchantmentNames);
-            String name = arguments.remove();
-            Enchantment enchantment = validEnchantments.get(name.toLowerCase());
-            if (enchantment == null)
-                throw new TranslatedCommandException("Invalid enchantment name %s!", name);
 
-            if (arguments.isEmpty())
-            {
-                enchantments.put(enchantment, enchantment.getMaxLevel());
-                break;
-            }
-            enchantments.put(enchantment, Math.min(enchantment.getMaxLevel(), arguments.parseInt()));
+        Enchantment enchantment = EnchantmentArgument.getEnchantment(ctx, "name");
+        if (enchantment == null | !enchantment.canApplyAtEnchantingTable(stack))
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantment));
+            return Command.SINGLE_SUCCESS;
+        }
+
+        if (params.equals("maxlevel"))
+        {
+            enchantments.put(enchantment, enchantment.getMaxLevel());
+        }
+        else
+        {
+            enchantments.put(enchantment,
+                    Math.min(enchantment.getMaxLevel(), IntegerArgumentType.getInteger(ctx, "level")));
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

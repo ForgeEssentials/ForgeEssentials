@@ -3,9 +3,9 @@ package com.forgeessentials.jscripting.fewrapper.fe;
 import java.util.Date;
 import java.util.UUID;
 
-import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.util.PlayerInfo;
 
 public class JsPlayerInfo extends JsWrapper<PlayerInfo>
 {
@@ -99,16 +99,6 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setWandID(wandID);
     }
 
-    public int getWandDmg()
-    {
-        return that.getWandDmg();
-    }
-
-    public void setWandDmg(int wandDmg)
-    {
-        that.setWandDmg(wandDmg);
-    }
-
     public JsPoint getSel1()
     {
         return new JsPoint(that.getSel1());
@@ -119,7 +109,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         return new JsPoint(that.getSel2());
     }
 
-    public int getSelDim()
+    public String getSelDim()
     {
         return that.getSelDim();
     }
@@ -134,31 +124,25 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setSel2(point.getThat());
     }
 
-    public void setSelDim(int dimension)
+    public void setSelDim(String dimension)
     {
         that.setSelDim(dimension);
     }
 
-    //TODO: Expose InventoryGroups to Js
-    /*public Map<String, List<JsItemStack>> getModInventoryGroups()
-    {
-
-    }
-
-    public List<JsItemStack> getInventoryGroupItems(String name)
-    {
-
-    }
-
-    public String getInventoryGroup()
-    {
-        return that.getInventoryGroup();
-    }
-
-    public void setInventoryGroup(String name)
-    {
-        that.setInventoryGroup(name);
-    }*/
+    // TODO: Expose InventoryGroups to Js
+    /*
+     * public Map<String, List<JsItemStack>> getModInventoryGroups() {
+     * 
+     * }
+     * 
+     * public List<JsItemStack> getInventoryGroupItems(String name) {
+     * 
+     * }
+     * 
+     * public String getInventoryGroup() { return that.getInventoryGroup(); }
+     * 
+     * public void setInventoryGroup(String name) { that.setInventoryGroup(name); }
+     */
 
     public JsWarpPoint getLastTeleportOrigin()
     {

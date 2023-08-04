@@ -1,21 +1,19 @@
 package com.forgeessentials.compat;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextComponentString;
-
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 public class CompatReiMinimap
 {
-
+    // TODO determine if this should be removed
     public static final String PERM = "fe.reimm.compat";
     public static final String PERM_CAVEMAP = PERM + ".cavemap";
     public static final String PERM_RADAR = PERM + ".radar";
@@ -27,52 +25,53 @@ public class CompatReiMinimap
     public static final String PERM_RADAR_OTHER = PERM_RADAR + ".other";
 
     @SubscribeEvent
-    public void registerPerms(FEModuleServerInitEvent e)
+    public void registerPerms(FEModuleServerStartingEvent e)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Rei's minimap permissions");
-        PermissionAPI.registerNode(PERM_CAVEMAP, DefaultPermissionLevel.ALL, "Allow cavemaps");
-        PermissionAPI.registerNode(PERM_RADAR_ANIMAL, DefaultPermissionLevel.ALL, "Allow animal radar");
-        PermissionAPI.registerNode(PERM_RADAR_MOD, DefaultPermissionLevel.ALL, "Allow mod radars");
-        PermissionAPI.registerNode(PERM_RADAR_OTHER, DefaultPermissionLevel.ALL, "Allow other radars");
-        PermissionAPI.registerNode(PERM_RADAR_PLAYER, DefaultPermissionLevel.ALL, "Allow player radars");
-        PermissionAPI.registerNode(PERM_RADAR_SLIME, DefaultPermissionLevel.ALL, "Allow slime radars");
-        PermissionAPI.registerNode(PERM_RADAR_OTHER, DefaultPermissionLevel.ALL, "Allow other radars");
+        APIRegistry.perms.registerNode(PERM_CAVEMAP, DefaultPermissionLevel.ALL, "Allow cavemaps");
+        APIRegistry.perms.registerNode(PERM_RADAR_ANIMAL, DefaultPermissionLevel.ALL, "Allow animal radar");
+        APIRegistry.perms.registerNode(PERM_RADAR_MOD, DefaultPermissionLevel.ALL, "Allow mod radars");
+        APIRegistry.perms.registerNode(PERM_RADAR_OTHER, DefaultPermissionLevel.ALL, "Allow other radars");
+        APIRegistry.perms.registerNode(PERM_RADAR_PLAYER, DefaultPermissionLevel.ALL, "Allow player radars");
+        APIRegistry.perms.registerNode(PERM_RADAR_SLIME, DefaultPermissionLevel.ALL, "Allow slime radars");
+        APIRegistry.perms.registerNode(PERM_RADAR_OTHER, DefaultPermissionLevel.ALL, "Allow other radars");
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        ChatOutputHandler.sendMessage(e.player, new TextComponentString(getPermissionCodes(e.player)));
+        ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
+                new StringTextComponent(getPermissionCodes(e.getPlayer()) + "Weird stuff be afoot"));
     }
 
-    public static String getPermissionCodes(EntityPlayer user)
+    public static String getPermissionCodes(PlayerEntity user)
     {
         String MOTD = "\u00a7e\u00a7f";
-        if (PermissionAPI.hasPermission(user, PERM_CAVEMAP))
+        if (APIRegistry.perms.checkPermission(user, PERM_CAVEMAP))
         {
             MOTD = "\u00a77" + MOTD;
         }
-        if (PermissionAPI.hasPermission(user, PERM_RADAR_SQUID))
+        if (APIRegistry.perms.checkPermission(user, PERM_RADAR_SQUID))
         {
             MOTD = "\u00a76" + MOTD;
         }
-        if (PermissionAPI.hasPermission(user, PERM_RADAR_SLIME))
+        if (APIRegistry.perms.checkPermission(user, PERM_RADAR_SLIME))
         {
             MOTD = "\u00a75" + MOTD;
         }
-        if (PermissionAPI.hasPermission(user, PERM_RADAR_MOD))
+        if (APIRegistry.perms.checkPermission(user, PERM_RADAR_MOD))
         {
             MOTD = "\u00a74" + MOTD;
         }
-        if (PermissionAPI.hasPermission(user, PERM_RADAR_ANIMAL))
+        if (APIRegistry.perms.checkPermission(user, PERM_RADAR_ANIMAL))
         {
             MOTD = "\u00a73" + MOTD;
         }
-        if (PermissionAPI.hasPermission(user, PERM_RADAR_PLAYER))
+        if (APIRegistry.perms.checkPermission(user, PERM_RADAR_PLAYER))
         {
             MOTD = "\u00a72" + MOTD;
         }
-        if (PermissionAPI.hasPermission(user, PERM_CAVEMAP))
+        if (APIRegistry.perms.checkPermission(user, PERM_CAVEMAP))
         {
             MOTD = "\u00a71" + MOTD;
         }

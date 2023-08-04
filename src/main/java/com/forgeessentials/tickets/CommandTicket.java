@@ -1,151 +1,205 @@
 package com.forgeessentials.tickets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-public class CommandTicket extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandTicket extends ForgeEssentialsCommandBuilder
 {
+    public CommandTicket(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "ticket";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "tickets" };
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .then(Commands.literal("list")
+                        .then(Commands
+                                .argument("page",
+                                        IntegerArgumentType.integer(1,
+                                                (int) Math.ceil((double) ModuleTickets.ticketList.size() / 7)))
+                                .executes(CommandContext -> execute(CommandContext, "list")))
+                        .executes(CommandContext -> execute(CommandContext, "list-one")))
+                .then(Commands.literal("new")
+                        .then(Commands.argument("category", StringArgumentType.word()).suggests(SUGGEST_category)
+                                .then(Commands.argument("message", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "new")))))
+                .then(Commands.literal("view")
+                        .then(Commands.argument("id", IntegerArgumentType.integer(1))
+                                .executes(CommandContext -> execute(CommandContext, "view"))))
+                .then(Commands.literal("tp")
+                        .then(Commands.argument("id", IntegerArgumentType.integer(1))
+                                .executes(CommandContext -> execute(CommandContext, "tp"))))
+                .then(Commands.literal("del")
+                        .then(Commands.argument("id", IntegerArgumentType.integer(1))
+                                .executes(CommandContext -> execute(CommandContext, "del"))))
+                .executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_category = (ctx, builder) -> ISuggestionProvider.suggest(ModuleTickets.categories, builder);
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String c = TextFormatting.DARK_AQUA.toString();
-        if (args.length == 0)
+        if (params.equals("blank"))
         {
             String usage = "list|new|view";
-            if (permcheck(sender, "tp"))
+            if (permcheck(ctx.getSource(), "tp"))
             {
                 usage += "|tp <id>";
             }
-            if (permcheck(sender, "admin"))
+            if (permcheck(ctx.getSource(), "admin"))
             {
                 usage += "|del <id>";
             }
-            throw new TranslatedCommandException("Usage: /ticket <" + usage + ">");
+            ChatOutputHandler.chatError(ctx.getSource(), "Usage: /ticket <" + usage + ">");
+            return Command.SINGLE_SUCCESS;
         }
 
-        if (args[0].equalsIgnoreCase("view") && permcheck(sender, "view"))
+        if (params.equals("view") && permcheck(ctx.getSource(), "view"))
         {
-            if (args.length != 2)
-                throw new TranslatedCommandException("Usage: /ticket view <id>");
-            int id = parseInt(args[1], 0, ModuleTickets.currentID + 1);
+            int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket t = ModuleTickets.getID(id);
-            ChatOutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            if (t == null)
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("No such ticket with ID %d!", id));
+                return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatNotification(ctx.getSource(),
+                    c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            return Command.SINGLE_SUCCESS;
         }
 
-        if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
+        if ((params.equals("list") || params.equals("list-one")) && permcheck(ctx.getSource(), "view"))
         {
-            int page = 0;
-            int pages = ModuleTickets.ticketList.size() / 7;
-            if (args.length == 2)
+            int page = 1;
+            int pages = (int) Math.ceil((double) ModuleTickets.ticketList.size() / 7);
+            if (params.equals("list"))
             {
-                page = parseInt(args[1], 0, pages);
+                page = IntegerArgumentType.getInteger(ctx, "page");
             }
 
             if (ModuleTickets.ticketList.size() == 0)
             {
-                ChatOutputHandler.chatNotification(sender, c + "There are no tickets!");
-                return;
+                ChatOutputHandler.chatNotification(ctx.getSource(), c + "There are no tickets!");
+                return Command.SINGLE_SUCCESS;
             }
-            ChatOutputHandler.chatNotification(sender, c + "--- Ticket List ---");
-            for (int i = page * 7; i < (page + 1) * 7; i++)
+            ChatOutputHandler.chatNotification(ctx.getSource(), c + "--- Ticket List ---");
+            for (int i = (page * 7) - 7; i < (page + 1) * 7; i++)
             {
                 try
                 {
                     Ticket t = ModuleTickets.ticketList.get(i);
-                    ChatOutputHandler.chatNotification(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
+                    ChatOutputHandler.chatNotification(ctx.getSource(),
+                            "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
                 }
                 catch (Exception e)
                 {
                     break;
                 }
             }
-            ChatOutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page + 1, pages + 1));
-            return;
+            ChatOutputHandler.chatNotification(ctx.getSource(),
+                    c + Translator.format("--- Page %1$d of %2$d ---", page, pages));
+            return Command.SINGLE_SUCCESS;
         }
 
-        if (args[0].equalsIgnoreCase("new") && permcheck(sender, "new"))
+        if (params.equals("new") && permcheck(ctx.getSource(), "new"))
         {
-            if (args.length < 3)
-                throw new TranslatedCommandException("Usage: /ticket new <category> <message ...>");
-            if (!ModuleTickets.categories.contains(args[1]))
-                throw new TranslatedCommandException("message.error.illegalCategory", args[1]);
-
-            String msg = "";
-            for (String var : Arrays.copyOfRange(args, 2, args.length))
+            String catagory = StringArgumentType.getString(ctx, "category");
+            if (!ModuleTickets.categories.contains(catagory))
             {
-                msg += " " + var;
+                ChatOutputHandler.chatError(ctx.getSource(), "message.error.illegalCategory", catagory);
+                return Command.SINGLE_SUCCESS;
             }
-            msg = msg.substring(1);
-            Ticket t = new Ticket(sender, args[1], msg);
+
+            String msg = StringArgumentType.getString(ctx, "message");
+            Ticket t = new Ticket(ctx.getSource(), catagory, msg);
             ModuleTickets.ticketList.add(t);
-            ChatOutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
+            DataManager.getInstance().save(t, Integer.toString(t.id));
+            ModuleTickets.FEcurrentID.set(ModuleTickets.currentID);
+            ChatOutputHandler.chatNotification(ctx.getSource(),
+                    c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            ITextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getName()));
-            if (!server.isServerStopped())
-                for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            TextComponent messageComponent = ChatOutputHandler.notification(
+                    Translator.format("Player %s has filed a ticket.", ctx.getSource().getDisplayName().getString()));
+            if (!ctx.getSource().getServer().isStopped())
+                for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
-                        ChatOutputHandler.sendMessage(player, messageComponent);
-            ChatOutputHandler.sendMessage(server, messageComponent);
-            return;
+                        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
+            ChatOutputHandler.sendMessage(ctx.getSource().getServer().createCommandSourceStack(), messageComponent);
+            return Command.SINGLE_SUCCESS;
         }
 
-        if (args[0].equalsIgnoreCase("tp") && permcheck(sender, "tp"))
+        if (params.equals("tp") && permcheck(ctx.getSource(), "tp"))
         {
-            if (args.length != 2)
-                throw new TranslatedCommandException("Usage: /ticket tp <id>");
-            int id = parseInt(args[1], 0, ModuleTickets.currentID + 1);
-            TeleportHelper.teleport((EntityPlayerMP) sender, ModuleTickets.getID(id).point);
+
+            int id = IntegerArgumentType.getInteger(ctx, "id");
+            Ticket t = ModuleTickets.getID(id);
+            if (t == null)
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("No such ticket with ID %d!", id));
+                return Command.SINGLE_SUCCESS;
+            }
+            TeleportHelper.teleport((ServerPlayerEntity) ctx.getSource().getEntity(), t.point);
+            return Command.SINGLE_SUCCESS;
         }
 
-        if (args[0].equalsIgnoreCase("del") || args[0].equalsIgnoreCase("close") && permcheck(sender, "admin"))
+        if (params.equals("del") || params.equals("close") && permcheck(ctx.getSource(), "admin"))
         {
-            if (args.length != 2)
-                throw new TranslatedCommandException("Usage: /ticket del <id>");
-            int id = Integer.parseInt(args[1]);
+            int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket toRemove = ModuleTickets.getID(id);
             if (toRemove == null)
             {
-                ChatOutputHandler.chatError(sender, Translator.format("No such ticket with ID %d!", id));
-                return;
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("No such ticket with ID %d!", id));
+                return Command.SINGLE_SUCCESS;
             }
             ModuleTickets.ticketList.remove(toRemove);
-            DataManager.getInstance().delete(Ticket.class, args[1]);
-            ChatOutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket with ID %d has been removed.", id));
+            DataManager.getInstance().delete(Ticket.class, String.valueOf(id));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    c + Translator.format("Your ticket with ID %d has been removed.", id));
+            return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -154,62 +208,26 @@ public class CommandTicket extends ForgeEssentialsCommandBase
         return true;
     }
 
-    @Override
-    public String getPermissionNode()
+    public List<String> getTicketList()
     {
-        return ModuleTickets.PERMBASE + ".command";
+        List<String> list = new ArrayList<>();
+        for (Ticket t : ModuleTickets.ticketList)
+        {
+            list.add("" + t.id);
+        }
+        return list;
     }
 
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public boolean permcheck(CommandSource sender, String perm)
     {
-        if (args.length == 1)
+        if (sender.getEntity() instanceof PlayerEntity)
         {
-            return getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");
-        }
-
-        if (args.length == 2 && args[0].equalsIgnoreCase("new"))
-        {
-            return getListOfStringsMatchingLastWord(args, ModuleTickets.categories);
-        }
-
-        if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("del")))
-        {
-            List<String> list = new ArrayList<String>();
-            for (Ticket t : ModuleTickets.ticketList)
-            {
-                list.add("" + t.id);
-            }
-            return getListOfStringsMatchingLastWord(args, list);
-        }
-        return null;
-    }
-
-    public boolean permcheck(ICommandSender sender, String perm)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return PermissionAPI.hasPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
+            return hasPermission(sender, ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {
             return true;
         }
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        String usage = "list|new|view";
-        if (permcheck(sender, "tp"))
-        {
-            usage += "|tp <id>";
-        }
-        if (permcheck(sender, "admin"))
-        {
-            usage += "|del <id>";
-        }
-        return "Usage: /ticket <" + usage + ">";
     }
 
     @Override

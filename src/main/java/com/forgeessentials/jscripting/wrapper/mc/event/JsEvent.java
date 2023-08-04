@@ -2,18 +2,16 @@ package com.forgeessentials.jscripting.wrapper.mc.event;
 
 import javax.script.ScriptException;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.relauncher.Side;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
 
-@SuppressWarnings("unused")
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+
 public abstract class JsEvent<T extends Event>
 {
 
@@ -42,7 +40,7 @@ public abstract class JsEvent<T extends Event>
         return _event;
     }
 
-    public ICommandSender _getSender()
+    public CommandSource _getSender()
     {
         return null;
     }
@@ -66,12 +64,12 @@ public abstract class JsEvent<T extends Event>
 
     protected void _callEvent(T event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLEnvironment.dist.isClient())
             return;
         try
         {
             this._event = event;
-            ICommandSender sender = _getSender();
+            CommandSource sender = _getSender();
             if (sender != null)
                 _script.setLastSender(sender);
 

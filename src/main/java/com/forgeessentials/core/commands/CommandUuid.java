@@ -1,32 +1,30 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
-
-public class CommandUuid extends ParserCommandBase
+public class CommandUuid extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandUuid(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "uuid";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/uuid [player]: Display a player's UUID";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.commands.uuid";
     }
 
     @Override
@@ -42,19 +40,17 @@ public class CommandUuid extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-        {
-            if (!arguments.hasPlayer())
-                throw new TranslatedCommandException("Player argument needed!");
-            arguments.confirm("UUID = " + arguments.senderPlayer.getPersistentID().toString());
-        }
-        else
-        {
-            UserIdent player = arguments.parsePlayer(false, false);
-            arguments.confirm("UUID = " + player.getOrGenerateUuid());
-        }
+        return baseBuilder.then(Commands.argument("player", EntityArgument.player())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "UUID= " + player.getStringUUID());
+        return Command.SINGLE_SUCCESS;
+    }
 }

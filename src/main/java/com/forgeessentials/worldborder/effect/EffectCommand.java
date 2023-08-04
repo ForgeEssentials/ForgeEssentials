@@ -1,15 +1,17 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Expected syntax: <interval> <command>
@@ -22,25 +24,21 @@ public class EffectCommand extends WorldBorderEffect
     public int interval = 0;
 
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing interval argument");
-        interval = args.parseInt();
-        if (args.isEmpty())
-            throw new TranslatedCommandException("Missing command argument");
-        command = args.toString();
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        command = StringArgumentType.getString(ctx, "command");
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             return;
@@ -48,14 +46,15 @@ public class EffectCommand extends WorldBorderEffect
         if (pi.checkTimeout(this.getClass().getName()))
         {
             doEffect(player);
-            pi.startTimeout(this.getClass().getName(), interval * 1000);
+            pi.startTimeout(this.getClass().getName(), interval * 1000L);
         }
     }
 
-    public void doEffect(EntityPlayerMP player)
+    public void doEffect(ServerPlayerEntity player)
     {
-        String cmd = ScriptArguments.processSafe(command, player);
-        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(FMLCommonHandler.instance().getMinecraftServerInstance(), cmd);
+        String cmd = ScriptArguments.processSafe(command, player.createCommandSourceStack());
+        ServerLifecycleHooks.getCurrentServer().getCommands()
+                .performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), cmd);
     }
 
     public String toString()

@@ -6,65 +6,69 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.common.config.Property.Type;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandSellprice extends ParserCommandBase
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.ItemArgument;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandSellprice extends ForgeEssentialsCommandBuilder
 {
 
-    private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
-
-    @Override
-    public String getPrimaryAlias()
+    public CommandSellprice(boolean enabled)
     {
-        return "sellprice";
+        super(enabled);
     }
 
+    private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
+    public static List<String> colors = Arrays.asList("white", "orange", "magenta", "light_blue", "yellow", "lime",
+            "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black");
+    public static List<String> woodTypes = Arrays.asList("oak", "spruce", "birch", "jungle", "acacia", "dark_oak");
+
     @Override
-    public String getPermissionNode()
+    public @NotNull String getPrimaryAlias()
     {
-        return ModuleEconomy.PERM_COMMAND + ".sellprice";
+        return "sellprice";
     }
 
     @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/sellprice save|set: Manage item sell prices";
     }
 
     @Override
@@ -80,198 +84,226 @@ public class CommandSellprice extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-        {
-            calcPriceList(arguments, false);
-            return;
-        }
-
-        arguments.tabComplete("save", "set");
-        String subArg = arguments.remove().toLowerCase();
-        switch (subArg)
-        {
-        case "save":
-            calcPriceList(arguments, true);
-            break;
-        case "set":
-            parseSetprice(arguments);
-            break;
-        default:
-            break;
-        }
+        return baseBuilder.then(Commands.literal("save").executes(CommandContext -> execute(CommandContext, "save")))
+                .then(Commands.literal("set")
+                        .then(Commands.argument("item", ItemArgument.item())
+                                .then(Commands.argument("price", DoubleArgumentType.doubleArg())
+                                        .executes(CommandContext -> execute(CommandContext, "set")))))
+                .then(Commands.literal("generate").executes(CommandContext -> execute(CommandContext, "generate")))
+                .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")));
     }
 
-    public static void parseSetprice(CommandParserArgs arguments) throws CommandException
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.equals("help"))
         {
-            arguments.confirm("/sellprice set <item> <price>");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "/sellprice save                 -Save generated prices to config");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "/sellprice set <item> <price>  -Set a price for an item");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "/sellprice generate            -Generate default prices");
+            return Command.SINGLE_SUCCESS;
         }
+        if (params.equals("generate"))
+        {
+            calcPriceList(ctx, false);
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("save"))
+        {
+            writeToConfig(ctx.getSource(), loadPriceList(ctx));
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("set"))
+        {
+            parseSetprice(ctx);
+            return Command.SINGLE_SUCCESS;
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 
-        Item item = arguments.parseItem();
-        double price = arguments.parseDouble();
-        if (arguments.isTabCompletion)
-            return;
+    public static void parseSetprice(CommandContext<CommandSource> ctx) throws CommandException
+    {
+        Item item = ItemArgument.getItem(ctx, "item").getItem();
+        double price = DoubleArgumentType.getDouble(ctx, "price");
 
-        String itemId = ServerUtil.getItemName(item);
-        Map<String, Double> priceMap = loadPriceList(arguments);
+        String itemId = ItemUtil.getItemName(item);
+        Map<String, Double> priceMap = loadPriceList(ctx);
         priceMap.put(itemId, price);
         writeMap(priceMap, priceFile);
-        arguments.confirm(Translator.format("Set price for %s to %d", itemId, (int) price));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                Translator.format("Set price for %s to %d", itemId, (int) price));
     }
 
-    public static void calcPriceList(CommandParserArgs arguments, boolean save)
+    public static void calcPriceList(CommandContext<CommandSource> ctx, boolean save)
     {
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
          * 
-         * @Override public int compare(Item a, Item b) { try { String aId =
-         * Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b);
-         * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
+         * @Override public int compare(Item a, Item b) { try { String aId = Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b); return
+         * aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
-        Map<String, Double> priceMap = loadPriceList(arguments);
+        Map<String, Double> priceMap = loadPriceList(ctx);
         Map<String, Double> priceMapFull = new TreeMap<>();
 
         File craftRecipesFile = new File(ForgeEssentials.getFEDirectory(), "craft_recipes.txt");
         File allPricesFile = new File(ForgeEssentials.getFEDirectory(), "prices_all.txt");
         File priceLogFile = new File(ForgeEssentials.getFEDirectory(), "prices_log.txt");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
+        try
         {
-            try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(priceLogFile)))
             {
-                for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
+                try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
                 {
-                    IRecipe recipe = iterator.next();
-                    if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                    RecipeManager manager= ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager();
+                    Collection<IRecipe<?>> recpies = manager.getRecipes();
+                    for (IRecipe<?> recipe : recpies)
                     {
-                        continue;
-                    }
-                    List<Ingredient> recipeItems = getRecipeItems(recipe);
-                    if (recipeItems.isEmpty())
-                    {
-                        continue;
-                    }
-                    craftRecipes
-                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
-                    for (Ingredient ingredient : recipeItems)
-                    {
-                        if (ingredient != null)
-                        {
-                            ItemStack stack = null;
-                            ItemStack[] stacks = ingredient.getMatchingStacks();
-                            if (stacks != null && stacks.length > 0)
-                            {
-                                stack = stacks[0];
-                            }
-
-                            if (stack != ItemStack.EMPTY)
-                            {
-                                craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
-                            }
-                        }
-                    }
-                }
-            }
-
-            // for (Entry<String, Double> entry : priceMap.entrySet())
-            // writer.write(String.format("%0$-40s = %d\n", entry.getKey(), (int) Math.floor(entry.getValue())));
-            // writer.write("\n");
-            // writer.write("\n");
-
-            int iterateCount = 0;
-            boolean changedAnyPrice;
-            do
-            {
-                iterateCount++;
-                if (iterateCount > 16)
-                {
-                    arguments.error("WARNING: Infinite loop found in recipes. Cannot calculate prices reliably!");
-                    return;
-                }
-                changedAnyPrice = false;
-
-                @SuppressWarnings("unchecked")
-                Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
-
-                boolean changedPrice;
-                do
-                {
-                    changedPrice = false;
-                    for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
-                    {
-                        IRecipe recipe = iterator.next();
-                        if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                        if (recipe.getResultItem() == ItemStack.EMPTY)
                         {
                             continue;
                         }
-
-                        double price = getRecipePrice(recipe, priceMap, priceMapFull);
-                        if (price > 0)
+                        List<Ingredient> recipeItems = getRecipeItems(recipe);
+                        if (recipeItems.isEmpty())
                         {
-                            price /= recipe.getRecipeOutput().getCount();
-                            Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
-                            if (resultPrice == null || price < resultPrice)
+                            continue;
+                        }
+                        craftRecipes
+                                .write(String.format("%s\n", ItemUtil.getItemName(recipe.getResultItem().getItem())));
+                        for (Ingredient ingredient : recipeItems)
+                        {
+                            if (ingredient != null)
                             {
-                                priceMap.put(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()), price);
-                                changedPrice = true;
+                                ItemStack stack = null;
+                                ItemStack[] stacks = ingredient.getItems();
+                                if (stacks != null && stacks.length > 0)
+                                {
+                                    stack = stacks[0];
+                                }
 
-                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
-                                        ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
-                                for (Ingredient ingredient : getRecipeItems(recipe))
-                                    if (ingredient != null)
+                                if (stack != ItemStack.EMPTY)
+                                {
+                                    try
                                     {
-                                        ItemStack stack = null;
-                                        ItemStack[] stacks = ingredient.getMatchingStacks();
-                                        if (stacks != null && stacks.length > 0)
+                                        if (stack.getItem() != Items.AIR || stack.getItem() != null)
                                         {
-                                            stack = stacks[0];
+                                            craftRecipes.write(
+                                                    String.format("  :%s\n", ItemUtil.getItemName(stack.getItem())));
                                         }
-
-                                        if (stack != ItemStack.EMPTY)
-                                            msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
-                                                    ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
                                     }
-                                writer.write(msg + "\n");
+                                    catch (NullPointerException e)
+                                    {
+                                        // This happens if a crafting recipe has a 'blank' spot in it, like a chest with
+                                        // a center 'hole' in the recipe
+                                        LoggingHandler.felog.debug("Found null itemstack in recipe, not a problem");
+                                    }
+                                }
                             }
                         }
                     }
-
-                    for (Iterator<Entry<ItemStack, ItemStack>> iterator = furnaceRecipes.entrySet().iterator(); iterator.hasNext();)
-                    {
-                        Entry<ItemStack, ItemStack> recipe = iterator.next();
-                        Double inPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getKey()));
-                        if (inPrice != null)
-                        {
-                            double outPrice = inPrice * recipe.getKey().getCount() / recipe.getValue().getCount();
-                            Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
-                            if (resultPrice == null || outPrice < resultPrice)
-                            {
-                                priceMap.put(ItemUtil.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), ItemUtil.getItemDamage(
-                                        recipe.getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem())));
-                                changedPrice = true;
-                            }
-                        }
-                    }
-                    changedAnyPrice |= changedPrice;
                 }
-                while (changedPrice);
-            }
-            while (changedAnyPrice);
-        }
-        catch (IOException e1)
-        {
-            e1.printStackTrace();
-        }
 
+                // for (Entry<String, Double> entry : priceMap.entrySet())
+                // writer.write(String.format("%0$-40s = %d\n", entry.getKey(), (int)
+                // Math.floor(entry.getValue())));
+                // writer.write("\n");
+                // writer.write("\n");
+
+                int iterateCount = 0;
+                boolean changedAnyPrice;
+                do
+                {
+                    iterateCount++;
+                    if (iterateCount > 16)
+                    {
+                        ChatOutputHandler.chatError(ctx.getSource(),
+                                "WARNING: Infinite loop found in recipes. Cannot calculate prices reliably!");
+                        return;
+                    }
+                    changedAnyPrice = false;
+
+                    // Map<ItemStack, ItemStack> furnaceRecipes = new
+                    // HashMap<>(FurnaceRecipes.instance().getSmeltingList());
+
+                    boolean changedPrice;
+                    do
+                    {
+                        changedPrice = false;
+                        RecipeManager manager= ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager();
+                        Collection<IRecipe<?>> recpies = manager.getRecipes();
+                        for (IRecipe<?> recipe : recpies)
+                        {
+                            if (recipe.getResultItem() == ItemStack.EMPTY)
+                            {
+                                continue;
+                            }
+
+                            double price = getRecipePrice(recipe, priceMap, priceMapFull);
+                            if (price > 0)
+                            {
+                                price /= recipe.getResultItem().getCount();
+                                Double resultPrice = priceMap.get(ItemUtil.getItemName(recipe.getResultItem()));
+                                if (resultPrice == null || price < resultPrice)
+                                {
+                                    priceMap.put(ItemUtil.getItemName(recipe.getResultItem()), price);
+                                    changedPrice = true;
+
+                                    StringBuilder msg = new StringBuilder(String.format("%s = %.0f -> %s",
+                                            ItemUtil.getItemName(recipe.getResultItem().getItem()),
+                                            resultPrice == null ? 0 : resultPrice, (int) price));
+                                    for (Ingredient ingredient : getRecipeItems(recipe))
+                                        if (ingredient != null)
+                                        {
+                                            ItemStack stack = null;
+                                            ItemStack[] stacks = ingredient.getItems();
+                                            if (stacks != null && stacks.length > 0)
+                                            {
+                                                stack = stacks[0];
+                                            }
+
+                                            if (stack != ItemStack.EMPTY)
+                                                msg.append(String.format("\n  %.0f - %s",
+                                                        priceMap.get(ItemUtil.getItemName(stack)),
+                                                        ItemUtil.getItemName(stack.getItem())));
+                                        }
+                                    writer.write(msg + "\n");
+                                }
+                            }
+                        }
+                        /*
+                         * for (Iterator<Entry<ItemStack, ItemStack>> iterator = furnaceRecipes.entrySet().iterator(); iterator.hasNext();) { Entry<ItemStack, ItemStack> recipe =
+                         * iterator.next(); Double inPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getKey())); if (inPrice != null) { double outPrice = inPrice *
+                         * recipe.getKey().getCount() / recipe.getValue().getCount(); Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue())); if
+                         * (resultPrice == null || outPrice < resultPrice) { priceMap.put(ItemUtil.getItemIdentifier(recipe.getValue()), outPrice);
+                         * writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), ItemUtil.getItemDamage( recipe.getValue()),
+                         * resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem()))); changedPrice = true; } } }
+                         */
+                        changedAnyPrice |= changedPrice;
+                    }
+                    while (changedPrice);
+                }
+                while (changedAnyPrice);
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
+        }
+        catch (Exception e2)
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Failed to generate prices, check log");
+            e2.printStackTrace();
+            return;
+        }
         writeMap(priceMap, priceFile);
 
-        for (Item item : Item.REGISTRY)
+        for (Item item : ForgeRegistries.ITEMS)
         {
-            String id = ServerUtil.getItemName(item);
+            String id = ItemUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
                 priceMapFull.put(id, 0.0);
         }
@@ -280,25 +312,23 @@ public class CommandSellprice extends ParserCommandBase
 
         if (save)
         {
-            Configuration config = ForgeEssentials.getConfigManager().getConfig(ModuleEconomy.CONFIG_CATEGORY);
-            ConfigCategory category = config.getCategory(ModuleEconomy.CATEGORY_ITEM);
-            for (Entry<String, Double> entry : priceMap.entrySet())
-            {
-                category.put(entry.getKey(), new Property(entry.getKey(), Integer.toString((int) Math.floor(entry.getValue())), Type.INTEGER));
-                APIRegistry.perms.registerPermissionProperty(ModuleEconomy.PERM_PRICE + "." + entry.getKey(),
-                        Integer.toString((int) Math.floor(entry.getValue())));
-            }
-            config.save();
-            arguments.confirm("Calculated and saved new price table");
+            writeToConfig(ctx.getSource(), priceMap);
         }
         else
         {
-            arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
-            arguments.confirm("You can also use [/calcpricelist save] to directly save the calculated prices");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),
+                    "You can also use [/sellprice save] to directly save the calculated prices");
         }
     }
 
-    private static Map<String, Double> loadPriceList(CommandParserArgs arguments)
+    public static String dTs(Double value)
+    {
+        return Integer.toString((int) Math.floor(value));
+    }
+
+    private static Map<String, Double> loadPriceList(CommandContext<CommandSource> ctx)
     {
         Map<String, Double> priceMap = new TreeMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
@@ -322,45 +352,85 @@ public class CommandSellprice extends ParserCommandBase
         }
         catch (IOException e)
         {
-            arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
+            ChatOutputHandler.chatWarning(ctx.getSource(),
+                    String.format("Could not load %s. Using default values", priceFile.getName()));
             initializeDefaultPrices(priceMap);
         }
         return priceMap;
     }
 
+    private static void writeToConfig(CommandSource source, Map<String, Double> priceMap)
+    {
+        try
+        {
+            // get current values on disc
+            Map<String, Integer> items = new HashMap<>();
+            if (!ModuleEconomy.itemTables.isEmpty())
+            {
+                items.putAll(ModuleEconomy.itemTables);
+            }
+            // add new prices
+            if (!priceMap.isEmpty())
+            {
+                for (Map.Entry<String, Double> entry : priceMap.entrySet())
+                {
+                    items.put(entry.getKey(), (int) Math.floor(entry.getValue()));
+                    ModuleEconomy.setItemPrice(ModuleEconomy.PERM_PRICE + "." + entry.getKey(), dTs(entry.getValue()));
+                }
+            }
+            // save new prices to disc
+            Set<String> toWrite = new HashSet<>();
+            for (Map.Entry<String, Integer> entry : items.entrySet())
+            {
+                toWrite.add(entry.getKey() + "=" + Integer.toString(entry.getValue()));
+            }
+            List<String> aList = new ArrayList<>(toWrite);
+            ModuleEconomy.FEitemTables.set(aList);
+            ChatOutputHandler.chatConfirmation(source, "Calculated and saved new price table");
+        }
+        catch (Exception e)
+        {
+            ChatOutputHandler.chatError(source, "Failed to save prices to config, check log");
+            e.printStackTrace();
+        }
+    }
+
     private static void initializeDefaultPrices(Map<String, Double> priceMap)
     {
-        priceMap.put("minecraft:wool", 48.0);
-        for (int i = 1; i <= 15; i++)
-            priceMap.put("minecraft:wool:" + i, 48.0);
+        // TODO re-evaluate these prices
+        for (String col : colors)
+            priceMap.put("minecraft:" + col + "_wool", 48.0);
 
-        priceMap.put("minecraft:log", 32.0);
-        for (int i = 1; i <= 6; i++)
-            priceMap.put("minecraft:log:" + i, 32.0);
-        priceMap.put("minecraft:log2", 32.0);
-        for (int i = 1; i <= 6; i++)
-            priceMap.put("minecraft:log2:" + i, 32.0);
+        for (String type : woodTypes)
+            priceMap.put("minecraft:" + type + "_log", 32.0);
 
-        priceMap.put("minecraft:red_flower", 16.0);
-        for (int i = 1; i <= 8; i++)
-            priceMap.put("minecraft:red_flower:" + i, 16.0);
+        // priceMap.put("minecraft:red_flower", 16.0);
+        // for (int i = 1; i <= 8; i++)
+        // priceMap.put("minecraft:red_flower:" + i, 16.0);
 
-        priceMap.put("minecraft:dye", 8.0);
-        for (int i = 1; i <= 15; i++)
-            priceMap.put("minecraft:dye:" + i, 8.0);
+        for (String type : woodTypes)
+            priceMap.put("minecraft:" + type + "_sapling", 32.0);
 
-        priceMap.put("minecraft:deadbush", 1.0);
+        for (String type : woodTypes)
+            priceMap.put("minecraft:" + type + "_leaves", 1.0);
+
+        for (String col : colors)
+            priceMap.put("minecraft:" + col + "_dye", 8.0);
+
+        priceMap.put("minecraft:dead_bush", 1.0);
         priceMap.put("minecraft:dirt", 1.0);
-        priceMap.put("minecraft:grass", 1.0);
+        priceMap.put("minecraft:grass_block", 1.0);
+        priceMap.put("minecraft:grass_path", 1.0);
         priceMap.put("minecraft:ice", 1.0);
-        priceMap.put("minecraft:leaves", 1.0);
-        priceMap.put("minecraft:leaves2", 1.0);
         priceMap.put("minecraft:mycelium", 1.0);
         priceMap.put("minecraft:netherrack", 1.0);
         priceMap.put("minecraft:sand", 1.0);
-        priceMap.put("minecraft:snow", 1.0);
+        priceMap.put("minecraft:red_sand", 1.0);
+        priceMap.put("minecraft:snow_block", 1.0);
         priceMap.put("minecraft:stone", 1.0);
-        priceMap.put("minecraft:tallgrass", 1.0);
+        priceMap.put("minecraft:grass", 1.0);
+        priceMap.put("minecraft:sea_grass", 1.0);
+        priceMap.put("minecraft:tall_grass", 1.0);
         priceMap.put("minecraft:end_stone", 1.0);
 
         priceMap.put("minecraft:apple", 128.0);
@@ -372,14 +442,15 @@ public class CommandSellprice extends ParserCommandBase
         priceMap.put("minecraft:chicken", 64.0);
         priceMap.put("minecraft:clay_ball", 16.0);
         priceMap.put("minecraft:coal", 128.0);
-        priceMap.put("minecraft:coal:1", 32.0);
+        priceMap.put("minecraft:charcoal", 32.0);
         priceMap.put("minecraft:cobblestone", 1.0);
-        priceMap.put("minecraft:cocoa", 128.0);
+        priceMap.put("minecraft:cocoa_beans", 128.0);
         priceMap.put("minecraft:diamond", 8192.0);
-        priceMap.put("minecraft:dye:4", 864.0);
+        priceMap.put("minecraft:lapis_lazuli", 864.0);
         priceMap.put("minecraft:emerald", 8192.0);
         priceMap.put("minecraft:feather", 48.0);
-        priceMap.put("minecraft:fish", 64.0);
+        priceMap.put("minecraft:cod", 64.0);
+        priceMap.put("minecraft:salmon", 64.0);
         priceMap.put("minecraft:flint", 4.0);
         priceMap.put("minecraft:glass", 1.0);
         priceMap.put("minecraft:glowstone_dust", 384.0);
@@ -393,29 +464,27 @@ public class CommandSellprice extends ParserCommandBase
         priceMap.put("minecraft:lava_bucket", 832.0);
         priceMap.put("minecraft:leather", 64.0);
         priceMap.put("minecraft:magma_cream", 792.0);
-        priceMap.put("minecraft:melon", 16.0);
-        priceMap.put("minecraft:melon_block", 144.0);
+        priceMap.put("minecraft:melon_slice", 16.0);
+        priceMap.put("minecraft:melon", 144.0);
         priceMap.put("minecraft:milk_bucket", 833.0);
         priceMap.put("minecraft:obsidian", 64.0);
         priceMap.put("minecraft:porkchop", 64.0);
         priceMap.put("minecraft:pumpkin", 144.0);
         priceMap.put("minecraft:red_mushroom", 32.0);
         priceMap.put("minecraft:redstone", 64.0);
-        priceMap.put("minecraft:reeds", 32.0);
+        priceMap.put("minecraft:sugar_cane", 32.0);
         priceMap.put("minecraft:rotten_flesh", 24.0);
-        priceMap.put("minecraft:sapling", 32.0);
         priceMap.put("minecraft:slime_ball", 24.0);
         priceMap.put("minecraft:soul_sand", 49.0);
+        priceMap.put("minecraft:soul_soil", 49.0);
         priceMap.put("minecraft:spider_eye", 128.0);
         priceMap.put("minecraft:string", 16.0);
         priceMap.put("minecraft:vine", 8.0);
         priceMap.put("minecraft:water_bucket", 769.0);
-        priceMap.put("minecraft:waterlily", 16.0);
-        priceMap.put("minecraft:web", 12.0);
+        priceMap.put("minecraft:lily_pad", 16.0);
+        priceMap.put("minecraft:cobweb", 12.0);
         priceMap.put("minecraft:wheat", 24.0);
-        priceMap.put("minecraft:yellow_flower", 16.0);
-
-        // TODO: Prices below mainly guessed - should evaluate if these are good defaults
+        priceMap.put("minecraft:dandelion", 16.0);
         priceMap.put("minecraft:potato", 16.0);
         priceMap.put("minecraft:carrot", 16.0);
         priceMap.put("minecraft:quartz", 128.0);
@@ -426,12 +495,12 @@ public class CommandSellprice extends ParserCommandBase
     {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file)))
         {
-            for (Entry<String, Double> entry : priceMap.entrySet())
+            for (Map.Entry<String, Double> entry : priceMap.entrySet())
             {
-                String id = "I:\"" + entry.getKey() + "\"";
+                StringBuilder id = new StringBuilder("I:\"" + entry.getKey() + "\"");
                 while (id.length() < 50)
-                    id = id + ' ';
-                writer.write(id + "=" + Integer.toString((int) Math.floor(entry.getValue())) + "\n");
+                    id.append(' ');
+                writer.write(id + "=" + dTs(entry.getValue()) + "\n");
             }
         }
         catch (IOException e)
@@ -440,12 +509,13 @@ public class CommandSellprice extends ParserCommandBase
         }
     }
 
-    public static List<Ingredient> getRecipeItems(IRecipe recipe)
+    public static List<Ingredient> getRecipeItems(IRecipe<?> recipe)
     {
         return recipe.getIngredients();
     }
 
-    public static double getRecipePrice(IRecipe recipe, Map<String, Double> priceMap, Map<String, Double> priceMapFull)
+    public static double getRecipePrice(IRecipe<?> recipe, Map<String, Double> priceMap,
+            Map<String, Double> priceMapFull)
     {
         double price = 0;
         List<Ingredient> stackList = getRecipeItems(recipe);
@@ -457,12 +527,14 @@ public class CommandSellprice extends ParserCommandBase
             if (ingredient != null)
             {
                 Double itemPrice = null;
-                ItemStack[] stacks = ingredient.getMatchingStacks();
-                for (ItemStack stack : stacks) {
-                    if (stack == ItemStack.EMPTY) {
+                ItemStack[] stacks = ingredient.getItems();
+                for (ItemStack stack : stacks)
+                {
+                    if (stack == ItemStack.EMPTY)
+                    {
                         continue;
                     }
-                    String id = ItemUtil.getItemIdentifier(stack);
+                    String id = ItemUtil.getItemName(stack);
                     priceMapFull.put(id, 0.0);
                     Double p = priceMap.get(id);
                     if (p != null && (itemPrice == null || p < itemPrice))

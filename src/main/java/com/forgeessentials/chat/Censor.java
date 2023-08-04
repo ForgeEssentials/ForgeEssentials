@@ -5,31 +5,41 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.config.Configuration;
-
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Strings;
 
-public class Censor extends ConfigLoaderBase
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+
+public class Censor
 {
 
-    private static final String CONFIG_CATEGORY = "Chat.Censor";
+    private static final String CONFIG_CATEGORY = "Censor";
 
-    private static final String[] DEFAULT_WORDS = new String[] { "fuck\\S*", "bastard", "moron", "ass", "asshole", "bitch", "shit" };
+    private static final List<String> DEFAULT_WORDS = new ArrayList<String>() {
+        {
+            add("fuck\\S*");
+            add("bastard");
+            add("moron");
+            add("ass");
+            add("asshole");
+            add("bitch");
+            add("shit");
+        }
+    };
 
     private static final String CENSOR_HELP = "Words to be censored. Prepend with ! to disable word boundary check.";
 
-    private List<CensoredWord> filterList = new ArrayList<>();
+    private static List<CensoredWord> filterList = new ArrayList<>();
 
-    public boolean enabled;
+    public static boolean enabled;
 
-    public String censorSymbol;
+    public static String censorSymbol;
 
-    public int censorSlap;
+    public static int censorSlap;
 
     public static class CensoredWord
     {
@@ -51,17 +61,27 @@ public class Censor extends ConfigLoaderBase
 
     }
 
-    public Censor()
+    static ForgeConfigSpec.BooleanValue FEenabled;
+    static ForgeConfigSpec.IntValue FEcensorSlap;
+    static ForgeConfigSpec.ConfigValue<String> FEcensorSymbol;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEfilterList;
+
+    public void load(Builder BUILDER, boolean isReload)
     {
-        ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        BUILDER.push(CONFIG_CATEGORY);
+        FEenabled = BUILDER.comment("Enable Chat Censor?").define("enable", true);
+        FEcensorSlap = BUILDER.comment("Damage to a player when he uses a censored word").defineInRange("slapDamage", 1,
+                0, Integer.MAX_VALUE);
+        FEcensorSymbol = BUILDER.comment("Replace censored words with this character").define("censorSymbol", "#");
+        FEfilterList = BUILDER.comment(CENSOR_HELP).defineList("words", DEFAULT_WORDS, ConfigBase.stringValidator);
+        BUILDER.pop();
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public void bakeConfig(boolean reload)
     {
-        enabled = config.get(CONFIG_CATEGORY, "enable", true).getBoolean(true);
-        censorSlap = config.get(CONFIG_CATEGORY, "slapDamage", 1, "Damage to a player when he uses a censored word").getInt();
-        censorSymbol = config.get(CONFIG_CATEGORY, "censorSymbol", "#", "Replace censored words with this character").getString();
+        enabled = FEenabled.get();
+        censorSlap = FEcensorSlap.get();
+        censorSymbol = FEcensorSymbol.get();
         if (censorSymbol.length() > 1)
         {
             LoggingHandler.felog.warn("Censor symbol is too long!");
@@ -73,7 +93,7 @@ public class Censor extends ConfigLoaderBase
             censorSymbol = "#";
         }
         filterList.clear();
-        for (String word : config.get(CONFIG_CATEGORY, "words", DEFAULT_WORDS, CENSOR_HELP).getStringList())
+        for (String word : FEfilterList.get())
             filterList.add(new CensoredWord(word));
     }
 
@@ -82,7 +102,7 @@ public class Censor extends ConfigLoaderBase
         return filter(message, null);
     }
 
-    public String filter(String message, EntityPlayer player)
+    public String filter(String message, PlayerEntity player)
     {
         if (!enabled)
             return message;
@@ -95,7 +115,7 @@ public class Censor extends ConfigLoaderBase
                     filter.blank = Strings.repeat(censorSymbol, m.end() - m.start());
                 message = m.replaceAll(filter.blank);
                 if (player != null && censorSlap != 0)
-                    player.attackEntityFrom(DamageSource.GENERIC, censorSlap);
+                    player.hurt(DamageSource.GENERIC, censorSlap);
             }
         }
         return message;
@@ -117,5 +137,4 @@ public class Censor extends ConfigLoaderBase
         }
         return message;
     }
-
 }

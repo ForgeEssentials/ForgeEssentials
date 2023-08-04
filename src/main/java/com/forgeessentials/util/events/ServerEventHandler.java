@@ -1,12 +1,10 @@
 package com.forgeessentials.util.events;
 
-import net.minecraftforge.common.MinecraftForge;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ServerEventHandler
 {
@@ -15,7 +13,8 @@ public class ServerEventHandler
 
     public ServerEventHandler()
     {
-        APIRegistry.getFEEventBus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
+        // APIRegistry.getFEEventBus().register(this);
     }
 
     public ServerEventHandler(boolean forceRegister)
@@ -50,7 +49,7 @@ public class ServerEventHandler
     }
 
     @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerPreInitEvent e)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent e)
     {
         register();
     }

@@ -10,33 +10,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public final class ScriptCompiler
 {
 
     public static final String WRAPPER_PACKAGE = "com.forgeessentials.jscripting.wrapper";
 
-    private static String INIT_SCRIPT;
+    // private static String INIT_SCRIPT;
 
-    @SuppressWarnings("unused")
-    private static CompiledScript initScript;
+    // private static CompiledScript initScript;
 
-    @SuppressWarnings("rawtypes")
     public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
 
     private static SimpleBindings rootPkg = new SimpleBindings();
@@ -47,15 +42,16 @@ public final class ScriptCompiler
     {
         try
         {
-            Class<?> cl = Class.forName("jdk.internal.dynalink.beans.StaticClass", true, ClassLoader.getSystemClassLoader());
+            Class<?> cl = Class.forName("jdk.internal.dynalink.beans.StaticClass", true,
+                    ClassLoader.getSystemClassLoader());
             Constructor<?> constructor = cl.getDeclaredConstructor(Class.class);
             constructor.setAccessible(true);
             return constructor.newInstance(c);
         }
-        catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e)
+        catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+                | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -63,7 +59,8 @@ public final class ScriptCompiler
     {
         try
         {
-            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader()).getTopLevelClassesRecursive(packageBase);
+            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader())
+                    .getTopLevelClassesRecursive(packageBase);
             for (ClassInfo classInfo : classes)
             {
                 registerWrapperClass(classInfo, packageBase);
@@ -71,11 +68,10 @@ public final class ScriptCompiler
         }
         catch (IOException e)
         {
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void registerWrapperClass(ClassInfo classInfo, String packageBase)
     {
         if (!classInfo.getSimpleName().startsWith("Js") || classInfo.getName().equals(JsWrapper.class.getName()))
@@ -128,7 +124,7 @@ public final class ScriptCompiler
         }
         catch (SecurityException e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

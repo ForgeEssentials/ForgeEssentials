@@ -2,41 +2,39 @@ package com.forgeessentials.commands.item;
 
 import java.lang.ref.WeakReference;
 
-import net.minecraft.block.BlockWorkbench;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.inventory.container.WorkbenchContainer;
+import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-
-public class CommandCraft extends ForgeEssentialsCommandBase
+public class CommandCraft extends ForgeEssentialsCommandBuilder
 {
 
-    protected WeakReference<EntityPlayer> lastPlayer = new WeakReference<>(null);
+    protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
 
-    public CommandCraft()
+    public CommandCraft(boolean enabled)
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        super(enabled);
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "craft";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/craft Open a crafting window.";
     }
 
     @Override
@@ -51,26 +49,34 @@ public class CommandCraft extends ForgeEssentialsCommandBase
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".craft";
-    }
-
     @SubscribeEvent
     public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (event.getContainer().canInteractWith(event.getEntityPlayer()) == false && lastPlayer.get() == event.getEntityPlayer())
+        if (!event.getContainer().stillValid(event.getPlayer()) && lastPlayer.get() == event.getPlayer())
         {
             event.setResult(Result.ALLOW);
         }
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        lastPlayer = new WeakReference<>(player);
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        ctx.getSource().getPlayerOrException()
+                .openMenu(new SimpleNamedContainerProvider(
+                        (i, playerInventory, playerEntity) -> new WorkbenchContainer(i, playerInventory,
+                                IWorldPosCallable.create(player.getCommandSenderWorld(), player.blockPosition())) {
+                            public boolean stillValid(@NotNull PlayerEntity p_75145_1_)
+                            {
+                                return true;
+                            }
+                        }, new StringTextComponent("FE Virtual Crafting")));
+        return Command.SINGLE_SUCCESS;
+    }
 }

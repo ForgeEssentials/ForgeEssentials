@@ -1,46 +1,62 @@
 package com.forgeessentials.util;
 
-import net.minecraft.command.CommandResultStats.Type;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.authlib.GameProfile;
 
-public class DoAsCommandSender implements ICommandSender
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+public class DoAsCommandSender extends FakePlayer
 {
+    private static final UUID DOAS_UUID = UUID.fromString("35763490-CD67-428C-9A29-4DED4429A487");
 
-    protected ICommandSender sender;
+    protected CommandSource sender;
 
     protected UserIdent ident;
 
     protected boolean hideChatMessages;
 
+    public DoAsCommandSender(ServerWorld world, GameProfile name, UserIdent ident)
+    {
+        super(world, name);
+        this.ident = ident;
+    }
+
     public DoAsCommandSender()
     {
-        this.ident = APIRegistry.IDENT_SERVER;
-        this.sender = getServer();
+        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD),
+                new GameProfile(DOAS_UUID, "@SERVER"), APIRegistry.IDENT_SERVER);
+        this.sender = getServer().createCommandSourceStack();
     }
 
     public DoAsCommandSender(UserIdent ident)
     {
-        this.ident = ident;
-        this.sender = getServer();
+        this(ident.getPlayerMP().getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
+        this.sender = ident.getPlayerMP().createCommandSourceStack();
     }
 
-    public DoAsCommandSender(UserIdent ident, ICommandSender sender)
+    public DoAsCommandSender(UserIdent ident, CommandSource sender)
     {
-        this.ident = ident;
+        this(sender.getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
         this.sender = sender;
     }
 
-    public ICommandSender getOriginalSender()
+    public CommandSource getOriginalSender()
     {
         return sender;
     }
@@ -51,70 +67,47 @@ public class DoAsCommandSender implements ICommandSender
     }
 
     @Override
-    public String getName()
-    {
-        return sender.getName();
-    }
-
-    @Override
     public ITextComponent getDisplayName()
     {
-        return sender.getDisplayName();
+        return new StringTextComponent(ident.getUsername());
     }
 
     @Override
-    public void sendMessage(ITextComponent message)
+    public void sendMessage(ITextComponent message, UUID p_145747_2_)
     {
         if (!hideChatMessages)
-            sender.sendMessage(message);
+            ChatOutputHandler.sendMessageI(sender, message);
+
     }
 
     @Override
-    public boolean canUseCommand(int level, String command)
+    public ServerWorld getLevel()
     {
-        return true;
+        return sender.getLevel();
     }
 
     @Override
-    public World getEntityWorld()
+    public BlockPos blockPosition()
     {
-        return sender.getEntityWorld();
+        return new BlockPos(position());
     }
 
     @Override
-    public BlockPos getPosition()
+    public Vector3d position()
     {
         return sender.getPosition();
     }
 
     @Override
-    public Vec3d getPositionVector()
+    @Nullable
+    public Entity getEntity()
     {
-        return sender.getPositionVector();
+        return sender.getEntity();
     }
 
-    @Override
-    public Entity getCommandSenderEntity()
-    {
-        return sender.getCommandSenderEntity();
-    }
-
-    @Override
-    public boolean sendCommandFeedback()
-    {
-        return sender.sendCommandFeedback();
-    }
-
-    @Override
-    public void setCommandStat(Type p_174794_1_, int p_174794_2_)
-    {
-        sender.setCommandStat(p_174794_1_, p_174794_2_);
-    }
-
-    @Override
     public MinecraftServer getServer()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance();
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
     public UserIdent getIdent()
@@ -135,6 +128,24 @@ public class DoAsCommandSender implements ICommandSender
     public boolean isHideChatMessages()
     {
         return hideChatMessages;
+    }
+
+    @Override
+    public boolean acceptsSuccess()
+    {
+        return sender.getLevel().getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK);
+    }
+
+    @Override
+    public boolean acceptsFailure()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean shouldInformAdmins()
+    {
+        return true;
     }
 
 }

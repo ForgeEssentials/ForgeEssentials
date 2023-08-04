@@ -1,34 +1,30 @@
 package com.forgeessentials.signtools;
 
-import net.minecraft.util.EnumHand;
+import com.forgeessentials.util.StringUtil;
+
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.common.eventhandler.Event;
-
-import com.forgeessentials.util.StringUtil;
+import net.minecraftforge.eventbus.api.Event;
 
 public class SignInfo
 {
-    int x, y, z, dim;
+    int x, y, z;
+    String dim;
     String[] text;
-    String event;
-    EnumHand hand;
-    Vec3d hitVec;
+    Hand hand;
+    BlockRayTraceResult hitVec;
 
-    public SignInfo(int dim, BlockPos pos, String[] text, Event event)
+    public SignInfo(String dim, BlockPos pos, String[] text, Event event)
     {
         x = pos.getX();
         y = pos.getY();
         z = pos.getZ();
         this.text = text;
         this.dim = dim;
-        if (event != null)
-        {
-            this.event = event.getClass().getSimpleName();
-        }
 
         if (event instanceof PlayerInteractEvent)
         {
@@ -39,26 +35,20 @@ public class SignInfo
             }
             else if (event instanceof LeftClickBlock)
             {
-                this.hitVec = ((LeftClickBlock) event).getHitVec();
+                this.hitVec = null;
             }
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
-        return "{" +
-                "\"x\":" + x +
-                ", \"y\":" + y +
-                ", \"z\":" + z +
-                ", \"dim\":" + dim +
-                ", \"text\":" + StringUtil.toJsonString(text) +
-                ", \"hand\":\"" + hand + "\"" +
-                ", \"hitVec\":" +
-                (hitVec != null ? "{" +
-                        "\"x\":" + hitVec.x +
-                        ", \"y\":" + hitVec.y +
-                        ", \"z\":" + hitVec.z +
-                        "}" : "null") +
-                "}";
+        return "{" + "\"x\":" + x + ", \"y\":" + y + ", \"z\":" + z + ", \"dim\":" + dim + ", \"text\":"
+                + StringUtil.toJsonString(text) + ", \"hand\":\"" + hand + "\"" + ", \"hitVec\":"
+                + (hitVec != null
+                        ? "{" + "\"x\":" + hitVec.getBlockPos().getX() + ", \"y\":" + hitVec.getBlockPos().getY()
+                                + ", \"z\":" + hitVec.getBlockPos().getZ() + "}"
+                        : "null")
+                + "}";
     }
 }

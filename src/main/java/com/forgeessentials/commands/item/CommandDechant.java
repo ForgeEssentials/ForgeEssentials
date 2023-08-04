@@ -1,40 +1,38 @@
 package com.forgeessentials.commands.item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EnchantmentArgument;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
-
-public class CommandDechant extends ParserCommandBase
+public class CommandDechant extends ForgeEssentialsCommandBuilder
 {
-    private static final String PERM = ModuleCommands.PERM + ".dechant";
-
-    @Override
-    public String getPrimaryAlias()
+    public CommandDechant(boolean enabled)
     {
-        return "dechant";
+        super(enabled);
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @NotNull String getPrimaryAlias()
     {
-        return "/dechant <name>: Removes an enchantment from the current item";
+        return "dechant";
     }
 
     @Override
@@ -50,51 +48,37 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return PERM;
+        return baseBuilder.then(Commands.argument("name", EnchantmentArgument.enchantment())
+                .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
+        ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item");
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
+            return Command.SINGLE_SUCCESS;
+        }
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
-        List<String> validEnchantmentNames = new ArrayList<>();
-        Map<String, Enchantment> validEnchantments = new HashMap<>();
-        Iterator<Enchantment> itor = Enchantment.REGISTRY.iterator();
-        while (itor.hasNext())
-        {
-            Enchantment enchantment = itor.next();
-            if (enchantment != null && enchantments.containsKey(enchantment))
-            {
-                String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
-                validEnchantmentNames.add(name);
-                validEnchantments.put(name.toLowerCase(), enchantment);
+        List<Enchantment> validEnchantments = new ArrayList<>();
+        for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS) {
+            if (enchantment != null && enchantments.containsKey(enchantment)) {
+                validEnchantments.add(enchantment);
             }
         }
-
-        if (arguments.isEmpty())
+        Enchantment enchantmentC = EnchantmentArgument.getEnchantment(ctx, "name");
+        if (enchantmentC == null | !validEnchantments.contains(enchantmentC))
         {
-            if (arguments.isTabCompletion)
-                return;
-            arguments.confirm("Possible dechantments: %s", StringUtils.join(validEnchantmentNames, ", "));
-            return;
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantmentC));
+            return Command.SINGLE_SUCCESS;
         }
-
-        while (!arguments.isEmpty())
-        {
-            arguments.tabComplete(validEnchantmentNames);
-            String name = arguments.remove();
-            Enchantment enchantment = validEnchantments.get(name.toLowerCase());
-            if (enchantment == null)
-                throw new TranslatedCommandException("Invalid enchantment name %s!", name);
-            enchantments.remove(enchantment);
-        }
+        enchantments.remove(enchantmentC);
         EnchantmentHelper.setEnchantments(enchantments, stack);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

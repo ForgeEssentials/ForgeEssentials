@@ -13,13 +13,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameType;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ChatConfig;
@@ -34,13 +27,21 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public final class ScriptArguments
 {
 
     private static Map<String, ScriptArgument> scriptArguments = new HashMap<>();
 
-    private static final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+    private static final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
     public static void add(String name, ScriptArgument argument)
     {
@@ -61,12 +62,12 @@ public final class ScriptArguments
 
     public static final Pattern ARGUMENT_PATTERN = Pattern.compile("@\\{?(\\w+)\\}?");
 
-    public static String process(String text, ICommandSender sender) throws ScriptException
+    public static String process(String text, CommandSource sender) throws ScriptException
     {
         return process(text, sender, null);
     }
 
-    public static String process(String text, ICommandSender sender, List<?> args) throws ScriptException
+    public static String process(String text, CommandSource sender, List<?> args) throws ScriptException
     {
         Matcher m = ARGUMENT_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();
@@ -95,12 +96,12 @@ public final class ScriptArguments
         return sb.toString();
     }
 
-    public static String processSafe(String text, ICommandSender sender)
+    public static String processSafe(String text, CommandSource sender)
     {
         return processSafe(text, sender, null);
     }
 
-    public static String processSafe(String text, ICommandSender sender, List<?> args)
+    public static String processSafe(String text, CommandSource sender, List<?> args)
     {
         Matcher m = ARGUMENT_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();
@@ -154,11 +155,11 @@ public final class ScriptArguments
 
     public static ScriptArgument sender = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             if (sender == null)
                 throw new MissingPlayerException();
-            return sender.getName();
+            return sender.getTextName();
         }
 
         @Override
@@ -170,11 +171,11 @@ public final class ScriptArguments
 
     public static ScriptArgument player = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             if (sender == null)
                 throw new MissingPlayerException();
-            return sender.getName();
+            return sender.getTextName();
         }
 
         @Override
@@ -186,11 +187,20 @@ public final class ScriptArguments
 
     public static ScriptArgument uuid = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return ((EntityPlayerMP) sender).getPersistentID().toString();
+            try
+            {
+                return ((ServerPlayerEntity) sender.getPlayerOrException()).getStringUUID();
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -202,11 +212,20 @@ public final class ScriptArguments
 
     public static ScriptArgument x = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString((int) ((EntityPlayerMP) sender).posX);
+            try
+            {
+                return Integer.toString((int) ((ServerPlayerEntity) sender.getPlayerOrException()).position().x);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -218,11 +237,20 @@ public final class ScriptArguments
 
     public static ScriptArgument y = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString((int) ((EntityPlayerMP) sender).posY);
+            try
+            {
+                return Integer.toString((int) ((ServerPlayerEntity) sender.getPlayerOrException()).position().y);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -234,11 +262,20 @@ public final class ScriptArguments
 
     public static ScriptArgument z = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString((int) ((EntityPlayerMP) sender).posZ);
+            try
+            {
+                return Integer.toString((int) ((ServerPlayerEntity) sender.getPlayerOrException()).position().z);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -250,11 +287,20 @@ public final class ScriptArguments
 
     public static ScriptArgument xd = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Double.toString(((EntityPlayerMP) sender).posX);
+            try
+            {
+                return Double.toString(((ServerPlayerEntity) sender.getPlayerOrException()).position().x);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -266,11 +312,20 @@ public final class ScriptArguments
 
     public static ScriptArgument yd = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Double.toString(((EntityPlayerMP) sender).posY);
+            try
+            {
+                return Double.toString(((ServerPlayerEntity) sender.getPlayerOrException()).position().y);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -282,11 +337,20 @@ public final class ScriptArguments
 
     public static ScriptArgument zd = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Double.toString(((EntityPlayerMP) sender).posZ);
+            try
+            {
+                return Double.toString(((ServerPlayerEntity) sender.getPlayerOrException()).position().z);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -298,11 +362,11 @@ public final class ScriptArguments
 
     public static ScriptArgument dim = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((EntityPlayerMP) sender).dimension);
+            return ((ServerPlayerEntity) sender.getEntity()).level.dimension().location().toString();
         }
 
         @Override
@@ -314,19 +378,29 @@ public final class ScriptArguments
 
     public static ScriptArgument gm = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            GameType type = ((EntityPlayerMP) sender).interactionManager.getGameType();
-            switch (type) {
-                case CREATIVE:
-                    return ChatConfig.gamemodeCreative;
-                case ADVENTURE:
-                case SPECTATOR:                         //To Preserve the old logic of isAdventure on 1.10
-                    return ChatConfig.gamemodeAdventure;
-                default:
-                    return ChatConfig.gamemodeSurvival;
+            GameType type = null;
+            try
+            {
+                type = ((ServerPlayerEntity) sender.getPlayerOrException()).gameMode.getGameModeForPlayer();
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            switch (type)
+            {
+            case CREATIVE:
+                return ChatConfig.gamemodeCreative;
+            case ADVENTURE:
+            case SPECTATOR: // To Preserve the old logic of isAdventure on 1.10
+                return ChatConfig.gamemodeAdventure;
+            default:
+                return ChatConfig.gamemodeSurvival;
             }
         }
 
@@ -339,11 +413,20 @@ public final class ScriptArguments
 
     public static ScriptArgument health = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Float.toString(((EntityPlayerMP) sender).getHealth());
+            try
+            {
+                return Float.toString(((ServerPlayerEntity) sender.getPlayerOrException()).getHealth());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -355,11 +438,20 @@ public final class ScriptArguments
 
     public static ScriptArgument healthcolor = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            float health = ((EntityPlayerMP) sender).getHealth();
+            float health = 0;
+            try
+            {
+                health = ((ServerPlayerEntity) sender.getPlayerOrException()).getHealth();
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             if (health <= 6)
                 return TextFormatting.RED.toString();
             if (health < 16)
@@ -376,11 +468,21 @@ public final class ScriptArguments
 
     public static ScriptArgument hunger = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((EntityPlayerMP) sender).getFoodStats().getFoodLevel());
+            try
+            {
+                return Integer
+                        .toString(((ServerPlayerEntity) sender.getPlayerOrException()).getFoodData().getFoodLevel());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -392,11 +494,20 @@ public final class ScriptArguments
 
     public static ScriptArgument hungercolor = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            float hunger = ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
+            float hunger = 0;
+            try
+            {
+                hunger = ((ServerPlayerEntity) sender.getPlayerOrException()).getFoodData().getFoodLevel();
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             if (hunger <= 6)
                 return TextFormatting.RED.toString();
             if (hunger < 12)
@@ -413,11 +524,21 @@ public final class ScriptArguments
 
     public static ScriptArgument saturation = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Float.toString(((EntityPlayerMP) sender).getFoodStats().getSaturationLevel());
+            try
+            {
+                return Float.toString(
+                        ((ServerPlayerEntity) sender.getPlayerOrException()).getFoodData().getSaturationLevel());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -429,11 +550,20 @@ public final class ScriptArguments
 
     public static ScriptArgument saturationcolor = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            float hunger = ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
+            float hunger = 0;
+            try
+            {
+                hunger = ((ServerPlayerEntity) sender.getPlayerOrException()).getFoodData().getSaturationLevel();
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             if (hunger <= 0)
                 return TextFormatting.RED.toString();
             if (hunger <= 1.5)
@@ -450,11 +580,21 @@ public final class ScriptArguments
 
     public static ScriptArgument zone = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((EntityPlayerMP) sender))).getName();
+            try
+            {
+                return APIRegistry.perms.getServerZone()
+                        .getZoneAt(new WorldPoint(((ServerPlayerEntity) sender.getPlayerOrException()))).getName();
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -466,11 +606,21 @@ public final class ScriptArguments
 
     public static ScriptArgument zoneId = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((EntityPlayerMP) sender))).getId());
+            try
+            {
+                return Integer.toString(APIRegistry.perms.getServerZone()
+                        .getZoneAt(new WorldPoint(((ServerPlayerEntity) sender.getPlayerOrException()))).getId());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -482,11 +632,20 @@ public final class ScriptArguments
 
     public static ScriptArgument group = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = null;
+            try
+            {
+                _player = ((ServerPlayerEntity) sender.getPlayerOrException());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return APIRegistry.perms.getServerZone().getPlayerGroups(UserIdent.get(_player)).first().getGroup();
         }
 
@@ -499,11 +658,20 @@ public final class ScriptArguments
 
     public static ScriptArgument timePlayed = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = null;
+            try
+            {
+                _player = ((ServerPlayerEntity) sender.getPlayerOrException());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return ChatOutputHandler.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
         }
 
@@ -516,11 +684,20 @@ public final class ScriptArguments
 
     public static ScriptArgument lastLogout = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = null;
+            try
+            {
+                _player = ((ServerPlayerEntity) sender.getPlayerOrException());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return FEConfig.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogout());
         }
 
@@ -533,11 +710,20 @@ public final class ScriptArguments
 
     public static ScriptArgument lastLogin = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = null;
+            try
+            {
+                _player = ((ServerPlayerEntity) sender.getPlayerOrException());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return FEConfig.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogin());
         }
 
@@ -550,12 +736,22 @@ public final class ScriptArguments
 
     public static ScriptArgument sinceLastLogout = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return ChatOutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
+            ServerPlayerEntity _player = null;
+            try
+            {
+                _player = ((ServerPlayerEntity) sender.getPlayerOrException());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return ChatOutputHandler.formatTimeDurationReadable(
+                    (new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
         }
 
         @Override
@@ -567,12 +763,22 @@ public final class ScriptArguments
 
     public static ScriptArgument sinceLastLogin = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
-            return ChatOutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
+            ServerPlayerEntity _player = null;
+            try
+            {
+                _player = ((ServerPlayerEntity) sender.getPlayerOrException());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return ChatOutputHandler.formatTimeDurationReadable(
+                    (new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
         }
 
         @Override
@@ -584,7 +790,7 @@ public final class ScriptArguments
 
     public static ScriptArgument tps = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             return new DecimalFormat("#").format(Math.min(20, ServerUtil.getTPS()));
         }
@@ -598,7 +804,7 @@ public final class ScriptArguments
 
     public static ScriptArgument realTime = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             return FEConfig.FORMAT_TIME.format(new Date());
         }
@@ -612,7 +818,7 @@ public final class ScriptArguments
 
     public static ScriptArgument realDate = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             return FEConfig.FORMAT_DATE.format(new Date());
         }
@@ -626,9 +832,9 @@ public final class ScriptArguments
 
     public static ScriptArgument worldTime = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            return new DecimalFormat("#").format(server.getEntityWorld().getWorldTime());
+            return new DecimalFormat("#").format(sender.getLevel().getDayTime());
         }
 
         @Override
@@ -640,12 +846,12 @@ public final class ScriptArguments
 
     public static ScriptArgument worldTimeClock = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             try
             {
                 FEConfig.FORMAT_TIME.setTimeZone(TimeZone.getTimeZone("US"));
-                long ticks = server.getEntityWorld().getWorldTime();
+                long ticks = sender.getLevel().getDayTime();
                 Date time = new Date(ticks * 1000 * 60 * 60 * 24 / 24000 + 1000 * 60 * 60 * 6);
                 return FEConfig.FORMAT_TIME.format(time);
             }
@@ -664,9 +870,9 @@ public final class ScriptArguments
 
     public static ScriptArgument totalWorldTime = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            return new DecimalFormat("#").format(server.getEntityWorld().getTotalWorldTime());
+            return new DecimalFormat("#").format(sender.getLevel().getGameTime());
         }
 
         @Override
@@ -678,7 +884,7 @@ public final class ScriptArguments
 
     public static ScriptArgument serverUptime = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
             return ChatOutputHandler.formatTimeDurationReadable(rb.getUptime() / 1000, true);
@@ -693,12 +899,12 @@ public final class ScriptArguments
 
     public static ScriptArgument onlinePlayers = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             int online = 0;
             try
             {
-                online = server.getCurrentPlayerCount();
+                online = server.getPlayerCount();
             }
             catch (Exception e)
             {
@@ -716,7 +922,7 @@ public final class ScriptArguments
 
     public static ScriptArgument uniquePlayers = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             return Integer.toString(APIRegistry.perms.getServerZone().getKnownPlayers().size());
         }
@@ -727,14 +933,23 @@ public final class ScriptArguments
             return "Number of unique players on the server at all time";
         }
     };
-	
-	public static ScriptArgument exp = new ScriptArgument() {
+
+    public static ScriptArgument exp = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((EntityPlayerMP) sender).experienceLevel);
+            try
+            {
+                return Integer.toString(((ServerPlayerEntity) sender.getPlayerOrException()).experienceLevel);
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -743,12 +958,12 @@ public final class ScriptArguments
             return "Returns the expLevel of the command sender";
         }
     };
-	
-    //Should be removed (randi function replaces it better)
+
+    // Should be removed (randi function replaces it better)
     @Deprecated
-	public static ScriptArgument random = new ScriptArgument() {
+    public static ScriptArgument random = new ScriptArgument() {
         @Override
-        public String process(ICommandSender sender)
+        public String process(CommandSource sender)
         {
             return Integer.toString(ForgeEssentials.rnd.nextInt(33554432) - 16777216);
         }

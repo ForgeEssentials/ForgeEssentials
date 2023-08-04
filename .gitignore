@@ -27,8 +27,6 @@
 *.iws
 out/
 
-!/jars/coremods/
-
 *.sh
 *.db
 CHANGELOG
@@ -38,4 +36,7 @@ modlist.txt
 /.apt_generated/
 /src/*/generated/
 /jscripting/tsconfig.json
+*.launch
+/.apt_generated_tests/
 /src/utils/java/com/forgeessentials/commons/BuildInfo.java
+src/utils/java/com/forgeessentials/commons/BuildInfo.java

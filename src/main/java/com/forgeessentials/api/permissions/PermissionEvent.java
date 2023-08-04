@@ -2,8 +2,8 @@ package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.UserIdent;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * PermissionEvent
@@ -33,8 +33,7 @@ public class PermissionEvent extends Event
     }
 
     /**
-     * Event runs when a new permission-tree (ServerZone) gets initialized. This event can be used to initialize
-     * internal groups or some other default permissions.
+     * Event runs when a new permission-tree (ServerZone) gets initialized. This event can be used to initialize internal groups or some other default permissions.
      */
     public static class Initialize extends PermissionEvent
     {
@@ -80,7 +79,7 @@ public class PermissionEvent extends Event
             this.ident = ident;
         }
 
-        @Cancelable
+        @net.minecraftforge.eventbus.api.Cancelable
         public static class ModifyPermission extends User
         {
 
@@ -88,7 +87,8 @@ public class PermissionEvent extends Event
             public String permissionNode;
             public String value;
 
-            public ModifyPermission(ServerZone serverZone, UserIdent ident, com.forgeessentials.api.permissions.Zone zone, String permissionNode, String value)
+            public ModifyPermission(ServerZone serverZone, UserIdent ident,
+                    com.forgeessentials.api.permissions.Zone zone, String permissionNode, String value)
             {
                 super(serverZone, ident);
                 this.zone = zone;
@@ -103,7 +103,7 @@ public class PermissionEvent extends Event
 
             public static enum Action
             {
-                ADD, REMOVE;
+                ADD, REMOVE
             }
 
             public Action action;
@@ -141,7 +141,8 @@ public class PermissionEvent extends Event
             public String permissionNode;
             public String value;
 
-            public ModifyPermission(ServerZone serverZone, String group, com.forgeessentials.api.permissions.Zone zone, String permissionNode, String value)
+            public ModifyPermission(ServerZone serverZone, String group, com.forgeessentials.api.permissions.Zone zone,
+                    String permissionNode, String value)
             {
                 super(serverZone, group);
                 this.zone = zone;

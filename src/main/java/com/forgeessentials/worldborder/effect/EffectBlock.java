@@ -1,16 +1,18 @@
 package com.forgeessentials.worldborder.effect;
 
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.context.CommandContext;
+
+import net.minecraft.command.CommandSource;
 
 public class EffectBlock extends WorldBorderEffect
 {
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
     }
 

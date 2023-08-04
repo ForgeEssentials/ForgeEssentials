@@ -24,7 +24,7 @@ public class QueryPermissionsHandler extends GenericRemoteHandler<JsonElement>
     @Override
     protected RemoteResponse<ServerZone> handleData(RemoteSession session, RemoteRequest<JsonElement> request)
     {
-        return new RemoteResponse<ServerZone>(request, APIRegistry.perms.getServerZone());
+        return new RemoteResponse<>(request, APIRegistry.perms.getServerZone());
     }
 
 }

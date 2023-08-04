@@ -2,10 +2,10 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -93,7 +93,7 @@ public class TsdGenerator extends Doclet
 
         try
         {
-            try (PrintStream w = new PrintStream(new FileOutputStream(outFile)))
+            try (PrintStream w = new PrintStream(Files.newOutputStream(outFile.toPath())))
             {
                 writer = w;
                 indention = 0;
@@ -122,14 +122,16 @@ public class TsdGenerator extends Doclet
 
                 for (PackageDoc packageDoc : packages)
                 {
-                    currentPackageName = packageDoc.name().substring(Math.min(packageDoc.name().length(), srcPackageBaseName.length() + 1));
+                    currentPackageName = packageDoc.name()
+                            .substring(Math.min(packageDoc.name().length(), srcPackageBaseName.length() + 1));
                     for (ClassDoc classDoc : packageDoc.allClasses())
                         preprocessClass(classDoc);
                 }
 
                 for (PackageDoc packageDoc : packages)
                 {
-                    currentPackageName = packageDoc.name().substring(Math.min(packageDoc.name().length(), srcPackageBaseName.length() + 1));
+                    currentPackageName = packageDoc.name()
+                            .substring(Math.min(packageDoc.name().length(), srcPackageBaseName.length() + 1));
                     if (currentPackageName.length() > 0)
                     {
                         writeComment(packageDoc);
@@ -237,7 +239,8 @@ public class TsdGenerator extends Doclet
         {
             write(" extends ");
             write(mapClassName(classDoc.superclassType()));
-            if (classDoc.superclassType() instanceof ParameterizedType && classDoc.superclass().name().equals("MappedList"))
+            if (classDoc.superclassType() instanceof ParameterizedType
+                    && classDoc.superclass().name().equals("MappedList"))
             {
                 write("<");
                 write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[1]));
@@ -277,7 +280,8 @@ public class TsdGenerator extends Doclet
         if (!constructorDoc.isPublic() || ignoreDoc(constructorDoc))
             return;
         // Hide default constructors of classes extending Object
-        if (constructorDoc.containingClass().superclass().qualifiedName().equals(Object.class.getName()) && constructorDoc.isSynthetic())
+        if (constructorDoc.containingClass().superclass().qualifiedName().equals(Object.class.getName())
+                && constructorDoc.isSynthetic())
             return;
         // Hide wrapper constructors
         if (constructorDoc.parameters().length >= 1 && constructorDoc.parameters()[0].name().equals("that"))
@@ -415,10 +419,7 @@ public class TsdGenerator extends Doclet
         if (fieldDoc.commentText().length() > 0 || deprecation != null)
         {
             writeLn("/**");
-            String comment = fieldDoc.commentText()
-                    .replace("\r", "")
-                    .replace("<br>", "")
-                    .replace("<b>", "")
+            String comment = fieldDoc.commentText().replace("\r", "").replace("<br>", "").replace("<b>", "")
                     .replace("</b>", "");
             if (comment.length() > 0)
                 for (String line : comment.split("\n"))
@@ -455,8 +456,8 @@ public class TsdGenerator extends Doclet
         if (mappedName == null)
         {
             String fqn = type.qualifiedTypeName();
-            //            ClassDoc classDoc = rootDoc.classNamed(fqn);
-            //            classDoc.containingPackage()
+            // ClassDoc classDoc = rootDoc.classNamed(fqn);
+            // classDoc.containingPackage()
 
             int idx = fqn.lastIndexOf('.');
             String typeName = fqn.substring(idx + 1, fqn.length());
@@ -570,7 +571,7 @@ public class TsdGenerator extends Doclet
                 generator.headerFile = new File(argGroup[1]);
                 if (!generator.headerFile.exists())
                 {
-                    System.err.println(String.format("Could not find header file %s", generator.headerFile.getAbsolutePath()));
+                    System.err.printf("Could not find header file %s%n", generator.headerFile.getAbsolutePath());
                     System.exit(1);
                 }
                 System.out.println("Set header file to " + argGroup[1]);
@@ -597,27 +598,20 @@ public class TsdGenerator extends Doclet
 
         generator = new TsdGenerator();
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
-                "-sourcepath", "src/main/java",
-                "-subpackages", "com.forgeessentials.jscripting.fewrapper",
-                "-out", feDtsFile.getAbsolutePath(),
-                "-header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts"
-        );
+                "-sourcepath", "src/main/java", "-subpackages", "com.forgeessentials.jscripting.fewrapper", "-out",
+                feDtsFile.getAbsolutePath(), "-header",
+                "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts");
 
         generator = new TsdGenerator();
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
-                "-sourcepath", "src/main/java",
-                "-subpackages", "com.forgeessentials.jscripting.wrapper",
-                "-out", mcDtsFile.getAbsolutePath(),
-                "-header", "src/main/resources/com/forgeessentials/jscripting/mc_header.d.ts",
-                "-external", UUID.class.getName(),
-                "-external", Date.class.getName(),
-                "-external", Calendar.class.getName(),
-                "-external", TimeZone.class.getName(),
-                "-external", Locale.class.getName(),
+                "-sourcepath", "src/main/java", "-subpackages", "com.forgeessentials.jscripting.wrapper", "-out",
+                mcDtsFile.getAbsolutePath(), "-header",
+                "src/main/resources/com/forgeessentials/jscripting/mc_header.d.ts", "-external", UUID.class.getName(),
+                "-external", Date.class.getName(), "-external", Calendar.class.getName(), "-external",
+                TimeZone.class.getName(), "-external", Locale.class.getName(),
                 // "-external", Instant.class.getName(),
                 // "-external", Collection.class.getName(),
-                "-external", net.minecraft.world.GameType.class.getName()
-        );
+                "-external", net.minecraft.world.GameType.class.getName());
 
         FileUtils.copyFileToDirectory(feDtsFile, outDir);
         FileUtils.copyFileToDirectory(mcDtsFile, outDir);

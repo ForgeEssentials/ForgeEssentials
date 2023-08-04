@@ -1,39 +1,35 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFeReload extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandFeReload extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandFeReload(boolean enabled)
+    {
+        super(enabled);
+    }
+
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
         return "fereload";
     }
 
     @Override
-    public String[] getDefaultSecondaryAliases()
+    public String @NotNull [] getDefaultSecondaryAliases()
     {
         return new String[] { "reload" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/fereload: Reload FE configuration";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ForgeEssentials.PERM_RELOAD;
     }
 
     @Override
@@ -49,15 +45,22 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        reload(sender);
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
-    public static void reload(ICommandSender sender)
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        reload(ctx.getSource());
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static void reload(CommandSource sender)
     {
         ModuleLauncher.instance.reloadConfigs();
-        ChatOutputHandler.chatConfirmation(sender, Translator.translate("Reloaded configs. (may not work for all settings)"));
+        ChatOutputHandler.chatConfirmation(sender,
+                Translator.translate("Reloaded configs. (may not work for all settings)"));
     }
-
 }

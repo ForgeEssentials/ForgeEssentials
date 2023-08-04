@@ -1,57 +1,58 @@
 package com.forgeessentials.util.selections;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandExpandY extends ForgeEssentialsCommandBase
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandExpandY extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandExpandY()
+    public CommandExpandY(boolean enabled)
     {
-        return;
+        super(enabled);
     }
 
     @Override
-    public String getPrimaryAlias()
+    public @NotNull String getPrimaryAlias()
     {
-        return "/expandY";
+        return "SELexpandY";
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        Selection sel = SelectionHandler.getSelection(player);
+        return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        Selection sel = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
         if (sel == null)
-            throw new TranslatedCommandException("Invalid selection.");
-        SelectionHandler.setStart(player, sel.getStart().setY(0));
-        SelectionHandler.setEnd(player, sel.getEnd().setY(server.getBuildLimit()));
-        ChatOutputHandler.chatConfirmation(player, "Selection expanded from bottom to top.");
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.expandy";
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Invalid selection.");
+            return Command.SINGLE_SUCCESS;
+        }
+        SelectionHandler.setStart(getServerPlayer(ctx.getSource()), sel.getStart().setY(0));
+        SelectionHandler.setEnd(getServerPlayer(ctx.getSource()),
+                sel.getEnd().setY(ctx.getSource().getLevel().getMaxBuildHeight()));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection expanded from bottom to top.");
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//expandY: Expands the currently selected area from the top to the bottom of the world.";
     }
 
     @Override

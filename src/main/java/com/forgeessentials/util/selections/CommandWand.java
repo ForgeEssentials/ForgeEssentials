@@ -1,55 +1,70 @@
 package com.forgeessentials.util.selections;
 
-//Depreciated
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.compat.worldedit.WEIntegration;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandWand extends ForgeEssentialsCommandBase
+//Depreciated
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.jetbrains.annotations.NotNull;
+
+public class CommandWand extends ForgeEssentialsCommandBuilder
 {
 
-    @Override
-    public String getPrimaryAlias()
+    public CommandWand(boolean enabled)
     {
-        return "/fewand";
+        super(enabled);
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public @NotNull String getPrimaryAlias()
     {
-        if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
+        return "SELwand";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .then(Commands.literal("unbind").executes(CommandContext -> execute(CommandContext, "unbind")))
+                .then(Commands.literal("rebind").executes(CommandContext -> execute(CommandContext, "bind")))
+                .executes(CommandContext -> execute(CommandContext, "bind"));
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        if (ModuleLauncher.getModuleList().contains(WEIntegration.weModule))
         {
-            ChatOutputHandler.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
-            ChatOutputHandler.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
-            return;
+            ChatOutputHandler.chatNotification(ctx.getSource(),
+                    "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
+            ChatOutputHandler.chatNotification(ctx.getSource(),
+                    "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
+            return Command.SINGLE_SUCCESS;
         }
 
         // Get the wand item (or hands)
         Item wandItem;
         String wandId, wandName;
-        int wandDmg = 0;
-        if (sender.getHeldItemMainhand() != null)
+        PlayerEntity player = getServerPlayer(ctx.getSource());
+        if (getServerPlayer(ctx.getSource()).getMainHandItem() != null)
         {
-            wandName = sender.getHeldItemMainhand().getDisplayName();
-            wandItem = sender.getHeldItemMainhand().getItem();
-            wandDmg = sender.getHeldItemMainhand().getItemDamage();
-            wandId = wandItem.getUnlocalizedName();
-            if (wandDmg == -1)
-            {
-                wandDmg = 0;
-            }
+            wandName = player.getMainHandItem().getDisplayName().getString();
+            wandItem = player.getMainHandItem().getItem();
+            wandId = wandItem.getRegistryName().getPath();
         }
         else
         {
@@ -57,28 +72,32 @@ public class CommandWand extends ForgeEssentialsCommandBase
             wandId = "hands";
         }
 
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
-
-        // Check for rebind
-        boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
+        PlayerInfo info = PlayerInfo.get(player.getGameProfile().getId());
 
         // Check for unbind
-        if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind"))))
+        if ((params.equals("unbind")) && ((info.isWandEnabled() && info.getWandID().equals(wandId))))
         {
-            ChatOutputHandler.sendMessage(sender, TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+            ChatOutputHandler.sendMessage(ctx.getSource(),
+                    TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
-            return;
+
         }
+        else
+        {
+            // Check for permissions
+            if (!hasPermission(ctx.getSource(), "fe.core.pos.wand"))
+            {
+                ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
 
-        // Check for permissions
-        if (!checkCommandPermission(sender))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-
-        // Bind wand
-        info.setWandEnabled(true);
-        info.setWandID(wandId);
-        info.setWandDmg(wandDmg);
-        ChatOutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
+            // Bind wand
+            info.setWandEnabled(true);
+            info.setWandID(wandId);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), wandId);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Wand bound to " + wandName);
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -88,21 +107,8 @@ public class CommandWand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return "fe.core.pos.wand";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/" + getPrimaryAlias() + " [rebind|unbind|ITEM] Toggles the wand";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
     }
-
 }

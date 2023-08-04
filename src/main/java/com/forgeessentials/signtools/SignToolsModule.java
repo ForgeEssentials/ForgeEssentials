@@ -1,33 +1,40 @@
 package com.forgeessentials.signtools;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
+import java.util.ArrayList;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.world.SignEditEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.tileentity.SignTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
 {
+    private static ForgeConfigSpec SIGN_CONFIG;
+    private static final ConfigData data = new ConfigData("SignTools", SIGN_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String COLORIZE_PERM = "fe.signs.colorize";
     public static final String EDIT_PERM = "fe.signs.edit";
@@ -37,18 +44,12 @@ public class SignToolsModule extends ConfigLoaderBase
     private static boolean allowSignCommands, allowSignEdit;
 
     @SubscribeEvent
-    public void onLoad(FEModuleInitEvent e)
+    public void registerPerms(FEModuleServerStartingEvent e)
     {
-        MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.scripts.addScriptType(signinteractKey);
         APIRegistry.scripts.addScriptType(signeditKey);
-    }
-
-    @SubscribeEvent
-    public void registerPerms(FEModuleServerInitEvent e)
-    {
-        PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
-        PermissionAPI.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
+        APIRegistry.perms.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
+        APIRegistry.perms.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
     }
 
     /**
@@ -59,12 +60,13 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor, new SignInfo(e.editor.dimension, e.pos, e.text, e)))
+        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor.createCommandSourceStack(),
+                new SignInfo(e.editor.getLevel().dimension().location().toString(), e.pos, e.text, e)))
         {
             e.setCanceled(true);
         }
 
-        if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
+        if (!APIRegistry.perms.checkPermission(e.editor, COLORIZE_PERM))
         {
             return;
         }
@@ -74,8 +76,8 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
-                    TextComponentString text = new TextComponentString(ChatOutputHandler.formatColors(e.text[i]));
-                    ChatOutputHandler.applyFormatting(text.getStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
+                	e.setCanceled(true);
+                    StringTextComponent text = new StringTextComponent(ChatOutputHandler.formatColors(e.text[i]));
                     e.formatted[i] = text;
                 }
             }
@@ -83,46 +85,52 @@ public class SignToolsModule extends ConfigLoaderBase
     }
 
     /**
-     * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth
-     * lines are arguments to the command.
+     * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth lines are arguments to the command.
      */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if (event.getWorld().isRemote)
+        World w = event.getWorld();
+        if (w.isClientSide)
         {
             return;
         }
-
-        TileEntity te = event.getEntityPlayer().world.getTileEntity(event.getPos());
-        if (te instanceof TileEntitySign)
+        TileEntity te = w.getBlockEntity(event.getPos());
+        if (te instanceof SignTileEntity)
         {
-            TileEntitySign sign = ((TileEntitySign) te);
-            if (allowSignEdit && event.getEntityPlayer().isSneaking() && event instanceof RightClickBlock)
+            SignTileEntity sign = ((SignTileEntity) te);
+            if (allowSignEdit && event.getPlayer().isCrouching() && event instanceof RightClickBlock)
             {
-                if (event.getEntityPlayer().getHeldItemMainhand() != ItemStack.EMPTY)
+                if (event.getPlayer().getMainHandItem() == ItemStack.EMPTY)
                 {
-                    if (PermissionAPI.hasPermission(event.getEntityPlayer(), EDIT_PERM)
-                            && PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign")
-                            && event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN))
+                    if (APIRegistry.perms.checkPermission(event.getPlayer(), EDIT_PERM)
+                            && APIRegistry.perms.checkPermission(event.getPlayer(), "fe.protection.use.minecraft.sign"))
                     {
-                        //Convert Formatting back into FE format for easy use
-                        for (int i = 0; i < sign.signText.length; i++)
+                        // Convert Formatting back into FE format for easy use
+                        ITextComponent[] imessage = ItemUtil.getText(sign);
+                        String[] signText = getFormatted(imessage);
+                        ITextComponent[] newMessage = new ITextComponent[4];
+                        for (int i = 0; i < signText.length; i++)
                         {
-                            sign.signText[i] = new TextComponentString(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                        	newMessage[i] = new StringTextComponent(signText[i]);
                         }
+                        ItemUtil.setText(sign, newMessage);
+                        sign.setChanged();
+                        w.sendBlockUpdated(event.getPos(), w.getBlockState(event.getPos()), w.getBlockState(event.getPos()), 3);
 
-                        event.getEntityPlayer().openEditSign((TileEntitySign) te);
+                        ((ServerPlayerEntity) event.getPlayer()).connection.send(sign.getUpdatePacket());
+                        ((ServerPlayerEntity) event.getPlayer()).openTextEdit(sign);
                         event.setCanceled(true);
                     }
                 }
-
+                return;
             }
+            ITextComponent[] imessage = ItemUtil.getText(sign);
+            String[] signText = getFormatted(imessage);
 
-            String[] signText = getFormatted(sign.signText);
-
-            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer().dimension, event.getPos(), signText, event)))
+            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
+                    new SignInfo(event.getPlayer().level.dimension().toString(), event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }
@@ -132,9 +140,10 @@ public class SignToolsModule extends ConfigLoaderBase
                 if (signText[0].equals("[command]"))
                 {
                     String send = signText[1] + " " + signText[2] + " " + signText[3];
-                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                    if (send != null && ServerLifecycleHooks.getCurrentServer().getCommands() != null)
                     {
-                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
+                        ServerLifecycleHooks.getCurrentServer().getCommands()
+                                .performCommand(event.getPlayer().createCommandSourceStack(), send);
                         event.setCanceled(true);
                     }
                 }
@@ -147,17 +156,53 @@ public class SignToolsModule extends ConfigLoaderBase
     private String[] getFormatted(ITextComponent[] text)
     {
         String[] out = new String[text.length];
-        for (int i = 0; i < text.length; i++) {
-            out[i] = text[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
+        for (int i = 0; i < text.length; i++)
+        {
+            out[i] = text[i].getString().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
         }
         return out;
     }
 
+    static ForgeConfigSpec.BooleanValue FEallowSignCommands;
+    static ForgeConfigSpec.BooleanValue FEallowSignEdit;
+
+    // this is NOT a permprop because perms are checked against the player anyway
+
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void load(Builder BUILDER, boolean isReload)
     {
-        // this is NOT a permprop because perms are checked against the player anyway
-        allowSignCommands = config.getBoolean("allowSignCommands", "Signs", true, "Allow commands to be run when right clicking signs.");
-        allowSignEdit = config.getBoolean("allowSignEditing", "Signs", true, "Allow players to edit a sign by right clicking on it with a sign item while sneaking.");
+        BUILDER.push("Sign");
+        FEallowSignCommands = BUILDER.comment("Allow commands to be run when right clicking signs.")
+                .define("allowSignCommands", true);
+        FEallowSignEdit = BUILDER
+                .comment("Allow players to edit a sign by right clicking on it with a sign item while sneaking.")
+                .define("allowSignEditing", true);
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        allowSignCommands = FEallowSignCommands.get();
+        allowSignEdit = FEallowSignEdit.get();
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
+    }
+
+    public boolean SIGNS(Item item)
+    {
+        ArrayList<Item> signs = new ArrayList<>(4);
+        signs.add(Items.ACACIA_SIGN);
+        signs.add(Items.BIRCH_SIGN);
+        signs.add(Items.CRIMSON_SIGN);
+        signs.add(Items.DARK_OAK_SIGN);
+        signs.add(Items.JUNGLE_SIGN);
+        signs.add(Items.OAK_SIGN);
+        signs.add(Items.SPRUCE_SIGN);
+        signs.add(Items.WARPED_SIGN);
+        return signs.contains(item);
     }
 }

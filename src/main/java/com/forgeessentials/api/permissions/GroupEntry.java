@@ -32,12 +32,14 @@ public class GroupEntry implements Comparable<GroupEntry>
 
     public GroupEntry(ServerZone zone, String group)
     {
-        this(group, ServerUtil.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+        this(group, ServerUtil.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY),
+                FEPermissions.GROUP_PRIORITY_DEFAULT));
     }
 
     public GroupEntry(ServerZone zone, String group, int priority)
     {
-        this(group, priority, ServerUtil.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY), FEPermissions.GROUP_PRIORITY_DEFAULT));
+        this(group, priority, ServerUtil.parseIntDefault(zone.getGroupPermission(group, FEPermissions.GROUP_PRIORITY),
+                FEPermissions.GROUP_PRIORITY_DEFAULT));
     }
 
     public String getGroup()
