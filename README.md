@@ -13,7 +13,7 @@ There are many people there who can help you and it is the quickest way to reach
 
 # Reporting bugs
 Please follow these rules when reporting bugs:
-- Update to the latest build from [Jenkins](http://ci.forgeessentials.com/job/FE-1.12.2) before reporting a bug.
+- Update to the latest build from [Discord](https://discord.gg/FNRQjmr) (#dev-builds channel) before reporting a bug.
 - Check, if the bug was not already reported by using the search.
 - Always attach your ForgeEssentials/modlist.txt file
 - Always attach logs to your reports if you encountered crashes.  
@@ -58,6 +58,7 @@ ForgeEssentials Team
 Active
 - [Zethalion](https://github.com/Zethalion) (QA / Support)
 - [Nexusatko](https://github.com/Nexusatko) (QA / Support)
+- [Maximuslotro](https://github.com/maximuslotro) (1.16 Dev)
 
 Inactive
 - [spacebuilder2020](https://github.com/spacebuilder2020) (Team Lead / Developer)
