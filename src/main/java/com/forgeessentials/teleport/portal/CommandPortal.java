@@ -1,225 +1,221 @@
 package com.forgeessentials.teleport.portal;
 
-// TODO REIMPLEMENT
-// import java.util.Map.Entry;
-//
-// import net.minecraft.command.CommandException;
-// import net.minecraft.command.CommandSource;
-// import net.minecraftforge.server.permission.DefaultPermissionLevel;
-//
-// import com.forgeessentials.commons.selections.Point;
-// import com.forgeessentials.commons.selections.Selection;
-// import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-// import com.forgeessentials.core.misc.TranslatedCommandException;
-// import com.forgeessentials.util.NamedWorldArea;
-// import com.forgeessentials.util.NamedWorldPoint;
-// import com.forgeessentials.util.selections.SelectionHandler;
-// import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-//
-// public class CommandPortal extends ForgeEssentialsCommandBuilder
-// {
-//
-// public CommandPortal(boolean enabled)
-// {
-// super(enabled);
-// }
-//
-// public static final String PERM = "fe.teleport.portal";
-//
-// @Override
-// public String getPrimaryAlias()
-// {
-// return "portal";
-// }
-//
-// @Override
-// public boolean canConsoleUseCommand()
-// {
-// return false;
-// }
-//
-// @Override
-// public String getPermissionNode()
-// {
-// return PERM;
-// }
-//
-// @Override
-// public DefaultPermissionLevel getPermissionLevel()
-// {
-// return DefaultPermissionLevel.OP;
-// }
-//
-// @Override
-// public LiteralArgumentBuilder<CommandSource> setExecution()
-// {
-// // TODO Auto-generated method stub
-// return null;
-// }
-//
-// @Override
-// public void parse(CommandParserArgs arguments) throws CommandException
-// {
-// if (arguments.isEmpty())
-// {
-//
-// return;
-// }
-//
-// arguments.tabComplete("create", "recreate", "target", "delete", "list");
-//
-// String subcommand = arguments.remove().toLowerCase();
-// switch (subcommand)
-// {
-// case "create":
-// parseCreate(arguments, false);
-// break;
-// case "recreate":
-// parseCreate(arguments, true);
-// break;
-// case "target":
-// parseTarget(arguments);
-// break;
-// case "delete":
-// parseDelete(arguments);
-// break;
-// case "list":
-// listPortals(arguments);
-// break;
-// default:
-// arguments.warn("Valid subcommands: delete, create, recreate, list, target");
-// throw new TranslatedCommandException("Unknown subcommand " + subcommand);
-// }
-// }
-//
-// private static void parseCreate(CommandParserArgs arguments, boolean recreate) throws CommandException
-// {
-// if (arguments.isEmpty())
-// {
-// arguments.confirm("/portal create <name> [frame|noframe] [x y z] [dim]");
-// return;
-// }
-//
-// String name = arguments.remove();
-// if (!recreate && PortalManager.getInstance().portals.containsKey(name))
-// throw new TranslatedCommandException("Portal by that name already exists. Use recreate!");
-//
-// arguments.tabComplete("noframe", "frame");
-//
-// boolean frame = true;
-// if (!arguments.isEmpty())
-// {
-// switch (arguments.peek().toLowerCase())
-// {
-// case "noframe":
-// frame = false;
-// arguments.remove();
-// break;
-// case "frame":
-// frame = true;
-// arguments.remove();
-// break;
-// }
-// }
-//
-// NamedWorldPoint target = new NamedWorldPoint(arguments.senderPlayer);
-// if (!arguments.isEmpty())
-// {
-// if (arguments.size() < 3)
-// throw new TranslatedCommandException("Expected arguments [x y z]");
-// int x = parseInt(arguments.remove());
-// int y = parseInt(arguments.remove());
-// int z = parseInt(arguments.remove());
-// int dim = arguments.senderPlayer.dimension;
-// if (!arguments.isEmpty())
-// dim = parseInt(arguments.remove());
-// target = new NamedWorldPoint(dim, x, y, z);
-// }
-//
-// if (arguments.isTabCompletion)
-// return;
-//
-// Selection selection = SelectionHandler.getSelection(arguments.senderPlayer);
-// if (selection == null || !selection.isValid())
-// throw new TranslatedCommandException("Missing selection");
-//
-// Point size = selection.getSize();
-// if (size.getX() > 0 && size.getY() > 0 && size.getZ() > 0)
-// throw new TranslatedCommandException("Portal selection must be flat in one axis");
-//
-// Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target, frame);
-// PortalManager.getInstance().add(name, portal);
-// arguments.confirm("Created new portal leading to %s", target.toString());
-// }
-//
-// private static void parseTarget(CommandParserArgs arguments) throws CommandException
-// {
-// if (arguments.isEmpty())
-// {
-// arguments.confirm("/portal target <name> [x y z] [dim]");
-// arguments.confirm(" Set portal's target to the current / specified location");
-// return;
-// }
-//
-// arguments.tabComplete(PortalManager.getInstance().portals.keySet());
-//
-// String name = arguments.remove();
-// if (!PortalManager.getInstance().portals.containsKey(name))
-// throw new TranslatedCommandException("Portal by that name does not exist.");
-//
-// NamedWorldPoint target = new NamedWorldPoint(arguments.senderPlayer);
-// if (!arguments.isEmpty())
-// {
-// if (arguments.size() < 3)
-// throw new TranslatedCommandException("Expected arguments [x y z]");
-// int x = parseInt(arguments.remove());
-// int y = parseInt(arguments.remove());
-// int z = parseInt(arguments.remove());
-// int dim = arguments.senderPlayer.dimension;
-// if (!arguments.isEmpty())
-// dim = parseInt(arguments.remove());
-// target = new NamedWorldPoint(dim, x, y, z);
-// }
-//
-// if (arguments.isTabCompletion)
-// return;
-//
-// PortalManager.getInstance().get(name).target = target;
-// arguments.confirm("Set target for portal %s to %s", name, target.toString());
-// }
-//
-// private static void parseDelete(CommandParserArgs arguments) throws CommandException
-// {
-// if (arguments.isEmpty())
-// {
-// arguments.confirm("/portal delete <name>");
-// return;
-// }
-//
-// arguments.tabComplete(PortalManager.getInstance().portals.keySet());
-// if (arguments.isTabCompletion)
-// return;
-//
-// String name = arguments.remove();
-// if (!PortalManager.getInstance().portals.containsKey(name))
-// throw new TranslatedCommandException("Portal by that name does not exist.");
-//
-// PortalManager.getInstance().remove(name);
-// arguments.confirm("Deleted portal " + name);
-// }
-//
-// /**
-// * Print lists of portals, their locations and dimensions
-// */
-// private static void listPortals(CommandParserArgs arguments)
-// {
-// if (arguments.isTabCompletion)
-// return;
-// arguments.confirm("Registered portals:");
-// for (Entry<String, Portal> entry : PortalManager.getInstance().portals.entrySet())
-// {
-// arguments.confirm("- " + entry.getKey() + ": " + entry.getValue().getPortalArea().toString());
-// }
-// }
-//
-// }
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.NamedWorldArea;
+import com.forgeessentials.util.NamedWorldPoint;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+
+public class CommandPortal extends ForgeEssentialsCommandBuilder {
+
+	public CommandPortal(boolean enabled) {
+		super(enabled);
+	}
+
+	@Override
+	public String getPrimaryAlias() {
+		return "portal";
+	}
+
+	@Override
+	public boolean canConsoleUseCommand() {
+		return false;
+	}
+
+	@Override
+	public DefaultPermissionLevel getPermissionLevel() {
+		return DefaultPermissionLevel.OP;
+	}
+
+	@Override
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return baseBuilder
+				.then(Commands.literal("create")
+						.then(Commands.argument("portalName", StringArgumentType.word())
+								.then(Commands.argument("generateFrame", BoolArgumentType.bool())
+										.then(Commands.argument("targetPos", BlockPosArgument.blockPos())
+												.then(Commands.argument("targetDim", DimensionArgument.dimension())
+														.executes(CommandContext -> execute(CommandContext, "create")
+																)
+														)
+												)
+										)
+								)
+						)
+				.then(Commands.literal("recreate")
+						.then(Commands.argument("portalName", StringArgumentType.word())
+								.then(Commands.argument("generateFrame", BoolArgumentType.bool())
+										.then(Commands.argument("targetPos", BlockPosArgument.blockPos())
+												.then(Commands.argument("targetDim", DimensionArgument.dimension())
+														.executes(CommandContext -> execute(CommandContext, "recreate")
+																)
+														)
+												)
+										)
+								)
+						)
+				.then(Commands.literal("target")
+						.then(Commands.argument("portalName", StringArgumentType.word())
+								.suggests(SUGGEST_PORTALS)
+								.then(Commands.argument("targetPos", BlockPosArgument.blockPos())
+										.then(Commands.argument("targetDim", DimensionArgument.dimension())
+												.executes(CommandContext -> execute(CommandContext, "target")
+														)
+												)
+										)
+								)
+						)
+				.then(Commands.literal("delete")
+						.then(Commands.argument("portalName", StringArgumentType.word())
+								.suggests(SUGGEST_PORTALS)
+								.executes(CommandContext -> execute(CommandContext, "delete")
+										)
+								)
+						)
+				.then(Commands.literal("list")
+						.executes(CommandContext -> execute(CommandContext, "list")
+								)
+						);
+	}
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_PORTALS = (ctx, builder) -> ISuggestionProvider.suggest(new ArrayList<>(PortalManager.getInstance().portals.keySet()), builder);
+
+    @Override
+	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandException {
+
+		switch (params) {
+			case "create" :
+				parseCreate(ctx, false);
+				break;
+			case "recreate" :
+				parseCreate(ctx, true);
+				break;
+			case "target" :
+				parseTarget(ctx);
+				break;
+			case "delete" :
+				parseDelete(ctx);
+				break;
+			case "list" :
+				listPortals(ctx);
+				break;
+			default :
+		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static void parseCreate(CommandContext<CommandSource> ctx, boolean recreate) {
+
+		String name = StringArgumentType.getString(ctx, "portalName");
+		if (!recreate && PortalManager.getInstance().portals.containsKey(name)) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Portal by that name already exists. Use recreate!");
+			return;
+		}
+
+		boolean frame = BoolArgumentType.getBool(ctx, "generateFrame");
+
+		int x;
+		int y;
+		int z;
+		String dim;
+		try {
+			x = BlockPosArgument.getLoadedBlockPos(ctx, "targetPos").getX();
+			y = BlockPosArgument.getLoadedBlockPos(ctx, "targetPos").getY();
+			z = BlockPosArgument.getLoadedBlockPos(ctx, "targetPos").getZ();
+			dim = DimensionArgument.getDimension(ctx, "targetDim").dimension().location().toString();
+		} catch (CommandSyntaxException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Invalid Position");
+			return;
+		}
+
+		NamedWorldPoint target = new NamedWorldPoint(dim, x, y, z);
+
+		Selection selection = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
+		if (selection == null || !selection.isValid()) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Missing selection");
+			return;
+		}
+
+		Point size = selection.getSize();
+		if (size.getX() > 0 && size.getY() > 0 && size.getZ() > 0) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Portal selection must be flat in one axis");
+			return;
+		}
+
+		Portal portal = new Portal(new NamedWorldArea(selection.getDimension(), selection), target, frame);
+		PortalManager.getInstance().add(name, portal);
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Created new portal leading to %s", target.toString());
+	}
+
+	private static void parseTarget(CommandContext<CommandSource> ctx) {
+
+		String name = StringArgumentType.getString(ctx, "portalName");
+		if (!PortalManager.getInstance().portals.containsKey(name)) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Portal by that name does not exist.");
+			return;
+		}
+
+		int x;
+		int y;
+		int z;
+		String dim;
+		try {
+			x = BlockPosArgument.getLoadedBlockPos(ctx, "targetPos").getX();
+			y = BlockPosArgument.getLoadedBlockPos(ctx, "targetPos").getY();
+			z = BlockPosArgument.getLoadedBlockPos(ctx, "targetPos").getZ();
+			dim = DimensionArgument.getDimension(ctx, "targetDim").dimension().location().toString();
+		} catch (CommandSyntaxException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Invalid Position");
+			return;
+		}
+		NamedWorldPoint target = new NamedWorldPoint(dim, x, y, z);
+
+		PortalManager.getInstance().get(name).target = target;
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set target for portal %s to %s", name, target.toString());
+	}
+
+	private static void parseDelete(CommandContext<CommandSource> ctx) {
+
+		String name = StringArgumentType.getString(ctx, "portalName");
+		if (!PortalManager.getInstance().portals.containsKey(name)) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Portal by that name does not exist.");
+			return;
+		}
+
+		PortalManager.getInstance().remove(name);
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted portal " + name);
+	}
+
+	/**
+	 * Print lists of portals, their locations and dimensions
+	 */
+	private static void listPortals(CommandContext<CommandSource> ctx) {
+		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Registered portals:");
+		for (Entry<String, Portal> entry : PortalManager.getInstance().portals
+				.entrySet()) {
+			ChatOutputHandler.chatConfirmation(ctx.getSource(), "- " + entry.getKey() + ": "
+					+ entry.getValue().getPortalArea().toString());
+		}
+	}
+
+}

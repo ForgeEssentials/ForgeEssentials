@@ -18,6 +18,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,11 +52,13 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.argument("serverId", StringArgumentType.word())
-                        .suggests(SUGGEST_servers)
-                        .executes(CommandContext -> execute(CommandContext, "connectToServer")
+        		.then(Commands.argument("player", EntityArgument.player())
+        				.then(Commands.argument("serverId", StringArgumentType.word())
+                                .suggests(SUGGEST_servers)
+                                .executes(CommandContext -> execute(CommandContext, "connectToServer")
+                                        )
                                 )
-                        );
+        				);
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_servers = (ctx, builder) -> {
@@ -79,7 +82,7 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-    	ModuleNetworking.getInstance().getTranferManager().sendPlayerToServer(getServerPlayer(ctx.getSource()), StringArgumentType.getString(ctx, "serverId"));
+    	ModuleNetworking.getInstance().getTranferManager().sendPlayerToServer(EntityArgument.getPlayer(ctx, "player"), StringArgumentType.getString(ctx, "serverId"));
     	return Command.SINGLE_SUCCESS;
     }
 

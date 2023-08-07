@@ -18,6 +18,7 @@ import com.forgeessentials.teleport.commands.CommandTop;
 import com.forgeessentials.teleport.commands.CommandTp;
 import com.forgeessentials.teleport.commands.CommandTppos;
 import com.forgeessentials.teleport.commands.CommandWarp;
+import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -97,7 +98,7 @@ public class TeleportModule extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandTPA(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandPersonalWarp(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandTop(true), event.getDispatcher());
-        // FECommandManager.registerCommand(new CommandPortal());
+        FECommandManager.registerCommand(new CommandPortal(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandSetSpawn(true), event.getDispatcher());
 
         CommandJump jump = new CommandJump(true);
