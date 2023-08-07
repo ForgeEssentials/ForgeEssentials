@@ -1,6 +1,5 @@
 package com.forgeessentials.util.selections;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.compat.worldedit.WEIntegration;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
@@ -84,13 +83,6 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            // Check for permissions
-            if (!hasPermission(ctx.getSource(), "fe.core.pos.wand"))
-            {
-                ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
-                return Command.SINGLE_SUCCESS;
-            }
-
             // Bind wand
             info.setWandEnabled(true);
             info.setWandID(wandId);

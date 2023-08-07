@@ -1,7 +1,6 @@
 package com.forgeessentials.chat.command;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
@@ -89,12 +88,6 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
             String name = StringArgumentType.getString(ctx, "name");
             ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname set to " + name);
-            return Command.SINGLE_SUCCESS;
-        }
-
-        if (!hasPermission(((PlayerEntity) ctx.getSource().getEntity()).createCommandSourceStack(), ModuleChat.PERM + ".nickname.others"))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return Command.SINGLE_SUCCESS;
         }
 

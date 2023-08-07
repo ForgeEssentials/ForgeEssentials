@@ -199,11 +199,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_LIST))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
         String[] arg = params.split("-");
         final int PAGE_SIZE = 12;
         int limit = 1;
@@ -266,11 +261,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     public void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params)
             throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_DEFINE))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
@@ -296,15 +286,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         if (selection == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No selection available. Please select a region first.");
-            return;
-        }
-
-        // arguments.context = new AreaContext(getServerPlayer(ctx.getSource()),
-        // selection.toAxisAlignedBB()); what this do? it isn't being called from
-        // commandparcerargs
-        if (!hasPermission(ctx.getSource(), PERM_DEFINE))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return;
         }
 
@@ -334,12 +315,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_DELETE))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
-
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
         WorldZone worldZone = APIRegistry.perms.getServerZone()
@@ -356,11 +331,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_INFO))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
@@ -380,11 +350,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_INFO))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
         WorldZone worldZone = APIRegistry.perms.getServerZone()
@@ -405,11 +370,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     public void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params)
             throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_SETTINGS))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
         String[] arg = params.toString().split("-");
         String areaName = StringArgumentType.getString(ctx, "Zone");
 

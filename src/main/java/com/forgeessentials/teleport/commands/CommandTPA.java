@@ -136,11 +136,6 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         final String locationName;
         if (params.equals("here"))
         {
-            if (!hasPermission(ctx.getSource(), PERM_HERE))
-            {
-                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-                return Command.SINGLE_SUCCESS;
-            }
             point = new WarpPoint(getServerPlayer(ctx.getSource()));
             locationName = getServerPlayer(ctx.getSource()).getDisplayName().getString();
         }

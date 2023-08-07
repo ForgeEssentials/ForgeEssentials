@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.player;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet05Noclip;
@@ -103,7 +104,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
     public static void checkClip(PlayerEntity player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
-        if (pi.isNoClip() && hasPermissionNOC(player.createCommandSourceStack(), ModuleCommands.PERM + ".noclip"))
+        if (pi.isNoClip() && APIRegistry.perms.checkPermission(player, ModuleCommands.PERM + ".noclip"))
         {
             if (!player.abilities.flying)
             {

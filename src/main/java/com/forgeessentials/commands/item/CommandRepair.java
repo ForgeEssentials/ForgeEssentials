@@ -101,8 +101,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Repared item to the selected amount.");
             }
         }
-        else if (args[1].equals("others")
-                && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".repair.others"))
+        else if (args[1].equals("others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (args[0].equals("max"))

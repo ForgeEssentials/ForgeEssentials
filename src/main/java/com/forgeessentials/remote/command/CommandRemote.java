@@ -84,11 +84,6 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         case "regen":
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
-            {
-                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-                return Command.SINGLE_SUCCESS;
-            }
             ModuleRemote.getInstance().setPasskey(getIdent(player), ModuleRemote.getInstance().generatePasskey());
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Generated new passkey");
             showPasskey(ctx.getSource(), getIdent(player), false);
