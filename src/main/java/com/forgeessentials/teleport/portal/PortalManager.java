@@ -95,10 +95,11 @@ public class PortalManager extends ServerEventHandler
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
+        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
         Portal portal = getPortalAt(point);
-        if (portal != null && portal.hasFrame())
+        if (portal != null && portal.hasFrame()) {
             event.setCanceled(true);
+        }
     }
 
     public Portal getPortalAt(WorldPoint point)
