@@ -1,7 +1,6 @@
 package com.forgeessentials.commands.player;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
@@ -75,47 +74,31 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("others"))
         {
-            if (hasPermission(ctx.getSource(), ModuleCommands.PERM + ".burn.others"))
+        	ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!player.hasDisconnected())
             {
-                ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-                if (!player.hasDisconnected())
-                {
-                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
-                    player.setSecondsOnFire(15);
-                }
-                else
-                {
-                    ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
-                            "Player %s does not exist, or is not online.", player.getDisplayName().getString()));
-                    return Command.SINGLE_SUCCESS;
-                }
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
+                player.setSecondsOnFire(15);
             }
             else
             {
-                ChatOutputHandler.chatWarning(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
+                        "Player %s does not exist, or is not online.", player.getDisplayName().getString()));
                 return Command.SINGLE_SUCCESS;
             }
         }
         if (params.equals("othersT"))
         {
-            if (hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".burn.others"))
+        	ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!player.hasDisconnected())
             {
-                ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-                if (!player.hasDisconnected())
-                {
-                    player.setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));
-                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
-                }
-                else
-                {
-                    ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
-                            "Player %s does not exist, or is not online.", player.getDisplayName().getString()));
-                    return Command.SINGLE_SUCCESS;
-                }
+                player.setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
             }
             else
             {
-                ChatOutputHandler.chatWarning(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format(
+                        "Player %s does not exist, or is not online.", player.getDisplayName().getString()));
                 return Command.SINGLE_SUCCESS;
             }
         }

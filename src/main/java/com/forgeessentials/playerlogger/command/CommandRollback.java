@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
@@ -138,11 +137,6 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void startRollback(CommandContext<CommandSource> ctx, boolean useCurrentTime) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
 
         if (rollbacks.containsKey(getServerPlayer(ctx.getSource()).getGameProfile().getId()))
             cancelRollback(ctx);
@@ -186,12 +180,6 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void stepRollback(CommandContext<CommandSource> ctx, int sec) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
-
         try
         {
             sec = (int) (parseTimeReadable(StringArgumentType.getString(ctx, "time")) / 1000) * sec;
@@ -217,12 +205,6 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void confirmRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
-
         RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         if (rb == null)
         {
@@ -249,11 +231,6 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void playRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
 
         int speed = 1;
         speed = IntegerArgumentType.getInteger(ctx, "speed");
@@ -291,12 +268,6 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void stopRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if (!hasPermission(ctx.getSource(), PERM_PREVIEW))
-        {
-            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-            return;
-        }
-
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
 

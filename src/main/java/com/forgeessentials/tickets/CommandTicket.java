@@ -21,7 +21,6 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -82,20 +81,12 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
         String c = TextFormatting.DARK_AQUA.toString();
         if (params.equals("blank"))
         {
-            String usage = "list|new|view";
-            if (permcheck(ctx.getSource(), "tp"))
-            {
-                usage += "|tp <id>";
-            }
-            if (permcheck(ctx.getSource(), "admin"))
-            {
-                usage += "|del <id>";
-            }
+            String usage = "list|new|view|tp <id>|del <id>";
             ChatOutputHandler.chatError(ctx.getSource(), "Usage: /ticket <" + usage + ">");
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.equals("view") && permcheck(ctx.getSource(), "view"))
+        if (params.equals("view"))
         {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket t = ModuleTickets.getID(id);
@@ -109,7 +100,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if ((params.equals("list") || params.equals("list-one")) && permcheck(ctx.getSource(), "view"))
+        if ((params.equals("list") || params.equals("list-one")))
         {
             int page = 1;
             int pages = (int) Math.ceil((double) ModuleTickets.ticketList.size() / 7);
@@ -142,7 +133,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.equals("new") && permcheck(ctx.getSource(), "new"))
+        if (params.equals("new"))
         {
             String catagory = StringArgumentType.getString(ctx, "category");
             if (!ModuleTickets.categories.contains(catagory))
@@ -170,7 +161,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.equals("tp") && permcheck(ctx.getSource(), "tp"))
+        if (params.equals("tp"))
         {
 
             int id = IntegerArgumentType.getInteger(ctx, "id");
@@ -184,7 +175,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.equals("del") || params.equals("close") && permcheck(ctx.getSource(), "admin"))
+        if (params.equals("del"))
         {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket toRemove = ModuleTickets.getID(id);
@@ -216,18 +207,6 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             list.add("" + t.id);
         }
         return list;
-    }
-
-    public boolean permcheck(CommandSource sender, String perm)
-    {
-        if (sender.getEntity() instanceof PlayerEntity)
-        {
-            return hasPermission(sender, ModuleTickets.PERMBASE + "." + perm);
-        }
-        else
-        {
-            return true;
-        }
     }
 
     @Override

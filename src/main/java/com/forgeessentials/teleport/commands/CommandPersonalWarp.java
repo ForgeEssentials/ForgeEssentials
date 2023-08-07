@@ -7,7 +7,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -127,12 +126,6 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
         if (params.equals("set"))
         {
-            if (!hasPermission(ctx.getSource(), PERM_SET))
-            {
-                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-                return Command.SINGLE_SUCCESS;
-            }
-
             // Check limit
             int limit = ServerUtil.parseIntDefault(
                     APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT),
@@ -151,11 +144,6 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("delete"))
         {
-            if (!hasPermission(ctx.getSource(), PERM_DELETE))
-            {
-                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
-                return Command.SINGLE_SUCCESS;
-            }
             warps.remove(warpName);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted personal warp \"%s\"", warpName);
             DataManager.getInstance().save(warps, getServerPlayer(ctx.getSource()).getStringUUID());
