@@ -67,11 +67,11 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(CommandContext -> execute(CommandContext, "delO"))))
                 .then(Commands.literal("setSelf")
-                        .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext, "setS"))))
                 .then(Commands.literal("setPlayer")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("name", StringArgumentType.word())
+                                .then(Commands.argument("name", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext, "setO")))));
     }
 
