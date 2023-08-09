@@ -20,6 +20,9 @@ buildscript {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/snapshots/"
 		}
+		maven {
+      		url = uri("https://plugins.gradle.org/m2/")
+    	}
 		jcenter()
 
 	}
@@ -27,6 +30,7 @@ buildscript {
 		classpath "net.minecraftforge.gradle:ForgeGradle:1.2.13"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
+		classpath("com.modrinth.minotaur:Minotaur:2.8.3")
 	}
 
 }
@@ -189,9 +193,11 @@ dependencies {
 	serverLib('net.dv8tion:JDA:5.0.0-beta.8')
 	// Database libraries	
 	shadowLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
-	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '8.0.21'
+	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	shadowLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
-	buildDep  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
+	implementation 'javax.persistence:javax.persistence-api:2.2'
+	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.14.Final'
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
@@ -232,9 +238,11 @@ sourceSets {
 	}
 	main {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		ext.refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 
 	test {
@@ -454,15 +462,15 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
  */
 
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
+//def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
 afterEvaluate {
 	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
+	//tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
 }
 
 reobf {
 	addExtraSrgFile mixinSrg
-	addExtraSrgFile mixinClientSrg
+	//addExtraSrgFile mixinClientSrg
 	reobf (clientJar) { reobfSpec ->
 		reobfSpec.classpath = sourceSets.main.compileClasspath
 	}
@@ -477,7 +485,7 @@ task Annotations(type: Jar) {
 	classifier = "annotations"
 	appendix = project.minecraft.version
 	
-    from(sourceSets.utils.output) {
+    from(sourceSets.main.output) {
         include "com/forgeessentials/playerlogger/entity/**"
         exclude "com/forgeessentials/playerlogger/entity/Action.class"
         exclude "com/forgeessentials/playerlogger/entity/Action01Block\$ActionBlockType.class"
@@ -513,10 +521,6 @@ artifacts {
 	archives deobfJar
 	archives clientJar
 	archives Annotations
-}
-
-task wrapper(type: Wrapper) {
-	gradleVersion = "2.10"
 }
 
 /************************************************************
