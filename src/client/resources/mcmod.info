@@ -4,7 +4,7 @@
   "description": "Client addon for ForgeEssentials (optional)",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
+  "url": "https://github.com/ForgeEssentials/ForgeEssentials",
   "updateUrl": "",
   "authorList": [
 	"AbrarSyed",
