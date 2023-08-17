@@ -59,3 +59,7 @@ jobs:
           cp ./build/libs/*.jar ./tmp
           chmod +x gradlew
           ./gradlew curseforge modrinth
+      - uses: softprops/action-gh-release@v0.1.15
+        if: ${{ github.event.release }}
+        with:
+          files: ./build/libs/*
