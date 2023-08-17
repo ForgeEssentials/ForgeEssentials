@@ -23,7 +23,7 @@ jobs:
   build:
     needs: check
     runs-on: ubuntu-latest
-    if: needs.check.outputs.canContinue
+    if: needs.check.outputs.canContinue == 'true'
     steps:
       - uses: actions/checkout@v2
       - name: Get Build Number from Release
