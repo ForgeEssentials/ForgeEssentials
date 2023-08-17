@@ -62,4 +62,6 @@ jobs:
       - uses: softprops/action-gh-release@v0.1.15
         if: ${{ github.event.release }}
         with:
-          files: ./build/libs/*
+          files: |
+            ./build/libs/*
+            jscripting/*.d.ts
