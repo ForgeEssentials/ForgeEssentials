@@ -15,7 +15,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
-    steps:      
+    steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
     outputs:
@@ -59,3 +59,9 @@ jobs:
           cp ./build/libs/*.jar ./tmp
           chmod +x gradlew
           ./gradlew curseforge modrinth
+      - uses: softprops/action-gh-release@v0.1.15
+        if: ${{ github.event.release }}
+        with:
+          files: |
+            ./build/libs/*
+            jscripting/*.d.ts
