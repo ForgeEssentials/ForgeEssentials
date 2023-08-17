@@ -186,8 +186,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true);
         }catch(NullPointerException e) {
             ChatOutputHandler.chatError(sender, "FE error loading all scripts");
-            ChatOutputHandler.chatError(sender, e.getMessage());
+            ChatOutputHandler.chatError(sender, "NullPointerException: " + e.getMessage());
             LoggingHandler.felog.error(String.format("FE error loading all scripts: %s", e.getMessage()));
+            if (e.getMessage() == null) {
+                e.printStackTrace();
+            }
             return;
         }
         while (it.hasNext()) {
@@ -212,6 +215,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                 ChatOutputHandler.chatError(sender, String.format("FE Script error in %s:", scriptName));
                 ChatOutputHandler.chatError(sender, e.getMessage());
                 LoggingHandler.felog.error(String.format("FE Script error in %s: %s", scriptName, e.getMessage()));
+                if (e.getMessage() == null) {
+                    e.printStackTrace();
+                }
             }
         }
     }
