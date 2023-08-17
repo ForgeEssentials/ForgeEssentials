@@ -13,8 +13,17 @@ on:
 env:
   BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
+    steps:      
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
+    outputs:
+      canContinue: ${{ github.event_name == 'push' && steps.PR.outputs.pr_found == 'true' }}
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    if: ${{ needs.check.outputs.canContinue }}
     steps:
       - uses: actions/checkout@v2
       - name: Get Build Number from Release
