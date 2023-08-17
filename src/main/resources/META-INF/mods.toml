@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/ForgeEssentials/ForgeEssentials/issues"
     displayURL="${mod_download}"
     logoFile="logo.png"
     credits="Thanks to everyone who has helped us so far."
-    authors="AbrarSyed, luacs1998, olee, dries007, Malkierian, Spacebuilder2020, maximuslotro, And a few others"
+    authors="AbrarSyed, luacs1998, olee, dries007, Malkierian, Spacebuilder2020, maximuslotro/MaximustheMiner, And a few others"
     description='''A suite of server mods for Minecraft Forge'''
 
 [[dependencies.forgeessentials]]

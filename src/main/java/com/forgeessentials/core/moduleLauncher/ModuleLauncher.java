@@ -2,7 +2,6 @@ package com.forgeessentials.core.moduleLauncher;
 
 import static net.minecraftforge.registries.ForgeRegistry.REGISTRIES;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
@@ -97,62 +95,11 @@ public class ModuleLauncher
             }
         }
 
-        CallableMap map = new CallableMap();
-
         LoggingHandler.felog.debug("Gathering @FEModule classes");
         // Gather all @FEModule classes
         data.stream().filter(a -> Type.getType(ForgeEssentialsRegistrar.class).equals(a.getAnnotationType()))
                 .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
         LoggingHandler.felog.info(REGISTRIES, "Found {} ForgeEssentialsRegistrar annotations", data.size());
-
-        Class<?> c;
-        Object obj = null;
-        for (ModFileScanData.AnnotationData asm : data)
-        {
-            try
-            {
-                obj = null;
-                c = Class.forName((String) asm.getAnnotationData().getClass().getName());
-
-                try
-                {
-                    obj = c.getDeclaredConstructor().newInstance();
-                    map.scanObject(obj);
-                    // this works?? skip everything else and go on to the next one.
-                    continue;
-                }
-                catch (Exception e1)
-                {
-                    // do nothing.
-                }
-
-                // if this isn't skipped.. it grabs the class, and all static methods.
-                map.scanClass(c);
-
-            }
-            catch (ClassNotFoundException e1)
-            {
-                // nothing needed.
-            }
-        }
-
-        List<ModContainer> modList = new ArrayList<>();
-        for (String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList()))
-        {
-            ModContainer temp2 = ModList.get().getModContainerById(id).orElse(null);
-            if (temp2 != null)
-            {
-                modList.add(temp2);
-            }
-        }
-
-        for (ModContainer container : modList)
-            if (container.getMod() != null)
-                map.scanObject(container);
-
-        // Check modules for callables
-        for (ModuleContainer module : containerMap.values())
-            map.scanObject(module);
 
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())

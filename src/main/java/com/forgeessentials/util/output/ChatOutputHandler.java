@@ -349,6 +349,10 @@ public final class ChatOutputHandler
      */
     public static String formatColors(String message)
     {
+        if (message == null) {
+            return "";
+        }
+        
         // TODO: Improve this to replace codes less aggressively
         char[] b = message.toCharArray();
         for (int i = 0; i < b.length - 1; i++)
