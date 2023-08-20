@@ -125,12 +125,13 @@ curseforge {
 }
 
 project.afterEvaluate {
-    def task = tasks.findByPath("curseforge$projectID")
+    def task = tasks.findByPath("modrinth")
+    task?.dependsOn = []
+    task = tasks.findByPath("curseforge$projectID")
     task?.dependsOn = []
     task = tasks.findByPath("curseforge$clientProjectID")
     task?.dependsOn = []
 }
-
 // Set up forge options
 minecraft {
 	version = "$project.minecraftVersion-$project.forgeVersion-$project.minecraftVersion"
@@ -138,6 +139,18 @@ minecraft {
 }
 
 apply plugin: "com.modrinth.minotaur"
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "forge-essentials"
+    versionNumber = "$mod_base.$mod_major.$buildNumber"
+    versionType = project.releaseType
+    versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+    uploadFile = project.srcFile
+    gameVersions = [minecraftVersion]
+    loaders = ["forge"]
+    changelog = project.changelog
+}
 
 // Configure shared manifest
 ext.sharedManifest = manifest {

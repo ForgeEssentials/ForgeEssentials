@@ -50,4 +50,4 @@ jobs:
           mkdir ./tmp
           cp ./build/libs/*-server.jar ./tmp
           chmod +x gradlew
-          ./gradlew curseforge
+          ./gradlew curseforge modrinth
