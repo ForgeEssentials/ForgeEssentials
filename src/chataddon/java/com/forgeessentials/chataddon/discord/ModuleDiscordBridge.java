@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.discord;
+package com.forgeessentials.chataddon.discord;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chataddon.FEChatAddons;
 import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
@@ -38,12 +43,18 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class DiscordHandler
+@FEModule(name = "DiscordBridge", parentMod = FEChatAddons.class, defaultModule = false)
+public class ModuleDiscordBridge implements ConfigSaver
 {
+    private static ForgeConfigSpec DISCORD_CONFIG;
+	private static final ConfigData data = new ConfigData("Discord", DISCORD_CONFIG, new ForgeConfigSpec.Builder());
     private static final String CATEGORY = "DISCORD";
     private static final String CHANNELS_HELP = "List of channels to connect to, not including the # character";
 
     private static final String ADMINS_HELP = "List of privileged users that can use more commands via the Discord bot";
+
+    @FEModule.Instance
+    public static ModuleDiscordBridge instance;
 
     public Set<String> channels = new HashSet<>();
     private Long serverID;
@@ -69,13 +80,14 @@ public class DiscordHandler
 
     JDA jda = null;
 
-    public DiscordHandler()
+    public ModuleDiscordBridge()
     {
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
     }
 
+    @Override
     public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Configure the built-in Discord bot here -- Incubating, subject to change!").push(CATEGORY);
@@ -103,6 +115,7 @@ public class DiscordHandler
         BUILDER.pop();
     }
 
+    @Override
     public void bakeConfig(boolean reload)
     {
         selectedChannel = FEselectedChannelConfig.get();
@@ -146,6 +159,7 @@ public class DiscordHandler
         }
     }
 
+    @Override
     public void save(boolean reload)
     {
 
@@ -260,6 +274,7 @@ public class DiscordHandler
         {
             sendMessage(Translator.translate("Server Started!"));
         }
+        ModuleChat.instance.discordMessageHandler = new ActualDiscordMessageHandler();
     }
 
     public void serverStopping(FEModuleServerStoppingEvent e)
@@ -278,4 +293,9 @@ public class DiscordHandler
             sendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
         }
     }
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

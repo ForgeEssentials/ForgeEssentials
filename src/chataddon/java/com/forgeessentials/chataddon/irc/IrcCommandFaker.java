@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.irc;
+package com.forgeessentials.chataddon.irc;
 
 import java.util.UUID;
 

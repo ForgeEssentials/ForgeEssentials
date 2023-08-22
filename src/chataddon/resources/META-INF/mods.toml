@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="GNU General Public License v3.0"
+
+[[mods]]
+    modId="fechataddons"
+    version="${version}"
+    displayName="${mod_name}"
+    logoFile="logo.png"
+    credits="Thanks to everyone who has helped us so far."
+    authors="AbrarSyed, luacs1998, olee, dries007, Malkierian, Spacebuilder2020, maximuslotro/MaximustheMiner, And a few others"
+    description='''An Offical AddonMod for ForgeEssentials'''
+
+[[dependencies.fechataddons]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="SERVER"
+[[dependencies.fechataddons]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="SERVER"

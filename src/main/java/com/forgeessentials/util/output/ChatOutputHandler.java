@@ -155,7 +155,7 @@ public final class ChatOutputHandler
 
         if (sendToDiscord && ModuleChat.instance != null)
         {
-            ModuleChat.instance.discordHandler.sendMessage(message.getString());
+            ModuleChat.instance.discordMessageHandler.sendMessage(message.getString());
         }
     }
 
@@ -188,7 +188,7 @@ public final class ChatOutputHandler
 
         if (sendToDiscord && ModuleChat.instance != null)
         {
-            ModuleChat.instance.discordHandler.sendMessage(message.getString());
+        	ModuleChat.instance.discordMessageHandler.sendMessage(message.getString());
         }
     }
 

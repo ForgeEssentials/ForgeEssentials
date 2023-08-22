@@ -19,17 +19,13 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.chat.command.CommandGroupMessage;
-import com.forgeessentials.chat.command.CommandIrc;
-import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
 import com.forgeessentials.chat.command.CommandPm;
 import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
 import com.forgeessentials.chat.command.CommandUnmute;
-import com.forgeessentials.chat.discord.CommandDiscord;
-import com.forgeessentials.chat.discord.DiscordHandler;
-import com.forgeessentials.chat.irc.IrcHandler;
+import com.forgeessentials.chat.handlers.GenericDiscordMessageHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
@@ -42,7 +38,6 @@ import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
@@ -108,13 +103,11 @@ public class ModuleChat implements ConfigSaver
 
     public static Censor censor = new Censor();
 
+    public GenericDiscordMessageHandler discordMessageHandler = new GenericDiscordMessageHandler();
+
     public Mailer mailer = new Mailer();
 
     public static TimedMessages timedMessages = new TimedMessages();
-
-    public IrcHandler ircHandler = new IrcHandler();
-
-    public DiscordHandler discordHandler = new DiscordHandler();
 
     /* ------------------------------------------------------------ */
 
@@ -190,27 +183,19 @@ public class ModuleChat implements ConfigSaver
         FECommandManager.registerCommand(new CommandTimedMessages(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandUnmute(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandGroupMessage(true), event.getDispatcher());
-
-        FECommandManager.registerCommand(new CommandIrc(true), event.getDispatcher());
-        FECommandManager.registerCommand(new CommandIrcBot(true), event.getDispatcher());
-
-        FECommandManager.registerCommand(new CommandDiscord(true), event.getDispatcher());
     }
 
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerStartedEvent e)
-    {
-        discordHandler.serverStarted(e);
-        // ServerUtil.replaceCommand(MessageCommand.class, new
-        // CommandMessageReplacement());
-    }
+//    @SubscribeEvent
+//    public void serverStarted(FEModuleServerStartedEvent e)
+//    {
+//        ServerUtil.replaceCommand(MessageCommand.class, new
+//    	CommandMessageReplacement());
+//    }
 
     @SubscribeEvent
     public void serverStopping(FEModuleServerStoppingEvent e)
     {
         closeLog();
-        ircHandler.disconnect();
-        discordHandler.serverStopping(e);
     }
 
     /* ------------------------------------------------------------ */
@@ -611,8 +596,6 @@ public class ModuleChat implements ConfigSaver
         ChatConfig.load(BUILDER, isReload);
         censor.load(BUILDER, isReload);
         timedMessages.load(BUILDER, isReload);
-        ircHandler.load(BUILDER, isReload);
-        discordHandler.load(BUILDER, isReload);
     }
 
     @Override
@@ -620,8 +603,6 @@ public class ModuleChat implements ConfigSaver
     {
         censor.bakeConfig(reload);
         timedMessages.bakeConfig(reload);
-        ircHandler.bakeConfig(reload);
-        discordHandler.bakeConfig(reload);
         ChatConfig.bakeConfig(reload);
     }
 
@@ -635,6 +616,5 @@ public class ModuleChat implements ConfigSaver
     public void save(boolean reload)
     {
         timedMessages.save(reload);
-        discordHandler.save(reload);
     }
 }

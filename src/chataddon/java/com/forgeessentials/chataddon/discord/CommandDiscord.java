@@ -1,9 +1,8 @@
-package com.forgeessentials.chat.discord;
+package com.forgeessentials.chataddon.discord;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -43,7 +42,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_CHANNELS = (ctx, builder) -> {
-        List<String> listArgs = new ArrayList<>(ModuleChat.instance.discordHandler.channels);
+        List<String> listArgs = new ArrayList<>(ModuleDiscordBridge.instance.channels);
         return ISuggestionProvider.suggest(listArgs, builder);
     };
 
@@ -65,9 +64,9 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
         if ("channel".equals(params))
         {
             String channel = StringArgumentType.getString(ctx, "channel");
-            if (ModuleChat.instance.discordHandler.channels.contains(channel))
+            if (ModuleDiscordBridge.instance.channels.contains(channel))
             {
-                ModuleChat.instance.discordHandler.selectedChannel = channel;
+            	ModuleDiscordBridge.instance.selectedChannel = channel;
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Channel #%s selected!"));
             }
             else

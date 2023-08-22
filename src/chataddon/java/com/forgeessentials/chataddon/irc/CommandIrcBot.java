@@ -1,6 +1,5 @@
-package com.forgeessentials.chat.command;
+package com.forgeessentials.chataddon.irc;
 
-import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -54,18 +53,18 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
     {
         if (params.equals("reconnect"))
         {
-            IrcHandler.getInstance().connect();
+            ModuleIRCBridge.getInstance().connect();
             return Command.SINGLE_SUCCESS;
         }
         if (params.equals("disconnect"))
         {
-            IrcHandler.getInstance().disconnect();
+            ModuleIRCBridge.getInstance().disconnect();
             return Command.SINGLE_SUCCESS;
         }
         if (params.equals("info"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(),
-                    Translator.format("IRC bot is "+ (IrcHandler.getInstance().isConnected() ? "online" : "offline")));
+                    Translator.format("IRC bot is "+ (ModuleIRCBridge.getInstance().isConnected() ? "online" : "offline")));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

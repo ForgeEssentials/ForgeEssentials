@@ -1,6 +1,5 @@
-package com.forgeessentials.chat.command;
+package com.forgeessentials.chataddon.irc;
 
-import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -51,12 +50,12 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (!IrcHandler.getInstance().isConnected())
+        if (!ModuleIRCBridge.getInstance().isConnected())
         {
             ChatOutputHandler.chatError(ctx.getSource(), "Not connected to IRC!");
             return Command.SINGLE_SUCCESS;
         }
-        IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(),
+        ModuleIRCBridge.getInstance().sendPlayerMessage(ctx.getSource(),
                 new StringTextComponent(StringArgumentType.getString(ctx, "message")));
         return Command.SINGLE_SUCCESS;
     }

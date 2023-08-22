@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.irc;
+package com.forgeessentials.chataddon.irc;
 
 import java.util.Collection;
 
@@ -9,7 +9,7 @@ import net.minecraft.command.CommandException;
 public interface IrcCommand
 {
 
-    public static final String COMMAND_CHAR = IrcHandler.COMMAND_CHAR;
+    public static final String COMMAND_CHAR = ModuleIRCBridge.COMMAND_CHAR;
 
     public Collection<String> getCommandNames();
 
