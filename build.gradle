@@ -332,6 +332,9 @@ sourceSets {
 		compileClasspath += files(sourceSets.main.compileClasspath)
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
+	chataddon {
+		compileClasspath += files(sourceSets.discord.compileClasspath)
+	}
 	utils {
 		if(project.gradle.startParameter.taskNames.contains("genintellijruns")||project.gradle.startParameter.taskNames.isEmpty()) {
 			compileClasspath = files(sourceSets.main.compileClasspath)
@@ -452,11 +455,46 @@ task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 //	delete (clientshadowJar.archiveFile)
 //}
 /************************************************************
+ * Configure addon jars
+ */
+ 
+task chataddonshadowJar(type: ShadowJar) {
+	minimize()
+    description = "ShadowJar for chatAddon code"
+    archiveClassifier = 'shadow'
+    from sourceSets.chataddon.output
+    from sourceSets.utils.output
+	configurations = [project.configurations.shadowClientLib]
+}
+
+task chataddonJar (dependsOn: ["chataddonClasses", "chataddonshadowJar"], type: Jar) {
+	archiveClassifier = "chatAddon"
+	archiveAppendix = project.minecraftVersion
+
+	from sourceSets.chataddon.output
+	from sourceSets.utils.output
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+	from (zipTree(clientshadowJar.archiveFile)) {
+		exclude 'META-INF','META-INF/**'
+		exclude 'assets/**'
+		exclude 'about.html'
+		exclude 'plugin.properties'
+	}
+	manifest {
+		from clientManifest
+	}
+}
+chataddonJar.doLast {
+	delete (clientshadowJar.archiveFile)
+}
+/************************************************************
  * Configure shadow jar
  */
 
 shadowJar {
 	dependsOn clientJar
+	dependsOn chataddonJar
 	minimize {
  	   exclude(dependency('org.hibernate:.*:.*'))
  	   exclude(dependency('mysql:.*:.*'))
@@ -489,6 +527,7 @@ shadowJar {
 jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
+	dependsOn chataddonJar
 	dependsOn shadowJar
     //dependsOn "tsd"
     archiveClassifier = "server"
