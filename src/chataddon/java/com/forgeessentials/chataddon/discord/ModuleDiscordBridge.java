@@ -12,6 +12,7 @@ import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
@@ -35,6 +36,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -210,6 +212,12 @@ public class ModuleDiscordBridge implements ConfigSaver
                 LoggingHandler.felog.warn("Error Sending Discord Message: " + e.getMessage(), e);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandDiscord(true), event.getDispatcher());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -34,6 +34,7 @@ import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
@@ -54,6 +55,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -131,6 +133,13 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 
         registerCommand(new CommandHelp());
         registerCommand(new CommandListPlayers());
+    }
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+    	FECommandManager.registerCommand(new CommandIrcBot(true), event.getDispatcher());
+    	FECommandManager.registerCommand(new CommandIrc(true), event.getDispatcher());
     }
 
     public static ModuleIRCBridge getInstance()
@@ -629,5 +638,13 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 	public void save(boolean reload) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public Set<String> getChannels() {
+		return channels;
 	}
 }

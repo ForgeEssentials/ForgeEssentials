@@ -64,7 +64,7 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
         if (params.equals("info"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(),
-                    Translator.format("IRC bot is "+ (ModuleIRCBridge.getInstance().isConnected() ? "online" : "offline")));
+                    Translator.format("IRC bot is "+ (ModuleIRCBridge.getInstance().isConnected() ? "online, connected to "+ModuleIRCBridge.getInstance().getServer()+":"+ModuleIRCBridge.getInstance().getChannels() : "offline")));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
