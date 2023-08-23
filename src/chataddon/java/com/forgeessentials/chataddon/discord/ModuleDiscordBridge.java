@@ -47,7 +47,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class ModuleDiscordBridge implements ConfigSaver
 {
     private static ForgeConfigSpec DISCORD_CONFIG;
-	private static final ConfigData data = new ConfigData("Discord", DISCORD_CONFIG, new ForgeConfigSpec.Builder());
+	private static final ConfigData data = new ConfigData("DiscordBridge", DISCORD_CONFIG, new ForgeConfigSpec.Builder());
     private static final String CATEGORY = "DISCORD";
     private static final String CHANNELS_HELP = "List of channels to connect to, not including the # character";
 

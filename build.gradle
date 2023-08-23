@@ -234,9 +234,8 @@ ext.sharedManifest = manifest {
 ext.serverManifest = manifest {
 	from sharedManifest
 	attributes (
-		//"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		"MixinConfigs": "mixins.forgeessentials.json",
-		//"FMLAT": "forgeessentials_at.cfg",
+		"FMLAT": "forgeessentials_at.cfg"
 	)
 }
 
@@ -247,6 +246,14 @@ ext.clientManifest = manifest {
 	)
 }
 
+// Configure shared manifest
+ext.chatAddonManifest = manifest {
+	from sharedManifest
+	attributes (
+		"MixinConfigs": "",
+		"Implementation-Title": "forgeessentials-Chat-Addon"
+	)
+}
 /************************************************************
  * Dependency configuration
  */
@@ -258,7 +265,8 @@ configurations {
 	shadowLib
 	//shadowClientLib
 	shadowchataddonLib
-	compile.extendsFrom buildDep, shadowLib, shadowClientLib//, serverLib, shade, shadeClient
+	compile.extendsFrom buildDep, shadowLib, shadowchataddonLib//, serverLib, shade, shadeClient
+	chataddonCompile.extendsFrom compile
 }
 
 // def jdkHome = System.getenv("JAVA_HOME")
@@ -309,6 +317,9 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
 	implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+	
+	//dependicies for chat addon
+	chataddonCompile sourceSets.main.output
 }
 
 /************************************************************
@@ -334,7 +345,7 @@ sourceSets {
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 	chataddon {
-		compileClasspath += files(sourceSets.main.compileClasspath)
+		compileClasspath += files(sourceSets.main.compileClasspath, configurations.chataddonCompile)
 	}
 	utils {
 		if(project.gradle.startParameter.taskNames.contains("genintellijruns")||project.gradle.startParameter.taskNames.isEmpty()) {
@@ -352,6 +363,9 @@ task processSource(type: Sync) {
 
 project.compileUtilsJava {
 	source = processSource.outputs
+}
+project.compileChataddonJava {
+	source = files(sourceSets.main.compileClasspath, sourceSets.chataddon.java)
 }
 
 // Configure server resource processing
@@ -434,17 +448,6 @@ task tsd(type: JavaExec) {
 /************************************************************
  * Configure client jar
  */
-
-//task clientshadowJar(type: ShadowJar) {
-//	minimize()
-//    description = "ShadowJar for client code"
-//    archiveClassifier = 'shadow'
-//    from sourceSets.client.output
-//    from sourceSets.utils.output
-//    configurations = [project.configurations.shadowClientLib]
-//}
-
-//task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
 task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 	archiveClassifier = "client"
 	archiveAppendix = project.minecraftVersion
@@ -453,56 +456,11 @@ task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 	from sourceSets.utils.output
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-//	from (zipTree(clientshadowJar.archiveFile)) {
-//		exclude 'META-INF','META-INF/**'
-//		exclude 'assets/**'
-//		exclude 'about.html'
-//		exclude 'plugin.properties'
-//	}
 	exclude 'mixins.forgeessentials.refmap.json'
 	manifest {
 		from clientManifest
 	}
 }
-//clientJar.doLast {
-//	delete (clientshadowJar.archiveFile)
-//}
-/************************************************************
- * Configure addon jars
- */
- 
-//task chataddonshadowJar(type: ShadowJar) {
-//	minimize()
-//	description = "ShadowJar for chatAddon code"
-//	archiveClassifier = 'shadow'
-//	from sourceSets.chataddon.output
-//	from sourceSets.main.output
-//	configurations = [project.configurations.shadowchataddonLib]
-//}
-
-task chataddonJar (dependsOn: ["chataddonClasses"], type: Jar) {
-	dependsOn jar
-	//dependsOn chataddonshadowJar
-	archiveClassifier = "chatAddon"
-	archiveAppendix = project.minecraftVersion
-
-	from sourceSets.main.java
-	from sourceSets.chataddon.output
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-//	from (zipTree(chataddonshadowJar.archiveFile)) {
-//		exclude 'META-INF','META-INF/**'
-//		exclude 'assets/**'
-//		exclude 'about.html'
-//		exclude 'plugin.properties'
-//	}
-	manifest {
-		from serverManifest
-	}
-}
-//chataddonJar.doLast {
-//	delete (chataddonshadowJar.archiveFile)
-//}
 /************************************************************
  * Configure shadow jar
  */
@@ -518,7 +476,6 @@ shadowJar {
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
 	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
-	relocate  'org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx'
 	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
 	relocate  'javax.activation','com.forgeessentials.thirdparty.javax.activation'
@@ -552,7 +509,6 @@ jar {
 	from (zipTree(shadowJar.archivePath)) {
 		exclude 'META-INF','META-INF/**'
 		exclude 'assets/**'
-		exclude 'natives','natives/**'
 		exclude '.gitkeep'
 		exclude 'about.html'
 		exclude 'plugin.properties'
@@ -572,6 +528,46 @@ jar.doLast {
 	delete (shadowJar.archivePath)
 	delete (processSource.outputs)
 	delete (annotations.archivePath)
+}
+
+/************************************************************
+ * Configure addon jars
+ */
+ 
+task chataddonshadowJar(type: ShadowJar) {
+	minimize()
+	description = "ShadowJar for chatAddon code"
+	archiveClassifier = 'shadowChatAddon'
+	from sourceSets.chataddon.output
+	configurations = [project.configurations.shadowchataddonLib]
+}
+
+task chataddonJar(dependsOn: ["classes", "chataddonshadowJar"], type: Jar) {
+	archiveClassifier = "chatAddon"
+	archiveAppendix = project.minecraftVersion
+
+	from sourceSets.chataddon.output
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+	from (zipTree(chataddonshadowJar.archiveFile)) {
+		exclude 'META-INF','META-INF/**'
+		exclude 'assets/**'
+		exclude 'natives','natives/**'
+		exclude 'about.html'
+		exclude 'plugin.properties'
+	}
+	exclude('mixins**')
+	exclude('FeRemote.jks')
+	exclude('META-INF/forgeessentials_at.cfg')
+	exclude('META-INF/persistence.xml')
+	exclude('mapper_colorscheme.txt')
+	exclude('module-info.class')
+	manifest {
+		from chatAddonManifest
+	}
+}
+chataddonJar.doLast {
+	delete (chataddonshadowJar.archiveFile)
 }
 
 /************************************************************
@@ -667,5 +663,6 @@ reobf {
 artifacts {
 	archives deobfJar
 	archives clientJar
+	archives chataddonJar
 	archives annotations
 }

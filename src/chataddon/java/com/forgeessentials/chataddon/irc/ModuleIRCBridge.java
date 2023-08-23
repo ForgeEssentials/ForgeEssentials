@@ -66,7 +66,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 {
     private static ForgeConfigSpec IRC_CONFIG;
-	private static final ConfigData data = new ConfigData("IRC", IRC_CONFIG, new ForgeConfigSpec.Builder());
+	private static final ConfigData data = new ConfigData("IrcBridge", IRC_CONFIG, new ForgeConfigSpec.Builder());
 	@FEModule.Instance
     public static ModuleIRCBridge instance;
     private static final String CATEGORY = "IRC";
