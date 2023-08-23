@@ -30,15 +30,17 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
     @Override
     public @NotNull String getPrimaryAlias()
     {
-        return "discord";
+        return "discordbot";
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.literal("select").then(Commands.argument("channel", StringArgumentType.string())
-                        .suggests(SUGGEST_CHANNELS).executes(CommandContext -> execute(CommandContext, "channel"))));
+                .then(Commands.literal("selectChatToDiscordChannel").then(Commands.argument("channel", StringArgumentType.string())
+                        .suggests(SUGGEST_CHANNELS).executes(CommandContext -> execute(CommandContext, "channel"))))
+                .then(Commands.literal("restart").executes(CommandContext -> execute(CommandContext, "restart")))
+                .then(Commands.literal("disconnect").executes(CommandContext -> execute(CommandContext, "disconnect")));
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_CHANNELS = (ctx, builder) -> {
@@ -72,6 +74,34 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
             else
             {
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Unknown Channel: %s", channel));
+            }
+            return Command.SINGLE_SUCCESS;
+        }
+        if ("disconnect".equals(params))
+        {
+        	if (ModuleDiscordBridge.instance.disconnect())
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Disconnected Bot!");
+            }
+            else
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "Bot already disconnected!");
+            }
+            return Command.SINGLE_SUCCESS;
+        }
+        if ("restart".equals(params))
+        {
+            if (ModuleDiscordBridge.instance.restart()==1)
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started Bot!");
+            }
+            else if (ModuleDiscordBridge.instance.restart()==2)
+            {
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Restarted Bot!");
+            }
+            else
+            {
+                ChatOutputHandler.chatError(ctx.getSource(), "Failed to Start/Restart Bot!");
             }
             return Command.SINGLE_SUCCESS;
         }

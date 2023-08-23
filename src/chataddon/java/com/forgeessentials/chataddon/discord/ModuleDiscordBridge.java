@@ -59,7 +59,8 @@ public class ModuleDiscordBridge implements ConfigSaver
     public static ModuleDiscordBridge instance;
 
     public Set<String> channels = new HashSet<>();
-    private Long serverID;
+    private Long serverID=0L;
+    private String token="";
 
     private Set<String> admins = new HashSet<>();
 
@@ -139,7 +140,7 @@ public class ModuleDiscordBridge implements ConfigSaver
         admins.clear();
         admins.addAll(FEadmins.get());
 
-        String token = FEtoken.get();
+        token = FEtoken.get();
 
         serverID = FEserverID.get();
 
@@ -147,18 +148,38 @@ public class ModuleDiscordBridge implements ConfigSaver
         showMessages = FEshowMessages.get();
         sendMessages = FEsendMessages.get();
 
-        if (!"".equals(token) && serverID != 0)
-        {
-            if (jda != null)
-            {
-                jda.shutdown();
-                jda = null;
-            }
+        restart();
+    }
 
-            jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
-            jda.getPresence().setActivity(Activity.playing(ServerLifecycleHooks.getCurrentServer().getMotd()));
-            jda.addEventListener(new MessageListener());
+    /**
+     * @return {@link integer} 0 for fail, 1 for start, 2 for restart
+     * 
+     * */
+    public int restart() {
+    	try {
+    		if (!"".equals(token) && serverID != 0)
+            {
+    			int ret =disconnect()? 2: 1;
+
+                jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
+                jda.getPresence().setActivity(Activity.playing(ServerLifecycleHooks.getCurrentServer().getMotd()));
+                jda.addEventListener(new MessageListener());
+                return ret;
+            }
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return 0;
+    }
+
+    public boolean disconnect() {
+    	if (jda != null)
+        {
+            jda.shutdown();
+            jda = null;
+            return true;
         }
+    	return false;
     }
 
     @Override
