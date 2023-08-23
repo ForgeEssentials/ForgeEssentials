@@ -506,7 +506,7 @@ jar {
 	from sourceSets.utils.output
     exclude('com/forgeessentials/client/**')
 
-	from (zipTree(shadowJar.archivePath)) {
+	from (zipTree(shadowJar.archiveFile)) {
 		exclude 'META-INF','META-INF/**'
 		exclude 'assets/**'
 		exclude '.gitkeep'
@@ -514,7 +514,7 @@ jar {
 		exclude 'plugin.properties'
 	}
 
-	from (zipTree(shadowJar.archivePath)) {
+	from (zipTree(shadowJar.archiveFile)) {
 		include 'META-INF/services/*'
 	}
 
@@ -525,9 +525,9 @@ jar {
 	}
 }
 jar.doLast {
-	delete (shadowJar.archivePath)
+	delete (shadowJar.archiveFile)
 	delete (processSource.outputs)
-	delete (annotations.archivePath)
+	delete (annotations.archiveFile)
 }
 
 /************************************************************
