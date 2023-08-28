@@ -8,6 +8,7 @@ import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworld;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -31,6 +32,8 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
     public static final String PERM_LIST = PERM_BASE + ".list";
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
 
+	private static MultiworldManager multiworldManager = new MultiworldManager();
+
     public boolean testValue;
 
     @SubscribeEvent
@@ -41,6 +44,7 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 
 	@SubscribeEvent
 	public void serverStarting(FEModuleServerStartingEvent e) {
+		multiworldManager.load();
 
 		APIRegistry.perms.registerNode(PERM_MANAGE, DefaultPermissionLevel.OP,
 				"Manage multiworlds");
@@ -50,6 +54,10 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 				"List multiworlds on the server");
 	}
 
+	@SubscribeEvent
+	public void serverStopped(FEModuleServerStoppedEvent e) {
+		multiworldManager.serverStopped();
+	}
 	static ForgeConfigSpec.BooleanValue FEtestValue;
 	
 	@Override
@@ -68,5 +76,9 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	@Override
 	public ConfigData returnData() {
 		return data;
+	}
+
+	public static MultiworldManager getMultiworldManager() {
+		return multiworldManager;
 	}
 }

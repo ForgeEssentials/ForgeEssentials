@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld;
+package com.forgeessentials.multiworld.v2;
 
 public class MultiworldException extends Exception
 {

@@ -33,4 +33,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		return null;
 	}
 
+	public void load() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void serverStopped() {
+		
+	}
 }
