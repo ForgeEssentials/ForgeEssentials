@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.misc.commandTools.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -66,8 +68,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
     // ------------------------------------------------------------
     // Command alias
 
-    @Nonnull
-    protected abstract String getPrimaryAlias();
+    protected @NotNull abstract String getPrimaryAlias();
 
     @Nonnull
     protected String[] getDefaultSecondaryAliases()
