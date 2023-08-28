@@ -234,9 +234,8 @@ ext.sharedManifest = manifest {
 ext.serverManifest = manifest {
 	from sharedManifest
 	attributes (
-		//"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		"MixinConfigs": "mixins.forgeessentials.json",
-		//"FMLAT": "forgeessentials_at.cfg",
+		"FMLAT": "forgeessentials_at.cfg"
 	)
 }
 
@@ -247,6 +246,14 @@ ext.clientManifest = manifest {
 	)
 }
 
+// Configure shared manifest
+ext.chatAddonManifest = manifest {
+	from sharedManifest
+	attributes (
+		"MixinConfigs": "",
+		"Implementation-Title": "forgeessentials-Chat-Addon"
+	)
+}
 /************************************************************
  * Dependency configuration
  */
@@ -256,8 +263,10 @@ configurations {
 	clientannotationProcessor
 	serverannotationProcessor
 	shadowLib
-	shadowClientLib
-	compile.extendsFrom buildDep, shadowLib, shadowClientLib//, serverLib, shade, shadeClient
+	//shadowClientLib
+	shadowchataddonLib
+	compile.extendsFrom buildDep, shadowLib, shadowchataddonLib//, serverLib, shade, shadeClient
+	chataddonCompile.extendsFrom compile
 }
 
 // def jdkHome = System.getenv("JAVA_HOME")
@@ -268,7 +277,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 	 // IRC
 	implementation "org.pircbotx:pircbotx:2.1"
-	shadowLib("org.pircbotx:pircbotx:2.1") {
+	shadowchataddonLib("org.pircbotx:pircbotx:2.1") {
         // these are all packaged with the minecraft server jar
         exclude module: 'guava'
         exclude module: 'commons-lang3'
@@ -276,7 +285,7 @@ dependencies {
     }
 
 	implementation 'net.dv8tion:JDA:5.0.0-beta.8'
-	shadowLib('net.dv8tion:JDA:5.0.0-beta.8')
+	shadowchataddonLib('net.dv8tion:JDA:5.0.0-beta.8')
 
 	// Database libraries
 	shadowLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
@@ -308,6 +317,9 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
 	implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+	
+	//dependicies for chat addon
+	chataddonCompile sourceSets.main.output
 }
 
 /************************************************************
@@ -332,6 +344,9 @@ sourceSets {
 		compileClasspath += files(sourceSets.main.compileClasspath)
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
+	chataddon {
+		compileClasspath += files(sourceSets.main.compileClasspath, configurations.chataddonCompile)
+	}
 	utils {
 		if(project.gradle.startParameter.taskNames.contains("genintellijruns")||project.gradle.startParameter.taskNames.isEmpty()) {
 			compileClasspath = files(sourceSets.main.compileClasspath)
@@ -348,6 +363,9 @@ task processSource(type: Sync) {
 
 project.compileUtilsJava {
 	source = processSource.outputs
+}
+project.compileChataddonJava {
+	source = files(sourceSets.main.compileClasspath, sourceSets.chataddon.java)
 }
 
 // Configure server resource processing
@@ -373,6 +391,18 @@ project.processClientResources {
 		expand (
 			'version': "$mod_base.$mod_major",
 			'mod_name': mod_name_client
+		)
+	}
+}
+
+// Configure chataddon resource processing
+project.processChataddonResources {
+	from (sourceSets.chataddon.resources.srcDirs) {
+		include 'META-INF/mods.toml'
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+		expand (
+			'version': "$mod_base.$mod_major.$buildNumber",
+			'mod_name': mod_name_chatAddon
 		)
 	}
 }
@@ -418,17 +448,6 @@ task tsd(type: JavaExec) {
 /************************************************************
  * Configure client jar
  */
-
-//task clientshadowJar(type: ShadowJar) {
-//	minimize()
-//    description = "ShadowJar for client code"
-//    archiveClassifier = 'shadow'
-//    from sourceSets.client.output
-//    from sourceSets.utils.output
-//    configurations = [project.configurations.shadowClientLib]
-//}
-
-//task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
 task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 	archiveClassifier = "client"
 	archiveAppendix = project.minecraftVersion
@@ -437,20 +456,11 @@ task clientJar (dependsOn: ["clientClasses"], type: Jar) {
 	from sourceSets.utils.output
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-//	from (zipTree(clientshadowJar.archiveFile)) {
-//		exclude 'META-INF','META-INF/**'
-//		exclude 'assets/**'
-//		exclude 'about.html'
-//		exclude 'plugin.properties'
-//	}
 	exclude 'mixins.forgeessentials.refmap.json'
 	manifest {
 		from clientManifest
 	}
 }
-//clientJar.doLast {
-//	delete (clientshadowJar.archiveFile)
-//}
 /************************************************************
  * Configure shadow jar
  */
@@ -466,8 +476,6 @@ shadowJar {
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
 	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
-	relocate  'org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx'
-	relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
 	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
 	relocate  'javax.activation','com.forgeessentials.thirdparty.javax.activation'
@@ -498,16 +506,15 @@ jar {
 	from sourceSets.utils.output
     exclude('com/forgeessentials/client/**')
 
-	from (zipTree(shadowJar.archivePath)) {
+	from (zipTree(shadowJar.archiveFile)) {
 		exclude 'META-INF','META-INF/**'
 		exclude 'assets/**'
-		exclude 'natives','natives/**'
 		exclude '.gitkeep'
 		exclude 'about.html'
 		exclude 'plugin.properties'
 	}
 
-	from (zipTree(shadowJar.archivePath)) {
+	from (zipTree(shadowJar.archiveFile)) {
 		include 'META-INF/services/*'
 	}
 
@@ -518,9 +525,49 @@ jar {
 	}
 }
 jar.doLast {
-	delete (shadowJar.archivePath)
+	delete (shadowJar.archiveFile)
 	delete (processSource.outputs)
-	delete (annotations.archivePath)
+	delete (annotations.archiveFile)
+}
+
+/************************************************************
+ * Configure addon jars
+ */
+ 
+task chataddonshadowJar(type: ShadowJar) {
+	minimize()
+	description = "ShadowJar for chatAddon code"
+	archiveClassifier = 'shadowChatAddon'
+	from sourceSets.chataddon.output
+	configurations = [project.configurations.shadowchataddonLib]
+}
+
+task chataddonJar(dependsOn: ["classes", "chataddonshadowJar"], type: Jar) {
+	archiveClassifier = "chatAddon"
+	archiveAppendix = project.minecraftVersion
+
+	from sourceSets.chataddon.output
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+	from (zipTree(chataddonshadowJar.archiveFile)) {
+		exclude 'META-INF','META-INF/**'
+		exclude 'assets/**'
+		exclude 'natives','natives/**'
+		exclude 'about.html'
+		exclude 'plugin.properties'
+	}
+	exclude('mixins**')
+	exclude('FeRemote.jks')
+	exclude('META-INF/forgeessentials_at.cfg')
+	exclude('META-INF/persistence.xml')
+	exclude('mapper_colorscheme.txt')
+	exclude('module-info.class')
+	manifest {
+		from chatAddonManifest
+	}
+}
+chataddonJar.doLast {
+	delete (chataddonshadowJar.archiveFile)
 }
 
 /************************************************************
@@ -609,11 +656,13 @@ annotations.finalizedBy copyJarToGenerated
 reobf {
 	jar{}
     clientJar{}
+    chataddonJar{}
 }
 
  // Add default artifacts for task "build"
 artifacts {
 	archives deobfJar
 	archives clientJar
+	archives chataddonJar
 	archives annotations
 }

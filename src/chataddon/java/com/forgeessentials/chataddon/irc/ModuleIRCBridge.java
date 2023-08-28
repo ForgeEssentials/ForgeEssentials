@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.irc;
+package com.forgeessentials.chataddon.irc;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,13 +26,18 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.chat.irc.command.CommandHelp;
-import com.forgeessentials.chat.irc.command.CommandListPlayers;
+import com.forgeessentials.chataddon.FEChatAddons;
+import com.forgeessentials.chataddon.irc.commands.CommandHelp;
+import com.forgeessentials.chataddon.irc.commands.CommandListPlayers;
 import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
+import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -49,6 +54,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -57,9 +63,13 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class IrcHandler extends ListenerAdapter
+@FEModule(name = "IrcBridge", parentMod = FEChatAddons.class, defaultModule = false)
+public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 {
-
+    private static ForgeConfigSpec IRC_CONFIG;
+	private static final ConfigData data = new ConfigData("IrcBridge", IRC_CONFIG, new ForgeConfigSpec.Builder());
+	@FEModule.Instance
+    public static ModuleIRCBridge instance;
     private static final String CATEGORY = "IRC";
 
     private static final String CHANNELS_HELP = "List of channels to connect to, together with the # character";
@@ -116,7 +126,7 @@ public class IrcHandler extends ListenerAdapter
 
     /* ------------------------------------------------------------ */
 
-    public IrcHandler()
+    public ModuleIRCBridge()
     {
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -124,9 +134,16 @@ public class IrcHandler extends ListenerAdapter
         registerCommand(new CommandListPlayers());
     }
 
-    public static IrcHandler getInstance()
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
     {
-        return ModuleChat.instance.ircHandler;
+    	FECommandManager.registerCommand(new CommandIrcBot(true), event.getDispatcher());
+    	FECommandManager.registerCommand(new CommandIrc(true), event.getDispatcher());
+    }
+
+    public static ModuleIRCBridge getInstance()
+    {
+        return instance;
     }
 
     public void registerCommand(IrcCommand command)
@@ -136,6 +153,12 @@ public class IrcHandler extends ListenerAdapter
                 LoggingHandler.felog.warn(String.format("IRC command name %s used twice!", commandName));
     }
 
+    @SubscribeEvent
+    public void serverStopping(FEModuleServerStoppingEvent e)
+    {
+        disconnect();
+    }
+    
     public void connect()
     {
         if (bot != null)
@@ -246,6 +269,7 @@ public class IrcHandler extends ListenerAdapter
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEadmins;
     static ForgeConfigSpec.BooleanValue FEenable;
 
+    @Override
     public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
@@ -287,31 +311,32 @@ public class IrcHandler extends ListenerAdapter
         BUILDER.pop();
     }
 
+    @Override
     public void bakeConfig(boolean reload)
     {
-        ModuleChat.instance.ircHandler.server = FEserver.get();
-        ModuleChat.instance.ircHandler.port = FEport.get();
-        ModuleChat.instance.ircHandler.botName = FEbotName.get();
-        ModuleChat.instance.ircHandler.serverPassword = FEserverPassword.get();
-        ModuleChat.instance.ircHandler.nickPassword = FEnickPassword.get();
-        ModuleChat.instance.ircHandler.twitchMode = FEtwitchMode.get();
-        ModuleChat.instance.ircHandler.showEvents = FEshowEvents.get();
-        ModuleChat.instance.ircHandler.showGameEvents = FEshowGameEvents.get();
-        ModuleChat.instance.ircHandler.showMessages = FEshowMessages.get();
-        ModuleChat.instance.ircHandler.sendMessages = FEsendMessages.get();
-        ModuleChat.instance.ircHandler.ircHeader = FEircHeader.get();
-        ModuleChat.instance.ircHandler.ircHeaderGlobal = FEircHeaderGlobal.get();
-        ModuleChat.instance.ircHandler.mcHeader = FEmcHeader.get();
-        ModuleChat.instance.ircHandler.mcSayHeader = FEmcSayHeader.get();
-        ModuleChat.instance.ircHandler.messageDelay = FEmessageDelay.get();
-        ModuleChat.instance.ircHandler.allowCommands = FEallowCommands.get();
-        ModuleChat.instance.ircHandler.allowMcCommands = FEallowMcCommands.get();
+    	instance.server = FEserver.get();
+    	instance.port = FEport.get();
+    	instance.botName = FEbotName.get();
+    	instance.serverPassword = FEserverPassword.get();
+    	instance.nickPassword = FEnickPassword.get();
+    	instance.twitchMode = FEtwitchMode.get();
+    	instance.showEvents = FEshowEvents.get();
+    	instance.showGameEvents = FEshowGameEvents.get();
+    	instance.showMessages = FEshowMessages.get();
+    	instance.sendMessages = FEsendMessages.get();
+    	instance.ircHeader = FEircHeader.get();
+    	instance.ircHeaderGlobal = FEircHeaderGlobal.get();
+    	instance.mcHeader = FEmcHeader.get();
+    	instance.mcSayHeader = FEmcSayHeader.get();
+    	instance.messageDelay = FEmessageDelay.get();
+    	instance.allowCommands = FEallowCommands.get();
+    	instance.allowMcCommands = FEallowMcCommands.get();
 
-        ModuleChat.instance.ircHandler.channels.clear();
-        ModuleChat.instance.ircHandler.channels.addAll(FEchannels.get());
+    	instance.channels.clear();
+    	instance.channels.addAll(FEchannels.get());
 
-        ModuleChat.instance.ircHandler.admins.clear();
-        ModuleChat.instance.ircHandler.admins.addAll(FEadmins.get());
+    	instance.admins.clear();
+    	instance.admins.addAll(FEadmins.get());
 
         // mcHeader = config.get(CATEGORY, "mcFormat", "<%username> %message",
         // "String for formatting messages posted to the IRC channel by the
@@ -319,9 +344,9 @@ public class IrcHandler extends ListenerAdapter
 
         boolean connectToIrc = FEenable.get();
         if (connectToIrc)
-            ModuleChat.instance.ircHandler.connect();
+        	instance.connect();
         else
-            ModuleChat.instance.ircHandler.disconnect();
+        	instance.disconnect();
     }
     /* ------------------------------------------------------------ */
 
@@ -341,21 +366,19 @@ public class IrcHandler extends ListenerAdapter
 
     private void mcSendMessage(String message, User user)
     {
-        String filteredMessage = ModuleChat.censor.filterIRC(message);
-        ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), filteredMessage);
-
+        //String filteredMessage = ModuleChat.censor.filterIRC(message);
         String headerText = String.format(ircHeader, user.getNick());
-        TextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
+        TextComponent header = ChatOutputHandler.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
                 "/ircpm " + user.getNick() + " ");
-        TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        TextComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
-        String filteredMessage = ModuleChat.censor.filterIRC(message);
-        TextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        //String filteredMessage = ModuleChat.censor.filterIRC(message);
+        TextComponent header =ChatOutputHandler.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+        TextComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
@@ -602,4 +625,21 @@ public class IrcHandler extends ListenerAdapter
     {
         this.sendMessages = sendMessages;
     }
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
+	@Override
+	public void save(boolean reload) {
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public Set<String> getChannels() {
+		return channels;
+	}
 }

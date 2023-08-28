@@ -1,11 +1,11 @@
-package com.forgeessentials.chat.irc.command;
+package com.forgeessentials.chataddon.irc.commands;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.pircbotx.hooks.events.MessageEvent;
 
-import com.forgeessentials.chat.irc.IrcCommand;
+import com.forgeessentials.chataddon.irc.IrcCommand;
 
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 

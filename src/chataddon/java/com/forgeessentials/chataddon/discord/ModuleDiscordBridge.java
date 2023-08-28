@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.discord;
+package com.forgeessentials.chataddon.discord;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.chataddon.FEChatAddons;
 import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.misc.commandTools.FECommandManager;
+import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
@@ -30,6 +35,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -38,15 +44,22 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class DiscordHandler
+@FEModule(name = "DiscordBridge", parentMod = FEChatAddons.class, defaultModule = false)
+public class ModuleDiscordBridge implements ConfigSaver
 {
+    private static ForgeConfigSpec DISCORD_CONFIG;
+	private static final ConfigData data = new ConfigData("DiscordBridge", DISCORD_CONFIG, new ForgeConfigSpec.Builder());
     private static final String CATEGORY = "DISCORD";
     private static final String CHANNELS_HELP = "List of channels to connect to, not including the # character";
 
     private static final String ADMINS_HELP = "List of privileged users that can use more commands via the Discord bot";
 
+    @FEModule.Instance
+    public static ModuleDiscordBridge instance;
+
     public Set<String> channels = new HashSet<>();
-    private Long serverID;
+    private Long serverID=0L;
+    private String token="";
 
     private Set<String> admins = new HashSet<>();
 
@@ -69,13 +82,14 @@ public class DiscordHandler
 
     JDA jda = null;
 
-    public DiscordHandler()
+    public ModuleDiscordBridge()
     {
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
     }
 
+    @Override
     public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Configure the built-in Discord bot here -- Incubating, subject to change!").push(CATEGORY);
@@ -103,6 +117,7 @@ public class DiscordHandler
         BUILDER.pop();
     }
 
+    @Override
     public void bakeConfig(boolean reload)
     {
         selectedChannel = FEselectedChannelConfig.get();
@@ -124,7 +139,7 @@ public class DiscordHandler
         admins.clear();
         admins.addAll(FEadmins.get());
 
-        String token = FEtoken.get();
+        token = FEtoken.get();
 
         serverID = FEserverID.get();
 
@@ -132,20 +147,41 @@ public class DiscordHandler
         showMessages = FEshowMessages.get();
         sendMessages = FEsendMessages.get();
 
-        if (!"".equals(token) && serverID != 0)
-        {
-            if (jda != null)
-            {
-                jda.shutdown();
-                jda = null;
-            }
-
-            jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
-            jda.getPresence().setActivity(Activity.playing(ServerLifecycleHooks.getCurrentServer().getMotd()));
-            jda.addEventListener(new MessageListener());
-        }
+        restart();
     }
 
+    /**
+     * @return {@link integer} 0 for fail, 1 for start, 2 for restart
+     * 
+     * */
+    public int restart() {
+    	try {
+    		if (!"".equals(token) && serverID != 0)
+            {
+    			int ret =disconnect()? 2: 1;
+
+                jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
+                jda.getPresence().setActivity(Activity.playing(ServerLifecycleHooks.getCurrentServer().getMotd()));
+                jda.addEventListener(new MessageListener());
+                return ret;
+            }
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return 0;
+    }
+
+    public boolean disconnect() {
+    	if (jda != null)
+        {
+            jda.shutdown();
+            jda = null;
+            return true;
+        }
+    	return false;
+    }
+
+    @Override
     public void save(boolean reload)
     {
 
@@ -196,6 +232,12 @@ public class DiscordHandler
                 LoggingHandler.felog.warn("Error Sending Discord Message: " + e.getMessage(), e);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandDiscord(true), event.getDispatcher());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -260,6 +302,7 @@ public class DiscordHandler
         {
             sendMessage(Translator.translate("Server Started!"));
         }
+        ChatOutputHandler.discordMessageHandler = new DiscordMessageHandler();
     }
 
     public void serverStopping(FEModuleServerStoppingEvent e)
@@ -278,4 +321,9 @@ public class DiscordHandler
             sendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
         }
     }
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

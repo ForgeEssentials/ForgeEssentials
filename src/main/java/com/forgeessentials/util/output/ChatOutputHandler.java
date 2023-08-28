@@ -1,13 +1,16 @@
 package com.forgeessentials.util.output;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraft.command.CommandSource;
@@ -20,6 +23,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.FakePlayer;
@@ -32,7 +37,15 @@ public final class ChatOutputHandler
 
     public static final String CONFIG_MAIN_OUTPUT = "Output";
 
+    static final Pattern URL_PATTERN = Pattern.compile(
+            //         schema                          ipv4            OR           namespace                 port     path         ends
+            //   |-----------------|        |-------------------------|  |----------------------------|    |---------| |--|   |---------------|
+            "((?:(?:http|https):\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_\\.]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
+            Pattern.CASE_INSENSITIVE);
+
     public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+
+    public static DiscordMessageHandlerBase discordMessageHandler;
 
     /* ------------------------------------------------------------ */
 
@@ -153,9 +166,9 @@ public final class ChatOutputHandler
                     p.getGameProfile().getId());
         }
 
-        if (sendToDiscord && ModuleChat.instance != null)
+        if (sendToDiscord && ModuleLauncher.getModuleList().contains("DiscordBridge"))
         {
-            ModuleChat.instance.discordHandler.sendMessage(message.getString());
+            discordMessageHandler.sendMessage(message.getString());
         }
     }
 
@@ -186,9 +199,9 @@ public final class ChatOutputHandler
                     p.getGameProfile().getId());
         }
 
-        if (sendToDiscord && ModuleChat.instance != null)
+        if (sendToDiscord && ModuleLauncher.getModuleList().contains("DiscordBridge"))
         {
-            ModuleChat.instance.discordHandler.sendMessage(message.getString());
+        	discordMessageHandler.sendMessage(message.getString());
         }
     }
 
@@ -389,6 +402,19 @@ public final class ChatOutputHandler
     }
 
     /**
+     * Creates a chat click event with the given parameters
+     * 
+     * @return {@Link TextComponent}
+     */
+    public static TextComponent clickChatComponent(String text, Action action, String uri)
+    {
+        TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
+        ClickEvent click = new ClickEvent(action, uri);
+        component.withStyle((style) -> style.withClickEvent(click));
+        return component;
+    }
+
+    /**
      * Apply a set of {@link TextFormatting} to a {@link Style}
      * 
      * @param chatStyle
@@ -585,6 +611,61 @@ public final class ChatOutputHandler
 
         sb.setLength(sb.length() - 1);
         return sb.toString();
+    }
+
+    /**
+     * Filter urls from chat
+     *
+     * @param time
+     *            in milliseconds
+     * @return Time in string format
+     */
+    public static TextComponent filterChatLinks(String text)
+    {
+        // Includes ipv4 and domain pattern
+        // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
+        // without a protocol or path.
+        TextComponent ichat = new StringTextComponent("");
+        Matcher matcher = URL_PATTERN.matcher(text);
+        int lastEnd = 0;
+
+        // Find all urls
+        while (matcher.find())
+        {
+            int start = matcher.start();
+            int end = matcher.end();
+
+            // Append the previous left overs.
+            ichat.append(text.substring(lastEnd, start));
+            lastEnd = end;
+            String url = text.substring(start, end);
+            TextComponent link = new StringTextComponent(url);
+            link.withStyle(TextFormatting.UNDERLINE);
+
+            try
+            {
+                // Add schema so client doesn't crash.
+                if ((new URI(url)).getScheme() == null)
+                    url = "http://" + url;
+                LoggingHandler.felog.info("Url made: " + url);
+
+            }
+            catch (URISyntaxException e)
+            {
+                // Bad syntax bail out!
+                ichat.append(url);
+                continue;
+            }
+
+            // Set the click event and append the link.
+            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+            link.withStyle((style) -> style.withClickEvent(click));
+            ichat.append(link);
+        }
+        // Append the rest of the message.
+        ichat.append(text.substring(lastEnd));
+
+        return ichat;
     }
 
     /**
