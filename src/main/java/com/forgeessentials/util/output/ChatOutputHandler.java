@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraft.command.CommandSource;
@@ -33,6 +33,8 @@ public final class ChatOutputHandler
     public static final String CONFIG_MAIN_OUTPUT = "Output";
 
     public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+
+    public static DiscordMessageHandlerBase discordMessageHandler;
 
     /* ------------------------------------------------------------ */
 
@@ -153,9 +155,9 @@ public final class ChatOutputHandler
                     p.getGameProfile().getId());
         }
 
-        if (sendToDiscord && ModuleChat.instance != null)
+        if (sendToDiscord && ModuleLauncher.getModuleList().contains("DiscordBridge"))
         {
-            ModuleChat.instance.discordMessageHandler.sendMessage(message.getString());
+            discordMessageHandler.sendMessage(message.getString());
         }
     }
 
@@ -186,9 +188,9 @@ public final class ChatOutputHandler
                     p.getGameProfile().getId());
         }
 
-        if (sendToDiscord && ModuleChat.instance != null)
+        if (sendToDiscord && ModuleLauncher.getModuleList().contains("DiscordBridge"))
         {
-        	ModuleChat.instance.discordMessageHandler.sendMessage(message.getString());
+        	discordMessageHandler.sendMessage(message.getString());
         }
     }
 

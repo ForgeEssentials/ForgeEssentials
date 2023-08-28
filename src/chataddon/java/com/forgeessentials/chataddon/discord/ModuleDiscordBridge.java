@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chataddon.FEChatAddons;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
@@ -303,7 +302,7 @@ public class ModuleDiscordBridge implements ConfigSaver
         {
             sendMessage(Translator.translate("Server Started!"));
         }
-        ModuleChat.instance.discordMessageHandler = new ActualDiscordMessageHandler();
+        ChatOutputHandler.discordMessageHandler = new DiscordMessageHandler();
     }
 
     public void serverStopping(FEModuleServerStoppingEvent e)
