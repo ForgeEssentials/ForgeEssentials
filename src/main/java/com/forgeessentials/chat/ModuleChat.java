@@ -3,15 +3,11 @@ package com.forgeessentials.chat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -51,7 +47,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -84,14 +79,6 @@ public class ModuleChat implements ConfigSaver
     private static final String PERM_PLAYERFORMAT = PERM + ".playerformat";
 
     public static final String PERM_RANGE = PERM + ".range";
-
-    // @formatter:off
-    static final Pattern URL_PATTERN = Pattern.compile(
-            //         schema                          ipv4            OR           namespace                 port     path         ends
-            //   |-----------------|        |-------------------------|  |----------------------------|    |---------| |--|   |---------------|
-            "((?:(?:http|https):\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_\\.]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
-            Pattern.CASE_INSENSITIVE);
-    // @formatter:on
 
     public static final Map<String, String> chatConstReplacements = new HashMap<>();
 
@@ -250,7 +237,7 @@ public class ModuleChat implements ConfigSaver
         TextComponent messageComponent;
         if (ident.checkPermission(PERM_URL))
         {
-            messageComponent = filterChatLinks(message);
+            messageComponent = ChatOutputHandler.filterChatLinks(message);
         }
         else
         {
@@ -286,10 +273,10 @@ public class ModuleChat implements ConfigSaver
         // Initialize header
         String playerCmd = "/msg " + ident.getUsernameOrUuid() + " ";
         TextComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        TextComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND,
+        TextComponent playerPrefix = ChatOutputHandler.clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND,
                 playerCmd);
-        TextComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        TextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND,
+        TextComponent playerText = ChatOutputHandler.clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        TextComponent playerSuffix = ChatOutputHandler.clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND,
                 playerCmd);
         TextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
         return new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
@@ -334,14 +321,6 @@ public class ModuleChat implements ConfigSaver
         return message;
     }
 
-    public static TextComponent clickChatComponent(String text, Action action, String uri)
-    {
-        TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
-        ClickEvent click = new ClickEvent(action, uri);
-        component.withStyle((style) -> style.withClickEvent(click));
-        return component;
-    }
-
     public static String getPlayerPrefixSuffix(UserIdent player, boolean isSuffix)
     {
         String fix = APIRegistry.perms.getServerZone().getPlayerPermission(player,
@@ -362,7 +341,7 @@ public class ModuleChat implements ConfigSaver
                     isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
-                TextComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND,
+                TextComponent component = ChatOutputHandler.clickChatComponent(text, Action.SUGGEST_COMMAND,
                         "/gmsg " + group.getGroup() + " ");
                 if (header == null)
                     header = component;
@@ -371,54 +350,6 @@ public class ModuleChat implements ConfigSaver
             }
         }
         return header;
-    }
-
-    public static TextComponent filterChatLinks(String text)
-    {
-        // Includes ipv4 and domain pattern
-        // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
-        // without a protocol or path.
-        TextComponent ichat = new StringTextComponent("");
-        Matcher matcher = URL_PATTERN.matcher(text);
-        int lastEnd = 0;
-
-        // Find all urls
-        while (matcher.find())
-        {
-            int start = matcher.start();
-            int end = matcher.end();
-
-            // Append the previous left overs.
-            ichat.append(text.substring(lastEnd, start));
-            lastEnd = end;
-            String url = text.substring(start, end);
-            TextComponent link = new StringTextComponent(url);
-            link.withStyle(TextFormatting.UNDERLINE);
-
-            try
-            {
-                // Add schema so client doesn't crash.
-                if ((new URI(url)).getScheme() == null)
-                    url = "http://" + url;
-                LoggingHandler.felog.info("Url made: " + url);
-
-            }
-            catch (URISyntaxException e)
-            {
-                // Bad syntax bail out!
-                ichat.append(url);
-                continue;
-            }
-
-            // Set the click event and append the link.
-            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.withStyle((style) -> style.withClickEvent(click));
-            ichat.append(link);
-        }
-        // Append the rest of the message.
-        ichat.append(text.substring(lastEnd));
-
-        return ichat;
     }
 
     /* ------------------------------------------------------------ */
@@ -430,7 +361,7 @@ public class ModuleChat implements ConfigSaver
         {
             String message = processChatReplacements(event.getPlayer().createCommandSourceStack(),
                     ChatConfig.welcomeMessage);
-            ChatOutputHandler.broadcast(filterChatLinks(message));
+            ChatOutputHandler.broadcast(ChatOutputHandler.filterChatLinks(message));
         }
     }
 
@@ -446,7 +377,7 @@ public class ModuleChat implements ConfigSaver
         for (String message : ChatConfig.loginMessage)
         {
             message = processChatReplacements(sender, message);
-            ChatOutputHandler.sendMessage(sender, filterChatLinks(message));
+            ChatOutputHandler.sendMessage(sender, ChatOutputHandler.filterChatLinks(message));
         }
     }
 

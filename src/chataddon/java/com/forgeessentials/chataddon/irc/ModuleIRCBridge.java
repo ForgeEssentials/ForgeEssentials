@@ -26,7 +26,6 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chataddon.FEChatAddons;
 import com.forgeessentials.chataddon.irc.commands.CommandHelp;
 import com.forgeessentials.chataddon.irc.commands.CommandListPlayers;
@@ -367,21 +366,19 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 
     private void mcSendMessage(String message, User user)
     {
-        String filteredMessage = ModuleChat.censor.filterIRC(message);
-        ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), filteredMessage);
-
+        //String filteredMessage = ModuleChat.censor.filterIRC(message);
         String headerText = String.format(ircHeader, user.getNick());
-        TextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
+        TextComponent header = ChatOutputHandler.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
                 "/ircpm " + user.getNick() + " ");
-        TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        TextComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
-        String filteredMessage = ModuleChat.censor.filterIRC(message);
-        TextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        //String filteredMessage = ModuleChat.censor.filterIRC(message);
+        TextComponent header =ChatOutputHandler.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+        TextComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
@@ -636,8 +633,6 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 
 	@Override
 	public void save(boolean reload) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public String getServer() {
