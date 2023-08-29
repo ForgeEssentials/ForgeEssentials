@@ -538,11 +538,4 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 //            }
         }
     }
-
-	@Override
-	public List<String> getShortWorldNames() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
