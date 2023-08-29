@@ -7,6 +7,7 @@ import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworld;
+import com.forgeessentials.multiworld.v2.command.CommandMultiworldTeleport;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -43,6 +44,7 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
     public void registerCommands(RegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandMultiworld(true), event.getDispatcher());
+        FECommandManager.registerCommand(new CommandMultiworldTeleport(true), event.getDispatcher());
     }
 
 	@SubscribeEvent

@@ -9,6 +9,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -221,8 +222,8 @@ public class Multiworld
 	public static void teleport(ServerPlayerEntity player, ServerWorld world,
 			double x, double y, double z, boolean instant) {
 		boolean worldChange = player.level.dimension() != world.dimension();
-		//if (worldChange)
-		//	displayDepartMessage(player);
+		if (worldChange)
+			displayDepartMessage(player);
 
 		y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
 		WarpPoint target = new WarpPoint(world.dimension().location().toString(), x, y, z,
@@ -232,25 +233,17 @@ public class Multiworld
 		else
 			TeleportHelper.teleport(player, target);
 
-		//if (worldChange)
-		//	displayWelcomeMessage(player);
+		if (worldChange)
+			displayWelcomeMessage(player);
 	}
 
-//	public static void displayDepartMessage(ServerPlayerEntity player) {
-//		String msg = player.level.provider.getDepartMessage();
-//		if (msg == null)
-//			msg = "Leaving the Overworld.";
-//		if (player.dimension > 1 || player.dimension < -1)
-//			msg += " (#" + player.dimension + ")";
-//		ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
-//	}
-//
-//	public static void displayWelcomeMessage(ServerPlayerEntity player) {
-//		String msg = player.world.provider.getWelcomeMessage();
-//		if (msg == null)
-//			msg = "Entering the Overworld.";
-//		if (player.dimension > 1 || player.dimension < -1)
-//			msg += " (#" + player.dimension + ")";
-//		ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
-//	}
+	public static void displayDepartMessage(ServerPlayerEntity player) {
+		String msg = "Leaving " + " (" + player.level.dimension().location().getPath() + ")";
+		ChatOutputHandler.sendMessage(player, msg);
+	}
+
+	public static void displayWelcomeMessage(ServerPlayerEntity player) {
+		String msg = "Entering " + " (" + player.level.dimension().location().getPath() + ")";
+		ChatOutputHandler.sendMessage(player, msg);
+	}
 }

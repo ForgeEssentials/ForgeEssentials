@@ -52,20 +52,22 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-    	 Multiworld world = new Multiworld("tesdt", "gg1", "gg2", 33445, "");
-         try
-         {
-             ModuleMultiworldV2.getMultiworldManager().addWorld(world);
-         }
-         catch (MultiworldException e)
-         {
-             throw new CommandException( new StringTextComponent(e.type.error));
-         }
-         for (Multiworld world1 : ModuleMultiworldV2.getMultiworldManager().getWorlds())
-         {
-        	 ChatOutputHandler.chatConfirmation(ctx.getSource(), "###################WORLDS#######################");
-        	 ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + world1.getInternalID() + " " + world1.getName() + ": " + world1.getProvider());
-         }
+		try {
+			Multiworld world = new Multiworld("tesdt", "gg1", "gg2", 33445, "");
+			try {
+				ModuleMultiworldV2.getMultiworldManager().addWorld(world);
+			} catch (MultiworldException e) {
+				e.printStackTrace();
+				throw new CommandException(new StringTextComponent(e.type.error));
+			}
+			for (Multiworld world1 : ModuleMultiworldV2.getMultiworldManager().getWorlds()) {
+				ChatOutputHandler.chatConfirmation(ctx.getSource(), "###################WORLDS#######################");
+				ChatOutputHandler.chatConfirmation(ctx.getSource(),
+						"#" + world1.getInternalID() + " " + world1.getName() + ": " + world1.getProvider());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         return Command.SINGLE_SUCCESS;
     }
 }
