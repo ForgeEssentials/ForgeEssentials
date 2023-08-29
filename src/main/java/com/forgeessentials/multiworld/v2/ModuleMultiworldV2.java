@@ -7,9 +7,12 @@ import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworld;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.ReportedException;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -20,7 +23,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * 
  * @author MaximustheMiner
  */
-@FEModule(name = "MultiworldV2", parentMod = ForgeEssentials.class, canDisable = true)
+@FEModule(name = "MultiworldV2", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleMultiworldV2 extends ConfigLoaderBase
 {
     private static ForgeConfigSpec MULTIWORLD_CONFIG;
@@ -44,6 +47,7 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 
 	@SubscribeEvent
 	public void serverStarting(FEModuleServerStartingEvent e) {
+		
 		multiworldManager.load();
 
 		APIRegistry.perms.registerNode(PERM_MANAGE, DefaultPermissionLevel.OP,
@@ -57,6 +61,20 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	@SubscribeEvent
 	public void serverStopped(FEModuleServerStoppedEvent e) {
 		multiworldManager.serverStopped();
+	}
+	
+	@SubscribeEvent
+	public void postLoad(FEModuleServerStartedEvent e) {
+		try {
+			//multiworldManager.getProviderHandler().loadWorldProviders();
+			//multiworldManager.getProviderHandler().loadWorldTypes();
+
+		} catch (java.lang.NoSuchMethodError noSuchMethodError) {
+			CrashReport report = CrashReport.forThrowable(noSuchMethodError,
+					"MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
+			report.addCategory("MultiWorld");
+			throw new ReportedException(report);
+		}
 	}
 	static ForgeConfigSpec.BooleanValue FEtestValue;
 	

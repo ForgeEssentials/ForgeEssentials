@@ -13,7 +13,9 @@ import com.google.gson.annotations.Expose;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.GameType;
@@ -23,10 +25,11 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Multiworld
 {
-    
+    public static String internalWorldName = "feworld";
+
 	protected String name;
 
-	protected RegistryKey<World> dimensionId;
+	protected int internalID =0;
 
 	protected String provider;
 
@@ -83,7 +86,7 @@ public class Multiworld
 	public void removeAllPlayersFromWorld() {
 		ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
 		for (ServerPlayerEntity player : ServerUtil.getPlayerList()) {
-			if (player.level.dimension().equals(dimensionId)) {
+			if (player.level.dimension().location().toString().equals("ForgeEssentials:"+internalWorldName+internalID)) {
 				BlockPos playerPos = player.blockPosition();
 				int y = WorldUtil.placeInWorld(player.level, playerPos.getX(),
 						playerPos.getY(), playerPos.getZ());
@@ -98,7 +101,6 @@ public class Multiworld
 		if (!worldLoaded)
 			return;
 		ServerWorld worldServer = getWorldServer();
-		//worldServer.getCurrentDifficultyAt(null);
 		worldServer.setSpawnSettings(allowHostileCreatures, allowPeacefulCreatures);
 	}
 
@@ -106,12 +108,16 @@ public class Multiworld
 		return name;
 	}
 
-	public ServerWorld getWorldServer() {
-		return ServerLifecycleHooks.getCurrentServer().getLevel(dimensionId);
+	public String getResourceName() {
+		return "ForgeEssentials:"+name;
 	}
 
-	public RegistryKey<World> getDimensionId() {
-		return dimensionId;
+	public ServerWorld getWorldServer() {
+		return ServerLifecycleHooks.getCurrentServer().getLevel(getReasourceLocationUnique());
+	}
+
+	public RegistryKey<World> getReasourceLocationUnique() {
+		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("ForgeEssentials:"+internalWorldName+internalID));
 	}
 
 	public int getProviderId() {
@@ -124,6 +130,14 @@ public class Multiworld
 
 	public List<String> getBiomes() {
 		return biomes;
+	}
+
+	public int getInternalID() {
+		return internalID;
+	}
+
+	public void setInternalID(int internalID) {
+		this.internalID = internalID;
 	}
 
 	public boolean isError() {
@@ -174,11 +188,11 @@ public class Multiworld
 	}
 
 	protected void save() {
-		DataManager.getInstance().save(this, this.name);
+		DataManager.getInstance().save(this, internalWorldName+internalID);
 	}
 
 	protected void delete() {
-		DataManager.getInstance().delete(this.getClass(), name);
+		DataManager.getInstance().delete(this.getClass(), internalWorldName+internalID);
 	}
      
 

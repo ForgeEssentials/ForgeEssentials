@@ -19,7 +19,7 @@ import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
-public class MultiworldChunkGenerator  extends ChunkGenerator
+public class MultiworldChunkGenerator extends ChunkGenerator
 {
 	// create generator on runtime by dynamic generation
 	public MultiworldChunkGenerator(MinecraftServer server)
