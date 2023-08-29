@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -35,10 +34,11 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
+import net.minecraft.world.biome.provider.OverworldBiomeProvider;
 import net.minecraft.world.border.IBorderListener;
 import net.minecraft.world.chunk.listener.IChunkStatusListenerFactory;
-import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DerivedWorldInfo;
@@ -232,13 +232,13 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
         // Register dimension with last used id if possible
         if(world.getInternalID()<10) {
-            int id = 10;
+            int unusedID = 10;
         	for (Multiworld knownWorld : worlds.values()) {
-    			if(knownWorld.getInternalID()>id) {
-    				id=knownWorld.getInternalID();
+    			if(knownWorld.getInternalID()>=unusedID) {
+    				unusedID=knownWorld.getInternalID()+1;
     			}
     		}
-        	world.setInternalID(id+1);
+        	world.setInternalID(unusedID);
         }
         // Handle permission-dim changes
         checkMultiworldPermissions(world);
@@ -255,14 +255,14 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		Registry<Biome> biomeRegistry = registries.registryOrThrow(Registry.BIOME_REGISTRY);
 		// Dimension constructor takes a dimensiontype supplier and a chunk generator
 		// we'll just use the overworld's dimensiontype and chunk generator here
-//		return new Dimension(() -> {
-//	         return registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).getOrThrow(DimensionType.OVERWORLD_LOCATION);
-//	      }, new NoiseChunkGenerator(new OverworldBiomeProvider(seed, false, false, biomeRegistry), seed, 
-//					() -> noiseRegistry.getOrThrow(DimensionSettings.OVERWORLD)));
-		ChunkGenerator generator = new MultiworldChunkGenerator(registries.registryOrThrow(Registry.BIOME_REGISTRY));
 		return new Dimension(() -> {
 	         return registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).getOrThrow(DimensionType.OVERWORLD_LOCATION);
-	      }, generator);
+	      }, new NoiseChunkGenerator(new OverworldBiomeProvider(seed, false, false, biomeRegistry), seed, 
+					() -> noiseRegistry.getOrThrow(DimensionSettings.OVERWORLD)));
+		//ChunkGenerator generator = new MultiworldChunkGenerator(registries.registryOrThrow(Registry.BIOME_REGISTRY));
+		//return new Dimension(() -> {
+	    //     return registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).getOrThrow(DimensionType.OVERWORLD_LOCATION);
+	    //  }, generator);
 	}
 
 	private static ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey)

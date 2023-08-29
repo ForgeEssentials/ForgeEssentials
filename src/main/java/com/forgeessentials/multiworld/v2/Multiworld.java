@@ -29,7 +29,7 @@ public class Multiworld
 
 	protected String name;
 
-	protected int internalID =0;
+	protected int internalID = 0;
 
 	protected String provider;
 
@@ -117,7 +117,7 @@ public class Multiworld
 	}
 
 	public RegistryKey<World> getReasourceLocationUnique() {
-		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("ForgeEssentials:"+internalWorldName+internalID));
+		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("forgeessentials:"+internalWorldName+internalID));
 	}
 
 	public int getProviderId() {
