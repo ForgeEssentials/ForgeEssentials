@@ -69,7 +69,7 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	public void postLoad(FEModuleServerStartedEvent e) {
 		try {
 			//multiworldManager.getProviderHandler().loadWorldProviders();
-			//multiworldManager.getProviderHandler().loadWorldTypes();
+			multiworldManager.getProviderHandler().loadDimensionTypes();
 
 		} catch (java.lang.NoSuchMethodError noSuchMethodError) {
 			CrashReport report = CrashReport.forThrowable(noSuchMethodError,

@@ -18,7 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -55,12 +54,6 @@ public class Multiworld
 	@Expose(serialize = false)
 	protected boolean error;
 
-	@Expose(serialize = false)
-	protected int providerId;
-
-	@Expose(serialize = false)
-	protected DimensionType worldTypeObj;
-
 	public Multiworld(String name, String provider, String worldType,
 			long seed) {
 		this(name, provider, worldType, seed, "");
@@ -87,7 +80,7 @@ public class Multiworld
 	public void removeAllPlayersFromWorld() {
 		ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
 		for (ServerPlayerEntity player : ServerUtil.getPlayerList()) {
-			if (player.level.dimension().location().toString().equals("ForgeEssentials:"+internalWorldName+internalID)) {
+			if (player.level.dimension().location().toString().equals(getResourceName())) {
 				BlockPos playerPos = player.blockPosition();
 				int y = WorldUtil.placeInWorld(player.level, playerPos.getX(),
 						playerPos.getY(), playerPos.getZ());
@@ -110,7 +103,7 @@ public class Multiworld
 	}
 
 	public String getResourceName() {
-		return "ForgeEssentials:"+name;
+		return "forgeessentials:"+getInternalName();
 	}
 
 	public ServerWorld getWorldServer() {
@@ -118,11 +111,7 @@ public class Multiworld
 	}
 
 	public RegistryKey<World> getReasourceLocationUnique() {
-		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation("forgeessentials:"+internalWorldName+internalID));
-	}
-
-	public int getProviderId() {
-		return providerId;
+		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(getResourceName()));
 	}
 
 	public String getProvider() {
@@ -135,6 +124,9 @@ public class Multiworld
 
 	public int getInternalID() {
 		return internalID;
+	}
+	public String getInternalName() {
+		return internalWorldName+internalID;
 	}
 
 	public void setInternalID(int internalID) {
@@ -189,11 +181,11 @@ public class Multiworld
 	}
 
 	protected void save() {
-		DataManager.getInstance().save(this, internalWorldName+internalID);
+		DataManager.getInstance().save(this, getInternalName());
 	}
 
 	protected void delete() {
-		DataManager.getInstance().delete(this.getClass(), internalWorldName+internalID);
+		DataManager.getInstance().delete(this.getClass(), getInternalName());
 	}
      
 

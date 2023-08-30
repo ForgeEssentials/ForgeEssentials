@@ -98,14 +98,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     protected ArrayList<ServerWorld> worldsToRemove = new ArrayList<>();
 
-    /**
-     * Event handler for new clients that need to know about our worlds
-     */
-    protected MultiworldEventHandler eventHandler = new MultiworldEventHandler(this);
-
     private NamedWorldHandler parentNamedWorldHandler;
 
-    private ProviderHelper providerHandler = new ProviderHelper();
+    protected ProviderHelper providerHandler = new ProviderHelper();
 
     // ============================================================
 
@@ -221,15 +216,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             throw new MultiworldException(Type.ALREADY_EXISTS);
         setupMultiworldData(world);
         loadWorld(world);
-        worlds.put(world.getResourceName(), world);
+        worlds.put(world.getName(), world);
         world.save();
     }
 
     protected void setupMultiworldData(Multiworld world) throws MultiworldException
     {
-        //world.providerId = providerHandler.getWorldProviderId(world.provider);
-        //world.worldTypeObj = providerHandler.getDimensionTypeByName(world.worldType);
-
         // Register dimension with last used id if possible
         if(world.getInternalID()<10) {
             int unusedID = 10;
@@ -245,18 +237,17 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         APIRegistry.perms.getServerZone().getWorldZone(world.getResourceName())
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
     }
-	static Dimension dimensionGenerator(MinecraftServer server)
+	private Dimension dimensionGenerator(MinecraftServer server, Multiworld world) throws MultiworldException
 	{
-		ServerWorld overworld = server.getLevel(World.OVERWORLD);
-		// let's dynamically create a dimension that's just the overworld with a different seed
-		long seed = BiomeManager.obfuscateSeed(overworld.getSeed());
+		long seed = BiomeManager.obfuscateSeed(world.getSeed());
 		DynamicRegistries registries = server.registryAccess();
 		Registry<DimensionSettings> noiseRegistry = registries.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY);
 		Registry<Biome> biomeRegistry = registries.registryOrThrow(Registry.BIOME_REGISTRY);
 		// Dimension constructor takes a dimensiontype supplier and a chunk generator
 		// we'll just use the overworld's dimensiontype and chunk generator here
+		DimensionType dim = providerHandler.getDimensionTypeByName(world.worldType);
 		return new Dimension(() -> {
-	         return registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).getOrThrow(DimensionType.OVERWORLD_LOCATION);
+	         return dim;
 	      }, new NoiseChunkGenerator(new OverworldBiomeProvider(seed, false, false, biomeRegistry), seed, 
 					() -> noiseRegistry.getOrThrow(DimensionSettings.OVERWORLD)));
 		//ChunkGenerator generator = new MultiworldChunkGenerator(registries.registryOrThrow(Registry.BIOME_REGISTRY));
@@ -265,7 +256,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 	    //  }, generator);
 	}
 
-	private static ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey)
+	private ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey, Multiworld world) throws MultiworldException
 	{
 		@SuppressWarnings("deprecation")
 		Map<RegistryKey<World>, ServerWorld> map = server.forgeGetWorldMap();
@@ -277,7 +268,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		}
 		ServerWorld overworld = server.getLevel(World.OVERWORLD);
 		RegistryKey<Dimension> dimensionKey = RegistryKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
-		Dimension dimension = dimensionGenerator(server);
+		Dimension dimension = dimensionGenerator(server, world);
 
 		IChunkStatusListenerFactory chunkListenerFactory = CHUNK_STATUS_LISTENER_FACTORY_FIELD.apply(server);
 		Executor executor = BACKGROUND_EXECUTOR_FIELD.apply(server);
@@ -287,7 +278,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
 		dimensionGeneratorSettings.dimensions().register(dimensionKey, dimension, Lifecycle.experimental());
 		DerivedWorldInfo derivedworldinfo = new DerivedWorldInfo(serverConfig, serverConfig.overworldData());
-		ServerWorld newWorld = new ServerWorld(
+		ServerWorld newWorld = new WorldServerMultiworld(
 			server,
 			executor,
 			levelSave,
@@ -297,7 +288,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 			chunkListenerFactory.create(11),
 			dimension.generator(),
 			dimensionGeneratorSettings.isDebug(),
-			BiomeManager.obfuscateSeed(dimensionGeneratorSettings.seed()),
+			world.getSeed(),
 			ImmutableList.of(), // "special spawn list"
 				// phantoms, raiders, travelling traders, cats are overworld special spawns
 				// the dimension loader is hardcoded to initialize preexisting non-overworld worlds with no special spawn lists
@@ -349,19 +340,13 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 //            //if (!mcServer.isSingleplayer())
 //            //    worldServer.getLevelData().h.setGameType(mcServer.getGameType());
 
-        	ServerWorld worldServer = createAndRegisterWorldAndDimension(server, worldKey);
+        	ServerWorld worldServer = createAndRegisterWorldAndDimension(server, worldKey, world);
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
 
             // Post WorldEvent.Load
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(worldServer));
-
-            // Tell everyone about the new dim
-//            FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
-//            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, DimensionManager.getProviderType(world.dimensionId).name());
-//            channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-//            channel.writeOutbound(msg);
         }
         catch (Exception e)
         {
@@ -431,7 +416,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         for (Multiworld world : worlds.values())
         {
             world.worldLoaded = false;
-            //DimensionManager.unregisterDimension(world.getDimensionId());
         }
         worlds.clear();
     }
@@ -441,10 +425,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * Forge DimensionManager stores used dimension IDs and does not assign them again, unless they are cleared manually.
      */
-    public void clearDimensionMap()
-    {
-        //DimensionManager.loadDimensionDataMap(null);
-    }
+    //public void clearDimensionMap()
+    //{
+    //    //DimensionManager.loadDimensionDataMap(null);
+    //}
 
     // ============================================================
     // Unloading and deleting of worlds
