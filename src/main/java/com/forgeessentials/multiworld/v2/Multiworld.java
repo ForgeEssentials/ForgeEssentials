@@ -35,6 +35,8 @@ public class Multiworld
 
 	private String dimensionType;
 
+	private String dimensionSetting;
+
 	private List<String> biomes = new ArrayList<>();
 
 	private long seed;
@@ -54,17 +56,17 @@ public class Multiworld
 	@Expose(serialize = false)
 	protected boolean error;
 
-	public Multiworld(String name, String provider, String worldType,
+	public Multiworld(String name, String provider, String worldType, String dimensionSetting,
 			long seed) {
-		this(name, provider, worldType, seed, "");
+		this(name, provider, worldType, dimensionSetting, seed, "");
 	}
 
-	public Multiworld(String name, String provider, String worldType, long seed,
+	public Multiworld(String name, String provider, String worldType, String dimensionSetting, long seed,
 			String generatorOptions) {
 		this.name = name;
 		this.provider = provider;
 		this.dimensionType = worldType;
-
+		this.dimensionSetting = dimensionSetting;
 		this.seed = seed;
 		this.setGeneratorOptions(generatorOptions);
 		this.gameType = ServerLifecycleHooks.getCurrentServer().getWorldData().getGameType();
@@ -73,8 +75,8 @@ public class Multiworld
 		this.allowPeacefulCreatures = true;
 	}
 
-	public Multiworld(String name, String provider, String worldType) {
-		this(name, provider, worldType, new Random().nextLong());
+	public Multiworld(String name, String provider, String worldType, String dimensionSetting) {
+		this(name, provider, worldType, dimensionSetting, new Random().nextLong());
 	}
 
 	public void removeAllPlayersFromWorld() {
@@ -131,6 +133,10 @@ public class Multiworld
 
 	public void setInternalID(int internalID) {
 		this.internalID = internalID;
+	}
+
+	public String getDimensionSetting() {
+		return dimensionSetting;
 	}
 
 	public boolean isError() {

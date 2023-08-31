@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -25,6 +26,7 @@ import net.minecraft.world.biome.provider.EndBiomeProvider;
 import net.minecraft.world.biome.provider.NetherBiomeProvider;
 import net.minecraft.world.biome.provider.OverworldBiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProvider;
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class ProviderHelper {
@@ -33,6 +35,10 @@ public class ProviderHelper {
      */
     protected Map<String, DimensionType> dimensionTypes = new HashMap<>();
 
+    /**
+     * Mapping from DimensionSettings names to DimensionSettings objects
+     */
+    protected Map<String, DimensionSettings> dimensionSettings = new HashMap<>();
     /**
      * Mapping from BiomeProvider names to BiomeProvider objects
      */
@@ -139,5 +145,39 @@ public class ProviderHelper {
     public Set<String> getBiomeProviders()
     {
         return biomeProviderTypes.keySet();
+    }
+    // ============================================================
+    // DimensionSettings management
+
+    /**
+     * Returns the {@Link DimensionSettings} for a given dimensionSettings {@Link String}
+     */
+    public DimensionSettings getDimensionSettingsByName(String dimensionSetting) throws MultiworldException
+    {
+    	DimensionSettings type = dimensionSettings.get(dimensionSetting.toUpperCase());
+        if (type == null)
+            throw new MultiworldException(Type.NO_WORLDTYPE);
+        return type;
+    }
+    
+	/**
+     * Builds the map of valid { @Link DimensionSettings}
+     */
+    public void loadDimensionSettings()
+    {
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		DynamicRegistries registries = server.registryAccess();
+		for (Entry<RegistryKey<DimensionSettings>, DimensionSettings> provider : WorldGenRegistries.NOISE_GENERATOR_SETTINGS.entrySet()) {
+			dimensionSettings.put(provider.getKey().location().toString().toUpperCase(), provider.getValue());
+		}
+
+        LoggingHandler.felog.debug("[Multiworld] Available dimension settings:");
+        for (String worldType : dimensionSettings.keySet())
+            LoggingHandler.felog.debug("# " + worldType);
+    }
+
+    public Map<String, DimensionSettings> getDimensionSettings()
+    {
+        return dimensionSettings;
     }
 }

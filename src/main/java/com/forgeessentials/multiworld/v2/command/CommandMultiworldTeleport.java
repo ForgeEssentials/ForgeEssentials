@@ -96,7 +96,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBuilder
 		} else {
 			msg += multiworld.getName();
 		}
-		msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", pos.getX(), pos.getY(), pos.getZ());
+		msg = Translator.format(msg + " at [%d, %d, %d]", pos.getX(), pos.getY(), pos.getZ());
 		ChatOutputHandler.chatConfirmation(player.createCommandSourceStack(),
 				msg);
 		Multiworld.teleport(player, world, pos.getX(), pos.getY(), pos.getZ(), false);

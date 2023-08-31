@@ -12,8 +12,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.ReportedException;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -67,16 +65,9 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	
 	@SubscribeEvent
 	public void postLoad(FEModuleServerStartedEvent e) {
-		try {
-			multiworldManager.getProviderHandler().loadBiomeProviders();
-			multiworldManager.getProviderHandler().loadDimensionTypes();
-
-		} catch (java.lang.NoSuchMethodError noSuchMethodError) {
-			CrashReport report = CrashReport.forThrowable(noSuchMethodError,
-					"MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
-			report.addCategory("MultiWorld");
-			throw new ReportedException(report);
-		}
+		multiworldManager.getProviderHandler().loadBiomeProviders();
+		multiworldManager.getProviderHandler().loadDimensionTypes();
+		multiworldManager.getProviderHandler().loadDimensionSettings();
 	}
 	static ForgeConfigSpec.BooleanValue FEtestValue;
 	

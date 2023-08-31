@@ -32,7 +32,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.border.IBorderListener;
@@ -241,20 +240,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 	{
 		long seed = BiomeManager.obfuscateSeed(world.getSeed());
 		DynamicRegistries registries = server.registryAccess();
-		Registry<DimensionSettings> noiseRegistry = registries.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY);
-		Registry<Biome> biomeRegistry = registries.registryOrThrow(Registry.BIOME_REGISTRY);
-		// Dimension constructor takes a dimensiontype supplier and a chunk generator
-		// we'll just use the overworld's dimensiontype and chunk generator here
 		DimensionType dim = providerHandler.getDimensionTypeByName(world.getDimensionType());
-		BiomeProvider biome = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
+		BiomeProvider biome = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), registries.registryOrThrow(Registry.BIOME_REGISTRY), seed);
+		DimensionSettings settings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
 		return new Dimension(() -> {
 	         return dim;
-	      }, new NoiseChunkGenerator(biome, seed, 
-					() -> noiseRegistry.getOrThrow(DimensionSettings.OVERWORLD)));
-		//ChunkGenerator generator = new MultiworldChunkGenerator(registries.registryOrThrow(Registry.BIOME_REGISTRY));
-		//return new Dimension(() -> {
-	    //     return registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).getOrThrow(DimensionType.OVERWORLD_LOCATION);
-	    //  }, generator);
+	      }, new NoiseChunkGenerator(biome, seed, () -> settings));
 	}
 
 	private ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey, Multiworld world) throws MultiworldException
