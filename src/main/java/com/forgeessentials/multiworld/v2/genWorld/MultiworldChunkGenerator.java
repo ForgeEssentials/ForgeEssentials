@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld.v2;
+package com.forgeessentials.multiworld.v2.genWorld;
 
 import com.mojang.serialization.Codec;
 
@@ -18,7 +18,7 @@ import net.minecraft.world.gen.Heightmap.Type;
 import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-
+//not used rn
 public class MultiworldChunkGenerator extends ChunkGenerator
 {
 	// create generator on runtime by dynamic generation

@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld.v2;
+package com.forgeessentials.multiworld.v2.genWorld;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -15,12 +15,12 @@ import net.minecraft.world.spawner.ISpecialSpawner;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.SaveFormat;
 
-public class WorldServerMultiworld extends ServerWorld
+public class ServerWorldMultiworld extends ServerWorld
 {
 
 	private Teleporter worldTeleporter;
 
-	public WorldServerMultiworld(MinecraftServer mcServer, 
+	public ServerWorldMultiworld(MinecraftServer mcServer, 
 			Executor executor, SaveFormat.LevelSave levelSave, 
 			IServerWorldInfo derivedworldinfo, RegistryKey<World> worldKey, 
 			DimensionType type, IChunkStatusListener chunkListener, 

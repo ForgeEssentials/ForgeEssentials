@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.multiworld.v2.ModuleMultiworldV2;
 import com.forgeessentials.multiworld.v2.Multiworld;
-import com.forgeessentials.multiworld.v2.MultiworldException;
-import com.forgeessentials.multiworld.v2.WorldServerMultiworld;
+import com.forgeessentials.multiworld.v2.genWorld.ServerWorldMultiworld;
+import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.LongArgumentType;
@@ -100,7 +100,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     public static final SuggestionProvider<CommandSource> SUGGEST_dimTypes = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionTypes().keySet()) {
-    		types.add(name.replace(':', '_'));
+    		types.add(name.replace(':', '+'));
     	}
         return ISuggestionProvider.suggest(types, builder);
     };
@@ -110,7 +110,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     public static final SuggestionProvider<CommandSource> SUGGEST_dimSettings = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionSettings().keySet()) {
-    		types.add(name.replace(':', '_'));
+    		types.add(name.replace(':', '+'));
     	}
         return ISuggestionProvider.suggest(types, builder);
     };
@@ -170,7 +170,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     				ChatOutputHandler.chatError(ctx.getSource(), "Multiworld " + name1 + " does not exist!");
     				return Command.SINGLE_SUCCESS;
     			}
-    			if(!(world1.getWorldServer() instanceof WorldServerMultiworld)) { 
+    			if(!(world1.getWorldServer() instanceof ServerWorldMultiworld)) { 
     				ChatOutputHandler.chatError(ctx.getSource(), "World " + world1.getName() + " is not a FE multiworld and cannot be deleted!");
     				return Command.SINGLE_SUCCESS;
     	        }
@@ -180,9 +180,9 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     		case "create":
         		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getSeed();
         		String generatorOptions = "";
-        		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('_', ':');
+        		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('+', ':');
         		String biomeProvider = StringArgumentType.getString(ctx, "biomeProvider");
-        		String dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('_', ':');
+        		String dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('+', ':');
         		String name2 = StringArgumentType.getString(ctx, "name");
     			if(params.split(":")[1].equals("seed")) {
     				seed = LongArgumentType.getLong(ctx, "seed");

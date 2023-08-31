@@ -1,12 +1,11 @@
-package com.forgeessentials.multiworld.v2.providers;
+package com.forgeessentials.multiworld.v2.utils;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.Set;
 
-import com.forgeessentials.multiworld.v2.MultiworldException;
-import com.forgeessentials.multiworld.v2.MultiworldException.Type;
+import com.forgeessentials.multiworld.v2.utils.MultiworldException.Type;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import java.lang.reflect.Constructor;
@@ -57,7 +56,7 @@ public class ProviderHelper {
     {
     	DimensionType type = dimensionTypes.get(dimensionType);
         if (type == null)
-            throw new MultiworldException(Type.NO_WORLDTYPE);
+            throw new MultiworldException(Type.NO_DIMENSION_TYPE);
         return type;
     }
     
@@ -111,24 +110,20 @@ public class ProviderHelper {
 			break;
 		case ("Minecraft_Checkerboard"):
 			final List<Supplier<Biome>> allowedBiomes = new ArrayList<>();
-			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-			DynamicRegistries registries = server.registryAccess();
-			Registry<Biome> biomes1 = registries.registryOrThrow(Registry.BIOME_REGISTRY);
+			Registry<Biome> biomes1 = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
 			for (Entry<RegistryKey<Biome>, Biome> biome : biomes1.entrySet()) {
-				allowedBiomes.add(() -> {
-					return biome.getValue();
-				});
+				allowedBiomes.add(() -> {return biome.getValue();});
 			}
 			type = new CheckerboardBiomeProvider(allowedBiomes, 2);
 			break;
 		case ("TwilightForest"):
-			type = getProvider(classPath, seed, biomes);
+			type = getProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
 			break;
 		case ("TwilightForest_Dis"):
-			type = getProvider(classPath, seed, biomes);
+			type = getProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
 			break;
 		case ("Lotr_MiddleEarth"):
-			type = getProvider(classPath, seed, false, biomes);
+			type = getProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, true, biomes});
 			break;
 		default:
 			if (type == null)
@@ -172,6 +167,8 @@ public class ProviderHelper {
         LoggingHandler.felog.debug("[Multiworld] Available biome providers:");
         for (String biomeType : biomeProviderTypes.keySet())
             LoggingHandler.felog.debug("# " + biomeType);
+        for (String biomeClassName : biomeProviderTypes.values())
+            LoggingHandler.felog.debug("$ " + biomeClassName);
     }
 
     public Set<String> getBiomeProviders()
@@ -179,14 +176,15 @@ public class ProviderHelper {
         return biomeProviderTypes.keySet();
     }
 
-    private BiomeProvider getProvider(String className, Object... initargs){
+    private BiomeProvider getProvider(String className, Class<?>[] classes, Object[] initargs){
 		try {
 			Class<?> clazz = Class.forName(className);
-	    	Constructor<?> ctor = clazz.getConstructor(String.class);
-	    	Object object = ctor.newInstance(new Object[] { initargs });
-	    	if(object.getClass().isAssignableFrom(BiomeProvider.class)) {
+	    	Constructor<?> ctor = clazz.getConstructor(classes);
+	    	Object object = ctor.newInstance(initargs);
+	    	if(object instanceof BiomeProvider) {
 	    		return (BiomeProvider) object;
 	    	}
+	    	LoggingHandler.felog.debug("[Multiworld] Null BiomeProvider:");
 	    	return null;
 	    	//throw new RuntimeException("RecievedProvider "+object.getClass().toString()+"Is not assignable from net.minecraft.world.biome.provider.BiomeProvider");
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -205,7 +203,7 @@ public class ProviderHelper {
     {
     	DimensionSettings type = dimensionSettings.get(dimensionSetting);
         if (type == null)
-            throw new MultiworldException(Type.NO_WORLD_SETTINGS);
+            throw new MultiworldException(Type.NO_DIMENSION_SETTINGS);
         return type;
     }
     

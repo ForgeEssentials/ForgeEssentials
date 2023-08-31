@@ -17,8 +17,10 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.multiworld.v2.MultiworldException.Type;
-import com.forgeessentials.multiworld.v2.providers.ProviderHelper;
+import com.forgeessentials.multiworld.v2.genWorld.ServerWorldMultiworld;
+import com.forgeessentials.multiworld.v2.utils.MultiworldException;
+import com.forgeessentials.multiworld.v2.utils.ProviderHelper;
+import com.forgeessentials.multiworld.v2.utils.MultiworldException.Type;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.world.WorldPreLoadEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -140,10 +142,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 case NO_BIOME_PROVIDER:
                     LoggingHandler.felog.error(String.format(e.type.error, world.getBiomeProvider()));
                     break;
-                case NO_WORLDTYPE:
+                case NO_DIMENSION_TYPE:
                     LoggingHandler.felog.error(String.format(e.type.error, world.getDimensionType()));
                     break;
-                case NO_WORLD_SETTINGS:
+                case NO_DIMENSION_SETTINGS:
                     LoggingHandler.felog.error(String.format(e.type.error, world.getDimensionSetting()));
                     break;
                 default:
@@ -216,7 +218,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     public void addWorld(Multiworld world) throws MultiworldException
     {
         if (worlds.containsKey(world.getName()))
-            throw new MultiworldException(Type.ALREADY_EXISTS);
+            throw new MultiworldException(Type.WORLD_ALREADY_EXISTS);
         setupMultiworldData(world);
         loadWorld(world);
         worlds.put(world.getName(), world);
@@ -247,6 +249,15 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		DimensionType dim = providerHandler.getDimensionTypeByName(world.getDimensionType());
 		BiomeProvider biome = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), registries.registryOrThrow(Registry.BIOME_REGISTRY), seed);
 		DimensionSettings settings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
+		if(dim==null) {
+			throw new MultiworldException(Type.NULL_DIMENSION_TYPE);
+		}
+		if(biome==null) {
+			throw new MultiworldException(Type.NULL_BIOME_PROVIDER);
+		}
+		if(settings==null) {
+			throw new MultiworldException(Type.NULL_DIMENSION_SETTINGS);
+		}
 		return new Dimension(() -> {
 	         return dim;
 	      }, new NoiseChunkGenerator(biome, seed, () -> settings));
@@ -274,7 +285,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
 		dimensionGeneratorSettings.dimensions().register(dimensionKey, dimension, Lifecycle.experimental());
 		DerivedWorldInfo derivedworldinfo = new DerivedWorldInfo(serverConfig, serverConfig.overworldData());
-		ServerWorld newWorld = new WorldServerMultiworld(
+		ServerWorld newWorld = new ServerWorldMultiworld(
 			server,
 			executor,
 			levelSave,
