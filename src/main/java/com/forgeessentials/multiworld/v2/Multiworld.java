@@ -25,28 +25,28 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Multiworld
 {
-    public static String internalWorldName = "feworld";
+	private static String internalWorldName = "feworld";
 
-	protected String name;
+	private String name;
 
-	protected int internalID = 0;
+	private int internalID = 0;
 
-	protected String provider;
+	private String provider;
 
-	protected String worldType;
+	private String dimensionType;
 
-	protected List<String> biomes = new ArrayList<>();
+	private List<String> biomes = new ArrayList<>();
 
-	protected long seed;
+	private long seed;
 
-	protected String generatorOptions;
+	private String generatorOptions;
 
-	protected GameType gameType = GameType.CREATIVE;
-	protected Difficulty difficulty = Difficulty.PEACEFUL;
-	protected boolean allowHostileCreatures =true;
-	protected boolean allowPeacefulCreatures = true;
+	private GameType gameType = GameType.CREATIVE;
+	private Difficulty difficulty = Difficulty.PEACEFUL;
+	private boolean allowHostileCreatures =true;
+	private boolean allowPeacefulCreatures = true;
 
-	protected boolean mapFeaturesEnabled = true;
+	private boolean mapFeaturesEnabled = true;
 
 	@Expose(serialize = false)
 	protected boolean worldLoaded;
@@ -63,10 +63,10 @@ public class Multiworld
 			String generatorOptions) {
 		this.name = name;
 		this.provider = provider;
-		this.worldType = worldType;
+		this.dimensionType = worldType;
 
 		this.seed = seed;
-		this.generatorOptions = generatorOptions;
+		this.setGeneratorOptions(generatorOptions);
 		this.gameType = ServerLifecycleHooks.getCurrentServer().getWorldData().getGameType();
 		this.difficulty = ServerLifecycleHooks.getCurrentServer().getWorldData().getDifficulty();
 		this.allowHostileCreatures = true;
@@ -114,7 +114,7 @@ public class Multiworld
 		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(getResourceName()));
 	}
 
-	public String getProvider() {
+	public String getBiomeProvider() {
 		return provider;
 	}
 
@@ -178,6 +178,18 @@ public class Multiworld
 	public void setAllowPeacefulCreatures(boolean allowPeacefulCreatures) {
 		this.allowPeacefulCreatures = allowPeacefulCreatures;
 		updateWorldSettings();
+	}
+
+	public String getGeneratorOptions() {
+		return generatorOptions;
+	}
+
+	public void setGeneratorOptions(String generatorOptions) {
+		this.generatorOptions = generatorOptions;
+	}
+
+	public String getDimensionType() {
+		return dimensionType;
 	}
 
 	protected void save() {

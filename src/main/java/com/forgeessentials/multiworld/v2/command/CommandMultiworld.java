@@ -73,17 +73,19 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
         		.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
         		.then(Commands.literal("create")
         				.then(Commands.argument("name", StringArgumentType.word())
-        						.then(Commands.argument("dimensionType", StringArgumentType.word())
-        								.suggests(SUGGEST_dimTypes)
-        								.executes(CommandContext -> execute(CommandContext, "create:generic"))
-        								.then(Commands.argument("seed", LongArgumentType.longArg())
-        										.executes(CommandContext -> execute(CommandContext, "create:seed"))
-        										.then(Commands.argument("generatorOptions", StringArgumentType.word())
-        												.executes(CommandContext -> execute(CommandContext, "create:gen")))))))
+        						.then(Commands.argument("biomeProvider", StringArgumentType.word())
+        								.suggests(SUGGEST_biomeTypes)
+        								.then(Commands.argument("dimensionType", StringArgumentType.word())
+        										.suggests(SUGGEST_dimTypes)
+        										.executes(CommandContext -> execute(CommandContext, "create:generic"))
+        										.then(Commands.argument("seed", LongArgumentType.longArg())
+        												.executes(CommandContext -> execute(CommandContext, "create:seed"))
+        												.then(Commands.argument("generatorOptions", StringArgumentType.word())
+        														.executes(CommandContext -> execute(CommandContext, "create:gen")))))))
         		.then(Commands.literal("delete")
         				.then(Commands.argument("world", StringArgumentType.word())
         						.suggests(SUGGEST_dims)
-        						.executes(CommandContext -> execute(CommandContext, "delete"))));
+        						.executes(CommandContext -> execute(CommandContext, "delete")))));
     }
 
     public static final SuggestionProvider<CommandSource> SUGGEST_dims = (ctx, builder) -> {
@@ -92,6 +94,13 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     public static final SuggestionProvider<CommandSource> SUGGEST_dimTypes = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionTypes().keySet()) {
+    		types.add(name.replace(':', '-'));
+    	}
+        return ISuggestionProvider.suggest(types, builder);
+    };
+    public static final SuggestionProvider<CommandSource> SUGGEST_biomeTypes = (ctx, builder) -> {
+    	Set<String> types = new HashSet<>();
+    	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getBiomeProviders()) {
     		types.add(name.replace(':', '-'));
     	}
         return ISuggestionProvider.suggest(types, builder);
@@ -113,7 +122,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available worlds:");
 				for (Multiworld world : ModuleMultiworldV2.getMultiworldManager().getWorlds()) {
 					ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + world.getInternalID() + " "
-							+ world.getName() + ": " + world.getProvider());
+							+ world.getName() + ": " + world.getBiomeProvider());
 				}
 				break;
     		case "dimensionTypes":
@@ -151,6 +160,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
         		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getSeed();
         		String generatorOptions = "";
         		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('-', ':');
+        		String biomeProvider = StringArgumentType.getString(ctx, "biomeProvider").replace('-', ':');
         		String name2 = StringArgumentType.getString(ctx, "name");
     			if(params.split(":")[1].equals("seed")) {
     				seed = LongArgumentType.getLong(ctx, "seed");
@@ -159,8 +169,8 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     				seed = LongArgumentType.getLong(ctx, "seed");
     				generatorOptions = StringArgumentType.getString(ctx, "generatorOptions");
     			}
-    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Creating a Multiworld named \"%s\", provided by \"%s\", with a world type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"",name2,"",dimensionType,generatorOptions,seed);
-				Multiworld worldNew = new Multiworld(name2, "", dimensionType,
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Creating a Multiworld named \"%s\", biomes provided by \"%s\", with a dimension type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"",name2,biomeProvider,dimensionType,generatorOptions,seed);
+				Multiworld worldNew = new Multiworld(name2, biomeProvider, dimensionType,
 						seed, generatorOptions);
 				try {
 					ModuleMultiworldV2.getMultiworldManager().addWorld(worldNew);

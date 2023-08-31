@@ -34,7 +34,7 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.biome.provider.OverworldBiomeProvider;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.border.IBorderListener;
 import net.minecraft.world.chunk.listener.IChunkStatusListenerFactory;
 import net.minecraft.world.gen.DimensionSettings;
@@ -123,8 +123,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
-            if (world.generatorOptions == null) {
-                world.generatorOptions = "";
+            if (world.getGeneratorOptions() == null) {
+                world.setGeneratorOptions("");
             }
 
             worlds.put(world.getName(), world);
@@ -138,10 +138,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 switch (e.type)
                 {
                 case NO_PROVIDER:
-                    LoggingHandler.felog.error(String.format(e.type.error, world.provider));
+                    LoggingHandler.felog.error(String.format(e.type.error, world.getBiomeProvider()));
                     break;
                 case NO_WORLDTYPE:
-                    LoggingHandler.felog.error(String.format(e.type.error, world.worldType));
+                    LoggingHandler.felog.error(String.format(e.type.error, world.getDimensionType()));
                     break;
                 default:
                     LoggingHandler.felog.error(e.type.error);
@@ -245,10 +245,11 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		Registry<Biome> biomeRegistry = registries.registryOrThrow(Registry.BIOME_REGISTRY);
 		// Dimension constructor takes a dimensiontype supplier and a chunk generator
 		// we'll just use the overworld's dimensiontype and chunk generator here
-		DimensionType dim = providerHandler.getDimensionTypeByName(world.worldType);
+		DimensionType dim = providerHandler.getDimensionTypeByName(world.getDimensionType());
+		BiomeProvider biome = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
 		return new Dimension(() -> {
 	         return dim;
-	      }, new NoiseChunkGenerator(new OverworldBiomeProvider(seed, false, false, biomeRegistry), seed, 
+	      }, new NoiseChunkGenerator(biome, seed, 
 					() -> noiseRegistry.getOrThrow(DimensionSettings.OVERWORLD)));
 		//ChunkGenerator generator = new MultiworldChunkGenerator(registries.registryOrThrow(Registry.BIOME_REGISTRY));
 		//return new Dimension(() -> {

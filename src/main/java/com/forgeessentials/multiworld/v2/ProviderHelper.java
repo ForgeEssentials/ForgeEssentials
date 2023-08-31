@@ -2,33 +2,41 @@ package com.forgeessentials.multiworld.v2;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
+import java.util.Set;
 
 import com.forgeessentials.multiworld.v2.MultiworldException.Type;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.provider.BiomeProvider;
+import net.minecraft.world.biome.provider.CheckerboardBiomeProvider;
+import net.minecraft.world.biome.provider.EndBiomeProvider;
+import net.minecraft.world.biome.provider.NetherBiomeProvider;
+import net.minecraft.world.biome.provider.OverworldBiomeProvider;
+import net.minecraft.world.biome.provider.SingleBiomeProvider;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class ProviderHelper {
-    public static final String PROVIDER_NORMAL = "normal";
-    public static final String PROVIDER_HELL = "nether";
-    public static final String PROVIDER_END = "end";
     /**
      * Mapping from DimensionType names to DimensionType objects
      */
     protected Map<String, DimensionType> dimensionTypes = new HashMap<>();
 
     /**
-     * Mapping from provider classnames to IDs
+     * Mapping from BiomeProvider names to BiomeProvider objects
      */
-    protected Map<String, String> worldProviderClasses = new HashMap<>();
+    protected Map<String, Class<? extends BiomeProvider>> biomeProviderTypes = new HashMap<>();
 	
     // ============================================================
     // DimensionType management
@@ -51,7 +59,7 @@ public class ProviderHelper {
     {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		DynamicRegistries registries = server.registryAccess();
-		MutableRegistry<DimensionType> loadedProviders = registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+		Registry<DimensionType> loadedProviders = registries.dimensionTypes();
 		for (Entry<RegistryKey<DimensionType>, DimensionType> provider : loadedProviders.entrySet()) {
 			dimensionTypes.put(provider.getKey().location().toString().toUpperCase(), provider.getValue());
 		}
@@ -68,55 +76,68 @@ public class ProviderHelper {
     // ============================================================
     // WorldProvider management
 
-//    public int getWorldProviderId(String providerName) throws MultiworldException
-//    {
-//        switch (providerName.toLowerCase())
-//        {
-//        // We use the hardcoded values as some mods just replace the class
-//        // (BiomesOPlenty)
-//        case PROVIDER_NORMAL:
-//            return 0;
-//        case PROVIDER_HELL:
-//            return -1;
-//        case PROVIDER_END:
-//            return 1;
-//        default:
-//            // Otherwise we try to use the provider classname that was supplied
-//            Integer providerId = worldProviderClasses.get(providerName);
-//            if (providerId == null)
-//                throw new MultiworldException(Type.NO_PROVIDER);
-//            return providerId;
-//        }
-//    }
-//
-//    /**
-//     * Use reflection to load the registered WorldProviders
-//     */
-//    public void loadWorldProviders()
-//    {
-//        try
-//        {
-//        	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-//        	DynamicRegistries registries = server.registryAccess();
-//            MutableRegistry<DimensionType> loadedProviders = registries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
-//            for (Entry<RegistryKey<DimensionType>, DimensionType> provider : loadedProviders.entrySet())
-//            {
-//                worldProviderClasses.put(provider.getKey().getRegistryName().toString(), provider.getKey().location().toString());
-//            }
-//        }
-//        catch (SecurityException | IllegalArgumentException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        LoggingHandler.felog.debug("[Multiworld] Available world providers:");
-//        for (Entry<String, String> provider : worldProviderClasses.entrySet())
-//        {
-//            LoggingHandler.felog.debug("# " + provider.getValue() + ":" + provider.getKey());
-//        }
-//    }
-//
-//    public Map<String, String> getWorldProviders()
-//    {
-//        return worldProviderClasses;
-//    }
+
+    /**
+     * Returns the {@Link BiomeProvider} for a given biomeProvider {@Link String}
+     */
+    public BiomeProvider getBiomeProviderByName(String biomeProviderType, Registry<Biome> biomes, long seed) throws MultiworldException
+    {
+    	BiomeProvider type=null;
+    	switch(biomeProviderType.toLowerCase()) {
+    		case("single"):
+    			type = new SingleBiomeProvider(biomes.get(Biomes.PLAINS));
+    			break;
+    		case("nether"):
+    			type = NetherBiomeProvider.Preset.NETHER.biomeSource(biomes, seed);
+    			break;
+    		case("checkerboard"):
+    			final List<Supplier<Biome>> allowedBiomes= new ArrayList<>();
+    			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+    			DynamicRegistries registries = server.registryAccess();
+    			Registry<Biome> biomes1 = registries.registryOrThrow(Registry.BIOME_REGISTRY);
+    			for(Entry<RegistryKey<Biome>, Biome> biome : biomes1.entrySet()) {
+    				allowedBiomes.add(() -> {return biome.getValue();});
+    			}
+    			type = new CheckerboardBiomeProvider(allowedBiomes, 2);
+    			break;
+    		case("overworld"):
+    			type = new OverworldBiomeProvider(seed, false, false, biomes);
+    			break;
+    		case("end"):
+    			type = new EndBiomeProvider(biomes, seed);
+    			break;
+    		default:
+    			if (type == null)
+    	            throw new MultiworldException(Type.NO_PROVIDER);
+    	}
+        return type;
+    }
+    
+	/**
+     * Builds the map of valid { @Link BiomeProvider}
+     */
+    public void loadBiomeProviders()
+    {
+    	biomeProviderTypes.put("Single",  SingleBiomeProvider.class);
+    	biomeProviderTypes.put("Nether",  NetherBiomeProvider.class);
+    	biomeProviderTypes.put("Checkerboard",  CheckerboardBiomeProvider.class);
+    	biomeProviderTypes.put("Overworld",  OverworldBiomeProvider.class);
+    	biomeProviderTypes.put("End",  EndBiomeProvider.class);
+//		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+//		DynamicRegistries registries = server.registryAccess();
+//		RegistryKey.create(Registry.BIOME_SOURCE_REGISTRY, new ResourceLocation(""));
+//		Registry<Codec<? extends BiomeProvider>> loadedProviders = Registry.BIOME_SOURCE;
+//		for (ServerWorld world : server.getAllLevels()) {
+//			biomeProviderTypes.put(world.getBiomeManager(), world.getBiomeManager());
+//		}
+
+        LoggingHandler.felog.debug("[Multiworld] Available biome providers:");
+        for (String biomeType : biomeProviderTypes.keySet())
+            LoggingHandler.felog.debug("# " + biomeType);
+    }
+
+    public Set<String> getBiomeProviders()
+    {
+        return biomeProviderTypes.keySet();
+    }
 }

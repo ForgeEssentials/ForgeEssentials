@@ -68,7 +68,7 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	@SubscribeEvent
 	public void postLoad(FEModuleServerStartedEvent e) {
 		try {
-			//multiworldManager.getProviderHandler().loadWorldProviders();
+			multiworldManager.getProviderHandler().loadBiomeProviders();
 			multiworldManager.getProviderHandler().loadDimensionTypes();
 
 		} catch (java.lang.NoSuchMethodError noSuchMethodError) {
