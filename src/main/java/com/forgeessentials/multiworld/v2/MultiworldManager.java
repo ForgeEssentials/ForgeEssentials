@@ -18,6 +18,7 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.v2.MultiworldException.Type;
+import com.forgeessentials.multiworld.v2.providers.ProviderHelper;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.world.WorldPreLoadEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -136,11 +137,14 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             {
                 switch (e.type)
                 {
-                case NO_PROVIDER:
+                case NO_BIOME_PROVIDER:
                     LoggingHandler.felog.error(String.format(e.type.error, world.getBiomeProvider()));
                     break;
                 case NO_WORLDTYPE:
                     LoggingHandler.felog.error(String.format(e.type.error, world.getDimensionType()));
+                    break;
+                case NO_WORLD_SETTINGS:
+                    LoggingHandler.felog.error(String.format(e.type.error, world.getDimensionSetting()));
                     break;
                 default:
                     LoggingHandler.felog.error(e.type.error);

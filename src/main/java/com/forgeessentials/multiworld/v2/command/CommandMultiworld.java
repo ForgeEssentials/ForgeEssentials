@@ -100,21 +100,17 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     public static final SuggestionProvider<CommandSource> SUGGEST_dimTypes = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionTypes().keySet()) {
-    		types.add(name.replace(':', '-'));
+    		types.add(name.replace(':', '_'));
     	}
         return ISuggestionProvider.suggest(types, builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_biomeTypes = (ctx, builder) -> {
-    	Set<String> types = new HashSet<>();
-    	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getBiomeProviders()) {
-    		types.add(name.replace(':', '-'));
-    	}
-        return ISuggestionProvider.suggest(types, builder);
+        return ISuggestionProvider.suggest(ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getBiomeProviders(), builder);
     };
     public static final SuggestionProvider<CommandSource> SUGGEST_dimSettings = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionSettings().keySet()) {
-    		types.add(name.replace(':', '-'));
+    		types.add(name.replace(':', '_'));
     	}
         return ISuggestionProvider.suggest(types, builder);
     };
@@ -184,9 +180,9 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     		case "create":
         		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getSeed();
         		String generatorOptions = "";
-        		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('-', ':');
-        		String biomeProvider = StringArgumentType.getString(ctx, "biomeProvider").replace('-', ':');
-        		String dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('-', ':');
+        		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('_', ':');
+        		String biomeProvider = StringArgumentType.getString(ctx, "biomeProvider");
+        		String dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('_', ':');
         		String name2 = StringArgumentType.getString(ctx, "name");
     			if(params.split(":")[1].equals("seed")) {
     				seed = LongArgumentType.getLong(ctx, "seed");
