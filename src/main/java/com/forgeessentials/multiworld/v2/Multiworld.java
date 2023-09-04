@@ -27,6 +27,8 @@ public class Multiworld
 {
 	private static String internalWorldName = "feworld";
 
+	public static String FENameSpace = "forgeessentials";
+
 	private String name;
 
 	private int internalID = 0;
@@ -105,7 +107,7 @@ public class Multiworld
 	}
 
 	public String getResourceName() {
-		return "forgeessentials:"+getInternalName();
+		return FENameSpace+":"+getInternalName();
 	}
 
 	public ServerWorld getWorldServer() {
@@ -241,7 +243,7 @@ public class Multiworld
 		if (instant)
 			TeleportHelper.checkedTeleport(player, target);
 		else
-			TeleportHelper.teleport(player, target);
+			TeleportHelper.doTeleport(player, target);
 
 		if (worldChange)
 			displayWelcomeMessage(player);

@@ -62,13 +62,13 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
         		.then(Commands.literal("list")
-        				.then(Commands.literal("worlds")
+        				.then(Commands.literal("CurrentMultiworlds")
         						.executes(CommandContext -> execute(CommandContext, "worlds")))
-        				.then(Commands.literal("dimensionSettings")
+        				.then(Commands.literal("AvailableDimensionSettings")
         						.executes(CommandContext -> execute(CommandContext, "dimensionSettings")))
-        				.then(Commands.literal("biomeProviders")
+        				.then(Commands.literal("AvailableBiomeProviders")
         						.executes(CommandContext -> execute(CommandContext, "biomeProviders")))
-        				.then(Commands.literal("dimensionTypes")
+        				.then(Commands.literal("AvailableDimensionTypes")
         						.executes(CommandContext -> execute(CommandContext, "dimensionTypes"))))
         		.then(Commands.literal("info")
         				.then(Commands.argument("world", StringArgumentType.word())
@@ -130,8 +130,8 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     		case "worlds":
     			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available worlds:");
 				for (Multiworld world : ModuleMultiworldV2.getMultiworldManager().getWorlds()) {
-					ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + world.getInternalID() + " "
-							+ world.getName() + ": " + world.getBiomeProvider());
+					ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + world.getInternalName() + " "
+							+ world.getName());
 				}
 				break;
     		case "dimensionSettings":
@@ -160,7 +160,12 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     				return Command.SINGLE_SUCCESS;
     			}
     			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Multiworld %s:", world.getName());
-    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  DimID = %d", world.getInternalID());
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  DimensionID = %d", world.getInternalID());
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  DimensionKey = %s", world.getInternalName());
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  BiomeProvider = %s", world.getBiomeProvider());
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  DimensionType = %s", world.getDimensionType());
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  DimensionSettings = %s", world.getDimensionSetting());
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Seed = %d", world.getSeed());
     			break;
     		case "delete":
     			String name1 = StringArgumentType.getString(ctx, "world");
