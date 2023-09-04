@@ -50,6 +50,11 @@ public class PlayerInfo implements Loadable
     private long lastTeleportTime = 0;
 
     /* ------------------------------------------------------------ */
+    /* MultiWorld Location Fixer */
+
+    private WarpPoint actualLogOutPoint;
+
+    /* ------------------------------------------------------------ */
     /* Selection */
 
     private Point sel1;
@@ -521,4 +526,12 @@ public class PlayerInfo implements Loadable
     {
         this.noClip = noClip;
     }
+
+	public WarpPoint getActualLogOutPoint() {
+		return actualLogOutPoint;
+	}
+
+	public void setActualLogOutPoint(WarpPoint actualLogOutPoint) {
+		this.actualLogOutPoint = actualLogOutPoint;
+	}
 }

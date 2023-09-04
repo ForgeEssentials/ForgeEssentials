@@ -8,6 +8,7 @@ import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworld;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworldTeleport;
+import com.forgeessentials.multiworld.v2.utils.PlayerInvalidRegistryLoginFix;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -36,6 +37,8 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 
 	private static MultiworldManager multiworldManager = new MultiworldManager();
 
+	private static PlayerInvalidRegistryLoginFix playerLocationFixer = new PlayerInvalidRegistryLoginFix();
+
     public boolean testValue;
 
     @SubscribeEvent
@@ -57,18 +60,19 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 		APIRegistry.perms.registerNode(PERM_LIST, DefaultPermissionLevel.ALL,
 				"List multiworlds on the server");
 	}
+	
+	@SubscribeEvent
+	public void serverStarted(FEModuleServerStartedEvent e) {
+		multiworldManager.getProviderHandler().loadBiomeProviders();
+		multiworldManager.getProviderHandler().loadDimensionTypes();
+		multiworldManager.getProviderHandler().loadDimensionSettings();
+	}
 
 	@SubscribeEvent
 	public void serverStopped(FEModuleServerStoppedEvent e) {
 		multiworldManager.serverStopped();
 	}
-	
-	@SubscribeEvent
-	public void postLoad(FEModuleServerStartedEvent e) {
-		multiworldManager.getProviderHandler().loadBiomeProviders();
-		multiworldManager.getProviderHandler().loadDimensionTypes();
-		multiworldManager.getProviderHandler().loadDimensionSettings();
-	}
+
 	static ForgeConfigSpec.BooleanValue FEtestValue;
 	
 	@Override

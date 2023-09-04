@@ -38,6 +38,11 @@ public class ProviderHelper {
     protected Map<String, DimensionType> dimensionTypes = new TreeMap<>();
 
     /**
+     * Mapping from DimensionType names to DimensionType objects
+     */
+    protected Map<String, DimensionType> vanillaDimensionTypes = new TreeMap<>();
+
+    /**
      * Mapping from DimensionSettings names to DimensionSettings objects
      */
     protected Map<String, DimensionSettings> dimensionSettings = new TreeMap<>();
@@ -70,9 +75,12 @@ public class ProviderHelper {
 		Registry<DimensionType> loadedProviders = registries.dimensionTypes();
 		for (Entry<RegistryKey<DimensionType>, DimensionType> provider : loadedProviders.entrySet()) {
 			dimensionTypes.put(provider.getKey().location().toString(), provider.getValue());
+			if(provider.getKey().location().getNamespace().equals("minecraft")) {
+				vanillaDimensionTypes.put(provider.getKey().location().toString(), provider.getValue());
+			}
 		}
 
-        LoggingHandler.felog.debug("[Multiworld] Available world types:");
+        LoggingHandler.felog.debug("[Multiworld] Available dimension types:");
         for (String worldType : dimensionTypes.keySet())
             LoggingHandler.felog.debug("# " + worldType);
     }
