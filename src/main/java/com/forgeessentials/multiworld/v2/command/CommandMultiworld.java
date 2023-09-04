@@ -6,11 +6,15 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.v2.ModuleMultiworldV2;
 import com.forgeessentials.multiworld.v2.Multiworld;
 import com.forgeessentials.multiworld.v2.genWorld.ServerWorldMultiworld;
 import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.questioner.Questioner;
+import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -183,9 +187,15 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted multiworld " + world1.getName());
     			break;
     		case "create":
+    			if(getServerPlayer(ctx.getSource())==null) {
+    				return Command.SINGLE_SUCCESS;
+    			}
         		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getSeed();
         		String generatorOptions = "";
         		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('+', ':');
+    			ChatOutputHandler.chatWarning(ctx.getSource(), "You selected a non-vanilla dimensionType, your player's games will think they are in minecraft:overworld when joining the dimension!"
+    					+ " This could cause issues with client mods thinking they are in the overworld, while the server will think not. Please refrain from using multiworlds in the configuration!");
+    			ChatOutputHandler.chatError(ctx.getSource(), "This is a unsupported and error-prone option. World issues arising while having a dimension using non-vanilla dimensionTypes will be ignored!");
         		String biomeProvider = StringArgumentType.getString(ctx, "biomeProvider");
         		String dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('+', ':');
         		String name2 = StringArgumentType.getString(ctx, "name");
@@ -200,12 +210,30 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
 				Multiworld worldNew = new Multiworld(name2, biomeProvider, dimensionType, dimensionSettings,
 						seed, generatorOptions);
 				try {
-					ModuleMultiworldV2.getMultiworldManager().addWorld(worldNew);
-					if (getServerPlayer(ctx.getSource()) != null) {
-						worldNew.teleport(getServerPlayer(ctx.getSource()), true);
-					}
-				} catch (MultiworldException e) {
-					throw new CommandException(new StringTextComponent(e.type.error));
+					Questioner.addChecked(getServerPlayer(ctx.getSource()),
+	                        Translator.format("Create new multiworld %s?", name2),
+	                        new QuestionerCallback() {
+	                            @Override
+	                            public void respond(Boolean response)
+	                            {
+	                                if (response == null)
+	                                    ChatOutputHandler.chatError(ctx.getSource(), "Create request timed out");
+	                                else if (!response)
+	                                    ChatOutputHandler.chatError(ctx.getSource(), "Declined making new multiworld");
+	                                else
+	                                	try {
+	                    					ModuleMultiworldV2.getMultiworldManager().addWorld(worldNew);
+	                    					if (getServerPlayer(ctx.getSource()) != null) {
+	                    						worldNew.teleport(getServerPlayer(ctx.getSource()), true);
+	                    					}
+	                    				} catch (MultiworldException e) {
+	                    					throw new CommandException(new StringTextComponent(e.type.error));
+	                    				}
+	                            }
+	                        }, 20);
+				} catch (QuestionerStillActiveException e) {
+					ChatOutputHandler.chatError(ctx.getSource(),
+                            "Cannot ask question because player is still answering a question. Please wait a moment");
 				}
 				break;
     	}
