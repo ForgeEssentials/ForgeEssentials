@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
@@ -40,7 +41,9 @@ public class FECommandManager
         loadedFEcommands.add(command);
         if (!registeredFEcommands.contains(command.getName()))
         {
-        	aliaseManager.loadCommandAliases(command);
+        	if(FEConfig.enableCommandAliases) {
+        		aliaseManager.loadCommandAliases(command);
+        	}
             register(command, dispatcher);
         }
     }
@@ -67,20 +70,19 @@ public class FECommandManager
     {
         if (commandData.isRegistered())
         {
-            LoggingHandler.felog
-                    .error(String.format("Tried to register command %s, but it is alredy registered", commandData.getMainName()));
+            LoggingHandler.felog.error(String.format("Tried to register command %s/%s, but it is alredy registered", commandData.getName(),commandData.getMainName()));
             return;
         }
         if (commandData.getBuilder().setExecution() == null)
         {
-            LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", commandData.getMainName()));
+            LoggingHandler.felog.error(String.format("Tried to register command %s/%s with null execution", commandData.getName(),commandData.getMainName()));
             return;
         }
         if (commandData.getBuilder().isEnabled())
         {
             if (registeredFEcommands.contains(commandData.getName()))
             {
-                LoggingHandler.felog.error(String.format("Command %s already registered!", commandData.getMainName()));
+                LoggingHandler.felog.error(String.format("Command %s/%s already registered!", commandData.getName(),commandData.getMainName()));
                 return;
             }
 
@@ -92,7 +94,8 @@ public class FECommandManager
                 ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, commandData.getMainName(), "literal");
             }
             LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(builder);
-            //LoggingHandler.felog.debug("Registered Command: " + commandData.getMainName());
+            if(ForgeEssentials.isDebug())
+            	LoggingHandler.felog.debug("Registered Command: " + commandData.getName()+"/"+commandData.getMainName());
             if (FEConfig.enableCommandAliases)
             {
                 if (commandData.getMainAliases()!= null && !commandData.getMainAliases().isEmpty())
@@ -110,7 +113,8 @@ public class FECommandManager
                             dispatcher.register(Commands.literal(alias).redirect(literalcommandnode)
                                     .requires(source -> source.hasPermission(PermissionManager
                                             .fromDefaultPermissionLevel(commandData.getBuilder().getPermissionLevel()))));
-                            //LoggingHandler.felog.info("Registered Command: " + commandData.getMainName() + "'s alias: " + alias);
+                            if(ForgeEssentials.isDebug())
+                            	LoggingHandler.felog.info("Registered Command: " + commandData.getName()+"/"+commandData.getMainName() + "'s alias: " + alias);
                             registeredAiliases.add(alias);
                         }
                     }
