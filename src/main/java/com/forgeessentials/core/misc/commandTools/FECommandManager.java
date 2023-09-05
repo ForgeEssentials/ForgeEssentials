@@ -85,7 +85,12 @@ public class FECommandManager
             }
 
             LiteralArgumentBuilder<CommandSource> builder = commandData.getBuilder().getMainBuilder();
-            ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, commandData.getMainName(), "literal");
+            
+            //don't change main name if not using aliases
+            if(FEConfig.enableCommandAliases) {
+            	//set main name for commands to bypass minecraft command redirect empty trees
+                ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, commandData.getMainName(), "literal");
+            }
             LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(builder);
             //LoggingHandler.felog.debug("Registered Command: " + commandData.getMainName());
             if (FEConfig.enableCommandAliases)
