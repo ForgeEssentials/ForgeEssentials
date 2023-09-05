@@ -141,6 +141,9 @@ public class ProviderHelper {
 		case ("lotr:middle_earth"):
 			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, false, biomes});
 			break;
+		case ("lotr:middle_earth_classic"):
+			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, true, biomes});
+			break;
 		default:
 			if (type == null)
 				throw new MultiworldException(Type.NO_BIOME_PROVIDER);
@@ -170,6 +173,8 @@ public class ProviderHelper {
     	biomeProviderInvalidated.put("twilightforest:smart_distribution", "twilightforest.world.TFBiomeDistributor");
     	//TheLordoftheRingsModRenewed Biome Provider
     	biomeProviderInvalidated.put("lotr:middle_earth", "lotr.common.world.biome.provider.MiddleEarthBiomeProvider");
+    	//TheLordoftheRingsModRenewed Biome Provider in classic biome mode
+    	biomeProviderInvalidated.put("lotr:middle_earth_classic", "lotr.common.world.biome.provider.MiddleEarthBiomeProvider");
 
     	for (Entry<String, String> biomeProvType : biomeProviderInvalidated.entrySet()) {
     		try {
