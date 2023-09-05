@@ -35,6 +35,8 @@ public class Multiworld
 
 	private String provider;
 
+	private String chunkGenerator;
+
 	private String dimensionType;
 
 	private String dimensionSetting;
@@ -58,17 +60,18 @@ public class Multiworld
 	@Expose(serialize = false)
 	protected boolean error;
 
-	public Multiworld(String name, String provider, String worldType, String dimensionSetting,
+	public Multiworld(String name, String biomeProvider, String chunkGenerator, String worldType, String dimensionSetting,
 			long seed) {
-		this(name, provider, worldType, dimensionSetting, seed, "");
+		this(name, biomeProvider, chunkGenerator, worldType, dimensionSetting, seed, "");
 	}
 
-	public Multiworld(String name, String provider, String worldType, String dimensionSetting, long seed,
+	public Multiworld(String name, String biomeProvider, String chunkGenerator, String worldType, String dimensionSetting, long seed,
 			String generatorOptions) {
 		this.name = name;
-		this.provider = provider;
+		this.provider = biomeProvider;
 		this.dimensionType = worldType;
 		this.dimensionSetting = dimensionSetting;
+		this.chunkGenerator = chunkGenerator;
 		this.seed = seed;
 		this.setGeneratorOptions(generatorOptions);
 		this.gameType = ServerLifecycleHooks.getCurrentServer().getWorldData().getGameType();
@@ -77,8 +80,8 @@ public class Multiworld
 		this.allowPeacefulCreatures = true;
 	}
 
-	public Multiworld(String name, String provider, String worldType, String dimensionSetting) {
-		this(name, provider, worldType, dimensionSetting, new Random().nextLong());
+	public Multiworld(String name, String biomeProvider, String chunkGenerator, String worldType, String dimensionSetting) {
+		this(name, biomeProvider, chunkGenerator, worldType, dimensionSetting, new Random().nextLong());
 	}
 
 	public void removeAllPlayersFromWorld() {
@@ -198,6 +201,10 @@ public class Multiworld
 
 	public String getDimensionType() {
 		return dimensionType;
+	}
+
+	public String getChunkGenerator() {
+		return chunkGenerator;
 	}
 
 	protected void save() {

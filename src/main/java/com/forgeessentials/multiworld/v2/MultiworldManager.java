@@ -30,17 +30,16 @@ import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.border.IBorderListener;
 import net.minecraft.world.chunk.listener.IChunkStatusListenerFactory;
 import net.minecraft.world.gen.DimensionSettings;
-import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DerivedWorldInfo;
@@ -148,6 +147,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 case NO_DIMENSION_SETTINGS:
                     LoggingHandler.felog.error(String.format(e.type.error, world.getDimensionSetting()));
                     break;
+                case NO_CHUNK_GENERATOR:
+                    LoggingHandler.felog.error(String.format(e.type.error, world.getChunkGenerator()));
+                    break;
                 default:
                     LoggingHandler.felog.error(e.type.error);
                     break;
@@ -245,22 +247,26 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 	private Dimension dimensionGenerator(MinecraftServer server, Multiworld world) throws MultiworldException
 	{
 		long seed = BiomeManager.obfuscateSeed(world.getSeed());
-		DynamicRegistries registries = server.registryAccess();
-		DimensionType dim = providerHandler.getDimensionTypeByName(world.getDimensionType());
-		BiomeProvider biome = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), registries.registryOrThrow(Registry.BIOME_REGISTRY), seed);
-		DimensionSettings settings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
-		if(dim==null) {
+		Registry<Biome> biomeRegistry =server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
+		DimensionType dimType = providerHandler.getDimensionTypeByName(world.getDimensionType());
+		BiomeProvider biomeProvider = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
+		DimensionSettings dimSettings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
+		
+		if(dimType==null)
 			throw new MultiworldException(Type.NULL_DIMENSION_TYPE);
-		}
-		if(biome==null) {
+		if(biomeProvider==null)
 			throw new MultiworldException(Type.NULL_BIOME_PROVIDER);
-		}
-		if(settings==null) {
+		if(dimSettings==null)
 			throw new MultiworldException(Type.NULL_DIMENSION_SETTINGS);
-		}
+		
 		return new Dimension(() -> {
-	         return dim;
-	      }, new NoiseChunkGenerator(biome, seed, () -> settings));
+	         return dimType;
+	      }, providerHandler.getChunkGeneratorByName(
+	    		  biomeRegistry, 
+	    		  world.getChunkGenerator(), 
+	    		  biomeProvider, 
+	    		  seed, 
+	    		  () -> dimSettings));
 	}
 
 	private ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey, Multiworld world) throws MultiworldException

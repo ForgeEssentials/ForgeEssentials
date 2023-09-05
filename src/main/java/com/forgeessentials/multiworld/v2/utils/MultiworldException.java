@@ -8,6 +8,7 @@ public class MultiworldException extends Exception
     {
 		WORLD_ALREADY_EXISTS("A world with that name already exists"),
 		NO_BIOME_PROVIDER("There is no biome provider by that name"),
+		NO_CHUNK_GENERATOR("There is no chunk generator by that name"),
 		NO_DIMENSION_TYPE("There is no dimension type by that name"),
 		NO_DIMENSION_SETTINGS("There are no dimension settings by that name"),
 		NULL_BIOME_PROVIDER("Null biome provider"),

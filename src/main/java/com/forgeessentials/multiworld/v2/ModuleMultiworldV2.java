@@ -63,9 +63,10 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	
 	@SubscribeEvent
 	public void serverStarted(FEModuleServerStartedEvent e) {
-		multiworldManager.getProviderHandler().loadBiomeProviders();
 		multiworldManager.getProviderHandler().loadDimensionTypes();
 		multiworldManager.getProviderHandler().loadDimensionSettings();
+		multiworldManager.getProviderHandler().loadChunkGenerators();
+		multiworldManager.getProviderHandler().loadBiomeProviders();
 	}
 
 	@SubscribeEvent

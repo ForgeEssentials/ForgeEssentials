@@ -2,14 +2,13 @@ package com.forgeessentials.multiworld.v2.utils;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.Set;
 
 import com.forgeessentials.multiworld.v2.utils.MultiworldException.Type;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.List;
@@ -28,7 +27,10 @@ import net.minecraft.world.biome.provider.EndBiomeProvider;
 import net.minecraft.world.biome.provider.NetherBiomeProvider;
 import net.minecraft.world.biome.provider.OverworldBiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProvider;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.DebugChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class ProviderHelper {
@@ -46,10 +48,16 @@ public class ProviderHelper {
      * Mapping from DimensionSettings names to DimensionSettings objects
      */
     protected Map<String, DimensionSettings> dimensionSettings = new TreeMap<>();
+
     /**
      * Mapping from BiomeProvider names to BiomeProvider objects
      */
     protected Map<String, String> biomeProviderTypes = new TreeMap<>();
+
+    /**
+     * Mapping from BiomeProvider names to BiomeProvider objects
+     */
+    protected Map<String, String> chunkGenerators = new TreeMap<>();
 	
     // ============================================================
     // DimensionType management
@@ -90,7 +98,7 @@ public class ProviderHelper {
         return dimensionTypes;
     }
     // ============================================================
-    // WorldProvider management
+    // BiomeProvider management
 
 
     /**
@@ -104,19 +112,19 @@ public class ProviderHelper {
     	String classPath = biomeProviderTypes.get(biomeProviderType);
     	BiomeProvider type=null;
 		switch (biomeProviderType) {
-		case ("Minecraft_Overworld"):
+		case ("minecraft:vanilla_layered"):
 			type = new OverworldBiomeProvider(seed, false, false, biomes);
 			break;
-		case ("Minecraft_Nether"):
+		case ("minecraft:multi_noise"):
 			type = NetherBiomeProvider.Preset.NETHER.biomeSource(biomes, seed);
 			break;
-		case ("Minecraft_End"):
+		case ("minecraft:the_end"):
 			type = new EndBiomeProvider(biomes, seed);
 			break;
-		case ("Minecraft_Single"):
+		case ("minecraft:fixed"):
 			type = new SingleBiomeProvider(biomes.get(Biomes.PLAINS));
 			break;
-		case ("Minecraft_Checkerboard"):
+		case ("minecraft:checkerboard"):
 			final List<Supplier<Biome>> allowedBiomes = new ArrayList<>();
 			Registry<Biome> biomes1 = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
 			for (Entry<RegistryKey<Biome>, Biome> biome : biomes1.entrySet()) {
@@ -124,14 +132,14 @@ public class ProviderHelper {
 			}
 			type = new CheckerboardBiomeProvider(allowedBiomes, 2);
 			break;
-		case ("TwilightForest"):
-			type = getProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
+		case ("twilightforest:grid"):
+			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
 			break;
-		case ("TwilightForest_Dis"):
-			type = getProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
+		case ("twilightforest:smart_distribution"):
+			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
 			break;
-		case ("Lotr_MiddleEarth"):
-			type = getProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, true, biomes});
+		case ("lotr:middle_earth"):
+			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, true, biomes});
 			break;
 		default:
 			if (type == null)
@@ -147,21 +155,21 @@ public class ProviderHelper {
     {
     	Map<String, String> biomeProviderInvalidated = new TreeMap<>();
     	//Vanilla Overworld Biome Provider
-    	biomeProviderInvalidated.put("Minecraft_Overworld", "net.minecraft.world.biome.provider.OverworldBiomeProvider");
+    	biomeProviderInvalidated.put("minecraft:vanilla_layered", "net.minecraft.world.biome.provider.OverworldBiomeProvider");
     	//Vanilla Nether Biome Provider
-    	biomeProviderInvalidated.put("Minecraft_Nether", "net.minecraft.world.biome.provider.NetherBiomeProvider");
+    	biomeProviderInvalidated.put("minecraft:multi_noise", "net.minecraft.world.biome.provider.NetherBiomeProvider");
     	//Vanilla End Biome Provider
-    	biomeProviderInvalidated.put("Minecraft_End", "net.minecraft.world.biome.provider.EndBiomeProvider");
+    	biomeProviderInvalidated.put("minecraft:the_end", "net.minecraft.world.biome.provider.EndBiomeProvider");
     	//Vanilla Single Biome Provider
-    	biomeProviderInvalidated.put("Minecraft_Single", "net.minecraft.world.biome.provider.SingleBiomeProvider");
+    	biomeProviderInvalidated.put("minecraft:fixed", "net.minecraft.world.biome.provider.SingleBiomeProvider");
     	//Vanilla Checkerboard Biome Provider
-    	biomeProviderInvalidated.put("Minecraft_Checkerboard", "net.minecraft.world.biome.provider.EndBiomeProvider");
+    	biomeProviderInvalidated.put("minecraft:checkerboard", "net.minecraft.world.biome.provider.EndBiomeProvider");
     	//TwilightForest Biome Provider
-    	biomeProviderInvalidated.put("TwilightForest", "twilightforest.world.TFBiomeProvider");
+    	biomeProviderInvalidated.put("twilightforest:grid", "twilightforest.world.TFBiomeProvider");
     	//TwilightForest Secondary? Biome Provider
-    	biomeProviderInvalidated.put("TwilightForest_Dis", "twilightforest.world.TFBiomeDistributor");
+    	biomeProviderInvalidated.put("twilightforest:smart_distribution", "twilightforest.world.TFBiomeDistributor");
     	//TheLordoftheRingsModRenewed Biome Provider
-    	biomeProviderInvalidated.put("Lotr_MiddleEarth", "lotr.common.world.biome.provider.MiddleEarthBiomeProvider");
+    	biomeProviderInvalidated.put("lotr:middle_earth", "lotr.common.world.biome.provider.MiddleEarthBiomeProvider");
 
     	for (Entry<String, String> biomeProvType : biomeProviderInvalidated.entrySet()) {
     		try {
@@ -184,21 +192,84 @@ public class ProviderHelper {
         return biomeProviderTypes.keySet();
     }
 
-    private BiomeProvider getProvider(String className, Class<?>[] classes, Object[] initargs){
-		try {
-			Class<?> clazz = Class.forName(className);
-	    	Constructor<?> ctor = clazz.getConstructor(classes);
-	    	Object object = ctor.newInstance(initargs);
-	    	if(object instanceof BiomeProvider) {
-	    		return (BiomeProvider) object;
-	    	}
-	    	LoggingHandler.felog.debug("[Multiworld] Null BiomeProvider:");
-	    	return null;
-	    	//throw new RuntimeException("RecievedProvider "+object.getClass().toString()+"Is not assignable from net.minecraft.world.biome.provider.BiomeProvider");
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
+    // ============================================================
+    // ChunkGenerator management
+
+
+    /**
+     * Returns the {@Link ChunkGenerator} for a given chunkGenerator {@Link String}
+     */
+    public ChunkGenerator getChunkGeneratorByName(Registry<Biome> biomes, String chunkGeneratorType, BiomeProvider biome, long seed, Supplier<DimensionSettings> dimSettings) throws MultiworldException
+    {
+    	if(!chunkGenerators.containsKey(chunkGeneratorType)) {
+    		throw new MultiworldException(Type.NO_CHUNK_GENERATOR);
+    	}
+    	String classPath = chunkGenerators.get(chunkGeneratorType);
+    	ChunkGenerator type=null;
+		switch (chunkGeneratorType) {
+		case ("minecraft:noise"):
+			type = new NoiseChunkGenerator(biome, seed, dimSettings);
+			break;
+		case ("minecraft:flat"):
+			//type = new FlatChunkGenerator();
+			break;
+		case ("minecraft:debug"):
+			type = new DebugChunkGenerator(biomes);
+			break;
+		case ("twilightforest:featured_noise"):
+			type = ProvidersReflection.getChunkProvider(classPath, new Class<?>[] {BiomeProvider.class, long.class, Supplier.class}, new Object[] {biome, seed, dimSettings});
+			break;
+		case ("twilightforest:sky_noise"):
+			type = ProvidersReflection.getChunkProvider(classPath, new Class<?>[] {BiomeProvider.class, long.class, Supplier.class}, new Object[] {biome, seed, dimSettings});
+			break;
+		case ("lotr:middle_earth"):
+			type = ProvidersReflection.getChunkProvider(classPath, new Class<?>[] {BiomeProvider.class, long.class, Supplier.class, Optional.class}, new Object[] {biome, seed, dimSettings, true});
+			break;
+		default:
+			if (type == null)
+				throw new MultiworldException(Type.NO_BIOME_PROVIDER);
 		}
+        return type;
+    }
+    
+	/**
+     * Builds the map of valid { @Link ChunkGenerator}
+     */
+    public void loadChunkGenerators()
+    {
+    	Map<String, String> chunkGeneratorInvalidated = new TreeMap<>();
+    	//Vanilla Noise Chunk Generator
+    	chunkGeneratorInvalidated.put("minecraft:noise", "net.minecraft.world.gen.NoiseChunkGenerator");
+    	//Vanilla Flat Chunk Generator
+    	chunkGeneratorInvalidated.put("minecraft:flat", "net.minecraft.world.gen.FlatChunkGenerator");
+    	//Vanilla Debug Chunk Generator
+    	chunkGeneratorInvalidated.put("minecraft:debug", "net.minecraft.world.gen.DebugChunkGenerator");
+    	//TwilightForest Chunk Generator
+    	chunkGeneratorInvalidated.put("twilightforest:featured_noise", "twilightforest.world.ChunkGeneratorTwilightForest");
+    	//TwilightForest Sky Chunk Generator
+    	chunkGeneratorInvalidated.put("twilightforest:sky_noise", "twilightforest.world.ChunkGeneratorTwilightSky");
+    	//TheLordoftheRingsModRenewed Middle Earth Chunk Generator
+    	chunkGeneratorInvalidated.put("lotr:middle_earth", "lotr.common.world.gen.MiddleEarthChunkGenerator");
+
+    	for (Entry<String, String> chunkGeneratorsFull : chunkGeneratorInvalidated.entrySet()) {
+    		try {
+				if(Class.forName(chunkGeneratorsFull.getValue()) != null) {
+					chunkGenerators.put(chunkGeneratorsFull.getKey(), chunkGeneratorsFull.getValue());
+				}
+			} catch (ClassNotFoundException e) {
+				 LoggingHandler.felog.debug("Removed Invalid ChunkGenerator: "+ chunkGeneratorsFull.getValue());
+			}
+    	}
+        LoggingHandler.felog.debug("[Multiworld] Available Chunk Generators:");
+        for (String generatorName : chunkGenerators.keySet())
+            LoggingHandler.felog.debug("# " + generatorName);
+        for (String generatorNameClassName : chunkGenerators.values())
+            LoggingHandler.felog.debug("$ " + generatorNameClassName);
+    }
+
+    public Set<String> getChunkGenerators()
+    {
+        return chunkGenerators.keySet();
     }
 
     // ============================================================
