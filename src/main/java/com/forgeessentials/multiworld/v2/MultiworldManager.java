@@ -1,5 +1,7 @@
 package com.forgeessentials.multiworld.v2;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
+
+import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.NamedWorldHandler;
@@ -22,15 +26,18 @@ import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.multiworld.v2.utils.ProviderHelper;
 import com.forgeessentials.multiworld.v2.utils.MultiworldException.Type;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.events.world.WorldPreLoadEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
@@ -42,6 +49,8 @@ import net.minecraft.world.chunk.listener.IChunkStatusListenerFactory;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
+import net.minecraft.world.server.ChunkManager;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DerivedWorldInfo;
 import net.minecraft.world.storage.IServerConfiguration;
@@ -93,12 +102,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * List of worlds that have been marked for deletion
      */
-    protected ArrayList<ServerWorld> worldsToDelete = new ArrayList<>();
+    protected ArrayList<File> worldsFoldersToDelete = new ArrayList<>();
 
     /**
      * List of worlds that have been marked for removal
      */
-    protected ArrayList<ServerWorld> worldsToRemove = new ArrayList<>();
+    protected ArrayList<ServerWorld> worldsToUnloadAndRemove = new ArrayList<>();
 
     private NamedWorldHandler parentNamedWorldHandler;
 
@@ -230,7 +239,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
     protected void setupMultiworldData(Multiworld world) throws MultiworldException
     {
-        // Register dimension with last used id if possible
+        // Register dimension with last used id if possible if it has default created id
         if(world.getInternalID()<10) {
             int unusedID = 10;
         	for (Multiworld knownWorld : worlds.values()) {
@@ -328,11 +337,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
         	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         	RegistryKey<World> worldKey = world.getReasourceLocationUnique();
-        	//@SuppressWarnings("deprecation")
-    		//Map<RegistryKey<World>, ServerWorld> map = server.forgeGetWorldMap();
-        	//if (map.containsKey(world)) {
-            //    return;
-            //}
 
 //            ISaveHandler savehandler = new MiltiworldDimensionSavedDataManager(overworld.getSaveHandler(), world);
 //
@@ -396,13 +400,15 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      * 
      * @param world
      */
-    public void unloadWorld(Multiworld world)
+    public File unregisterWorld(Multiworld world)
     {
+    	ServerChunkProvider serverW = world.getWorldServer().getChunkSource();
+        File folder = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, serverW.chunkMap, "field_219270_x");
         world.worldLoaded = false;
         world.removeAllPlayersFromWorld();
-        //DimensionManager.unloadWorld(world.getDimensionId());
-        worldsToRemove.add(ServerLifecycleHooks.getCurrentServer().getLevel(world.getReasourceLocationUnique()));
+        worldsToUnloadAndRemove.add(ServerLifecycleHooks.getCurrentServer().getLevel(world.getReasourceLocationUnique()));
         worlds.remove(world.getName());
+        return folder;
     }
 
     /**
@@ -412,8 +418,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     public void deleteWorld(Multiworld world)
     {
-        unloadWorld(world);
-        worldsToDelete.add(world.getWorldServer());
+        File deleating = unregisterWorld(world);
+        worldsFoldersToDelete.add(deleating);
         world.delete();
     }
 
@@ -422,7 +428,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      * 
      * (for integrated server)
      */
-    public void serverStopped()
+    public void serverStopping()
     {
         saveAll();
         for (Multiworld world : worlds.values())
@@ -431,16 +437,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         }
         worlds.clear();
     }
-
-    // ============================================================
-
-    /**
-     * Forge DimensionManager stores used dimension IDs and does not assign them again, unless they are cleared manually.
-     */
-    //public void clearDimensionMap()
-    //{
-    //    //DimensionManager.loadDimensionDataMap(null);
-    //}
 
     // ============================================================
     // Unloading and deleting of worlds
@@ -452,29 +448,29 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     public void serverTickEvent(ServerTickEvent event)
     {
         unregisterDimensions();
-        deleteDimensions();
+        deleteDimensionFolder();
     }
 
     /**
      * Load global world data
      */
-    @SubscribeEvent
-    public void worldPreLoadEvent(WorldPreLoadEvent event)
-    {
-        Multiworld mw = getMultiworld(event.dim.location().toString());
-        if (mw != null)
-        {
-            try
-            {
-                loadWorld(mw);
-                event.setCanceled(true);
-            }
-            catch (MultiworldException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public void worldPreLoadEvent(WorldPreLoadEvent event)
+//    {
+//        Multiworld mw = getMultiworld(event.dim.location().toString());
+//        if (mw != null)
+//        {
+//            try
+//            {
+//                loadWorld(mw);
+//                event.setCanceled(true);
+//            }
+//            catch (MultiworldException e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
+//    } //forge does this for us currently
 
     /**
      * Load global world data
@@ -490,48 +486,65 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * Unregister all worlds that have been marked for removal
      */
-    protected void unregisterDimensions()
-    {
-        for (Iterator<ServerWorld> it = worldsToRemove.iterator(); it.hasNext();)
-        {
-        	ServerWorld world = it.next();
-            // Check with DimensionManager, whether the world is still loaded
-//            if (DimensionManager.getWorld(world.provider.getDimension()) == null)
-//            {
-//                if (DimensionManager.isDimensionRegistered(world.provider.getDimension()))
-//                    DimensionManager.unregisterDimension(world.provider.getDimension());
-//                it.remove();
-//            }
-        }
-    }
+	protected void unregisterDimensions() {
+		for (Iterator<ServerWorld> it = worldsToUnloadAndRemove.iterator(); it.hasNext();) {
+			ServerWorld world = it.next();
+			// Check with DimensionManager, whether the world is still loaded
+			if (ServerLifecycleHooks.getCurrentServer().getLevel(world.dimension()) != null) {
+				try {
+					LoggingHandler.felog.info("[MultiWorld] Saving chunks for level '{}'/{}", world,
+							world.dimension().location());
+					world.noSave = true;
+					world.save((IProgressUpdate) null, true, true);
+					try {
+						MinecraftForge.EVENT_BUS.post(
+								new net.minecraftforge.event.world.WorldEvent.Unload(world));
+						world.close();
+					} catch (IOException ioexception1) {
+						LoggingHandler.felog.error("Exception closing the level",
+								(Throwable) ioexception1);
+					}
+					@SuppressWarnings("deprecation")
+					Map<RegistryKey<World>, ServerWorld> map = ServerLifecycleHooks.getCurrentServer().forgeGetWorldMap();
+					map.remove(world.dimension());
+					
+					IServerConfiguration serverConfig = ServerLifecycleHooks.getCurrentServer().getWorldData();
+					DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
+					SimpleRegistry<Dimension> registry = ObfuscationReflectionHelper.getPrivateValue(DimensionGeneratorSettings.class, dimensionGeneratorSettings, "field_236208_h_");
+					BiMap<ResourceLocation, Dimension> storage = ObfuscationReflectionHelper.getPrivateValue(SimpleRegistry.class, registry, "field_82596_a");
+					BiMap<RegistryKey<Dimension>, Dimension> keyStorage = ObfuscationReflectionHelper.getPrivateValue(SimpleRegistry.class, registry, "field_239649_bb_");
+					Map<Dimension, Lifecycle> lifecycles = ObfuscationReflectionHelper.getPrivateValue(SimpleRegistry.class, registry, "field_243535_bj");
+					Dimension dim = storage.get(world.dimension().location());
+					storage.remove(world.dimension().location(), dim);
+					keyStorage.remove(world.dimension(), dim);
+					lifecycles.remove(dim);
+					ObfuscationReflectionHelper.setPrivateValue(DimensionGeneratorSettings.class, dimensionGeneratorSettings, registry, "field_236208_h_");
+				}catch(Exception e) {
+					e.printStackTrace();
+					LoggingHandler.felog.error("FAILED TO DELETE WORLD: "+world.dimension().location().toString()+" from dimReg, YOU NEED TO MANUALY REMOVE IT FROM level.dat/data/WorldGenSettings/dimensions");
+				}
+				it.remove();
+			}
+		}
+	}
 
     /**
      * Delete all worlds that have been marked for deletion
      */
-    protected void deleteDimensions()
+    protected void deleteDimensionFolder()
     {
-        for (Iterator<ServerWorld> it = worldsToDelete.iterator(); it.hasNext();)
+        for (Iterator<File> it = worldsFoldersToDelete.iterator(); it.hasNext();)
         {
-        	ServerWorld world = it.next();
-            // Check with DimensionManager, whether the world is still loaded
-//            if (DimensionManager.getWorld(world.provider.getDimension()) == null)
-//            {
-//                try
-//                {
-//                    if (DimensionManager.isDimensionRegistered(world.provider.getDimension()))
-//                        DimensionManager.unregisterDimension(world.provider.getDimension());
-//
-//                    File path = world.getChunkSaveLocation(); // new
-//                                                              // File(world.getSaveHandler().getWorldDirectory(),
-//                    FileUtils.deleteDirectory(path);
-//
-//                    it.remove();
-//                }
-//                catch (IOException e)
-//                {
-//                    LoggingHandler.felog.warn("Error deleting dimension files");
-//                }
-//            }
+        	File folder = it.next();
+        	
+        	try {
+				FileUtils.deleteDirectory(folder);
+			} catch (IOException e) {
+				LoggingHandler.felog.error("Exception deleting the level",
+						(Throwable) e);
+				e.printStackTrace();
+			}
+            it.remove();
         }
     }
 }

@@ -11,7 +11,7 @@ import com.forgeessentials.multiworld.v2.command.CommandMultiworldTeleport;
 import com.forgeessentials.multiworld.v2.utils.PlayerInvalidRegistryLoginFix;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -70,8 +70,8 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	}
 
 	@SubscribeEvent
-	public void serverStopped(FEModuleServerStoppedEvent e) {
-		multiworldManager.serverStopped();
+	public void serverStopped(FEModuleServerStoppingEvent e) {
+		multiworldManager.serverStopping();
 	}
 
 	static ForgeConfigSpec.BooleanValue FEtestValue;

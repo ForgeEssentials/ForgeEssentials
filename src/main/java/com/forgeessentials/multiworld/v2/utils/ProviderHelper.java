@@ -296,8 +296,6 @@ public class ProviderHelper {
      */
     public void loadDimensionSettings()
     {
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		DynamicRegistries registries = server.registryAccess();
 		for (Entry<RegistryKey<DimensionSettings>, DimensionSettings> provider : WorldGenRegistries.NOISE_GENERATOR_SETTINGS.entrySet()) {
 			dimensionSettings.put(provider.getKey().location().toString(), provider.getValue());
 		}
