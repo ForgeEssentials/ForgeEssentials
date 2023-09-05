@@ -264,6 +264,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
 	                    						worldNew.teleport(getServerPlayer(ctx.getSource()), true);
 	                    					}
 	                    				} catch (MultiworldException e) {
+	                    					ChatOutputHandler.chatError(ctx.getSource(), e.type.error);
 	                    					throw new CommandException(new StringTextComponent(e.type.error));
 	                    				}
 	                            }

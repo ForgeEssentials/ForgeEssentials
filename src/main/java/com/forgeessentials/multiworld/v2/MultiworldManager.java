@@ -39,6 +39,7 @@ import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.border.IBorderListener;
 import net.minecraft.world.chunk.listener.IChunkStatusListenerFactory;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 import net.minecraft.world.server.ServerWorld;
@@ -249,8 +250,11 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		long seed = BiomeManager.obfuscateSeed(world.getSeed());
 		Registry<Biome> biomeRegistry =server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
 		DimensionType dimType = providerHandler.getDimensionTypeByName(world.getDimensionType());
-		BiomeProvider biomeProvider = providerHandler.getBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
+		BiomeProvider biomeProvider = providerHandler.generateBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
 		DimensionSettings dimSettings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
+		ChunkGenerator  chunkGenerator = providerHandler.generateChunkGeneratorByName(
+	    		  biomeRegistry, world.getChunkGenerator(), 
+	    		  biomeProvider, seed, () -> dimSettings);
 		
 		if(dimType==null)
 			throw new MultiworldException(Type.NULL_DIMENSION_TYPE);
@@ -258,15 +262,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 			throw new MultiworldException(Type.NULL_BIOME_PROVIDER);
 		if(dimSettings==null)
 			throw new MultiworldException(Type.NULL_DIMENSION_SETTINGS);
-		
-		return new Dimension(() -> {
-	         return dimType;
-	      }, providerHandler.getChunkGeneratorByName(
-	    		  biomeRegistry, 
-	    		  world.getChunkGenerator(), 
-	    		  biomeProvider, 
-	    		  seed, 
-	    		  () -> dimSettings));
+		if(chunkGenerator==null)
+			throw new MultiworldException(Type.NO_CHUNK_GENERATOR);
+
+		return new Dimension(() -> dimType, chunkGenerator);
 	}
 
 	private ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey, Multiworld world) throws MultiworldException

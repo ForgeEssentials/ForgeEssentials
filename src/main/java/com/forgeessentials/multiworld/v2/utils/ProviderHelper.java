@@ -104,7 +104,7 @@ public class ProviderHelper {
     /**
      * Returns the {@Link BiomeProvider} for a given biomeProvider {@Link String}
      */
-    public BiomeProvider getBiomeProviderByName(String biomeProviderType, Registry<Biome> biomes, long seed) throws MultiworldException
+    public BiomeProvider generateBiomeProviderByName(String biomeProviderType, Registry<Biome> biomes, long seed) throws MultiworldException
     {
     	if(!biomeProviderTypes.containsKey(biomeProviderType)) {
     		throw new MultiworldException(Type.NO_BIOME_PROVIDER);
@@ -139,7 +139,7 @@ public class ProviderHelper {
 			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, Registry.class}, new Object[] {seed, biomes});
 			break;
 		case ("lotr:middle_earth"):
-			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, true, biomes});
+			type = ProvidersReflection.getBiomeProvider(classPath, new Class<?>[] {long.class, boolean.class, Registry.class}, new Object[] {seed, false, biomes});
 			break;
 		default:
 			if (type == null)
@@ -199,7 +199,7 @@ public class ProviderHelper {
     /**
      * Returns the {@Link ChunkGenerator} for a given chunkGenerator {@Link String}
      */
-    public ChunkGenerator getChunkGeneratorByName(Registry<Biome> biomes, String chunkGeneratorType, BiomeProvider biome, long seed, Supplier<DimensionSettings> dimSettings) throws MultiworldException
+    public ChunkGenerator generateChunkGeneratorByName(Registry<Biome> biomes, String chunkGeneratorType, BiomeProvider biome, long seed, Supplier<DimensionSettings> dimSettings) throws MultiworldException
     {
     	if(!chunkGenerators.containsKey(chunkGeneratorType)) {
     		throw new MultiworldException(Type.NO_CHUNK_GENERATOR);
@@ -223,7 +223,7 @@ public class ProviderHelper {
 			type = ProvidersReflection.getChunkProvider(classPath, new Class<?>[] {BiomeProvider.class, long.class, Supplier.class}, new Object[] {biome, seed, dimSettings});
 			break;
 		case ("lotr:middle_earth"):
-			type = ProvidersReflection.getChunkProvider(classPath, new Class<?>[] {BiomeProvider.class, long.class, Supplier.class, Optional.class}, new Object[] {biome, seed, dimSettings, true});
+			type = ProvidersReflection.getChunkProvider(classPath, new Class<?>[] {BiomeProvider.class, long.class, Supplier.class, Optional.class}, new Object[] {biome, seed, dimSettings, Optional.of(true)});
 			break;
 		default:
 			if (type == null)
