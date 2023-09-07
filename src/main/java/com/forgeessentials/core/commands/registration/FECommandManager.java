@@ -167,15 +167,15 @@ public class FECommandManager
     }
 
     public static boolean checkOverwritingCommands(String commandName, CommandDispatcher<CommandSource> dispatcher) {
-    	boolean flag=false;
+    	boolean commandRemoved=false;
     	Map<String, CommandNode<CommandSource>> children = new LinkedHashMap<>(ObfuscationReflectionHelper.getPrivateValue(CommandNode.class, (CommandNode<CommandSource>) dispatcher.getRoot(), "children"));
     	Map<String, CommandNode<CommandSource>> newChildren = new LinkedHashMap<>();
     	for(Entry<String, CommandNode<CommandSource>> child : children.entrySet()) {
-    		if(child.getValue() instanceof LiteralCommandNode && ((LiteralCommandNode<CommandSource>) child.getValue()).getLiteral().equals(commandName)) {
+    		if(child.getValue() instanceof LiteralCommandNode && child.getKey().equals(commandName)) {
     			if(FEConfig.overwriteConflictingCommands) {
     				LoggingHandler.felog.info("Removing conflicting command/alias:"+ commandName);
     			}
-    			flag=true;
+    			commandRemoved=true;
     		}
     		else {
     			if(FEConfig.overwriteConflictingCommands) {
@@ -183,11 +183,16 @@ public class FECommandManager
     			}
     		}
     	}
-		if(FEConfig.overwriteConflictingCommands && flag) {
+		if(commandRemoved && FEConfig.overwriteConflictingCommands) {
 			newChildren.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 			ObfuscationReflectionHelper.setPrivateValue(CommandNode.class, (CommandNode<CommandSource>) dispatcher.getRoot(), newChildren, "children");
+			return false;
 		}
-
-		return flag;
+		else if(commandRemoved && !FEConfig.overwriteConflictingCommands){
+			return true;
+		}
+		else {
+			return false;
+		}
     }
 }
