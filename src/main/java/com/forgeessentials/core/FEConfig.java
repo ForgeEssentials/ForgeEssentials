@@ -25,6 +25,8 @@ public class FEConfig extends ConfigLoaderBase
 
     public static boolean enableCommandAliases;
 
+    public static boolean overwriteConflictingCommands;
+
     public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
     public static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat("dd.MM HH:mm");
@@ -47,6 +49,7 @@ public class FEConfig extends ConfigLoaderBase
     static ForgeConfigSpec.IntValue FEmajoritySleep;
     static ForgeConfigSpec.BooleanValue FEcheckSpacesInNames;
     static ForgeConfigSpec.BooleanValue FEenableCommandAliases;
+    static ForgeConfigSpec.BooleanValue FEoverwriteConflictingCommands;
 
     @Override
     public void load(Builder BUILDER, boolean isReload)
@@ -66,7 +69,9 @@ public class FEConfig extends ConfigLoaderBase
                 "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
                 .define("modlistLocation", "modlist.txt");
         FEenableCommandAliases = BUILDER.comment("Enable Command Ailases for FE commands").define("enableAilases",
-                false);
+                true);
+        FEoverwriteConflictingCommands = BUILDER.comment("Should we overwrite conflicting commands?").define("overwriteConflicts",
+                true);
         BUILDER = ForgeEssentials.load(BUILDER, isReload);
         BUILDER.pop();
 
@@ -94,6 +99,7 @@ public class FEConfig extends ConfigLoaderBase
         majoritySleep = FEmajoritySleep.get();
         checkSpacesInNames = FEcheckSpacesInNames.get();
         enableCommandAliases = FEenableCommandAliases.get();
+        overwriteConflictingCommands = FEoverwriteConflictingCommands.get();
         ForgeEssentials.bakeConfig(reload);
         ChatOutputHandler.bakeConfig(reload);
     }
