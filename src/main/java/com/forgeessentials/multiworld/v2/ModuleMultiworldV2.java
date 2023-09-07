@@ -23,7 +23,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * 
  * @author MaximustheMiner
  */
-@FEModule(name = "MultiworldV2", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
+@FEModule(name = "MultiworldV2", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleMultiworldV2 extends ConfigLoaderBase
 {
     private static ForgeConfigSpec MULTIWORLD_CONFIG;

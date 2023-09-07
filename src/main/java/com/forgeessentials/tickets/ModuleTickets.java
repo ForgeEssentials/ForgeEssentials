@@ -25,7 +25,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
+@FEModule(name = "Tickets", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleTickets implements ConfigSaver
 {
     private static ForgeConfigSpec TICKETS_CONFIG;

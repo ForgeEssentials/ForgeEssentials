@@ -30,7 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
+@FEModule(name = "SignTools", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class SignToolsModule extends ConfigLoaderBase
 {
     private static ForgeConfigSpec SIGN_CONFIG;

@@ -27,7 +27,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModulePlayerLogger implements ConfigSaver
 {
     private static ForgeConfigSpec PLAYERLOGGER_CONFIG;

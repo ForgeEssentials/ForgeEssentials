@@ -16,7 +16,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Perftools", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "Perftools", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class PerfToolsModule extends ConfigLoaderBase
 {
     private static ForgeConfigSpec PERF_CONFIG;

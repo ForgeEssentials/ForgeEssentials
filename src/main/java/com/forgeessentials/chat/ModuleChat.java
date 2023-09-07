@@ -58,7 +58,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Chat", parentMod = ForgeEssentials.class)
+@FEModule(name = "Chat", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleChat implements ConfigSaver
 {
     private static ForgeConfigSpec CHAT_CONFIG;

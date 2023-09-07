@@ -35,7 +35,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
+@FEModule(name = "Teleport", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class TeleportModule extends ConfigLoaderBase
 {
 

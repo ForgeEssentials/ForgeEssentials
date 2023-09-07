@@ -41,6 +41,7 @@ public class ModuleContainer implements Comparable<Object>
     // other vars..
     public final String className;
     public final String name;
+    public final int version;
     private final boolean isCore;
     public boolean isLoadable = true;
     protected boolean doesOverride;
@@ -62,6 +63,7 @@ public class ModuleContainer implements Comparable<Object>
 
             isCore = false;
             name = "INVALID-MODULE";
+            version = 0;
             return;
         }
 
@@ -78,6 +80,7 @@ public class ModuleContainer implements Comparable<Object>
         name = annot.name();
         isCore = annot.isCore();
         doesOverride = annot.doesOverride();
+        version = annot.version();
 
         if (annot.canDisable())
         {

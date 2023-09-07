@@ -43,7 +43,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * Module for all FENetworking connectivity
  * @author maximuslotro
  */
-@FEModule(name = ModuleNetworking.networkModule, parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
+@FEModule(name = ModuleNetworking.networkModule, parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleNetworking extends ConfigLoaderBase
 {
     public static final String networkModule = "FENetworking";

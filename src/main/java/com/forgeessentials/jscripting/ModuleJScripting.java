@@ -41,7 +41,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-@FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
+@FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
 {
 

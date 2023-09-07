@@ -106,6 +106,7 @@ public class ForgeEssentials
 {
 
     public static final String MODID = "forgeessentials";
+    public static final int CURRENT_MODULE_VERSION =1;
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
     @Instance

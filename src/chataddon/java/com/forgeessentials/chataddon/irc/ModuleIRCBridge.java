@@ -29,6 +29,7 @@ import org.pircbotx.hooks.events.QuitEvent;
 import com.forgeessentials.chataddon.FEChatAddons;
 import com.forgeessentials.chataddon.irc.commands.CommandHelp;
 import com.forgeessentials.chataddon.irc.commands.CommandListPlayers;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
@@ -63,7 +64,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-@FEModule(name = "IrcBridge", parentMod = FEChatAddons.class, defaultModule = false)
+@FEModule(name = "IrcBridge", parentMod = FEChatAddons.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 {
     private static ForgeConfigSpec IRC_CONFIG;

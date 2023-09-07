@@ -8,7 +8,7 @@ import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
-@FEModule(name = WEIntegration.weModule, parentMod = ForgeEssentials.class)
+@FEModule(name = WEIntegration.weModule, parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class WEIntegration
 {
 	public static final String weModule = "WEIntegrationTools";

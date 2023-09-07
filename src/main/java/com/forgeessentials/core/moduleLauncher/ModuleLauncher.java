@@ -64,6 +64,14 @@ public class ModuleLauncher
         for (ModFileScanData.AnnotationData asm : data)
         {
             temp = new ModuleContainer(asm);
+            if(temp.version<ForgeEssentials.CURRENT_MODULE_VERSION) {
+            	temp.isLoadable=false;
+            	LoggingHandler.felog.error("Module: [" + temp.name + "] is outdated! Please update this module to use the latest dev jar! Disabling Module!");
+            }
+            if(temp.version>ForgeEssentials.CURRENT_MODULE_VERSION) {
+            	temp.isLoadable=false;
+            	LoggingHandler.felog.error("Module: [" + temp.name + "] is too new for this version of ForgeEssentials! Please update your ForgeEssentials installation! Disabling Module!");
+            }
             if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
             {
                 LoggingHandler.felog.debug("Checking if contanerMap contains: " + temp.name);

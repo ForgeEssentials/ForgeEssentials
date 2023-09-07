@@ -29,7 +29,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
+@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleWorldBorder extends ServerEventHandler
 {
 

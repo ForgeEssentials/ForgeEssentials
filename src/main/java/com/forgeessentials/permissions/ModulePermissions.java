@@ -41,7 +41,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
+@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModulePermissions extends ConfigLoaderBase
 {
     private static ForgeConfigSpec PERMISSIONS_CONFIG;

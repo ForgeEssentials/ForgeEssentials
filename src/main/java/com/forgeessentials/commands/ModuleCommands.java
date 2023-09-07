@@ -66,7 +66,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@FEModule(name = "Commands", parentMod = ForgeEssentials.class)
+@FEModule(name = "Commands", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleCommands implements ConfigLoader
 {
     private static ForgeConfigSpec COMMAND_CONFIG;

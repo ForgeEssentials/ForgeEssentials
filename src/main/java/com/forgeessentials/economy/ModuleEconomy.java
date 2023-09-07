@@ -66,7 +66,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * 
  * Handles wallets for each player, transactions and plot management.
  */
-@FEModule(name = "Economy", parentMod = ForgeEssentials.class)
+@FEModule(name = "Economy", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
     private static ForgeConfigSpec ECONOMY_CONFIG;

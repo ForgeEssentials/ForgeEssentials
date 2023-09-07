@@ -29,7 +29,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleAuth extends ConfigLoaderBase
 {
     private static ForgeConfigSpec AUTH_CONFIG;

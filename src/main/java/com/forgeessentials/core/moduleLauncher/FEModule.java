@@ -17,7 +17,7 @@ public @interface FEModule
      */
     String name();
 
-    String version() default "";
+    int version();
 
     /**
      * Marks it as core. Core modules are loaded first.
