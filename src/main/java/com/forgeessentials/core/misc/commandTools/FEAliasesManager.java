@@ -2,13 +2,13 @@ package com.forgeessentials.core.misc.commandTools;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.google.gson.annotations.Expose;
 
@@ -42,8 +42,14 @@ public class FEAliasesManager
 
     public void loadData()
     {
-    	if (!ModuleCommands.newMappings && getAliasFile().exists())
+    	if (getAliasFile().exists())
         {
+    		if(ModuleLauncher.getModuleList().contains("Commands")) {
+    			if(!ModuleCommands.newMappings) {
+    				aliasMap = DataManager.load(AliasesMap.class, getAliasFile());
+    			}
+    			return;
+    		}
     		aliasMap = DataManager.load(AliasesMap.class, getAliasFile());
         }
     }

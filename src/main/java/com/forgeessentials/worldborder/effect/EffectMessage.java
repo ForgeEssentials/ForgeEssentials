@@ -2,6 +2,7 @@ package com.forgeessentials.worldborder.effect;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.WorldBorder;
@@ -52,8 +53,12 @@ public class EffectMessage extends WorldBorderEffect
 
     public void doEffect(ServerPlayerEntity player)
     {
-        ChatOutputHandler.chatError(player,
-                ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
+    	if(ModuleLauncher.getModuleList().contains("Chat")) {
+    		ChatOutputHandler.chatError(player,
+                    ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
+    		return;
+    	}
+        ChatOutputHandler.chatError(player, message);
     }
 
     @Override
