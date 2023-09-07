@@ -19,7 +19,7 @@ jobs:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
     outputs:
-      canContinue: ${{ github.event_name != 'push' || steps.PR.outputs.pr_found != 'true' }}
+      canContinue: ${{ github.event_name != 'push' || steps.PR.outputs.pr_found != 'true' || steps.PR.outputs.pr_merged_at != null }}
   build:
     needs: check
     runs-on: ubuntu-latest
