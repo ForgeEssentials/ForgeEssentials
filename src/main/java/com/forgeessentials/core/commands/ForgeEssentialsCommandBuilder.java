@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.misc.commandTools.PermissionManager;
+import com.forgeessentials.core.misc.CommandPermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.command.CommandSource;
@@ -32,7 +32,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
     public ForgeEssentialsCommandBuilder(boolean enabled)
     {
         this.baseBuilder = Commands.literal(getName()).requires(
-                source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
+                source -> source.hasPermission(CommandPermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
         this.enabled = enabled;
 
     }

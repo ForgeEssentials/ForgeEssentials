@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.mojang.brigadier.context.ParsedCommandNode;
 
 import net.minecraft.command.CommandSource;

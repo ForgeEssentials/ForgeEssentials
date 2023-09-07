@@ -7,8 +7,8 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.commands.registration.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;

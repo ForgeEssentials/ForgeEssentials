@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.playerlogger.command.CommandPlayerlogger;

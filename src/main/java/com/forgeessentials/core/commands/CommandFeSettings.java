@@ -22,7 +22,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.commandTools.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.commands.registration.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;

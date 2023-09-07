@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc.commandTools;
+package com.forgeessentials.core.misc;
 
 import java.util.UUID;
 

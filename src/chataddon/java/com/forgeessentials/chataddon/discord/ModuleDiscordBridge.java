@@ -7,11 +7,11 @@ import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chataddon.FEChatAddons;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;

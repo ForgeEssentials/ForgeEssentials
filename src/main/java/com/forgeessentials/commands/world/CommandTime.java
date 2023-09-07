@@ -6,8 +6,8 @@ import java.util.Map.Entry;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
-import com.forgeessentials.core.misc.commandTools.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;

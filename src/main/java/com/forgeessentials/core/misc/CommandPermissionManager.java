@@ -1,4 +1,4 @@
-package com.forgeessentials.core.misc.commandTools;
+package com.forgeessentials.core.misc;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,7 +18,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 /**
  * Transition class to the new Permissions API
  */
-public class PermissionManager
+public class CommandPermissionManager
 {
     /*
      * First String is command node Second string is the DefaultPermissionLevel

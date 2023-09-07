@@ -1,7 +1,7 @@
 package com.forgeessentials.worldborder.effect;
 
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
