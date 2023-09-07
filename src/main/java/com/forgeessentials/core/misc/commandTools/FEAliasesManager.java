@@ -28,11 +28,11 @@ public class FEAliasesManager
     	else {
     		aliasMap.addAliases(commandData.getName(), new ArrayList<>(commandData.getAliases()));
     	}
-    	List<String> alias = new ArrayList<>(commandData.getAliases());
-		alias.add(commandData.getName());
-		alias.sort(Comparator.naturalOrder());
-		commandData.setMainName(alias.remove(0));
-		commandData.setMainAliases(alias);
+//    	List<String> alias = new ArrayList<>(commandData.getAliases());
+//		alias.add(commandData.getName());
+//		alias.sort(Comparator.naturalOrder());
+//		commandData.setMainName(alias.remove(0));
+//		commandData.setMainAliases(alias);
     }
 
     private static File getAliasFile()

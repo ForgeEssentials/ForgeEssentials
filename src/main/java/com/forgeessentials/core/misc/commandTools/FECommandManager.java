@@ -9,10 +9,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FECommandManager
@@ -70,39 +68,49 @@ public class FECommandManager
     {
         if (commandData.isRegistered())
         {
-            LoggingHandler.felog.error(String.format("Tried to register command %s/%s, but it is alredy registered", commandData.getName(),commandData.getMainName()));
+            LoggingHandler.felog.error(String.format("Tried to register command %s, but it is alredy registered", commandData.getName()));
             return;
         }
         if (commandData.getBuilder().setExecution() == null)
         {
-            LoggingHandler.felog.error(String.format("Tried to register command %s/%s with null execution", commandData.getName(),commandData.getMainName()));
+            LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", commandData.getName()));
             return;
         }
         if (commandData.getBuilder().isEnabled())
         {
             if (registeredFEcommands.contains(commandData.getName()))
             {
-                LoggingHandler.felog.error(String.format("Command %s/%s already registered!", commandData.getName(),commandData.getMainName()));
+                LoggingHandler.felog.error(String.format("Command %s already registered!", commandData.getName()));
                 return;
             }
-
-            LiteralArgumentBuilder<CommandSource> builder = commandData.getBuilder().getMainBuilder();
-            
-            //don't change main name if not using aliases
-            if(FEConfig.enableCommandAliases) {
-            	//set main name for commands to bypass minecraft command redirect empty trees
-                ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, commandData.getMainName(), "literal");
+            if (registeredAiliases.contains(commandData.getName()))
+            {
+                LoggingHandler.felog.error(String.format("Command %s already registered as an alias!", commandData.getName()));
+                return;
             }
-            LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(builder);
+            LiteralArgumentBuilder<CommandSource> builder = commandData.getBuilder().getMainBuilder();
+
+            //Register alias under a redirect
+//            //don't change main name if not using aliases
+//            if(FEConfig.enableCommandAliases) {
+//            	//set main name for commands to bypass minecraft command redirect empty trees
+//                ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, commandData.getMainName(), "literal");
+//            }
+            //LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(builder);
+
+            //Register alias as full command. No redirects
+            dispatcher.register(builder);
             if(ForgeEssentials.isDebug())
-            	LoggingHandler.felog.debug("Registered Command: " + commandData.getName()+"/"+commandData.getMainName());
+            	LoggingHandler.felog.debug("Registered Command: " + commandData.getName());
+            registeredFEcommands.add(commandData.getName());
+            
             if (FEConfig.enableCommandAliases)
             {
-                if (commandData.getMainAliases()!= null && !commandData.getMainAliases().isEmpty())
+                if (commandData.getAliases()!= null && !commandData.getAliases().isEmpty())
                 {
                     try
                     {
-                        for (String alias : commandData.getMainAliases())
+                        for (String alias : commandData.getAliases())
                         {
                             if (registeredAiliases.contains(alias))
                             {
@@ -110,22 +118,34 @@ public class FECommandManager
                                         .error(String.format("Command alias %s already registered!", alias));
                                 continue;
                             }
-                            dispatcher.register(Commands.literal(alias).redirect(literalcommandnode)
-                                    .requires(source -> source.hasPermission(PermissionManager
-                                            .fromDefaultPermissionLevel(commandData.getBuilder().getPermissionLevel()))));
+                            if (registeredFEcommands.contains(alias))
+                            {
+                                LoggingHandler.felog
+                                        .error(String.format("Command alias %s already registered as a main command!", alias));
+                                continue;
+                            }
+
+                            //Register alias under a redirect
+//                            dispatcher.register(Commands.literal(alias).redirect(literalcommandnode)
+//                                    .requires(source -> source.hasPermission(PermissionManager
+//                                            .fromDefaultPermissionLevel(commandData.getBuilder().getPermissionLevel()))));
+                            
+                            //Register alias as full command. No redirects
+                            ObfuscationReflectionHelper.setPrivateValue(LiteralArgumentBuilder.class, builder, alias, "literal");
+                            dispatcher.register(builder);
+                            
                             if(ForgeEssentials.isDebug())
-                            	LoggingHandler.felog.info("Registered Command: " + commandData.getName()+"/"+commandData.getMainName() + "'s alias: " + alias);
+                            	LoggingHandler.felog.info("Registered Command: " + commandData.getName() + "'s alias: " + alias);
                             registeredAiliases.add(alias);
                         }
                     }
                     catch (NullPointerException e)
                     {
-                        LoggingHandler.felog.error("Failed to register aliases for command: " + commandData.getMainName());
+                        LoggingHandler.felog.error("Failed to register aliases for command: " + commandData.getName());
                     }
                 }
             }
             commandData.setRegistered(true);
-            registeredFEcommands.add(commandData.getName());
         }
         commandData.getBuilder().registerExtraPermissions();
     }

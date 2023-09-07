@@ -8,16 +8,16 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 public class FECommandData
 {
     final private String name;
-    private boolean registered;
+    private boolean isRegistered;
     final private ForgeEssentialsCommandBuilder builder;
     private List<String> aliases;
-    private String mainName;
-    private List<String> mainAliases;
+//    private String mainName;
+//    private List<String> mainAliases;
 
     public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandBuilder)
     {
         name = mainName;
-        registered = false;
+        isRegistered = false;
         builder = commandBuilder;
         aliases = commandBuilder.getDefaultAliases();
     }
@@ -25,7 +25,7 @@ public class FECommandData
     public FECommandData(ForgeEssentialsCommandBuilder commandBuilder)
     {
         name = commandBuilder.getName();
-        registered = false;
+        isRegistered = false;
         builder = commandBuilder;
         aliases = commandBuilder.getDefaultAliases();
     }
@@ -42,12 +42,12 @@ public class FECommandData
 
     public void setRegistered(boolean registered)
     {
-        this.registered = registered;
+        this.isRegistered = registered;
     }
 
     public boolean isRegistered()
     {
-        return registered;
+        return isRegistered;
     }
 
 	public List<String> getAliases() {
@@ -58,19 +58,19 @@ public class FECommandData
 		this.aliases = aliases;
 	}
 
-	public String getMainName() {
-		return mainName;
-	}
-
-	public void setMainName(String mainName) {
-		this.mainName = mainName;
-	}
-
-	public List<String> getMainAliases() {
-		return mainAliases;
-	}
-
-	public void setMainAliases(List<String> mainAliases) {
-		this.mainAliases = mainAliases;
-	}
+//	public String getMainName() {
+//		return mainName;
+//	}
+//
+//	public void setMainName(String mainName) {
+//		this.mainName = mainName;
+//	}
+//
+//	public List<String> getMainAliases() {
+//		return mainAliases;
+//	}
+//
+//	public void setMainAliases(List<String> mainAliases) {
+//		this.mainAliases = mainAliases;
+//	}
 }

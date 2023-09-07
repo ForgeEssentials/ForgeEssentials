@@ -48,12 +48,6 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String @NotNull [] getDefaultSecondaryAliases()
-    {
-        return new String[] { "butcher" };
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
