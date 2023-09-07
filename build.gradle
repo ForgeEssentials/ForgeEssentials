@@ -35,7 +35,7 @@ buildscript {
 
 }
 plugins {
-	id 'com.github.johnrengelman.shadow' version '4.0.2'
+	id 'com.github.johnrengelman.shadow' version '5.2.0'
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
@@ -192,17 +192,17 @@ configurations {
 // Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
 	// IRC
-	serverLib("org.pircbotx:pircbotx:2.0.1") {
+    shadowLib("org.pircbotx:pircbotx:2.0.1") {
         // these are all packaged with the minecraft server jar
         exclude module: 'guava'
         exclude module: 'commons-lang3'
         exclude module: 'commons-codec'
     }
 
-	serverLib('net.dv8tion:JDA:5.0.0-beta.8')
+    shadowLib('net.dv8tion:JDA:5.0.0-beta.8')
 	// Database libraries	
 	shadowLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
-	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
+    shadowLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	shadowLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
 	implementation 'javax.persistence:javax.persistence-api:2.2'
 	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.14.Final'
@@ -337,6 +337,14 @@ def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixin
 def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + "mixins.forgeessentials.client.refmap.json"
 
 shadowJar {
+
+
+    minimize {
+        exclude(dependency('org.hibernate:.*:.*'))
+        exclude(dependency('mysql:.*:.*'))
+        exclude(dependency('com.h2database:.*:.*'))
+        exclude(dependency('javax:.*:.*'))
+    }
 	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
@@ -379,7 +387,7 @@ jar {
 		}
 	}
 	from (zipTree(shadowJar.archivePath)) {
-		exclude 'META-INF','META-INF/**'
+		exclude 'META-INF','META-INF/**', 'module-info.class'
 	}
 
 	from (zipTree(shadowJar.archivePath)) {
