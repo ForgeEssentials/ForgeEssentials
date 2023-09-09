@@ -135,6 +135,8 @@ public class ProviderHelper {
     	Map<String, BiomeProviderHolderBase> biomeProviderInvalidated = new TreeMap<>();
     	//Vanilla Overworld Biome Provider
     	biomeProviderInvalidated.put("minecraft:overworld", new MinecraftOverworldBiomeProviderHolder());
+    	//Vanilla Overworld large Biome Provider
+    	biomeProviderInvalidated.put("minecraft:overworld_large", new MinecraftOverworldLargeBiomeProviderHolder());
     	//Vanilla Nether Biome Provider
     	biomeProviderInvalidated.put("minecraft:nether", new MinecraftNetherBiomeProviderHolder());
     	//Vanilla End Biome Provider
