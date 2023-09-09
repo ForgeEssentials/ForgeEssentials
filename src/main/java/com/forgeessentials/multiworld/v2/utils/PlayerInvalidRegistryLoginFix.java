@@ -32,7 +32,7 @@ public class PlayerInvalidRegistryLoginFix extends ServerEventHandler {
 	public void playerLoggedOut(PlayerLoggedOutEvent event) {
 		if (event.getPlayer() instanceof ServerPlayerEntity && ((ServerPlayerEntity) event.getPlayer()).getLevel()
 				.dimension().location().getNamespace().equals(Multiworld.FENameSpace)) {
-			if (!ModuleMultiworldV2.getMultiworldManager().getProviderHandler().vanillaDimensionTypes
+			if (!ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getVanillaDimensionTypes()
 					.containsValue(((ServerPlayerEntity) event.getPlayer()).getLevel().dimensionType())) {
 				System.out.println("!vanillaDimensionTypes.contains(dimensionType())");
 				PlayerInfo player = PlayerInfo.get(event.getPlayer().getUUID());

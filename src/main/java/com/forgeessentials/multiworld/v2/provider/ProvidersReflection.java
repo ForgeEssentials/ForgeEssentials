@@ -1,4 +1,4 @@
-package com.forgeessentials.multiworld.v2.utils;
+package com.forgeessentials.multiworld.v2.provider;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
