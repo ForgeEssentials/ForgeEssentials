@@ -8,11 +8,13 @@ import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworld;
 import com.forgeessentials.multiworld.v2.command.CommandMultiworldTeleport;
+import com.forgeessentials.multiworld.v2.genWorld.ServerWorldMultiworld;
 import com.forgeessentials.multiworld.v2.utils.PlayerInvalidRegistryLoginFix;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -96,5 +98,9 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 
 	public static MultiworldManager getMultiworldManager() {
 		return multiworldManager;
+	}
+	public static boolean isMultiWorld(ServerWorld world) {
+		return world instanceof ServerWorldMultiworld||world.dimension().location().getNamespace().equals(Multiworld.FENameSpace);
+		
 	}
 }

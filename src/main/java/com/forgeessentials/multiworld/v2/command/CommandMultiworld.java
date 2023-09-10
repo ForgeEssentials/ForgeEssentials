@@ -10,7 +10,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.v2.ModuleMultiworldV2;
 import com.forgeessentials.multiworld.v2.Multiworld;
-import com.forgeessentials.multiworld.v2.genWorld.ServerWorldMultiworld;
 import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -211,7 +210,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     				ChatOutputHandler.chatError(ctx.getSource(), "Multiworld " + name1 + " does not exist!");
     				return Command.SINGLE_SUCCESS;
     			}
-    			if(!(world1.getWorldServer() instanceof ServerWorldMultiworld)) { 
+    			if(!ModuleMultiworldV2.isMultiWorld(world1.getWorldServer())) { 
     				ChatOutputHandler.chatError(ctx.getSource(), "World " + world1.getName() + " is not a FE multiworld and cannot be deleted!");
     				return Command.SINGLE_SUCCESS;
     	        }

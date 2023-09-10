@@ -3,7 +3,6 @@ package com.forgeessentials.multiworld.v2.utils;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.multiworld.v2.ModuleMultiworldV2;
-import com.forgeessentials.multiworld.v2.Multiworld;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -30,8 +29,8 @@ public class PlayerInvalidRegistryLoginFix extends ServerEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void playerLoggedOut(PlayerLoggedOutEvent event) {
-		if (event.getPlayer() instanceof ServerPlayerEntity && ((ServerPlayerEntity) event.getPlayer()).getLevel()
-				.dimension().location().getNamespace().equals(Multiworld.FENameSpace)) {
+		if (event.getPlayer() instanceof ServerPlayerEntity
+				&& ModuleMultiworldV2.isMultiWorld(((ServerPlayerEntity) event.getPlayer()).getLevel())) {
 			if (!ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getVanillaDimensionTypes()
 					.containsValue(((ServerPlayerEntity) event.getPlayer()).getLevel().dimensionType())) {
 				System.out.println("!vanillaDimensionTypes.contains(dimensionType())");
