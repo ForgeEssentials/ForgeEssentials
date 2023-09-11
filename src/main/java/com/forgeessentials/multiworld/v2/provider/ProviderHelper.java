@@ -1,21 +1,15 @@
 package com.forgeessentials.multiworld.v2.provider;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MiddleEarthBiomeProviderHelper;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MiddleEarthClassicBiomeProviderHelper;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MinecraftCheckerboardBiomeProviderHolder;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MinecraftEndBiomeProviderHolder;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MinecraftNetherBiomeProviderHolder;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MinecraftOverworldBiomeProviderHolder;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MinecraftOverworldLargeBiomeProviderHolder;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.MinecraftSingleBiomeProviderHolder;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.TwilightForestBiomeProviderHelper;
-import com.forgeessentials.multiworld.v2.provider.biomeProviderTypes.TwilightForestDistBiomeProviderHelper;
 import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MiddleEarthChunkGeneratorHolder;
 import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MinecraftDebugChunkGeneratorHolder;
 import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MinecraftFlatChunkGeneratorHolder;
@@ -23,8 +17,8 @@ import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MinecraftNoiseCh
 import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.TwilightForestChunkGeneratorHolder;
 import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.TwilightForestSkyChunkGeneratorHolder;
 import com.forgeessentials.multiworld.v2.utils.MultiworldException;
-import com.forgeessentials.multiworld.v2.utils.MultiworldException.Type;
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.google.common.collect.Maps;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
@@ -74,7 +68,7 @@ public class ProviderHelper {
     {
     	DimensionType type = dimensionTypes.get(dimensionType);
         if (type == null)
-            throw new MultiworldException(Type.NO_DIMENSION_TYPE);
+            throw new MultiworldException(MultiworldException.Type.NO_DIMENSION_TYPE);
         return type;
     }
     
@@ -123,7 +117,7 @@ public class ProviderHelper {
     		e.printStackTrace();
     	}
     	if (type == null)
-			throw new MultiworldException(Type.NO_BIOME_PROVIDER);
+			throw new MultiworldException(MultiworldException.Type.NO_BIOME_PROVIDER);
         return type;
     }
     
@@ -132,29 +126,37 @@ public class ProviderHelper {
      */
     public void loadBiomeProviders()
     {
-    	Map<String, BiomeProviderHolderBase> biomeProviderInvalidated = new TreeMap<>();
-    	//Vanilla Overworld Biome Provider
-    	biomeProviderInvalidated.put("minecraft:overworld", new MinecraftOverworldBiomeProviderHolder());
-    	//Vanilla Overworld large Biome Provider
-    	biomeProviderInvalidated.put("minecraft:overworld_large", new MinecraftOverworldLargeBiomeProviderHolder());
-    	//Vanilla Nether Biome Provider
-    	biomeProviderInvalidated.put("minecraft:nether", new MinecraftNetherBiomeProviderHolder());
-    	//Vanilla End Biome Provider
-    	biomeProviderInvalidated.put("minecraft:end", new MinecraftEndBiomeProviderHolder());
-    	//Vanilla Single Biome Provider
-    	biomeProviderInvalidated.put("minecraft:single", new MinecraftSingleBiomeProviderHolder());
-    	//Vanilla Checkerboard Biome Provider
-    	biomeProviderInvalidated.put("minecraft:checkerboard", new MinecraftCheckerboardBiomeProviderHolder());
-    	//TwilightForest Biome Provider
-    	biomeProviderInvalidated.put("twilightforest:grid", new TwilightForestBiomeProviderHelper());
-    	//TwilightForest Secondary? Biome Provider
-    	biomeProviderInvalidated.put("twilightforest:smart_distribution", new TwilightForestDistBiomeProviderHelper());
-    	//TheLordoftheRingsModRenewed Biome Provider
-    	biomeProviderInvalidated.put("lotr:middle_earth", new MiddleEarthBiomeProviderHelper());
-    	//TheLordoftheRingsModRenewed Biome Provider in classic biome mode
-    	biomeProviderInvalidated.put("lotr:middle_earth_classic", new MiddleEarthClassicBiomeProviderHelper());
+    	Map<String, BiomeProviderHolderBase> biomeProviderUntested = new TreeMap<>();
+    	final org.objectweb.asm.Type MOD = org.objectweb.asm.Type.getType(FEBiomeProvider.class);
+    	
+		final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
+				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
+				.filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-    	for (Entry<String, BiomeProviderHolderBase> biomeProvType : biomeProviderInvalidated.entrySet()) {
+		Map<org.objectweb.asm.Type, String> classModIds = Maps.newHashMap();
+
+		// Gather all @FEBiomeProvider classes
+		data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
+				.forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
+		LoggingHandler.felog.info("Found {} FEBiomeProvider annotations", data.size());
+
+		for (ModFileScanData.AnnotationData asm : data) {
+			try {
+				Class<?> clazz = Class.forName(asm.getMemberName());
+				if (BiomeProviderHolderBase.class.isAssignableFrom(clazz)) {
+					BiomeProviderHolderBase handler = (BiomeProviderHolderBase) clazz.getDeclaredConstructor().newInstance();
+					FEBiomeProvider annot = handler.getClass().getAnnotation(FEBiomeProvider.class);
+					biomeProviderUntested.put(annot.providerName(), handler);
+				}
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+				LoggingHandler.felog.debug("Could not load FEBiomeProvider: " + asm.getMemberName());
+			} catch (IllegalArgumentException | SecurityException | NoSuchMethodException
+					| InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+
+    	for (Entry<String, BiomeProviderHolderBase> biomeProvType : biomeProviderUntested.entrySet()) {
     		try {
 				if(Class.forName(biomeProvType.getValue().getClassName()) != null) {
 					biomeProviderTypes.put(biomeProvType.getKey(), biomeProvType.getValue());
@@ -166,8 +168,6 @@ public class ProviderHelper {
         LoggingHandler.felog.debug("[Multiworld] Available biome providers:");
         for (String biomeType : biomeProviderTypes.keySet())
             LoggingHandler.felog.debug("# " + biomeType);
-        for (BiomeProviderHolderBase biomeClassName : biomeProviderTypes.values())
-            LoggingHandler.felog.debug("$ " + (biomeClassName.getClassName()));
     }
 
     public Set<String> getBiomeProviders()
@@ -192,7 +192,7 @@ public class ProviderHelper {
     		e.printStackTrace();
     	}
     	if (type == null)
-			throw new MultiworldException(Type.NO_CHUNK_GENERATOR);
+			throw new MultiworldException(MultiworldException.Type.NO_CHUNK_GENERATOR);
         return type;
     }
     
@@ -246,7 +246,7 @@ public class ProviderHelper {
     {
     	DimensionSettings type = dimensionSettings.get(dimensionSetting);
         if (type == null)
-            throw new MultiworldException(Type.NO_DIMENSION_SETTINGS);
+            throw new MultiworldException(MultiworldException.Type.NO_DIMENSION_SETTINGS);
         return type;
     }
     
