@@ -10,12 +10,6 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MiddleEarthChunkGeneratorHolder;
-import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MinecraftDebugChunkGeneratorHolder;
-import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MinecraftFlatChunkGeneratorHolder;
-import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.MinecraftNoiseChunkGeneratorHolder;
-import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.TwilightForestChunkGeneratorHolder;
-import com.forgeessentials.multiworld.v2.provider.chunkGenTypes.TwilightForestSkyChunkGeneratorHolder;
 import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.collect.Maps;
@@ -30,7 +24,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
 public class ProviderHelper {
     /**
@@ -201,21 +197,37 @@ public class ProviderHelper {
      */
     public void loadChunkGenerators()
     {
-    	Map<String, ChunkGeneratorHolderBase> chunkGeneratorInvalidated = new TreeMap<>();
-    	//Vanilla Noise Chunk Generator
-    	chunkGeneratorInvalidated.put("minecraft:noise", new MinecraftNoiseChunkGeneratorHolder());
-    	//Vanilla Flat Chunk Generator
-    	chunkGeneratorInvalidated.put("minecraft:flat", new MinecraftFlatChunkGeneratorHolder());
-    	//Vanilla Debug Chunk Generator
-    	chunkGeneratorInvalidated.put("minecraft:debug", new MinecraftDebugChunkGeneratorHolder());
-    	//TwilightForest Chunk Generator
-    	chunkGeneratorInvalidated.put("twilightforest:featured_noise", new TwilightForestChunkGeneratorHolder());
-    	//TwilightForest Sky Chunk Generator
-    	chunkGeneratorInvalidated.put("twilightforest:sky_noise", new TwilightForestSkyChunkGeneratorHolder());
-    	//TheLordoftheRingsModRenewed Middle Earth Chunk Generator
-    	chunkGeneratorInvalidated.put("lotr:middle_earth", new MiddleEarthChunkGeneratorHolder());
+    	Map<String, ChunkGeneratorHolderBase> chunkGeneratorUntested = new TreeMap<>();
+    	final org.objectweb.asm.Type MOD = org.objectweb.asm.Type.getType(FEChunkGenProvider.class);
+    	
+		final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
+				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
+				.filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-    	for (Entry<String, ChunkGeneratorHolderBase> chunkGeneratorsFull : chunkGeneratorInvalidated.entrySet()) {
+		Map<org.objectweb.asm.Type, String> classModIds = Maps.newHashMap();
+
+		// Gather all @FEBiomeProvider classes
+		data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
+				.forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
+		LoggingHandler.felog.info("Found {} FEChunkGenProvider annotations", data.size());
+
+		for (ModFileScanData.AnnotationData asm : data) {
+			try {
+				Class<?> clazz = Class.forName(asm.getMemberName());
+				if (ChunkGeneratorHolderBase.class.isAssignableFrom(clazz)) {
+					ChunkGeneratorHolderBase handler = (ChunkGeneratorHolderBase) clazz.getDeclaredConstructor().newInstance();
+					FEChunkGenProvider annot = handler.getClass().getAnnotation(FEChunkGenProvider.class);
+					chunkGeneratorUntested.put(annot.providerName(), handler);
+				}
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+				LoggingHandler.felog.debug("Could not load FEChunkGenProvider: " + asm.getMemberName());
+			} catch (IllegalArgumentException | SecurityException | NoSuchMethodException
+					| InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+
+    	for (Entry<String, ChunkGeneratorHolderBase> chunkGeneratorsFull : chunkGeneratorUntested.entrySet()) {
     		try {
 				if(Class.forName(chunkGeneratorsFull.getValue().getClassName()) != null) {
 					chunkGenerators.put(chunkGeneratorsFull.getKey(), chunkGeneratorsFull.getValue());
@@ -227,8 +239,6 @@ public class ProviderHelper {
         LoggingHandler.felog.debug("[Multiworld] Available Chunk Generators:");
         for (String generatorName : chunkGenerators.keySet())
             LoggingHandler.felog.debug("# " + generatorName);
-        for (ChunkGeneratorHolderBase generatorNameClassName : chunkGenerators.values())
-            LoggingHandler.felog.debug("$ " + generatorNameClassName.getClassName());
     }
 
     public Set<String> getChunkGenerators()

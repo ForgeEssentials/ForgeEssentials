@@ -8,7 +8,7 @@ import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
 
-public interface ChunkGeneratorHolderBase {
-	ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeProvider biome, Supplier<DimensionSettings> dimSettings);
-	String getClassName();
+public abstract class ChunkGeneratorHolderBase {
+	public abstract ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeProvider biome, Supplier<DimensionSettings> dimSettings);
+	public abstract String getClassName();
 }

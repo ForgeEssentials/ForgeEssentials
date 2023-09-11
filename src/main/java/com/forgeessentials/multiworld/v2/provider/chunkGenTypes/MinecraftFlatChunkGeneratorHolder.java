@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.forgeessentials.multiworld.v2.provider.ChunkGeneratorHolderBase;
+import com.forgeessentials.multiworld.v2.provider.FEChunkGenProvider;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Blocks;
@@ -22,7 +23,8 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 
-public class MinecraftFlatChunkGeneratorHolder implements ChunkGeneratorHolderBase {
+@FEChunkGenProvider(providerName = "minecraft:flat")
+public class MinecraftFlatChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override
 	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeProvider biome,
 			Supplier<DimensionSettings> dimSettings) {
