@@ -169,7 +169,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         {
             try
             {
-                Class<?> clazz = Class.forName(asm.getClass().getName());
+                Class<?> clazz = Class.forName(asm.getMemberName());
                 if (RemoteHandler.class.isAssignableFrom(clazz))
                 {
                     RemoteHandler handler = (RemoteHandler) clazz.getDeclaredConstructor().newInstance();
