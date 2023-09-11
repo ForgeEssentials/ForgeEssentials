@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.google.common.collect.Maps;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
@@ -76,6 +75,7 @@ public class ProviderHelper {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		DynamicRegistries registries = server.registryAccess();
 		Registry<DimensionType> loadedProviders = registries.dimensionTypes();
+		LoggingHandler.felog.info("Found {} DimensionTypes", loadedProviders.entrySet().size());
 		for (Entry<RegistryKey<DimensionType>, DimensionType> provider : loadedProviders.entrySet()) {
 			dimensionTypes.put(provider.getKey().location().toString(), provider.getValue());
 			if(provider.getKey().location().getNamespace().equals("minecraft")) {
@@ -129,13 +129,6 @@ public class ProviderHelper {
 				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
 				.filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-		Map<org.objectweb.asm.Type, String> classModIds = Maps.newHashMap();
-
-		// Gather all @FEBiomeProvider classes
-		data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
-				.forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
-		LoggingHandler.felog.info("Found {} FEBiomeProvider annotations", data.size());
-
 		for (ModFileScanData.AnnotationData asm : data) {
 			try {
 				Class<?> clazz = Class.forName(asm.getMemberName());
@@ -161,6 +154,8 @@ public class ProviderHelper {
 				 LoggingHandler.felog.debug("Removed Invalid BiomeProvider type: "+ biomeProvType.getValue().getClassName());
 			}
     	}
+
+    	LoggingHandler.felog.info("Found {} FEBiomeProviders", biomeProviderTypes.size());
         LoggingHandler.felog.debug("[Multiworld] Available biome providers:");
         for (String biomeType : biomeProviderTypes.keySet())
             LoggingHandler.felog.debug("# " + biomeType);
@@ -204,13 +199,6 @@ public class ProviderHelper {
 				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
 				.filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-		Map<org.objectweb.asm.Type, String> classModIds = Maps.newHashMap();
-
-		// Gather all @FEBiomeProvider classes
-		data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
-				.forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
-		LoggingHandler.felog.info("Found {} FEChunkGenProvider annotations", data.size());
-
 		for (ModFileScanData.AnnotationData asm : data) {
 			try {
 				Class<?> clazz = Class.forName(asm.getMemberName());
@@ -236,6 +224,8 @@ public class ProviderHelper {
 				 LoggingHandler.felog.debug("Removed Invalid ChunkGenerator: "+ chunkGeneratorsFull.getValue().getClassName());
 			}
     	}
+
+		LoggingHandler.felog.info("Found {} FEChunkGenProviders", chunkGenerators.size());
         LoggingHandler.felog.debug("[Multiworld] Available Chunk Generators:");
         for (String generatorName : chunkGenerators.keySet())
             LoggingHandler.felog.debug("# " + generatorName);
@@ -265,6 +255,7 @@ public class ProviderHelper {
      */
     public void loadDimensionSettings()
     {
+    	LoggingHandler.felog.info("Found {} DimensionSettings", WorldGenRegistries.NOISE_GENERATOR_SETTINGS.entrySet().size());
 		for (Entry<RegistryKey<DimensionSettings>, DimensionSettings> provider : WorldGenRegistries.NOISE_GENERATOR_SETTINGS.entrySet()) {
 			dimensionSettings.put(provider.getKey().location().toString(), provider.getValue());
 		}

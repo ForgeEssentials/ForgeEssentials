@@ -44,7 +44,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartE
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 
@@ -157,13 +156,6 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
                 .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
-
-        Map<Type, String> classModIds = Maps.newHashMap();
-
-        // Gather all @FERemoteHandler classes
-        data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
-                .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
-        LoggingHandler.felog.info("Found {} FERemoteHandler annotations", data.size());
 
         for (ModFileScanData.AnnotationData asm : data)
         {
