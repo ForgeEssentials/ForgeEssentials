@@ -39,7 +39,7 @@ public class MobTypeLoader
         for (ModFileScanData.AnnotationData asm : data)
         {
             Class<?> c = null;
-            className = asm.getClass().getName();
+            className = asm.getMemberName();
 
             try
             {
@@ -47,7 +47,7 @@ public class MobTypeLoader
             }
             catch (Exception e)
             {
-                LoggingHandler.felog.info("Error trying to load " + asm.getClass() + " as a FEMob!");
+                LoggingHandler.felog.info("Error trying to load " + asm.getMemberName() + " as a FEMob!");
                 e.printStackTrace();
                 return;
             }
