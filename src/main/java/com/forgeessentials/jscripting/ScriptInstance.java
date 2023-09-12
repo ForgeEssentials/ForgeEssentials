@@ -29,10 +29,12 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
+import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -433,9 +435,14 @@ public class ScriptInstance
 
     /* ************************************************************ */
     /* Event handling */
-    /*
-     * public void registerScriptCommand(CommandJScriptCommand command) { commands.add(command); FECommandManager.registerCommand(command, true); }
-     */
+    public void registerScriptCommand(CommandJScriptCommand command) {
+        if (ModuleJScripting.instance().dispatcher != null)
+        {
+            commands.add(command);
+            FECommandManager.registerCommand(command, ModuleJScripting.instance().dispatcher);
+        }
+    }
+
     public void registerEventHandler(String event, Object handler)
     {
         Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);

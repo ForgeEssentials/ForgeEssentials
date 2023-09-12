@@ -34,6 +34,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -125,10 +126,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
+    public CommandDispatcher<CommandSource> dispatcher = null;
     @SubscribeEvent
     public void registerCommands(RegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript(true), event.getDispatcher());
+
+        dispatcher = event.getDispatcher();
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException

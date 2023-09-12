@@ -1,36 +1,53 @@
 package com.forgeessentials.jscripting.command;
 
+import javax.script.ScriptException;
+
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.jscripting.ModuleJScripting;
+import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
+import com.google.common.base.Preconditions;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 {
 
-    // public final ScriptInstance script;
+    public final ScriptInstance script;
 
-    // private JsCommandOptions options;
+    private JsCommandOptions options;
 
     // private static final Pattern ARGUMENT_PATTERN =
     // Pattern.compile("@(\\w+)(.*)");
-    /*
-     * public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options) { Preconditions.checkNotNull(script); Preconditions.checkNotNull(options);
-     * Preconditions.checkNotNull(options.name); Preconditions.checkNotNull(options.processCommand); if (options.usage == null) options.usage = "/" + options.name +
-     * ": scripted command - no description"; if (options.permission == null) options.permission = ModuleJScripting.PERM + ".command." + options.name; this.script = script;
-     * this.options = options; }
-     */
-    public CommandJScriptCommand(boolean enabled)
-    {
-        super(enabled);
-    }
+
+     public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options) {
+         super(true);
+         Preconditions.checkNotNull(script);
+         Preconditions.checkNotNull(options);
+         Preconditions.checkNotNull(options.name);
+         Preconditions.checkNotNull(options.processCommand);
+         if (options.usage == null)
+         {
+             options.usage = "/" + options.name + ": scripted command - no description";
+         }
+         if (options.permission == null) {
+             options.permission = ModuleJScripting.PERM + ".command." + options.name;
+         }
+         this.script = script;
+        this.options = options;
+     }
 
     @Override
     public @NotNull String getPrimaryAlias()
     {
-        return null;// options.name;
+        return options.name;
     }
 
     @Override
@@ -42,7 +59,7 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
-        return null;// options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
+        return options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
     }
 
     /*
@@ -63,6 +80,20 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return baseBuilder.executes(context -> execute(context, "blank"));
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    {
+        try
+        {
+            script.call(options.processCommand, options.processCommand, ctx.getInput());
+        }
+        catch (NoSuchMethodException | ScriptException e)
+        {
+            throw new RuntimeException(e);
+        }
+        return Command.SINGLE_SUCCESS;
     }
 }
