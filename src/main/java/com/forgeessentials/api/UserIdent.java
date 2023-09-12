@@ -126,8 +126,8 @@ public class UserIdent
         player = identPlayer == null ? null : new WeakReference<>(identPlayer);
         if (identPlayer != null)
         {
-            uuid = identPlayer.getUUID();
-            username = identPlayer.getDisplayName().getString();
+            uuid = identPlayer.getGameProfile().getId();
+            username = identPlayer.getGameProfile().getName();
             if (byUuid.containsKey(uuid))
             {
                 oldIdent = byUuid.get(uuid);
