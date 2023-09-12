@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
 
@@ -78,9 +79,9 @@ public class JsFEServer
     /**
      * Returns the list of players who have ever connected.
      */
-    public Set<UserIdent> getAllPlayers()
+    public Set<JsUserIdent> getAllPlayers()
     {
-        return APIRegistry.perms.getServerZone().getKnownPlayers();
+        return APIRegistry.perms.getServerZone().getKnownPlayers().stream().map(JsUserIdent::new).collect(Collectors.toSet());
     }
 
     /**
