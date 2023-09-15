@@ -13,22 +13,11 @@ public class JsCommandOptions
     /**
      * @tsd.optional
      */
-    public String permission;
-
-    /**
-     * @tsd.optional
-     */
     public boolean opOnly = true;
 
     /**
      * @tsd.type CommandCallback
      */
     public Object processCommand;
-
-    /**
-     * @tsd.optional
-     * @tsd.type CommandCallback
-     */
-    public Object tabComplete;
 
 }

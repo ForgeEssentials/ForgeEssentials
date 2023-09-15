@@ -15,7 +15,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,7 +98,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered events:");
                 for (String eventType : eventHandlers)
-                    ctx.getSource().sendSuccess(new StringTextComponent(("    " + eventType)), true);
+                	ChatOutputHandler.chatConfirmation(ctx.getSource(), "    " + eventType);
             }
 
             List<CommandJScriptCommand> commands = script.getCommands();
@@ -107,7 +106,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered commands:");
                 for (CommandJScriptCommand command : commands)
-                    ctx.getSource().sendSuccess(new StringTextComponent("    /" + command.getName()), true);
+                	ChatOutputHandler.chatConfirmation(ctx.getSource(), "    /" + command.getName());
             }
         }
     }

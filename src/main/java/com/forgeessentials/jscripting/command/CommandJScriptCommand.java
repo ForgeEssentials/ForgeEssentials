@@ -3,7 +3,6 @@ package com.forgeessentials.jscripting.command;
 import javax.script.ScriptException;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
 import com.google.common.base.Preconditions;
@@ -13,7 +12,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,9 +34,6 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
          if (options.usage == null)
          {
              options.usage = "/" + options.name + ": scripted command - no description";
-         }
-         if (options.permission == null) {
-             options.permission = ModuleJScripting.PERM + ".command." + options.name;
          }
          this.script = script;
         this.options = options;

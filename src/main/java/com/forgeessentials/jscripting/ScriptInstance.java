@@ -34,7 +34,6 @@ import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
-import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
