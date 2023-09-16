@@ -241,8 +241,15 @@ public class TsdGenerator extends Doclet
             if (classDoc.superclassType() instanceof ParameterizedType
                     && classDoc.superclass().name().equals("MappedList"))
             {
-                write("<");
-                write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[1]));
+            	write("<");
+            	ParameterizedType parameterizedType = (ParameterizedType) classDoc.superclassType();
+            	Type[] typeArguments = parameterizedType.typeArguments();
+                if (typeArguments.length > 0) {
+                    write(mapClassName(typeArguments[0])); // Access the first type argument
+                }else {
+                	System.out.println("Error!!!!!!!!! ParameterizedType is missing type arguments for "+typeName);
+                }
+                //write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[0]));
                 write(">");
             }
         }
