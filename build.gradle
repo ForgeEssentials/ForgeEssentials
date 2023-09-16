@@ -429,7 +429,7 @@ compileClientJava {
 
  // JavaExec task for generating tsd
 //  Calls the main class for the TSD generator since that is working
-/*
+
 task tsd(type: JavaExec) {
     dependsOn "classes"
     classpath = project.sourceSets.test.compileClasspath
@@ -443,7 +443,7 @@ task tsd(type: JavaExec) {
             into "build/resources/main/com/forgeessentials/jscripting"
         }
     }
-}*/
+}
 
 /************************************************************
  * Configure client jar

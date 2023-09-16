@@ -3,8 +3,12 @@ package com.forgeessentials.jscripting.command;
 import javax.script.ScriptException;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
+import com.forgeessentials.util.CommandContextParcer;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Preconditions;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -57,21 +61,6 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
         return options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
     }
 
-    /*
-     * @Override public void parse() throws CommandException { try { if (arguments.isTabCompletion) { if (options.tabComplete != null) //script.call(options.tabComplete,
-     * options.tabComplete, new JsCommandArgs(arguments)); } else { //script.call(options.processCommand, options.processCommand, new JsCommandArgs(arguments)); } } catch
-     * (NoSuchMethodException e) { e.printStackTrace(); throw new TranslatedCommandException("Script error: method not found: " + e.getMessage()); } catch (ScriptException e) {
-     * e.printStackTrace(); throw new TranslatedCommandException(e.getMessage()); } }
-     * 
-     * public static void processArguments(CommandParserArgs args) { for (int i = 0; i < args.size(); i++) { Matcher matcher = ARGUMENT_PATTERN.matcher(args.get(i)); if
-     * (!matcher.matches()) { continue; }
-     * 
-     * String modifier = matcher.group(1).toLowerCase(); String rest = matcher.group(2);
-     * 
-     * ScriptArgument argument = ScriptArguments.get(modifier); if (argument != null) { args.args.set(i, argument.process(args.sender) + rest); } else { try { int idx =
-     * Integer.parseInt(modifier); if (idx >= args.size()) throw new SyntaxException("Missing argument @%d", idx); args.args.set(i, args.get(idx) + rest); } catch
-     * (NumberFormatException e) { throw new SyntaxException("Unknown argument modifier \"%s\"", modifier); } } } }
-     */
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
@@ -83,12 +72,22 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     {
         try
         {
-            script.call(options.processCommand, options.processCommand, ctx.getInput());
+        	script.call(options.processCommand, options.processCommand, new JsCommandArgs(new CommandContextParcer(ctx, params)));
         }
-        catch (NoSuchMethodException | ScriptException e)
+        catch (NoSuchMethodException e)
         {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            ChatOutputHandler.chatError(ctx.getSource(), "Script error: method not found: " + e.getMessage());
         }
+        catch (ScriptException e)
+        {
+            e.printStackTrace();
+            ChatOutputHandler.chatError(ctx.getSource(), e.getMessage());
+        }
+        catch (FECommandParsingException e) {
+        	e.printStackTrace();
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+		}
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -30,7 +30,6 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.Parameter;
@@ -583,11 +582,6 @@ public class TsdGenerator extends Doclet
             }
         }
         return true;
-    }
-
-    public static LanguageVersion languageVersion()
-    {
-        return LanguageVersion.JAVA_1_5;
     }
 
     public static void main(String[] args) throws IOException

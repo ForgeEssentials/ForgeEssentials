@@ -6,22 +6,22 @@ import com.forgeessentials.util.MappedList;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-public class JsEntityPlayerList extends MappedList<PlayerEntity, JsEntityPlayer>
+public class JsPlayerEntityList extends MappedList<PlayerEntity, JsPlayerEntity>
 {
 
-    public JsEntityPlayerList(List<PlayerEntity> that)
+    public JsPlayerEntityList(List<PlayerEntity> that)
     {
         super(that);
     }
 
     @Override
-    protected JsEntityPlayer map(PlayerEntity in)
+    protected JsPlayerEntity map(PlayerEntity in)
     {
-        return JsEntityPlayer.get(in);
+        return JsPlayerEntity.get(in);
     }
 
     @Override
-    protected PlayerEntity unmap(JsEntityPlayer in)
+    protected PlayerEntity unmap(JsPlayerEntity in)
     {
         return in.getThat();
     }

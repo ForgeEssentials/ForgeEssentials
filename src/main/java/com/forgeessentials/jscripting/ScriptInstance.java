@@ -30,6 +30,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.core.commands.registration.FECommandManager;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -252,7 +253,7 @@ public class ScriptInstance
         return illegalFunctions.contains(fnName);
     }
 
-    public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException
+    public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException, FECommandParsingException
     {
         try
         {
@@ -265,6 +266,9 @@ public class ScriptInstance
         }
         catch (Exception e)
         {
+        	if(e instanceof FECommandParsingException) {
+        		throw e;
+        	}
             // TODO: Maybe only catch certain exceptions like NullPointerException etc.
             throw new ScriptException(e);
         }
@@ -389,6 +393,10 @@ public class ScriptInstance
             try
             {
                 call(fn, fn, args);
+            }
+            catch (FECommandParsingException e) 
+            {
+            	chatError("Error in script execution: " + e.error);
             }
             catch (NoSuchMethodException | ScriptException e)
             {

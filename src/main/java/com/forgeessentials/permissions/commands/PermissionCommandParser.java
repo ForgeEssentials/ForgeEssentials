@@ -285,7 +285,7 @@ public class PermissionCommandParser extends CommandUtils
         UserIdent ident;
         try
         {
-            ident = parsePlayer(params.remove(0), null, false, false);
+            ident = parsePlayer(params.remove(0), false, false);
         }
         catch (FECommandParsingException e)
         {

@@ -6,7 +6,7 @@ import net.minecraft.world.server.ServerWorld;
 public class JsServerWorld extends JsWorld<ServerWorld>
 {
 
-    public static JsServerWorld get(String dim)
+    public static JsServerWorld getServerWorld(String dim)
     {
         return JsWorld.get(dim);
     }

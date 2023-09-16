@@ -26,10 +26,10 @@ public class CommandUtils
                 "field_197041_c");
     }
 
-    public static UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline)
+    public static UserIdent parsePlayer(String name, boolean mustExist, boolean mustBeOnline)
             throws FECommandParsingException
     {
-        UserIdent ident = UserIdent.get(name, sender, mustExist);
+        UserIdent ident = UserIdent.get(name, null, mustExist);
         if (mustExist && (ident == null || !ident.hasUuid()))
             throw new FECommandParsingException("Player %s not found", name);
         else if (mustBeOnline && !ident.hasPlayer())

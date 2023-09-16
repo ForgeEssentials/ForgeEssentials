@@ -6,9 +6,9 @@ import com.forgeessentials.commands.item.CommandVirtualchest;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsWorldPoint;
-import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInventoryPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.item.JsPlayerInventory;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 
@@ -25,24 +25,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 
-public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
+public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
 {
-    protected JsInventoryPlayer<?> inventory;
+    protected JsPlayerInventory<?> inventory;
 
-    private JsICommandSender commandSender;
+    private JsCommandSource commandSender;
 
     /**
      * @tsd.ignore
      */
-    public static JsEntityPlayer get(PlayerEntity player)
+    public static JsPlayerEntity get(PlayerEntity player)
     {
-        return player == null ? null : new JsEntityPlayer(player);
+        return player == null ? null : new JsPlayerEntity(player);
     }
 
     /**
      * @tsd.ignore
      */
-    private JsEntityPlayer(PlayerEntity that)
+    private JsPlayerEntity(PlayerEntity that)
     {
         super(that);
     }
@@ -50,7 +50,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     /**
      * @tsd.ignore
      */
-    public JsEntityPlayer(PlayerEntity that, JsICommandSender commandSender)
+    public JsPlayerEntity(PlayerEntity that, JsCommandSource commandSender)
     {
         super(that);
         this.commandSender = commandSender;
@@ -68,17 +68,17 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
         ((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
     }
 
-    public JsICommandSender asCommandSender()
+    public JsCommandSource asCommandSender()
     {
         if (commandSender != null || !(that instanceof PlayerEntity))
             return commandSender;
-        return commandSender = new JsICommandSender(that.createCommandSourceStack(), this);
+        return commandSender = new JsCommandSource(that.createCommandSourceStack(), this);
     }
 
-    public JsInventoryPlayer<?> getInventory()
+    public JsPlayerInventory<?> getInventory()
     {
         if (inventory == null)
-            inventory = JsInventoryPlayer.get(that.inventory);
+            inventory = JsPlayerInventory.get(that.inventory);
         return inventory;
     }
 
@@ -170,7 +170,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
         return that.getEyeHeight();
     }
 
-    public boolean canAttackPlayer(JsEntityPlayer player)
+    public boolean canAttackPlayer(JsPlayerEntity player)
     {
         return that.canAttack(player.getThat());
     }

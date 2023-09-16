@@ -12,7 +12,7 @@ import javax.script.ScriptException;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.util.PlayerInfo;
 
 import net.minecraftforge.event.TickEvent;
@@ -29,10 +29,10 @@ public class JsFEServer
     {
         int tickCount, tickStep, lastCount;
         String method;
-        JsICommandSender sender;
+        JsCommandSource sender;
         Object extraData;
 
-        CORoutine(int tickCount, int tickStep, String method, JsICommandSender sender, Object extraData)
+        CORoutine(int tickCount, int tickStep, String method, JsCommandSource sender, Object extraData)
         {
             this.tickCount = tickCount;
             this.lastCount = tickCount;
@@ -46,7 +46,7 @@ public class JsFEServer
     HashSet<CORoutine> coRoutineHashSet = new HashSet<>();
     private ScriptInstance script;
 
-    private JsICommandSender server;
+    private JsCommandSource server;
 
     public JsFEServer(ScriptInstance script)
     {
@@ -110,12 +110,12 @@ public class JsFEServer
      * @param method
      * @param sender
      */
-    public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender)
+    public void AddCoRoutine(int count, int tickStep, String method, JsCommandSource sender)
     {
         AddCoRoutine(count, tickStep, method, sender, null);
     }
 
-    public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender, Object extraData)
+    public void AddCoRoutine(int count, int tickStep, String method, JsCommandSource sender, Object extraData)
     {
         coRoutineHashSet.add(new CORoutine(count * tickStep, tickStep, method, sender, extraData));
     }

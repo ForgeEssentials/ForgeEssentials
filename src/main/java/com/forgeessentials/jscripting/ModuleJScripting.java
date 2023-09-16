@@ -26,9 +26,8 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
-import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -147,12 +146,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         JsLocalStorage.load();
         loadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
-    }
-
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerStartedEvent event)
-    {
-        // loadScripts();
     }
 
     @Override
@@ -325,7 +318,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Override
     public boolean runEventScripts(String key, CommandSource sender, Object additionalData)
     {
-        JsICommandSender jsSender = JsICommandSender.get(sender);
+        JsCommandSource jsSender = JsCommandSource.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
         boolean cancelled = false;
         for (ScriptInstance script : scripts.values())

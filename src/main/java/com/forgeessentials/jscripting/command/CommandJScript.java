@@ -6,7 +6,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.ScriptUpgrader;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -70,7 +69,8 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             parseReload(ctx);
             break;
         case "upgrade":
-            ScriptUpgrader.upgradeOldScripts(ctx.getSource());
+        	ChatOutputHandler.chatNotification(ctx.getSource(), "This is not ported/working/needed rn");
+            //ScriptUpgrader.upgradeOldScripts(ctx.getSource());
             break;
         default:
             ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
