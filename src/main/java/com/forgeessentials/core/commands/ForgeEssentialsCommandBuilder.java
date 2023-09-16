@@ -39,7 +39,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     public ForgeEssentialsCommandBuilder(boolean enabled, String name, DefaultPermissionLevel level)
     {
-        this.baseBuilder = Commands.literal(name).requires(
+        this.baseBuilder = Commands.literal(getFullName(name)).requires(
                 source -> source.hasPermission(CommandPermissionManager.fromDefaultPermissionLevel(level)));
         this.enabled = enabled;
 
@@ -88,8 +88,11 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     public String getName()
     {
-        String name = getPrimaryAlias();
-        if (name.startsWith(PREFIX))
+    	return getFullName(getPrimaryAlias());
+    }
+
+    public String getFullName(String name) {
+    	if (name.startsWith(PREFIX))
         {
             return name;
         }

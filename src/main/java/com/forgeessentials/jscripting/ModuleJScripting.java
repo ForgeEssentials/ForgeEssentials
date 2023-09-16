@@ -193,7 +193,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         while (it.hasNext()) {
             File file = it.next();
             String name = file.getName();
-            System.out.println(name);
             if (!(name.equals("fe.d.ts")|| name.equals("mc.d.ts"))&& name.endsWith("ts"))
             {
                 LoggingHandler.felog.warn(

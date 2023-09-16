@@ -92,7 +92,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Loaded scripts:");
         for (ScriptInstance script : ModuleJScripting.getScripts())
         {
-            ChatOutputHandler.chatNotification(ctx.getSource(), script.getName());
+            ChatOutputHandler.chatError(ctx.getSource(), script.getName());
 
             List<String> eventHandlers = script.getEventHandlers();
             if (!eventHandlers.isEmpty())
