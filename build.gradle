@@ -432,7 +432,7 @@ compileClientJava {
 
 task tsd(type: JavaExec) {
     dependsOn "classes"
-    classpath = project.sourceSets.test.compileClasspath
+    classpath = files(project.sourceSets.test.compileClasspath, project.sourceSets.main.compileClasspath)
     mainClass = "com.forgeessentials.jscripting.TsdGenerator"
     doLast {
         copy {
@@ -498,7 +498,7 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
 	dependsOn shadowJar
-    //dependsOn "tsd"
+    dependsOn "tsd"
     archiveClassifier = "server"
 	archiveAppendix = project.minecraftVersion
 	
