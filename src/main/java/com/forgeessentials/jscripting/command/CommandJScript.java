@@ -1,6 +1,7 @@
 package com.forgeessentials.jscripting.command;
 
 import java.util.List;
+import java.util.Set;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -81,7 +82,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
 
     private static void parseReload(CommandContext<CommandSource> ctx)
     {
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Reloading scripts...");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Reloading scripts...");
         ModuleJScripting.instance().reloadScripts(ctx.getSource());
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Done!");
     }
@@ -96,17 +97,17 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             List<String> eventHandlers = script.getEventHandlers();
             if (!eventHandlers.isEmpty())
             {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered events:");
+                ChatOutputHandler.chatNotification(ctx.getSource(), "  Registered events:");
                 for (String eventType : eventHandlers)
-                	ChatOutputHandler.chatConfirmation(ctx.getSource(), "    " + eventType);
+                	ChatOutputHandler.chatWarning(ctx.getSource(), "    " + eventType);
             }
 
-            List<CommandJScriptCommand> commands = script.getCommands();
+            Set<String> commands = script.getCommandNames();
             if (!commands.isEmpty())
             {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered commands:");
-                for (CommandJScriptCommand command : commands)
-                	ChatOutputHandler.chatConfirmation(ctx.getSource(), "    /" + command.getName());
+                ChatOutputHandler.chatNotification(ctx.getSource(), "  Registered commands:");
+                for (String command : commands)
+                	ChatOutputHandler.chatWarning(ctx.getSource(), "    /" + command);
             }
         }
     }

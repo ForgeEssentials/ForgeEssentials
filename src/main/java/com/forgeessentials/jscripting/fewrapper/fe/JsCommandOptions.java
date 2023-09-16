@@ -13,7 +13,7 @@ public class JsCommandOptions
     /**
      * @tsd.optional
      */
-    public boolean opOnly = true;
+    public Boolean opOnly = true;
 
     /**
      * @tsd.type CommandCallback

@@ -111,11 +111,11 @@ public class ScriptInstance
 
     private Set<String> illegalFunctions = new HashSet<>();
 
-    private Map<Integer, TimerTask> tasks = new HashMap<>();
+    private static Map<Integer, TimerTask> tasks = new HashMap<>();
 
-    private List<CommandJScriptCommand> commands = new ArrayList<>();
+    private static Map<String, CommandJScriptCommand> commands = new HashMap<>();
 
-    private Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
+    private static Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
 
     private WeakReference<CommandSource> lastSender;
 
@@ -443,9 +443,9 @@ public class ScriptInstance
     /* ************************************************************ */
     /* Event handling */
     public void registerScriptCommand(CommandJScriptCommand command) {
-        if (ModuleJScripting.instance().dispatcher != null)
+        if (ModuleJScripting.instance().dispatcher != null&&!commands.containsKey(command.getName()))
         {
-            commands.add(command);
+            commands.put(command.getName(),command);
             FECommandManager.registerCommand(command, ModuleJScripting.instance().dispatcher);
         }
     }
@@ -503,9 +503,9 @@ public class ScriptInstance
         return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
-    public List<CommandJScriptCommand> getCommands()
+    public Set<String> getCommandNames()
     {
-        return commands;
+        return commands.keySet();
     }
 
     public List<String> getEventHandlers()
