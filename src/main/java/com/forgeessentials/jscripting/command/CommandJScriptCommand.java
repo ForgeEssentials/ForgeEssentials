@@ -30,7 +30,7 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     // Pattern.compile("@(\\w+)(.*)");
 
      public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options) {
-         super(true);
+         super(true, options.name, options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL);
          Preconditions.checkNotNull(script);
          Preconditions.checkNotNull(options);
          Preconditions.checkNotNull(options.name);

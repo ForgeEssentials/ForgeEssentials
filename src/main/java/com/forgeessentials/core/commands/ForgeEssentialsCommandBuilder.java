@@ -37,6 +37,14 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     }
 
+    public ForgeEssentialsCommandBuilder(boolean enabled, String name, DefaultPermissionLevel level)
+    {
+        this.baseBuilder = Commands.literal(name).requires(
+                source -> source.hasPermission(CommandPermissionManager.fromDefaultPermissionLevel(level)));
+        this.enabled = enabled;
+
+    }
+
     public LiteralArgumentBuilder<CommandSource> getMainBuilder()
     {
         return baseBuilder;
