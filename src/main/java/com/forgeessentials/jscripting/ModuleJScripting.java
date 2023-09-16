@@ -193,14 +193,15 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         while (it.hasNext()) {
             File file = it.next();
             String name = file.getName();
-            if (!name.endsWith("d.ts") && name.endsWith("ts"))
+            System.out.println(name);
+            if (!(name.equals("fe.d.ts")|| name.equals("mc.d.ts"))&& name.endsWith("ts"))
             {
                 LoggingHandler.felog.warn(
                         "Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.",
                         name);
                 continue;
             }
-            if (name.endsWith("d.ts") || scripts.containsKey(file))
+            if ((name.equals("fe.d.ts")|| name.equals("mc.d.ts")) || scripts.containsKey(file))
                 continue;
             try
             {
