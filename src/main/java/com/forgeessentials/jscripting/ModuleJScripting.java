@@ -97,7 +97,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Preconditions
-    public boolean canLoad()
+    public static boolean canLoad()
     {
         ScriptEngine engine = SEM.getEngineByName("JavaScript");
         if (engine != null && (factory = engine.getFactory()) != null)

@@ -118,19 +118,19 @@ public class ModuleContainer implements Comparable<Object>
 
                 try
                 {
-                    if (!((boolean) m.invoke(c.getDeclaredConstructor().newInstance())))
+                    if (!((boolean) m.invoke(null)))
                     {
                         LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
                         return;
                     }
                 }
-                catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+                catch (IllegalAccessException | InvocationTargetException e)
                 {
                     LoggingHandler.felog.error(
                             String.format("Exception Raised when testing preconditions for module: %s", name), e);
                 }
-                catch (IllegalArgumentException | NoSuchMethodException | SecurityException e)
+                catch (IllegalArgumentException | SecurityException e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
