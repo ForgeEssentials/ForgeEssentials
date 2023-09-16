@@ -25,7 +25,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
-import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -88,7 +87,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public ModuleJScripting()
     {
         APIRegistry.scripts = this;
-        init();
+        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot());
+        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
     public static ModuleJScripting instance()
@@ -120,9 +120,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             e.printStackTrace();
         }
-
-        ScriptCompiler.registerExtension(new ScriptExtensionRoot());
-        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
     public CommandDispatcher<CommandSource> dispatcher = null;
@@ -132,6 +129,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         FECommandManager.registerCommand(new CommandJScript(true), event.getDispatcher());
 
         dispatcher = event.getDispatcher();
+        init();
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException
@@ -156,7 +154,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         JsLocalStorage.save();
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
         LoggingHandler.felog.info("Reloading scripts");

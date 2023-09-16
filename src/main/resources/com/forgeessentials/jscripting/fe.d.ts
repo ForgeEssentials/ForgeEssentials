@@ -33,55 +33,32 @@ declare namespace fe {
 	}
 	
 	class CommandArgs extends Wrapper {
-		sender: mc.ICommandSender;
-		player: mc.entity.EntityPlayer;
+		sender: mc.CommandSource;
+		player: mc.entity.PlayerEntity;
 		ident: UserIdent;
-		isTabCompletion: boolean;
-		toArray(): string[];
-		toString(): string;
-		confirm(message: string, ...args: any[]): void;
-		notify(message: string, ...args: any[]): void;
-		warn(message: string, ...args: any[]): void;
-		error(message: string, ...args: any[]): void;
-		size(): int;
-		remove(): string;
-		peek(): string;
-		get(index: int): string;
-		getAllArgs(): string;
-		removeAllArgs(): string;
-		isEmpty(): boolean;
+		context: com.mojang.brigadier.context.CommandContext;
 		hasPlayer(): boolean;
-		parsePlayer(): UserIdent;
-		parsePlayer(mustExist: boolean): UserIdent;
-		parsePlayer(mustExist: boolean, mustBeOnline: boolean): UserIdent;
-		parseItem(): mc.item.Item;
-		parseBlock(): mc.world.Block;
-		parsePermission(): string;
-		checkPermission(perm: string): void;
+		confirm(message: string, args: any[]): void;
+		notify(message: string, args: any[]): void;
+		warn(message: string, args: any[]): void;
+		error(message: string, args: any[]): void;
+		parsePlayer(name: string): UserIdent;
+		parsePlayer(name: string, mustExist: boolean): UserIdent;
+		parsePlayer(name: string, mustExist: boolean, mustBeOnline: boolean): UserIdent;
+		parseItem(argumentName: string): mc.item.Item;
+		parseBlock(argumentName: string): mc.world.Block;
+		parseWorld(argumentName: string): mc.world.ServerWorld;
 		hasPermission(perm: string): boolean;
-		tabComplete(...completionList: string[]): void;
-		tabCompleteWord(completion: string): void;
-		parseWorld(): mc.world.WorldServer;
-		parseInt(): int;
-		parseInt(min: int, max: int): int;
-		parseLong(): long;
-		parseDouble(): double;
-		parseBoolean(): boolean;
-		parseTimeReadable(): long;
-		checkTabCompletion(): void;
-		requirePlayer(): void;
+		parseTimeReadable(time: string): long;
 		getSenderPoint(): WorldPoint;
 		needsPlayer(): void;
-		clear(): void;
 	}
 	
 	class CommandOptions {
 		name: string;
 		usage?: string;
-		permission?: string;
 		opOnly?: boolean;
 		processCommand: CommandCallback;
-		tabComplete?: CommandCallback;
 		constructor();
 	}
 	
@@ -108,28 +85,15 @@ declare namespace fe {
 		/**
 		 * Adds a CoRoutine callback
 		 */
-		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender): void;
-		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender, extraData: any): void;
-		/**
-		 * Creates a custom inventory from an Itemstack list
-		 */
-		createCustomInventory(name: string, hasCustom: boolean, stacks: mc.item.ItemStack[]): mc.item.Inventory;
-		/**
-		 * Clones an existing inventory
-		 */
-		cloneInventory(name: string, hasCustom: boolean, inventory: mc.item.Inventory, size: int): mc.item.Inventory;
-		/**
-		 * Gets a Special Interaction Object that is designed to be used as a menu
-		 * WARNING: Do not close the screen during the callback. This causes a desync!
-		 */
-		getMenuChest(name: string, displayName: string, inventory: mc.item.Inventory, callbackMethod: string): mc.item.InteractionObject;
+		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.CommandSource): void;
+		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.CommandSource, extraData: any): void;
 	}
 	
 	class Permissions {
 		static checkBooleanPermission(permissionValue: string): boolean;
 		static getPermission(ident: UserIdent, point: WorldPoint, area: WorldArea, groups: string[], permissionNode: string, isProperty: boolean): string;
-		static checkPermission(player: mc.entity.EntityPlayer, permissionNode: string): boolean;
-		static getPermissionProperty(player: mc.entity.EntityPlayer, permissionNode: string): string;
+		static checkPermission(player: mc.entity.PlayerEntity, permissionNode: string): boolean;
+		static getPermissionProperty(player: mc.entity.PlayerEntity, permissionNode: string): string;
 		static registerPermissionDescription(permissionNode: string, description: string): void;
 		static getPermissionDescription(permissionNode: string): string;
 		static registerPermission(permissionNode: string, level: net.minecraftforge.server.permission.DefaultPermissionLevel, description: string): void;
@@ -192,14 +156,12 @@ declare namespace fe {
 		setWandEnabled(wandEnabled: boolean): void;
 		getWandID(): string;
 		setWandID(wandID: string): void;
-		getWandDmg(): int;
-		setWandDmg(wandDmg: int): void;
 		getSel1(): Point;
 		getSel2(): Point;
-		getSelDim(): int;
+		getSelDim(): string;
 		setSel1(point: Point): void;
 		setSel2(point: Point): void;
-		setSelDim(dimension: int): void;
+		setSelDim(dimension: string): void;
 		getLastTeleportOrigin(): WarpPoint;
 		setLastTeleportOrigin(lastTeleportStart: WarpPoint): void;
 		getLastDeathLocation(): WarpPoint;
@@ -233,7 +195,7 @@ declare namespace fe {
 		createGroup(name: string): boolean;
 		getZonesAt(worldPoint: WorldPoint): java.util.List;
 		getZoneAt(worldPoint: WorldPoint): Zone;
-		getPlayerGroups(player: mc.entity.EntityPlayer): java.util.List;
+		getPlayerGroups(player: mc.entity.PlayerEntity): java.util.List;
 		addZone(zoneName: string, area: WorldArea): Zone;
 		removeZone(zone: Zone): void;
 	}
@@ -248,9 +210,9 @@ declare namespace fe {
 		getUuid(): java.util.UUID;
 		getUsername(): string;
 		getUsernameOrUuid(): string;
-		getPlayer(): mc.entity.EntityPlayer;
-		getFakePlayer(): mc.entity.EntityPlayer;
-		getFakePlayer(world: mc.world.WorldServer): mc.entity.EntityPlayer;
+		getPlayer(): mc.entity.PlayerEntity;
+		getFakePlayer(): mc.entity.PlayerEntity;
+		getFakePlayer(world: mc.world.ServerWorld): mc.entity.PlayerEntity;
 		toSerializeString(): string;
 		toString(): string;
 		hashCode(): int;
@@ -277,11 +239,11 @@ declare namespace fe {
 		getX(): double;
 		getY(): double;
 		getZ(): double;
-		getDimension(): int;
+		getDimension(): string;
 		getPitch(): float;
 		getYaw(): float;
-		set(dim: int, xd: double, yd: double, zd: double, pitch: float, yaw: float): void;
-		setDimension(dim: int): void;
+		set(dim: string, xd: double, yd: double, zd: double, pitch: float, yaw: float): void;
+		setDimension(dim: string): void;
 		setX(value: double): void;
 		setY(value: double): void;
 		setZ(value: double): void;
@@ -295,14 +257,14 @@ declare namespace fe {
 	}
 	
 	class WorldArea extends mc.AreaBase {
-		constructor(dim: int, p1: Point, p2: Point);
-		getDimension(): int;
+		constructor(dim: string, p1: Point, p2: Point);
+		getDimension(): string;
 	}
 	
 	class WorldPoint extends Point {
-		constructor(dim: int, x: int, y: int, z: int);
-		getDimension(): int;
-		setDimension(dim: int): void;
+		constructor(dim: string, x: int, y: int, z: int);
+		getDimension(): string;
+		setDimension(dim: string): void;
 		setX(x: int): WorldPoint;
 		setY(y: int): WorldPoint;
 		setZ(z: int): WorldPoint;
@@ -311,7 +273,7 @@ declare namespace fe {
 	class Zone extends Wrapper {
 		getId(): int;
 		getName(): string;
-		isPlayerInZone(player: mc.entity.EntityPlayer): boolean;
+		isPlayerInZone(player: mc.entity.PlayerEntity): boolean;
 		isInZone(point: WorldPoint): boolean;
 		isInZone(point: WorldArea): boolean;
 		isPartOfZone(point: WorldArea): boolean;
