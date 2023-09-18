@@ -5,11 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.forgeessentials.core.preloader.FELaunchHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraftforge.common.ForgeVersion;
 
-import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;

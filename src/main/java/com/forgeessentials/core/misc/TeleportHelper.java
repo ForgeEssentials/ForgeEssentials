@@ -25,7 +25,6 @@ import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.player.CommandVanish;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
