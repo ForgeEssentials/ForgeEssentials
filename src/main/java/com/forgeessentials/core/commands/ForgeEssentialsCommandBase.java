@@ -183,7 +183,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         registerExtraPermissions();
     }
 
-    @SuppressWarnings("unchecked")
     public void deregister()
     {
         if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
@@ -222,6 +221,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         if (getPermissionNode() == null || getPermissionNode().isEmpty())
             return true;
         if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+            return true;
+        //fix issue with RecurrentComplex using custom ICommandSender with invalid
+        //try {
+		//	if (sender.getClass().equals(Class.forName("ivorius.reccomplex.block.SpawnCommandLogic")))
+		//	    return true;
+		//} catch (ClassNotFoundException e) {}
+        if (sender.getName().equals("@") && (sender.getCommandSenderEntity() == null))
             return true;
         return PermissionAPI.hasPermission(UserIdent.get(sender.getName()).getPlayer(), getPermissionNode());
     }
