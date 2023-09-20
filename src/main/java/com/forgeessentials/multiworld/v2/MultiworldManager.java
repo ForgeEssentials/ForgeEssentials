@@ -336,7 +336,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         try
         {
         	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        	RegistryKey<World> worldKey = world.getReasourceLocationUnique();
+        	RegistryKey<World> worldKey = world.getResourceLocationUnique();
 
 //            ISaveHandler savehandler = new MiltiworldDimensionSavedDataManager(overworld.getSaveHandler(), world);
 //
@@ -406,7 +406,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         File folder = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, serverW.chunkMap, "field_219270_x");
         world.worldLoaded = false;
         world.removeAllPlayersFromWorld();
-        worldsToUnloadAndRemove.add(ServerLifecycleHooks.getCurrentServer().getLevel(world.getReasourceLocationUnique()));
+        worldsToUnloadAndRemove.add(ServerLifecycleHooks.getCurrentServer().getLevel(world.getResourceLocationUnique()));
         worlds.remove(world.getName());
         return folder;
     }
