@@ -1,5 +1,6 @@
 package com.forgeessentials.multiworld.v2.provider.chunkGenTypes;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.forgeessentials.multiworld.v2.provider.ChunkGeneratorHolderBase;
@@ -27,7 +28,7 @@ public class BumbleZoneChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 		Structure<?> str2 = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation("the_bumblezone:honey_cave_room"));
 		if(str1 == null) {throw new NullPointerException("BumbleZone biome 1 is null");}
 		if(str2 == null) {throw new NullPointerException("BumbleZone biome 2 is null");}
-		DimensionStructuresSettings settings = new DimensionStructuresSettings(null, ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
+		DimensionStructuresSettings settings = new DimensionStructuresSettings(Optional.empty(), ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
 				.put(str1, new StructureSeparationSettings(8, 6, 938497222))
 				.put(str2, new StructureSeparationSettings(3, 1, 722299384)).build());
 		return ProvidersReflection.getChunkProvider(getClassName(),
