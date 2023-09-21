@@ -222,19 +222,40 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     			ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Seed = %d", world.getSeed());
     			break;
     		case "delete":
-    			String name1 = StringArgumentType.getString(ctx, "world");
-    			Multiworld worldToDelete = ModuleMultiworldV2.getMultiworldManager().getMultiworld(name1);
+    			String nameToDelete = StringArgumentType.getString(ctx, "world");
+    			Multiworld worldToDelete = ModuleMultiworldV2.getMultiworldManager().getMultiworld(nameToDelete);
     			
     			if(worldToDelete==null){
-    				ChatOutputHandler.chatError(ctx.getSource(), "Multiworld " + name1 + " does not exist!");
+    				ChatOutputHandler.chatError(ctx.getSource(), "Multiworld " + nameToDelete + " does not exist!");
     				return Command.SINGLE_SUCCESS;
     			}
     			if(!ModuleMultiworldV2.isMultiWorld(worldToDelete.getWorldServer())) { 
     				ChatOutputHandler.chatError(ctx.getSource(), "World " + worldToDelete.getName() + " is not a FE multiworld and cannot be deleted!");
     				return Command.SINGLE_SUCCESS;
     	        }
-    			ModuleMultiworldV2.getMultiworldManager().deleteWorld(worldToDelete); 
-    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted multiworld " + worldToDelete.getName());
+    			try {
+					Questioner.addChecked(getServerPlayer(ctx.getSource()),
+	                        Translator.format("Delete multiworld %s? This can cause the server to crash in in some cases. The safest way to delete multiworlds is to"
+	                        		+ "delete the world folder from world/dimensions/forgeessentials/worldXX and to "
+	                        		+ "dlete the world entry [Data/WorldGenSettings/dimensions/forgeessentials:worldXX] from the level.dat file", nameToDelete),
+	                        new QuestionerCallback() {
+	                            @Override
+	                            public void respond(Boolean response)
+	                            {
+	                                if (response == null)
+	                                    ChatOutputHandler.chatError(ctx.getSource(), "Delete request timed out");
+	                                else if (!response)
+	                                    ChatOutputHandler.chatError(ctx.getSource(), "Declined deleating multiworld");
+									else {
+										ModuleMultiworldV2.getMultiworldManager().deleteWorld(worldToDelete); 
+										ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted multiworld " + nameToDelete);
+									}
+	                            }
+	                        }, 20);
+				} catch (QuestionerStillActiveException e) {
+					ChatOutputHandler.chatError(ctx.getSource(),
+                            "Cannot ask question because player is still answering a question. Please wait a moment");
+				}
     			break;
     		case "create":
     			if(getServerPlayer(ctx.getSource())==null) {
