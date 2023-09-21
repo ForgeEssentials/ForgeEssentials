@@ -84,26 +84,45 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
         		.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
         		.then(Commands.literal("create")
         				.then(Commands.argument("name", StringArgumentType.word())
-        						.then(Commands.argument("chunkGenerator", StringArgumentType.word())
-        								.suggests(SUGGEST_chunkgens)
-        								.then(Commands.argument("biomeProvider", StringArgumentType.word())
-        										.suggests(SUGGEST_biomeTypes)
-        										.then(Commands.argument("dimensionType", StringArgumentType.word())
-        												.suggests(SUGGEST_dimTypes)
-        												.then(Commands.argument("dimensionSettings", StringArgumentType.word())
-        														.suggests(SUGGEST_dimSettings)
-        														.executes(CommandContext -> execute(CommandContext, "create:generic"))
-        														.then(Commands.argument("seed", LongArgumentType.longArg())
-        																.executes(CommandContext -> execute(CommandContext, "create:seed"))
-        																.then(Commands.argument("generatorOptions", StringArgumentType.word())
-        																		.executes(CommandContext -> execute(CommandContext, "create:gen"))
-        																		)
-        																)
-        														)
-        												)
-        										)
+        						.then(Commands.literal("presets")
+        								.then(Commands.literal("Overworld")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:overworld")))
+        								.then(Commands.literal("Nether")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:nether")))
+        								.then(Commands.literal("End")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:end")))
+        								.then(Commands.literal("Superflat")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:superflat")))
+        								.then(Commands.literal("FloatingIslands")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:floating")))
+        								.then(Commands.literal("Amplified")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:amplified")))
+        								.then(Commands.literal("LargeBiomes")
+        										.executes(CommandContext -> execute(CommandContext, "create:custom:largeBiome")))
         								)
+                				.then(Commands.literal("custom")
+                						.then(Commands.argument("chunkGenerator", StringArgumentType.word())
+                								.suggests(SUGGEST_chunkgens)
+                								.then(Commands.argument("biomeProvider", StringArgumentType.word())
+                										.suggests(SUGGEST_biomeTypes)
+                										.then(Commands.argument("dimensionType", StringArgumentType.word())
+                												.suggests(SUGGEST_dimTypes)
+                												.then(Commands.argument("dimensionSettings", StringArgumentType.word())
+                														.suggests(SUGGEST_dimSettings)
+                														.executes(CommandContext -> execute(CommandContext, "create:generic"))
+                														.then(Commands.argument("seed", LongArgumentType.longArg())
+                																.executes(CommandContext -> execute(CommandContext, "create:seed"))
+                																.then(Commands.argument("generatorOptions", StringArgumentType.word())
+                																		.executes(CommandContext -> execute(CommandContext, "create:gen"))
+                																		)
+                																)
+                														)
+                												)
+                										)
+                								)
+                						)
         						)
+
         				)
         		.then(Commands.literal("delete")
         				.then(Commands.argument("world", StringArgumentType.word())
@@ -204,50 +223,101 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     			break;
     		case "delete":
     			String name1 = StringArgumentType.getString(ctx, "world");
-    			Multiworld world1 = ModuleMultiworldV2.getMultiworldManager().getMultiworld(name1);
+    			Multiworld worldToDelete = ModuleMultiworldV2.getMultiworldManager().getMultiworld(name1);
     			
-    			if(world1==null){
+    			if(worldToDelete==null){
     				ChatOutputHandler.chatError(ctx.getSource(), "Multiworld " + name1 + " does not exist!");
     				return Command.SINGLE_SUCCESS;
     			}
-    			if(!ModuleMultiworldV2.isMultiWorld(world1.getWorldServer())) { 
-    				ChatOutputHandler.chatError(ctx.getSource(), "World " + world1.getName() + " is not a FE multiworld and cannot be deleted!");
+    			if(!ModuleMultiworldV2.isMultiWorld(worldToDelete.getWorldServer())) { 
+    				ChatOutputHandler.chatError(ctx.getSource(), "World " + worldToDelete.getName() + " is not a FE multiworld and cannot be deleted!");
     				return Command.SINGLE_SUCCESS;
     	        }
-    			ModuleMultiworldV2.getMultiworldManager().deleteWorld(world1); 
-    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted multiworld " + world1.getName());
+    			ModuleMultiworldV2.getMultiworldManager().deleteWorld(worldToDelete); 
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted multiworld " + worldToDelete.getName());
     			break;
     		case "create":
     			if(getServerPlayer(ctx.getSource())==null) {
     				return Command.SINGLE_SUCCESS;
     			}
+    			String worldName = StringArgumentType.getString(ctx, "name");
         		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getSeed();
+        		String biomeProvider = "";
+        		String dimensionSettings = "";
+        		String chunkgenerator = "";
+        		String dimensionType = "";
         		String generatorOptions = "";
-        		String dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('+', ':');
-				if (!StringUtils.startsWith(dimensionType, "minecraft")) {
-					ChatOutputHandler.chatWarning(ctx.getSource(),
-							"You selected a non-vanilla dimensionType, your player's games will think they are in minecraft:overworld when joining the dimension!"
-									+ " This could cause issues with client mods thinking they are in the overworld, while the server will think not. Please refrain from using multiworlds in the configuration!");
-					ChatOutputHandler.chatError(ctx.getSource(),
-							"This is a unsupported and error-prone option! World issues arising while having a dimension using non-vanilla dimensionTypes will be ignored!");
-				}
-        		String biomeProvider = StringArgumentType.getString(ctx, "biomeProvider").replace('+', ':');
-        		String dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('+', ':');
-        		String chunkgenerator = StringArgumentType.getString(ctx, "chunkGenerator").replace('+', ':');
-        		String name2 = StringArgumentType.getString(ctx, "name");
-    			if(params.split(":")[1].equals("seed")) {
+        		if(params.split(":")[1].equals("custom")) {
+        			if(params.split(":")[2].equals("overworld")) {
+        				biomeProvider = "minecraft:overworld";
+                		dimensionSettings = "minecraft:overworld";
+                		chunkgenerator = "minecraft:noise";
+                		dimensionType = "minecraft:overworld";
+        			}
+        			else if(params.split(":")[2].equals("nether")) {
+        				biomeProvider = "minecraft:nether";
+                		dimensionSettings = "minecraft:nether";
+                		chunkgenerator = "minecraft:noise";
+                		dimensionType = "minecraft:the_nether";
+        			}
+        			else if(params.split(":")[2].equals("end")) {
+        				biomeProvider = "minecraft:end";
+                		dimensionSettings = "minecraft:end";
+                		chunkgenerator = "minecraft:noise";
+                		dimensionType = "minecraft:the_end";
+        			}
+        			else if(params.split(":")[2].equals("superflat")) {
+        				biomeProvider = "minecraft:single";
+                		dimensionSettings = "minecraft:overworld";
+                		chunkgenerator = "minecraft:flat";
+                		dimensionType = "minecraft:overworld";
+        			}
+        			else if(params.split(":")[2].equals("floating")) {
+        				biomeProvider = "minecraft:overworld";
+                		dimensionSettings = "minecraft:floating_islands";
+                		chunkgenerator = "minecraft:noise";
+                		dimensionType = "minecraft:overworld";
+        			}
+        			else if(params.split(":")[2].equals("amplified")) {
+        				biomeProvider = "minecraft:overworld";
+                		dimensionSettings = "minecraft:amplified";
+                		chunkgenerator = "minecraft:noise";
+                		dimensionType = "minecraft:overworld";
+        			}
+        			else if(params.split(":")[2].equals("largeBiome")) {
+        				biomeProvider = "minecraft:overworld_large";
+                		dimensionSettings = "minecraft:overworld";
+                		chunkgenerator = "minecraft:noise";
+                		dimensionType = "minecraft:overworld";
+        			}
+        			
+    			}
+        		else {
+        			dimensionType = StringArgumentType.getString(ctx, "dimensionType").replace('+', ':');
+    				if (!StringUtils.startsWith(dimensionType, "minecraft")) {
+    					ChatOutputHandler.chatWarning(ctx.getSource(),
+    							"You selected a non-vanilla dimensionType, your player's games will think they are in minecraft:overworld when joining the dimension!"
+    									+ " This could cause issues with client mods thinking they are in the overworld, while the server will think not. Please refrain from using multiworlds in this configuration!");
+    					ChatOutputHandler.chatError(ctx.getSource(),
+    							"This is a unsupported and error-prone option! World issues arising while having a dimension using non-vanilla dimensionTypes will be ignored!");
+    				}
+            		biomeProvider = StringArgumentType.getString(ctx, "biomeProvider").replace('+', ':');
+            		dimensionSettings = StringArgumentType.getString(ctx, "dimensionSettings").replace('+', ':');
+            		chunkgenerator = StringArgumentType.getString(ctx, "chunkGenerator").replace('+', ':');
+    			}
+        		if(params.split(":")[1].equals("seed")) {
     				seed = LongArgumentType.getLong(ctx, "seed");
     			}
-    			if(params.split(":")[1].equals("gen")) {
+        		if(params.split(":")[1].equals("gen")) {
     				seed = LongArgumentType.getLong(ctx, "seed");
     				generatorOptions = StringArgumentType.getString(ctx, "generatorOptions");
     			}
-    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Creating a Multiworld named [%s], chunkGenerator provided by [%s], biomes provided by [%s], with a dimension type of [%s], dimension settings set to [%s], generator options set to [%s] and the seed set to [%s]",name2,chunkgenerator,biomeProvider,dimensionType,dimensionSettings,generatorOptions,seed);
-				Multiworld worldNew = new Multiworld(name2, biomeProvider, chunkgenerator, dimensionType, dimensionSettings,
+    			ChatOutputHandler.chatConfirmation(ctx.getSource(), "Creating a Multiworld named [%s], chunkGenerator provided by [%s], biomes provided by [%s], with a dimension type of [%s], dimension settings set to [%s], generator options set to [%s] and the seed set to [%s]",worldName,chunkgenerator,biomeProvider,dimensionType,dimensionSettings,generatorOptions,seed);
+				Multiworld worldNew = new Multiworld(worldName, biomeProvider, chunkgenerator, dimensionType, dimensionSettings,
 						seed, generatorOptions);
 				try {
 					Questioner.addChecked(getServerPlayer(ctx.getSource()),
-	                        Translator.format("Create new multiworld %s?", name2),
+	                        Translator.format("Create new multiworld %s?", worldName),
 	                        new QuestionerCallback() {
 	                            @Override
 	                            public void respond(Boolean response)
