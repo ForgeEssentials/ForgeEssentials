@@ -58,6 +58,7 @@ declare namespace fe {
 		name: string;
 		usage?: string;
 		opOnly?: boolean;
+		subNodes?: JsCommandTypeWrapper;
 		processCommand: CommandCallback;
 		constructor();
 	}

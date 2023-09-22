@@ -16,6 +16,12 @@ public class JsCommandOptions
     public Boolean opOnly = true;
 
     /**
+     * @tsd.optional 
+     * @tsd.type JsCommandTypeWrapper
+     */
+    public Object subNodes;
+    
+    /**
      * @tsd.type CommandCallback
      */
     public Object processCommand;
