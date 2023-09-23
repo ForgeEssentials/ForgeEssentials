@@ -332,7 +332,14 @@ declare namespace fe.command {
 	}
 	
 	class CommandNodeWrapper {
-		childTree?: JsCommandTypeWrapper[];
+		/**
+		 * Don't EVER USE THIS! INTERNAL USE ONLY!
+		 */
+		listsChildNodes?: java.util.List;
+		/**
+		 * Don't implement this directly, instead use childNode[anyLetterNumber] (ex. childNode4, childNodeXYZ)
+		 */
+		childNode?: any;
 		type: JsNodeType;
 		containedNode: JsCommandNodeLiteral/JsCommandNodeArgument;
 		constructor();

@@ -116,7 +116,7 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 			throw new ScriptException("Invalid JsNodeType! "+node.type);
 		}
 
-		if(node.childTree==null){
+		if(node.listsChildNodes==null){
 			if(params==null) {
 				throw new ScriptException("CommandTree ends must allow execution!");
 			}
@@ -135,11 +135,11 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 			newNode.executes(context -> execute(context, params));
 		}
 
-		//if(node.childTree!=null) {
-		//	for(Object childNode : node.childTree) {
-    	//		recursiveBuilding(newNode, childNode);
-        //	}
-		//}
+		if(node.listsChildNodes!=null) {
+			for(JsCommandNodeWrapper childNode : node.listsChildNodes) {
+    			recursiveBuilding(newNode, childNode);
+        	}
+		}
 
 		parentNode.then(newNode);
 		return;

@@ -354,24 +354,41 @@ public class ScriptInstance
             try
             {
             	List<JsCommandNodeWrapper> listsSubNodes= new ArrayList<>();
-            	Field listings=null;
+            	Field subListings=null;
+            	List<JsCommandNodeWrapper> listsChildNodes= new ArrayList<>();
+            	Field childListings=null;
                 for (Field f : props.fields) {
                 	if(f.getName().startsWith("subNode")) {
                 		for (Entry<String, Object> name : bindings.entrySet()) {
                         	if(name.getKey().startsWith("subNode")) {
-                        		listsSubNodes.add(this.getProperties(new JsCommandNodeWrapper(), name.getValue(), JsCommandNodeWrapper.class));
+                        		listsSubNodes.add(getProperties(new JsCommandNodeWrapper(), name.getValue(), JsCommandNodeWrapper.class));
+                        	}
+                        }
+                		continue;
+                	}
+                	if(f.getName().startsWith("childNode")) {
+                		for (Entry<String, Object> name : bindings.entrySet()) {
+                        	if(name.getKey().startsWith("childNode")) {
+                        		listsChildNodes.add(getProperties(new JsCommandNodeWrapper(), name.getValue(), JsCommandNodeWrapper.class));
                         	}
                         }
                 		continue;
                 	}
                 	if(f.getName().startsWith("listsSubNodes")) {
-                		listings = f;
+                		subListings = f;
+                		continue;
+                	}
+                	if(f.getName().startsWith("listsChildNodes")) {
+                		childListings = f;
                 		continue;
                 	}
                 	f.set(instance, bindings.get(f.getName()));
                 }
-                if(listings!=null) {
-                	listings.set(instance, listsSubNodes);
+                if(subListings!=null&&listsSubNodes.size()>0) {
+                	subListings.set(instance, listsSubNodes);
+                }
+                if(childListings!=null&&listsChildNodes.size()>0) {
+                	childListings.set(instance, listsChildNodes);
                 }
             }
             catch (IllegalArgumentException | IllegalAccessException e)
