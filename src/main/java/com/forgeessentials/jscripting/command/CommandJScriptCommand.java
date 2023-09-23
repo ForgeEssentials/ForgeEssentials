@@ -73,9 +73,10 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     	}
 
     	try {
-    		for(Object node : options.subNodes) {
-    			recursiveBuilding(baseBuilder, node);
-        	}
+    		//for(Object node : options.subNodes) {
+    		//	recursiveBuilding(baseBuilder, node);
+        	//}
+    		recursiveBuilding(baseBuilder, options.subNodes);
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		} catch (FECommandParsingException e) {

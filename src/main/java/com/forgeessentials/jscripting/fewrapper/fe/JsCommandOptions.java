@@ -19,7 +19,7 @@ public class JsCommandOptions
      * @tsd.optional 
      * @tsd.type JsCommandNodeWrapper
      */
-    public Object[] subNodes;
+    public Object subNodes;
     
     /**
      * @tsd.type CommandCallback
