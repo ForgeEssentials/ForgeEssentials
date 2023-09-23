@@ -1,14 +1,14 @@
-package com.forgeessentials.jscripting.wrapper.mc.command;
+package com.forgeessentials.jscripting.fewrapper.fe.command;
 
 public class JsCommandNodeWrapper
 {
 	/**
 	 * @tsd.type JsNodeType
 	 */
-	public JsNodeType type;
+	public String type;
 
 	/**
 	 * @tsd.type JsCommandNode
 	 */
-	public Object subNode;
+	public Object containedNode;
 }

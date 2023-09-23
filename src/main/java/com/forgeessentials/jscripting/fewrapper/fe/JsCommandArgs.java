@@ -26,8 +26,11 @@ public class JsCommandArgs extends JsWrapper<CommandContextParcer> {
 
 	public final CommandContext<CommandSource> context;
 
+	public final String params;
+
 	public JsCommandArgs(CommandContextParcer that) {
 		super(that);
+		this.params = that.methodParms;
 		this.context = that.context;
 		this.sender = JsCommandSource.get(that.sender);
 		this.player = that.senderPlayer == null ? null : JsPlayerEntity.get(that.senderPlayer);

@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper.mc.command;
+package com.forgeessentials.jscripting.fewrapper.fe.command;
 
 public class JsCommandNode
 {
@@ -8,5 +8,5 @@ public class JsCommandNode
      * @tsd.optional
      * @tsd.type JsCommandTypeWrapper
      */
-    public Object[] childCommandTree;
+    public Object[] childTree;
 }

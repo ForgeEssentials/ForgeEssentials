@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper.mc.command;
+package com.forgeessentials.jscripting.fewrapper.fe.command;
 
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.mojang.brigadier.arguments.ArgumentType;

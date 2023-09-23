@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper.mc.command;
+package com.forgeessentials.jscripting.fewrapper.fe.command;
 
 public class JsCommandNodeArgument extends JsCommandNode
 {

@@ -7,12 +7,12 @@ import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
-import com.forgeessentials.jscripting.wrapper.mc.command.JsArgumentType;
-import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNode;
-import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNodeArgument;
-import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNodeLiteral;
-import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNodeWrapper;
-import com.forgeessentials.jscripting.wrapper.mc.command.JsNodeType;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsArgumentType;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNode;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeArgument;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeLiteral;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeWrapper;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsNodeType;
 import com.forgeessentials.util.CommandContextParcer;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Preconditions;
@@ -87,19 +87,19 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 
     private void recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, Object node) throws ScriptException, FECommandParsingException{
 		JsCommandNodeWrapper wrapper = script.getProperties(new JsCommandNodeWrapper(), node, JsCommandNodeWrapper.class);
-		JsCommandNode nodeObject = (JsCommandNode)wrapper.subNode;
+		JsCommandNode nodeObject = (JsCommandNode)wrapper.containedNode;
 		ArgumentBuilder<CommandSource, ?> newNode;
-		if(wrapper.type==JsNodeType.LITERAL) {
+		if((JsNodeType.valueOf(wrapper.type))==JsNodeType.LITERAL) {
 			newNode = Commands.literal(((JsCommandNodeLiteral) nodeObject).literal);
 		}
-		else if(wrapper.type==JsNodeType.ARGUMENT){
+		else if((JsNodeType.valueOf(wrapper.type))==JsNodeType.ARGUMENT){
 			newNode = Commands.argument(((JsCommandNodeArgument)nodeObject).argumentName, JsArgumentType.getType(((JsCommandNodeArgument)nodeObject).argumentType));
 		}
 		else {
 			throw new ScriptException("Invalid JsNodeType! "+wrapper.type);
 		}
 
-		if(nodeObject.childCommandTree==null){
+		if(nodeObject.childTree==null){
 			if(!nodeObject.insertExecution||nodeObject.executionParams==null) {
 				throw new ScriptException("CommandTree ends must specify an execution parameters!");
 			}
@@ -115,8 +115,8 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 			newNode.executes(context -> execute(context, nodeObject.executionParams));
 		}
 
-		if(nodeObject.childCommandTree!=null) {
-			for(Object childNode : nodeObject.childCommandTree) {
+		if(nodeObject.childTree!=null) {
+			for(Object childNode : nodeObject.childTree) {
     			recursiveBuilding(newNode, childNode);
         	}
 		}

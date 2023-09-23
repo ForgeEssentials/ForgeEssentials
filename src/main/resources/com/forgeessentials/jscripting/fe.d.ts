@@ -37,6 +37,7 @@ declare namespace fe {
 		player: mc.entity.PlayerEntity;
 		ident: UserIdent;
 		context: com.mojang.brigadier.context.CommandContext;
+		params: string;
 		hasPlayer(): boolean;
 		confirm(message: string, args: any[]): void;
 		notify(message: string, args: any[]): void;
@@ -52,13 +53,19 @@ declare namespace fe {
 		parseTimeReadable(time: string): long;
 		getSenderPoint(): WorldPoint;
 		needsPlayer(): void;
+		getArgumentBoolean(argumentName: string): boolean;
+		getArgumentDouble(argumentName: string): double;
+		getArgumentFloat(argumentName: string): float;
+		getArgumentInteger(argumentName: string): int;
+		getArgumentLong(argumentName: string): long;
+		getArgumentString(argumentName: string): string;
 	}
 	
 	class CommandOptions {
 		name: string;
 		usage?: string;
 		opOnly?: boolean;
-		subNodes?: JsCommandTypeWrapper;
+		subNodes?: JsCommandNodeWrapper[];
 		processCommand: CommandCallback;
 		constructor();
 	}
@@ -280,6 +287,55 @@ declare namespace fe {
 		isPartOfZone(point: WorldArea): boolean;
 		getParent(): Zone;
 		getServerZone(): ServerZone;
+	}
+	
+}
+
+declare namespace fe.command {
+	
+	class ArgumentType extends java.lang.Enum {
+		static BOOLEAN: ArgumentType;
+		static DOUBLE: ArgumentType;
+		static FLOAT: ArgumentType;
+		static INTEGER: ArgumentType;
+		static LONG: ArgumentType;
+		static STRINGWORD: ArgumentType;
+		static STRINGQUOTE: ArgumentType;
+		static STRINGGREEDY: ArgumentType;
+		static values(): ArgumentType[];
+		static valueOf(name: string): ArgumentType;
+		static getType(type: ArgumentType): com.mojang.brigadier.arguments.ArgumentType;
+	}
+	
+	class CommandNode {
+		insertExecution: boolean;
+		executionParams: string;
+		childTree?: JsCommandTypeWrapper[];
+		constructor();
+	}
+	
+	class CommandNodeArgument extends CommandNode {
+		argumentName: String;
+		argumentType: JsArgumentType;
+		constructor();
+	}
+	
+	class CommandNodeLiteral extends CommandNode {
+		literal: String;
+		constructor();
+	}
+	
+	class CommandNodeWrapper {
+		type: JsNodeType;
+		containedNode: JsCommandNode;
+		constructor();
+	}
+	
+	class NodeType extends java.lang.Enum {
+		static LITERAL: NodeType;
+		static ARGUMENT: NodeType;
+		static values(): NodeType[];
+		static valueOf(name: string): NodeType;
 	}
 	
 }

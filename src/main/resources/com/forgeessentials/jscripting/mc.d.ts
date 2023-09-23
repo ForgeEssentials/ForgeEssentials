@@ -221,40 +221,6 @@ declare namespace mc {
 	
 }
 
-declare namespace mc.command {
-	
-	class CommandNode {
-		insertExecution: boolean;
-		commandTree?: JsCommandTypeWrapper[];
-		constructor();
-	}
-	
-	class CommandNodeArgument extends CommandNode {
-		argumentName: String;
-		argumentType: String;
-		constructor();
-	}
-	
-	class CommandNodeLiteral extends CommandNode {
-		literal: String;
-		constructor();
-	}
-	
-	class CommandNodeWrapper {
-		type: JsNodeType;
-		subNode: JsCommandBaseNode;
-		constructor();
-	}
-	
-	class NodeType extends java.lang.Enum {
-		static LITERAL: NodeType;
-		static ARGUMENT: NodeType;
-		static values(): NodeType[];
-		static valueOf(name: string): NodeType;
-	}
-	
-}
-
 declare namespace mc.entity {
 	
 	class Entity extends Wrapper {
