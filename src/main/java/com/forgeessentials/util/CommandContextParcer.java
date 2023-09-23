@@ -8,6 +8,12 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.command.CommandSource;
@@ -112,5 +118,54 @@ public class CommandContextParcer {
     {
         if (senderPlayer == null)
             throw new FECommandParsingException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+    }
+
+    public boolean getArgumentBoolean(String argumentName) throws FECommandParsingException {
+    	try {
+    		return BoolArgumentType.getBool(context, argumentName);
+    	}catch(IllegalArgumentException e) {
+    		throw new FECommandParsingException(e.getMessage());
+    	}
+    }
+
+    public double getArgumentDouble(String argumentName) throws FECommandParsingException {
+    	try {
+    		return DoubleArgumentType.getDouble(context, argumentName);
+    	}catch(IllegalArgumentException e) {
+    		throw new FECommandParsingException(e.getMessage());
+    	}
+    } 
+
+    public float getArgumentFloat(String argumentName) throws FECommandParsingException {
+    	try {
+    		return FloatArgumentType.getFloat(context, argumentName);
+    	}catch(IllegalArgumentException e) {
+    		throw new FECommandParsingException(e.getMessage());
+    	}
+    }
+
+    public int getArgumentInteger(String argumentName) throws FECommandParsingException {
+    	try {
+    		return IntegerArgumentType.getInteger(context, argumentName);
+    	}catch(IllegalArgumentException e) {
+    		throw new FECommandParsingException(e.getMessage());
+    	}
+    }
+
+    public long getArgumentLong(String argumentName) throws FECommandParsingException {
+    	try {
+    		return LongArgumentType.getLong(context, argumentName);
+    	}catch(IllegalArgumentException e) {
+    		throw new FECommandParsingException(e.getMessage());
+    	}
+    }
+    
+    
+    public String getArgumentString(String argumentName) throws FECommandParsingException {
+    	try {
+    		return StringArgumentType.getString(context, argumentName);
+    	}catch(IllegalArgumentException e) {
+    		throw new FECommandParsingException(e.getMessage());
+    	}
     }
 }

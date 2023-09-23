@@ -1,6 +1,5 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.BlockStateArgument;
 import net.minecraft.command.arguments.DimensionArgument;
@@ -68,11 +67,11 @@ public class JsCommandArgs extends JsWrapper<CommandContextParcer> {
 		return new JsUserIdent(that.parsePlayer(name, mustExist, mustBeOnline));
 	}
 
-	public JsItem parseItem(String argumentName) throws CommandException {
+	public JsItem parseItem(String argumentName){
 		return JsItem.get(ItemArgument.getItem(context, argumentName).getItem());
 	}
 
-	public JsBlock parseBlock(String argumentName) throws CommandException {
+	public JsBlock parseBlock(String argumentName){
 		return JsBlock.get(BlockStateArgument.getBlock(context, argumentName).getState().getBlock());
 	}
 
@@ -99,4 +98,27 @@ public class JsCommandArgs extends JsWrapper<CommandContextParcer> {
 		that.needsPlayer();
 	}
 
+	public boolean getArgumentBoolean(String argumentName) throws FECommandParsingException {
+    	return that.getArgumentBoolean(argumentName);
+    }
+
+	public double getArgumentDouble(String argumentName) throws FECommandParsingException {
+    	return that.getArgumentDouble(argumentName);
+    }
+
+	public float getArgumentFloat(String argumentName) throws FECommandParsingException {
+    	return that.getArgumentFloat(argumentName);
+    }
+
+	public int getArgumentInteger(String argumentName) throws FECommandParsingException {
+    	return that.getArgumentInteger(argumentName);
+    }
+
+	public long getArgumentLong(String argumentName) throws FECommandParsingException {
+    	return that.getArgumentLong(argumentName);
+    }
+
+	public String getArgumentString(String argumentName) throws FECommandParsingException {
+    	return that.getArgumentString(argumentName);
+    }
 }
