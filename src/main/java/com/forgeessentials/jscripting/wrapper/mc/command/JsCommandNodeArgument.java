@@ -8,7 +8,7 @@ public class JsCommandNodeArgument extends JsCommandNode
 	public String argumentName;
 
 	/**
-	 * @tsd.type String
+	 * @tsd.type JsArgumentType
 	 */
-	public String argumentType;
+	public JsArgumentType argumentType;
 }

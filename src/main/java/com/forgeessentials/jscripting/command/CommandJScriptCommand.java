@@ -7,41 +7,45 @@ import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
+import com.forgeessentials.jscripting.wrapper.mc.command.JsArgumentType;
+import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNode;
+import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNodeArgument;
+import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNodeLiteral;
+import com.forgeessentials.jscripting.wrapper.mc.command.JsCommandNodeWrapper;
+import com.forgeessentials.jscripting.wrapper.mc.command.JsNodeType;
 import com.forgeessentials.util.CommandContextParcer;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Preconditions;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 {
 
-    public final ScriptInstance script;
+	public final ScriptInstance script;
 
-    private JsCommandOptions options;
+	private JsCommandOptions options;
 
-    // private static final Pattern ARGUMENT_PATTERN =
-    // Pattern.compile("@(\\w+)(.*)");
-
-     public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options) {
-         super(true, options.name, options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL);
-         Preconditions.checkNotNull(script);
-         Preconditions.checkNotNull(options);
-         Preconditions.checkNotNull(options.name);
-         Preconditions.checkNotNull(options.processCommand);
-         if (options.usage == null)
-         {
-             options.usage = "/" + options.name + ": scripted command - no description";
-         }
-         this.script = script;
-        this.options = options;
-     }
+	public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options) {
+		super(true, options.name, options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL);
+		Preconditions.checkNotNull(script);
+		Preconditions.checkNotNull(options);
+		Preconditions.checkNotNull(options.name);
+		Preconditions.checkNotNull(options.processCommand);
+		if (options.usage == null) {
+			options.usage = "/" + options.name + ": scripted command - no description";
+		}
+		this.script = script;
+		this.options = options;
+	}
 
     @Override
     public @NotNull String getPrimaryAlias()
@@ -64,7 +68,61 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return baseBuilder.executes(context -> execute(context, "blank"));
+    	if(options.subNodes==null) {
+    		return baseBuilder.executes(context -> execute(context, "noDefinedSubNodes"));
+    	}
+
+    	try {
+    		for(Object node : options.subNodes) {
+    			recursiveBuilding(baseBuilder, node);
+        	}
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		} catch (FECommandParsingException e) {
+			System.out.println(e.error);
+			e.printStackTrace();
+		}
+        return baseBuilder;
+    }
+
+    private void recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, Object node) throws ScriptException, FECommandParsingException{
+		JsCommandNodeWrapper wrapper = script.getProperties(new JsCommandNodeWrapper(), node, JsCommandNodeWrapper.class);
+		JsCommandNode nodeObject = (JsCommandNode)wrapper.subNode;
+		ArgumentBuilder<CommandSource, ?> newNode;
+		if(wrapper.type==JsNodeType.LITERAL) {
+			newNode = Commands.literal(((JsCommandNodeLiteral) nodeObject).literal);
+		}
+		else if(wrapper.type==JsNodeType.ARGUMENT){
+			newNode = Commands.argument(((JsCommandNodeArgument)nodeObject).argumentName, JsArgumentType.getType(((JsCommandNodeArgument)nodeObject).argumentType));
+		}
+		else {
+			throw new ScriptException("Invalid JsNodeType! "+wrapper.type);
+		}
+
+		if(nodeObject.childCommandTree==null){
+			if(!nodeObject.insertExecution||nodeObject.executionParams==null) {
+				throw new ScriptException("CommandTree ends must specify an execution parameters!");
+			}
+			newNode.executes(context -> execute(context, nodeObject.executionParams));
+			parentNode.then(newNode);
+			return;
+		}
+
+		if(nodeObject.insertExecution) {
+			if(nodeObject.executionParams==null) {
+				throw new ScriptException("insertExecution true must specify an execution parameter!");
+			}
+			newNode.executes(context -> execute(context, nodeObject.executionParams));
+		}
+
+		if(nodeObject.childCommandTree!=null) {
+			for(Object childNode : nodeObject.childCommandTree) {
+    			recursiveBuilding(newNode, childNode);
+        	}
+		}
+
+		parentNode.then(newNode);
+		return;
     }
 
     @Override

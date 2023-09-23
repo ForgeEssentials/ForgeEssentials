@@ -26,30 +26,30 @@ public enum JsArgumentType {
 	STRINGWORD(),
 	STRINGQUOTE(),
 	STRINGGREEDY();
-	public ArgumentType<?> getType(JsArgumentType type) throws FECommandParsingException {
+	public static ArgumentType<?> getType(JsArgumentType type) throws FECommandParsingException {
 		if(type==BOOLEAN) {
-			return BoolArgumentType.bool();
+			return (ArgumentType<Boolean>) BoolArgumentType.bool();
 		}
 		if(type==DOUBLE) {
-			return DoubleArgumentType.doubleArg();
+			return (ArgumentType<Double>) DoubleArgumentType.doubleArg();
 		}
 		if(type==FLOAT) {
-			return FloatArgumentType.floatArg();
+			return (ArgumentType<Float>) FloatArgumentType.floatArg();
 		}
 		if(type==INTEGER) {
-			return IntegerArgumentType.integer();
+			return (ArgumentType<Integer>) IntegerArgumentType.integer();
 		}
 		if(type==LONG) {
-			return LongArgumentType.longArg();
+			return (ArgumentType<Long>) LongArgumentType.longArg();
 		}
 		if(type==STRINGWORD) {
-			return StringArgumentType.word();
+			return (ArgumentType<String>) StringArgumentType.word();
 		}
 		if(type==STRINGQUOTE) {
-			return StringArgumentType.string();
+			return (ArgumentType<String>) StringArgumentType.string();
 		}
 		if(type==STRINGGREEDY) {
-			return StringArgumentType.greedyString();
+			return (ArgumentType<String>) StringArgumentType.greedyString();
 		}
 		throw new FECommandParsingException("No such JsArgumentType: "+type.toString());
 	}
