@@ -77,8 +77,11 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     			}
         		return baseBuilder.executes(context -> execute(context, options.executionParams));
         	}
+    		boolean flag=false;
     		for(JsCommandNodeWrapper node : options.listsSubNodes) {
-    			recursiveBuilding(baseBuilder, node);
+    			boolean type = recursiveBuilding(baseBuilder, node);
+    			if(flag && type) {throw new ScriptException("Cant have two argument nodes on the same branch!");}
+    			if(!flag && type) {flag=true;}
         	}
     		//recursiveBuilding(baseBuilder, options.subNodes);
     		if(options.executesMethod) {
@@ -96,21 +99,24 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
         return null;
     }
 
-    private void recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, JsCommandNodeWrapper node) throws ScriptException, FECommandParsingException{
+    private boolean recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, JsCommandNodeWrapper node) throws ScriptException, FECommandParsingException{
 		ArgumentBuilder<CommandSource, ?> newNode;
 		boolean execution;
 		String params;
+		boolean type;
 		if((JsNodeType.valueOf(node.type))==JsNodeType.LITERAL) {
 			JsCommandNodeLiteral nodeObject = script.getProperties(new JsCommandNodeLiteral(), node.containedNode, JsCommandNodeLiteral.class);
 			newNode = Commands.literal(nodeObject.literal);
 			execution = nodeObject.executesMethod;
 			params = nodeObject.executionParams;
+			type=false;
 		}
 		else if((JsNodeType.valueOf(node.type))==JsNodeType.ARGUMENT){
 			JsCommandNodeArgument nodeObject = script.getProperties(new JsCommandNodeArgument(), node.containedNode, JsCommandNodeArgument.class);
 			newNode = Commands.argument(nodeObject.argumentName, JsArgumentType.getType(JsArgumentType.valueOf(nodeObject.argumentType)));
 			execution = nodeObject.executesMethod;
 			params = nodeObject.executionParams;
+			type=true;
 		}
 		else {
 			throw new ScriptException("Invalid JsNodeType! "+node.type);
@@ -125,7 +131,7 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 			}
 			newNode.executes(context -> execute(context, params));
 			parentNode.then(newNode);
-			return;
+			return type;
 		}
 
 		if(execution) {
@@ -136,13 +142,17 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 		}
 
 		if(node.listsChildNodes!=null) {
+			boolean flag1=false;
 			for(JsCommandNodeWrapper childNode : node.listsChildNodes) {
+    			boolean thing = recursiveBuilding(baseBuilder, node);
+    			if(flag1 && thing) {throw new ScriptException("Cant have two argument nodes on the same branch!");}
+    			if(!flag1 && thing) {flag1=true;}
     			recursiveBuilding(newNode, childNode);
         	}
 		}
 
 		parentNode.then(newNode);
-		return;
+		return type;
     }
 
     @Override
