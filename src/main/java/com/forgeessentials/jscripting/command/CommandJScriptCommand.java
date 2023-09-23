@@ -8,7 +8,6 @@ import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
 import com.forgeessentials.jscripting.fewrapper.fe.command.JsArgumentType;
-import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNode;
 import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeArgument;
 import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeLiteral;
 import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeWrapper;
@@ -68,61 +67,79 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-    	if(options.subNodes==null) {
-    		return baseBuilder.executes(context -> execute(context, "noDefinedSubNodes"));
-    	}
-
     	try {
-    		//for(Object node : options.subNodes) {
-    		//	recursiveBuilding(baseBuilder, node);
-        	//}
-    		recursiveBuilding(baseBuilder, options.subNodes);
+    		if(options.listsSubNodes==null) {
+        		if(options.executionParams==null) {
+    				throw new ScriptException("CommandTreeBase standalone must allow execution!");
+    			}
+    			if(!options.executesMethod) {
+    				throw new ScriptException("CommandTreeBase standalone must specify an execution parameter!");
+    			}
+        		return baseBuilder.executes(context -> execute(context, options.executionParams));
+        	}
+    		for(JsCommandNodeWrapper node : options.listsSubNodes) {
+    			recursiveBuilding(baseBuilder, node);
+        	}
+    		//recursiveBuilding(baseBuilder, options.subNodes);
+    		if(options.executesMethod) {
+    			if(options.executionParams==null) {
+    				throw new ScriptException("CommandTreeBase standalone must allow execution!");
+    			}
+    			return baseBuilder.executes(context -> execute(context, options.executionParams));
+			}
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		} catch (FECommandParsingException e) {
 			System.out.println(e.error);
 			e.printStackTrace();
 		}
-        return baseBuilder;
+        return null;
     }
 
-    private void recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, Object node) throws ScriptException, FECommandParsingException{
-		JsCommandNodeWrapper wrapper = script.getProperties(new JsCommandNodeWrapper(), node, JsCommandNodeWrapper.class);
-		JsCommandNode nodeObject;
+    private void recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, JsCommandNodeWrapper node) throws ScriptException, FECommandParsingException{
 		ArgumentBuilder<CommandSource, ?> newNode;
-		if((JsNodeType.valueOf(wrapper.type))==JsNodeType.LITERAL) {
-			nodeObject = script.getProperties(new JsCommandNodeLiteral(), wrapper.containedNode, JsCommandNodeLiteral.class);
-			newNode = Commands.literal(((JsCommandNodeLiteral) nodeObject).literal);
+		boolean execution;
+		String params;
+		if((JsNodeType.valueOf(node.type))==JsNodeType.LITERAL) {
+			JsCommandNodeLiteral nodeObject = script.getProperties(new JsCommandNodeLiteral(), node.containedNode, JsCommandNodeLiteral.class);
+			newNode = Commands.literal(nodeObject.literal);
+			execution = nodeObject.executesMethod;
+			params = nodeObject.executionParams;
 		}
-		else if((JsNodeType.valueOf(wrapper.type))==JsNodeType.ARGUMENT){
-			nodeObject = script.getProperties(new JsCommandNodeArgument(), wrapper.containedNode, JsCommandNodeArgument.class);
-			newNode = Commands.argument(((JsCommandNodeArgument)nodeObject).argumentName, JsArgumentType.getType(((JsCommandNodeArgument)nodeObject).argumentType));
+		else if((JsNodeType.valueOf(node.type))==JsNodeType.ARGUMENT){
+			JsCommandNodeArgument nodeObject = script.getProperties(new JsCommandNodeArgument(), node.containedNode, JsCommandNodeArgument.class);
+			newNode = Commands.argument(nodeObject.argumentName, JsArgumentType.getType(JsArgumentType.valueOf(nodeObject.argumentType)));
+			execution = nodeObject.executesMethod;
+			params = nodeObject.executionParams;
 		}
 		else {
-			throw new ScriptException("Invalid JsNodeType! "+wrapper.type);
+			throw new ScriptException("Invalid JsNodeType! "+node.type);
 		}
 
-		if(nodeObject.childTree==null){
-			if(!nodeObject.insertExecution||nodeObject.executionParams==null) {
-				throw new ScriptException("CommandTree ends must specify an execution parameters!");
+		if(node.childTree==null){
+			if(params==null) {
+				throw new ScriptException("CommandTree ends must allow execution!");
 			}
-			newNode.executes(context -> execute(context, nodeObject.executionParams));
+			if(!execution) {
+				throw new ScriptException("CommandTree ends must specify an execution parameter!");
+			}
+			newNode.executes(context -> execute(context, params));
 			parentNode.then(newNode);
 			return;
 		}
 
-		if(nodeObject.insertExecution) {
-			if(nodeObject.executionParams==null) {
+		if(execution) {
+			if(params==null) {
 				throw new ScriptException("insertExecution true must specify an execution parameter!");
 			}
-			newNode.executes(context -> execute(context, nodeObject.executionParams));
+			newNode.executes(context -> execute(context, params));
 		}
 
-		if(nodeObject.childTree!=null) {
-			for(Object childNode : nodeObject.childTree) {
-    			recursiveBuilding(newNode, childNode);
-        	}
-		}
+		//if(node.childTree!=null) {
+		//	for(Object childNode : node.childTree) {
+    	//		recursiveBuilding(newNode, childNode);
+        //	}
+		//}
 
 		parentNode.then(newNode);
 		return;

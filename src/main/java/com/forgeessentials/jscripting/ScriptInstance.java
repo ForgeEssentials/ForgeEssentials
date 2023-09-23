@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimerTask;
@@ -32,6 +33,7 @@ import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
@@ -351,8 +353,26 @@ public class ScriptInstance
             Bindings bindings = (Bindings) object;
             try
             {
-                for (Field f : props.fields)
-                    f.set(instance, bindings.get(f.getName()));
+            	List<JsCommandNodeWrapper> listsSubNodes= new ArrayList<>();
+            	Field listings=null;
+                for (Field f : props.fields) {
+                	if(f.getName().startsWith("subNode")) {
+                		for (Entry<String, Object> name : bindings.entrySet()) {
+                        	if(name.getKey().startsWith("subNode")) {
+                        		listsSubNodes.add(this.getProperties(new JsCommandNodeWrapper(), name.getValue(), JsCommandNodeWrapper.class));
+                        	}
+                        }
+                		continue;
+                	}
+                	if(f.getName().startsWith("listsSubNodes")) {
+                		listings = f;
+                		continue;
+                	}
+                	f.set(instance, bindings.get(f.getName()));
+                }
+                if(listings!=null) {
+                	listings.set(instance, listsSubNodes);
+                }
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {

@@ -65,7 +65,16 @@ declare namespace fe {
 		name: string;
 		usage?: string;
 		opOnly?: boolean;
-		subNodes?: JsCommandNodeWrapper;
+		executesMethod: boolean;
+		executionParams?: string;
+		/**
+		 * Don't EVER USE THIS! INTERNAL USE ONLY!
+		 */
+		listsSubNodes?: java.util.List;
+		/**
+		 * Don't implement this directly, instead use subNode[anyLetterNumber] (ex. subNode4, subNodeXYZ)
+		 */
+		subNode?: any;
 		processCommand: CommandCallback;
 		constructor();
 	}
@@ -307,27 +316,25 @@ declare namespace fe.command {
 		static getType(type: ArgumentType): com.mojang.brigadier.arguments.ArgumentType;
 	}
 	
-	class CommandNode {
-		insertExecution: boolean;
-		executionParams: string;
-		childTree?: JsCommandTypeWrapper[];
-		constructor();
-	}
-	
-	class CommandNodeArgument extends CommandNode {
-		argumentName: String;
+	class CommandNodeArgument {
+		executesMethod: boolean;
+		executionParams?: string;
+		argumentName: string;
 		argumentType: JsArgumentType;
 		constructor();
 	}
 	
-	class CommandNodeLiteral extends CommandNode {
-		literal: String;
+	class CommandNodeLiteral {
+		executesMethod: boolean;
+		executionParams?: string;
+		literal: string;
 		constructor();
 	}
 	
 	class CommandNodeWrapper {
+		childTree?: JsCommandTypeWrapper[];
 		type: JsNodeType;
-		containedNode: JsCommandNode;
+		containedNode: JsCommandNodeLiteral/JsCommandNodeArgument;
 		constructor();
 	}
 	

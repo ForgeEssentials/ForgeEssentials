@@ -1,5 +1,9 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
+import java.util.List;
+
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeWrapper;
+
 public class JsCommandOptions
 {
 
@@ -15,11 +19,24 @@ public class JsCommandOptions
      */
     public Boolean opOnly = true;
 
-    /**
-     * @tsd.optional 
-     * @tsd.type JsCommandNodeWrapper
+	public Boolean executesMethod = false;
+
+	/**
+     * @tsd.optional
      */
-    public Object subNodes;
+	public String executionParams;
+
+    /**
+     * Don't EVER USE THIS! INTERNAL USE ONLY! <br>
+     * @tsd.optional
+     */
+    public List<JsCommandNodeWrapper> listsSubNodes;
+
+    /**
+     * Don't implement this directly, instead use subNode[anyLetterNumber] (ex. subNode4, subNodeXYZ)
+     * @tsd.optional 
+     */
+    public Object subNode;
     
     /**
      * @tsd.type CommandCallback

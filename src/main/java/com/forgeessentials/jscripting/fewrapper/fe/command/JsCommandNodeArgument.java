@@ -1,14 +1,17 @@
 package com.forgeessentials.jscripting.fewrapper.fe.command;
 
-public class JsCommandNodeArgument extends JsCommandNode
+public class JsCommandNodeArgument// extends JsCommandNode
 {
+	public Boolean executesMethod = false;
+
 	/**
-	 * @tsd.type String
-	 */
+     * @tsd.optional
+     */
+	public String executionParams;
 	public String argumentName;
 
 	/**
 	 * @tsd.type JsArgumentType
 	 */
-	public JsArgumentType argumentType;
+	public String argumentType;
 }
