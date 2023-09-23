@@ -87,12 +87,14 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 
     private void recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, Object node) throws ScriptException, FECommandParsingException{
 		JsCommandNodeWrapper wrapper = script.getProperties(new JsCommandNodeWrapper(), node, JsCommandNodeWrapper.class);
-		JsCommandNode nodeObject = (JsCommandNode)wrapper.containedNode;
+		JsCommandNode nodeObject;
 		ArgumentBuilder<CommandSource, ?> newNode;
 		if((JsNodeType.valueOf(wrapper.type))==JsNodeType.LITERAL) {
+			nodeObject = script.getProperties(new JsCommandNodeLiteral(), wrapper.containedNode, JsCommandNodeLiteral.class);
 			newNode = Commands.literal(((JsCommandNodeLiteral) nodeObject).literal);
 		}
 		else if((JsNodeType.valueOf(wrapper.type))==JsNodeType.ARGUMENT){
+			nodeObject = script.getProperties(new JsCommandNodeArgument(), wrapper.containedNode, JsCommandNodeArgument.class);
 			newNode = Commands.argument(((JsCommandNodeArgument)nodeObject).argumentName, JsArgumentType.getType(((JsCommandNodeArgument)nodeObject).argumentType));
 		}
 		else {
