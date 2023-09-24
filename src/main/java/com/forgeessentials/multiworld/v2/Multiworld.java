@@ -114,10 +114,10 @@ public class Multiworld
 	}
 
 	public ServerWorld getWorldServer() {
-		return ServerLifecycleHooks.getCurrentServer().getLevel(getReasourceLocationUnique());
+		return ServerLifecycleHooks.getCurrentServer().getLevel(getResourceLocationUnique());
 	}
 
-	public RegistryKey<World> getReasourceLocationUnique() {
+	public RegistryKey<World> getResourceLocationUnique() {
 		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(getResourceName()));
 	}
 
