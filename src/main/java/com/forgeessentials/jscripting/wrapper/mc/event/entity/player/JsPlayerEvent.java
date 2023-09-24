@@ -1,6 +1,6 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
 
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
 import com.forgeessentials.jscripting.wrapper.mc.event.entity.JsLivingEvent;
 
 import net.minecraft.command.CommandSource;
@@ -10,9 +10,9 @@ public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent
 {
 
     @Override
-    public JsEntityPlayer getPlayer()
+    public JsPlayerEntity getPlayer()
     {
-        return JsEntityPlayer.get(_event.getPlayer());
+        return JsPlayerEntity.get(_event.getPlayer());
     }
 
     /**

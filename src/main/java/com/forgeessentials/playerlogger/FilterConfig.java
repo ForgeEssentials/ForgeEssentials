@@ -134,7 +134,7 @@ public class FilterConfig
                 case "player":
                     try
                     {
-                        player = CommandUtils.parsePlayer(args.remove(0), ctx.getSource(), true, false);
+                        player = CommandUtils.parsePlayer(args.remove(0), true, false);
                         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Player To: " + player.getUsername());
                     }
                     catch (FECommandParsingException e)

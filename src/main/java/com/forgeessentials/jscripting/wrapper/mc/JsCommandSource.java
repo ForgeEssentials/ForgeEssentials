@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
@@ -20,25 +20,25 @@ import net.minecraft.util.text.TextComponentUtils;
 /**
  *
  */
-public class JsICommandSender extends JsWrapper<CommandSource>
+public class JsCommandSource extends JsWrapper<CommandSource>
 {
 
-    private JsEntityPlayer player;
+    private JsPlayerEntity player;
 
     /**
      * @tsd.ignore
      */
-    public static JsICommandSender get(CommandSource sender)
+    public static JsCommandSource get(CommandSource sender)
     {
-        return sender == null ? null : new JsICommandSender(sender);
+        return sender == null ? null : new JsCommandSource(sender);
     }
 
-    private JsICommandSender(CommandSource that)
+    private JsCommandSource(CommandSource that)
     {
         super(that);
     }
 
-    public JsICommandSender(CommandSource that, JsEntityPlayer jsPlayer)
+    public JsCommandSource(CommandSource that, JsPlayerEntity jsPlayer)
     {
         super(that);
         this.player = jsPlayer;
@@ -49,21 +49,21 @@ public class JsICommandSender extends JsWrapper<CommandSource>
         return that.getTextName();
     }
 
-    public JsEntityPlayer getPlayer()
+    public JsPlayerEntity getPlayer()
     {
         if (player != null || !(that.getEntity() instanceof PlayerEntity))
             return player;
-        return player = new JsEntityPlayer((PlayerEntity) that.getEntity(), this);
+        return player = new JsPlayerEntity((PlayerEntity) that.getEntity(), this);
     }
 
-    public JsICommandSender doAs(Object userIdOrPlayer, boolean hideChatOutput)
+    public JsCommandSource doAs(Object userIdOrPlayer, boolean hideChatOutput)
     {
         UserIdent doAsUser = userIdOrPlayer instanceof UUID ? UserIdent.get((UUID) userIdOrPlayer)
-                : userIdOrPlayer instanceof JsEntityPlayer ? UserIdent.get(((JsEntityPlayer) userIdOrPlayer).getThat())
+                : userIdOrPlayer instanceof JsPlayerEntity ? UserIdent.get(((JsPlayerEntity) userIdOrPlayer).getThat())
                         : APIRegistry.IDENT_SERVER;
         DoAsCommandSender result = new DoAsCommandSender(doAsUser, that);
         result.setHideChatMessages(hideChatOutput);
-        return new JsICommandSender(result.createCommandSourceStack());
+        return new JsCommandSource(result.createCommandSourceStack());
     }
 
     public void chat(String message)

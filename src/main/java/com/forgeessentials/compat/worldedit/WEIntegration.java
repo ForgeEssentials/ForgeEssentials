@@ -47,7 +47,7 @@ public class WEIntegration
     }
 
     @Preconditions
-    public boolean canLoad()
+    public static boolean canLoad()
     {
         if (getDevOverride())
         {

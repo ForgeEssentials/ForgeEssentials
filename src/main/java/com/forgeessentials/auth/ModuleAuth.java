@@ -62,7 +62,7 @@ public class ModuleAuth extends ConfigLoaderBase
     };
 
     @Preconditions
-    public boolean preInit()
+    public static boolean preInit()
     {
         return !FMLEnvironment.dist.isClient();
     }

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimerTask;
@@ -29,7 +30,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.core.commands.registration.FECommandManager;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
@@ -109,11 +113,11 @@ public class ScriptInstance
 
     private Set<String> illegalFunctions = new HashSet<>();
 
-    private Map<Integer, TimerTask> tasks = new HashMap<>();
+    private static Map<Integer, TimerTask> tasks = new HashMap<>();
 
-    private List<CommandJScriptCommand> commands = new ArrayList<>();
+    private static Map<String, CommandJScriptCommand> commands = new HashMap<>();
 
-    private Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
+    private static Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
 
     private WeakReference<CommandSource> lastSender;
 
@@ -251,7 +255,7 @@ public class ScriptInstance
         return illegalFunctions.contains(fnName);
     }
 
-    public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException
+    public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException, FECommandParsingException
     {
         try
         {
@@ -264,6 +268,9 @@ public class ScriptInstance
         }
         catch (Exception e)
         {
+        	if(e instanceof FECommandParsingException) {
+        		throw e;
+        	}
             // TODO: Maybe only catch certain exceptions like NullPointerException etc.
             throw new ScriptException(e);
         }
@@ -346,8 +353,43 @@ public class ScriptInstance
             Bindings bindings = (Bindings) object;
             try
             {
-                for (Field f : props.fields)
-                    f.set(instance, bindings.get(f.getName()));
+            	List<JsCommandNodeWrapper> listsSubNodes= new ArrayList<>();
+            	Field subListings=null;
+            	List<JsCommandNodeWrapper> listsChildNodes= new ArrayList<>();
+            	Field childListings=null;
+                for (Field f : props.fields) {
+                	if(f.getName().startsWith("subNode")) {
+                		for (Entry<String, Object> name : bindings.entrySet()) {
+                        	if(name.getKey().startsWith("subNode")) {
+                        		listsSubNodes.add(getProperties(new JsCommandNodeWrapper(), name.getValue(), JsCommandNodeWrapper.class));
+                        	}
+                        }
+                		continue;
+                	}
+                	if(f.getName().startsWith("childNode")) {
+                		for (Entry<String, Object> name : bindings.entrySet()) {
+                        	if(name.getKey().startsWith("childNode")) {
+                        		listsChildNodes.add(getProperties(new JsCommandNodeWrapper(), name.getValue(), JsCommandNodeWrapper.class));
+                        	}
+                        }
+                		continue;
+                	}
+                	if(f.getName().startsWith("listsSubNodes")) {
+                		subListings = f;
+                		continue;
+                	}
+                	if(f.getName().startsWith("listsChildNodes")) {
+                		childListings = f;
+                		continue;
+                	}
+                	f.set(instance, bindings.get(f.getName()));
+                }
+                if(subListings!=null&&listsSubNodes.size()>0) {
+                	subListings.set(instance, listsSubNodes);
+                }
+                if(childListings!=null&&listsChildNodes.size()>0) {
+                	childListings.set(instance, listsChildNodes);
+                }
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -388,6 +430,10 @@ public class ScriptInstance
             try
             {
                 call(fn, fn, args);
+            }
+            catch (FECommandParsingException e) 
+            {
+            	chatError("Error in script execution: " + e.error);
             }
             catch (NoSuchMethodException | ScriptException e)
             {
@@ -433,9 +479,14 @@ public class ScriptInstance
 
     /* ************************************************************ */
     /* Event handling */
-    /*
-     * public void registerScriptCommand(CommandJScriptCommand command) { commands.add(command); FECommandManager.registerCommand(command, true); }
-     */
+    public void registerScriptCommand(CommandJScriptCommand command) {
+        if (ModuleJScripting.instance().dispatcher != null&&!commands.containsKey(command.getName()))
+        {
+            commands.put(command.getName(),command);
+            FECommandManager.registerCommand(command, ModuleJScripting.instance().dispatcher);
+        }
+    }
+
     public void registerEventHandler(String event, Object handler)
     {
         Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);
@@ -489,9 +540,9 @@ public class ScriptInstance
         return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
-    public List<CommandJScriptCommand> getCommands()
+    public Set<String> getCommandNames()
     {
-        return commands;
+        return commands.keySet();
     }
 
     public List<String> getEventHandlers()

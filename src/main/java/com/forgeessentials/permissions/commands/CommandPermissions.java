@@ -633,7 +633,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         }
         try
         {
-            UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"), null, false, false);
+            UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"), false, false);
             listclear.addAll(zone.getPlayerPermissions(ident).keySet());
         }
         catch (FECommandParsingException ignored){}

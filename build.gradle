@@ -429,10 +429,10 @@ compileClientJava {
 
  // JavaExec task for generating tsd
 //  Calls the main class for the TSD generator since that is working
-/*
+
 task tsd(type: JavaExec) {
     dependsOn "classes"
-    classpath = project.sourceSets.test.compileClasspath
+    classpath = files(project.sourceSets.test.compileClasspath, project.sourceSets.main.compileClasspath)
     mainClass = "com.forgeessentials.jscripting.TsdGenerator"
     doLast {
         copy {
@@ -443,7 +443,7 @@ task tsd(type: JavaExec) {
             into "build/resources/main/com/forgeessentials/jscripting"
         }
     }
-}*/
+}
 
 /************************************************************
  * Configure client jar
@@ -498,7 +498,7 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
 	dependsOn shadowJar
-    //dependsOn "tsd"
+    dependsOn "tsd"
     archiveClassifier = "server"
 	archiveAppendix = project.minecraftVersion
 	

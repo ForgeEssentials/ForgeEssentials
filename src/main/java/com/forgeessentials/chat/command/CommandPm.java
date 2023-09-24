@@ -113,7 +113,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             UserIdent player;
             try
             {
-                player = parsePlayer(name[0], null, true, true);
+                player = parsePlayer(name[0], true, true);
             }
             catch (FECommandParsingException e)
             {

@@ -3,10 +3,10 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.DyeColor;
 
-public class JsEntitySheep<T extends SheepEntity> extends JsEntity<T>
+public class JsSheepEntity<T extends SheepEntity> extends JsEntity<T>
 {
 
-    public JsEntitySheep(T that)
+    public JsSheepEntity(T that)
     {
         super(that);
     }

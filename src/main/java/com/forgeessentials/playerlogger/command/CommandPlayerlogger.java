@@ -264,7 +264,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                 PlayerEntity pl;
                 try
                 {
-                    pl = parsePlayer(StringArgumentType.getString(ctx, "name"), ctx.getSource(), true, true)
+                    pl = parsePlayer(StringArgumentType.getString(ctx, "name"), true, true)
                             .getPlayer();
                 }
                 catch (FECommandParsingException e)

@@ -9,7 +9,7 @@ import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
 import com.forgeessentials.util.events.EventCancelledException;
 
 public class JsServerZone<T extends ServerZone> extends JsZone<T>
@@ -49,7 +49,7 @@ public class JsServerZone<T extends ServerZone> extends JsZone<T>
         return JsZone.get(that.getZoneAt(worldPoint.getThat()));
     }
 
-    public List<String> getPlayerGroups(JsEntityPlayer player)
+    public List<String> getPlayerGroups(JsPlayerEntity player)
     {
         SortedSet<GroupEntry> groups = that.getPlayerGroups(UserIdent.get(player.getThat()));
         List<String> result = new ArrayList<>(groups.size());

@@ -25,15 +25,14 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
-import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
-import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -88,7 +87,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public ModuleJScripting()
     {
         APIRegistry.scripts = this;
-        init();
+        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot());
+        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
     public static ModuleJScripting instance()
@@ -97,7 +97,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Preconditions
-    public boolean canLoad()
+    public static boolean canLoad()
     {
         ScriptEngine engine = SEM.getEngineByName("JavaScript");
         if (engine != null && (factory = engine.getFactory()) != null)
@@ -120,15 +120,16 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             e.printStackTrace();
         }
-
-        ScriptCompiler.registerExtension(new ScriptExtensionRoot());
-        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
+    public CommandDispatcher<CommandSource> dispatcher = null;
     @SubscribeEvent
     public void registerCommands(RegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript(true), event.getDispatcher());
+
+        dispatcher = event.getDispatcher();
+        init();
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException
@@ -145,12 +146,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         loadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerStartedEvent event)
-    {
-        // loadScripts();
-    }
-
     @Override
     @SubscribeEvent
     public void serverStopped(FEModuleServerStoppedEvent e)
@@ -159,7 +154,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         JsLocalStorage.save();
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
         LoggingHandler.felog.info("Reloading scripts");
@@ -196,14 +191,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         while (it.hasNext()) {
             File file = it.next();
             String name = file.getName();
-            if (!name.endsWith("d.ts") && name.endsWith("ts"))
+            if (!(name.equals("fe.d.ts")|| name.equals("mc.d.ts"))&& name.endsWith("ts"))
             {
                 LoggingHandler.felog.warn(
                         "Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.",
                         name);
                 continue;
             }
-            if (name.endsWith("d.ts") || scripts.containsKey(file))
+            if ((name.equals("fe.d.ts")|| name.equals("mc.d.ts")) || scripts.containsKey(file))
                 continue;
             try
             {
@@ -321,7 +316,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Override
     public boolean runEventScripts(String key, CommandSource sender, Object additionalData)
     {
-        JsICommandSender jsSender = JsICommandSender.get(sender);
+        JsCommandSource jsSender = JsCommandSource.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
         boolean cancelled = false;
         for (ScriptInstance script : scripts.values())

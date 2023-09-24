@@ -1,12 +1,12 @@
 package com.forgeessentials.jscripting.command;
 
 import java.util.List;
+import java.util.Set;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.ScriptUpgrader;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -15,7 +15,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,7 +70,8 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             parseReload(ctx);
             break;
         case "upgrade":
-            ScriptUpgrader.upgradeOldScripts(ctx.getSource());
+        	ChatOutputHandler.chatNotification(ctx.getSource(), "This is not ported/working/needed rn");
+            //ScriptUpgrader.upgradeOldScripts(ctx.getSource());
             break;
         default:
             ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
@@ -82,7 +82,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
 
     private static void parseReload(CommandContext<CommandSource> ctx)
     {
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Reloading scripts...");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Reloading scripts...");
         ModuleJScripting.instance().reloadScripts(ctx.getSource());
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Done!");
     }
@@ -92,22 +92,22 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Loaded scripts:");
         for (ScriptInstance script : ModuleJScripting.getScripts())
         {
-            ChatOutputHandler.chatNotification(ctx.getSource(), script.getName());
+            ChatOutputHandler.chatError(ctx.getSource(), script.getName());
 
             List<String> eventHandlers = script.getEventHandlers();
             if (!eventHandlers.isEmpty())
             {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered events:");
+                ChatOutputHandler.chatNotification(ctx.getSource(), "  Registered events:");
                 for (String eventType : eventHandlers)
-                    ctx.getSource().sendSuccess(new StringTextComponent(("    " + eventType)), true);
+                	ChatOutputHandler.chatWarning(ctx.getSource(), "    " + eventType);
             }
 
-            List<CommandJScriptCommand> commands = script.getCommands();
+            Set<String> commands = script.getCommandNames();
             if (!commands.isEmpty())
             {
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered commands:");
-                for (CommandJScriptCommand command : commands)
-                    ctx.getSource().sendSuccess(new StringTextComponent("    /" + command.getName()), true);
+                ChatOutputHandler.chatNotification(ctx.getSource(), "  Registered commands:");
+                for (String command : commands)
+                	ChatOutputHandler.chatWarning(ctx.getSource(), "    /" + command);
             }
         }
     }
