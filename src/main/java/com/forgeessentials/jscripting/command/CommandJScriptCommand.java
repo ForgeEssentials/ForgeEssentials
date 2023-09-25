@@ -144,10 +144,9 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 		if(node.listsChildNodes!=null) {
 			boolean flag1=false;
 			for(JsCommandNodeWrapper childNode : node.listsChildNodes) {
-    			boolean thing = recursiveBuilding(baseBuilder, node);
+    			boolean thing = recursiveBuilding(newNode, childNode);
     			if(flag1 && thing) {throw new ScriptException("Cant have two argument nodes on the same branch!");}
     			if(!flag1 && thing) {flag1=true;}
-    			recursiveBuilding(newNode, childNode);
         	}
 		}
 
