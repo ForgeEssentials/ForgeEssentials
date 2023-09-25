@@ -17,6 +17,6 @@ public class MinecraftOverworldBiomeProviderHolder extends BiomeProviderHolderBa
 
 	@Override
 	public String getClassName() {
-		return "net.minecraft.world.biome.provider.OverworldBiomeProvider";
+		return OverworldBiomeProvider.class.getName();
 	}
 }

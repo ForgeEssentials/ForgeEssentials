@@ -29,6 +29,6 @@ public class MinecraftCheckerboardBiomeProviderHolder extends BiomeProviderHolde
 
 	@Override
 	public String getClassName() {
-		return "net.minecraft.world.biome.provider.CheckerboardBiomeProvider";
+		return CheckerboardBiomeProvider.class.getName();
 	}
 }

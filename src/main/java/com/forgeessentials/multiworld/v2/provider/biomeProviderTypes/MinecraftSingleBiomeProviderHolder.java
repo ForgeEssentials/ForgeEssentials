@@ -18,6 +18,6 @@ public class MinecraftSingleBiomeProviderHolder extends BiomeProviderHolderBase 
 
 	@Override
 	public String getClassName() {
-		return "net.minecraft.world.biome.provider.SingleBiomeProvider";
+		return SingleBiomeProvider.class.getName();
 	}
 }
