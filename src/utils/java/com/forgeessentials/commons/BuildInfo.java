@@ -19,7 +19,7 @@ public abstract class BuildInfo
 
     public static final Logger febuildinfo = LogManager.getLogger("FEUpdateChecker");
 
-    private static final String BUILD_TYPE = "alpha";
+    private static final String BUILD_TYPE = "@_RELEASETYPE_@";
 
     private static String buildHash = "N/A";
 

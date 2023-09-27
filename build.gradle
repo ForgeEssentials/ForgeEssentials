@@ -357,7 +357,7 @@ sourceSets {
 // Configure utils tokens
 task processSource(type: Sync) {
     from sourceSets.utils.java
-    filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major])
+    filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major, '_RELEASETYPE_': project.releaseType])
     into "$buildDir/src"
 }
 
