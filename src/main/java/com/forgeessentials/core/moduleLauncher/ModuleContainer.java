@@ -125,7 +125,12 @@ public class ModuleContainer implements Comparable<Object>
                         return;
                     }
                 }
-                catch (IllegalAccessException | InvocationTargetException | NullPointerException e)
+                catch (NullPointerException e)
+                {
+                    LoggingHandler.felog.error(
+                            String.format("Module: %s Preconditions field is not static!", name), e);
+                }
+                catch (IllegalAccessException | InvocationTargetException  e)
                 {
                     LoggingHandler.felog.error(
                             String.format("Exception Raised when testing preconditions for module: %s", name), e);
