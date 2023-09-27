@@ -125,7 +125,7 @@ public class ModuleContainer implements Comparable<Object>
                         return;
                     }
                 }
-                catch (IllegalAccessException | InvocationTargetException e)
+                catch (IllegalAccessException | InvocationTargetException | NullPointerException e)
                 {
                     LoggingHandler.felog.error(
                             String.format("Exception Raised when testing preconditions for module: %s", name), e);
