@@ -118,6 +118,7 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 println('Running Tasks: ' +project.gradle.startParameter.taskNames)
 
 ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-server.jar")
+ext.set 'chatSrcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-chatAddon.jar")
 ext.set 'clientSrcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-client.jar")
 
 curseforge {
@@ -137,6 +138,8 @@ curseforge {
                     optionalDependency 'baubles'
                 }
             }
+
+            addArtifact project.chatSrcFile
         }
         project {
             id = clientProjectID
@@ -169,6 +172,7 @@ modrinth {
     versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
     uploadFile = project.srcFile
     gameVersions = [minecraftVersion]
+    additionalFiles = [project.chatSrcFile]
     loaders = ["forge"]
     changelog = project.changelog
 }
