@@ -30,7 +30,6 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.Parameter;
@@ -242,8 +241,15 @@ public class TsdGenerator extends Doclet
             if (classDoc.superclassType() instanceof ParameterizedType
                     && classDoc.superclass().name().equals("MappedList"))
             {
-                write("<");
-                write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[1]));
+            	write("<");
+            	ParameterizedType parameterizedType = (ParameterizedType) classDoc.superclassType();
+            	Type[] typeArguments = parameterizedType.typeArguments();
+                if (typeArguments.length > 0) {
+                    write(mapClassName(typeArguments[0])); // Access the first type argument
+                }else {
+                	System.out.println("Error!!!!!!!!! ParameterizedType is missing type arguments for "+typeName);
+                }
+                //write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[0]));
                 write(">");
             }
         }
@@ -583,11 +589,6 @@ public class TsdGenerator extends Doclet
             }
         }
         return true;
-    }
-
-    public static LanguageVersion languageVersion()
-    {
-        return LanguageVersion.JAVA_1_5;
     }
 
     public static void main(String[] args) throws IOException

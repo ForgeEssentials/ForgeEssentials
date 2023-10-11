@@ -11,9 +11,9 @@ import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.data.v2.DataManager;
@@ -43,7 +43,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * Module for all FENetworking connectivity
  * @author maximuslotro
  */
-@FEModule(name = ModuleNetworking.networkModule, parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
+@FEModule(name = ModuleNetworking.networkModule, parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleNetworking extends ConfigLoaderBase
 {
     public static final String networkModule = "FENetworking";

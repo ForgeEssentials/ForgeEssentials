@@ -1,6 +1,6 @@
 package com.forgeessentials.worldborder.effect;
 
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.WorldBorder;

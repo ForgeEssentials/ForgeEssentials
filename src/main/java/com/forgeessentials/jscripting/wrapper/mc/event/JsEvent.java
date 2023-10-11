@@ -3,6 +3,7 @@ package com.forgeessentials.jscripting.wrapper.mc.event;
 import javax.script.ScriptException;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.ScriptInstance;
 
 import net.minecraft.command.CommandSource;
@@ -86,7 +87,10 @@ public abstract class JsEvent<T extends Event>
         {
             e.printStackTrace();
             _script.chatError(ScriptInstance.SCRIPT_ERROR_TEXT + e.getMessage());
-        }
+        } catch (FECommandParsingException e) {
+			e.printStackTrace();
+			_script.chatError(ScriptInstance.SCRIPT_ERROR_TEXT + e.error);
+		}
     }
 
     public boolean isCancelable()

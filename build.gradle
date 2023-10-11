@@ -97,7 +97,7 @@ if (System.getenv("BUILD_NUMBER") != null) {
 }
 
 ext.set 'changelog', System.getenv("CHANGE_LOG")
-ext.set 'releaseType', 'alpha'
+ext.set 'releaseType', 'beta'
 
 // Get commit hash
 
@@ -357,7 +357,7 @@ sourceSets {
 // Configure utils tokens
 task processSource(type: Sync) {
     from sourceSets.utils.java
-    filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major])
+    filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major, '_RELEASETYPE_': project.releaseType])
     into "$buildDir/src"
 }
 
@@ -429,10 +429,10 @@ compileClientJava {
 
  // JavaExec task for generating tsd
 //  Calls the main class for the TSD generator since that is working
-/*
+
 task tsd(type: JavaExec) {
     dependsOn "classes"
-    classpath = project.sourceSets.test.compileClasspath
+    classpath = files(project.sourceSets.test.compileClasspath, project.sourceSets.main.compileClasspath)
     mainClass = "com.forgeessentials.jscripting.TsdGenerator"
     doLast {
         copy {
@@ -443,7 +443,7 @@ task tsd(type: JavaExec) {
             into "build/resources/main/com/forgeessentials/jscripting"
         }
     }
-}*/
+}
 
 /************************************************************
  * Configure client jar
@@ -498,7 +498,7 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
 	dependsOn shadowJar
-    //dependsOn "tsd"
+    dependsOn "tsd"
     archiveClassifier = "server"
 	archiveAppendix = project.minecraftVersion
 	

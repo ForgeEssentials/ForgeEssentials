@@ -33,10 +33,10 @@ import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet07Remote;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
@@ -44,7 +44,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartE
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 
@@ -57,7 +56,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
+@FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 {
     private static ForgeConfigSpec REMOTE_CONFIG;
@@ -158,18 +157,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
                 .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-        Map<Type, String> classModIds = Maps.newHashMap();
-
-        // Gather all @FERemoteHandler classes
-        data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
-                .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
-        LoggingHandler.felog.info("Found {} FERemoteHandler annotations", data.size());
-
         for (ModFileScanData.AnnotationData asm : data)
         {
             try
             {
-                Class<?> clazz = Class.forName(asm.getClass().getName());
+                Class<?> clazz = Class.forName(asm.getMemberName());
                 if (RemoteHandler.class.isAssignableFrom(clazz))
                 {
                     RemoteHandler handler = (RemoteHandler) clazz.getDeclaredConstructor().newInstance();

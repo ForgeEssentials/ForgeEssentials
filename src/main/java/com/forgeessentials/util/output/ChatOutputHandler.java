@@ -45,7 +45,7 @@ public final class ChatOutputHandler
 
     public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
-    public static DiscordMessageHandlerBase discordMessageHandler;
+    public static DiscordMessageHandlerBase discordMessageHandler = new DiscordMessageHandlerBase();
 
     /* ------------------------------------------------------------ */
 

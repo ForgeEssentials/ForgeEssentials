@@ -8,9 +8,9 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.permissions.commands.CommandPermissionTaggedItem;
 import com.forgeessentials.permissions.commands.CommandPermissions;
@@ -41,7 +41,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
+@FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModulePermissions extends ConfigLoaderBase
 {
     private static ForgeConfigSpec PERMISSIONS_CONFIG;

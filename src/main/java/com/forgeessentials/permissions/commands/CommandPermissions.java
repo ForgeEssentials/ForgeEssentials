@@ -10,7 +10,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -633,7 +633,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
         }
         try
         {
-            UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"), null, false, false);
+            UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"), false, false);
             listclear.addAll(zone.getPlayerPermissions(ident).keySet());
         }
         catch (FECommandParsingException ignored){}

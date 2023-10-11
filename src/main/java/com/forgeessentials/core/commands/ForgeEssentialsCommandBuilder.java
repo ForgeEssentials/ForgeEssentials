@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.misc.commandTools.PermissionManager;
+import com.forgeessentials.core.misc.CommandPermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.command.CommandSource;
@@ -30,7 +32,15 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
     public ForgeEssentialsCommandBuilder(boolean enabled)
     {
         this.baseBuilder = Commands.literal(getName()).requires(
-                source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
+                source -> source.hasPermission(CommandPermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
+        this.enabled = enabled;
+
+    }
+
+    public ForgeEssentialsCommandBuilder(boolean enabled, String name, DefaultPermissionLevel level)
+    {
+        this.baseBuilder = Commands.literal(getFullName(name)).requires(
+                source -> source.hasPermission(CommandPermissionManager.fromDefaultPermissionLevel(level)));
         this.enabled = enabled;
 
     }
@@ -66,8 +76,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
     // ------------------------------------------------------------
     // Command alias
 
-    @Nonnull
-    protected abstract String getPrimaryAlias();
+    protected @NotNull abstract String getPrimaryAlias();
 
     @Nonnull
     protected String[] getDefaultSecondaryAliases()
@@ -79,8 +88,11 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     public String getName()
     {
-        String name = getPrimaryAlias();
-        if (name.startsWith(PREFIX))
+    	return getFullName(getPrimaryAlias());
+    }
+
+    public String getFullName(String name) {
+    	if (name.startsWith(PREFIX))
         {
             return name;
         }

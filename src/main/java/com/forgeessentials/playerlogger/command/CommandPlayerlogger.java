@@ -11,9 +11,9 @@ import javax.persistence.TypedQuery;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
 import com.forgeessentials.playerlogger.FilterConfig;
 import com.forgeessentials.playerlogger.FilterConfig.ActionEnum;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
@@ -264,7 +264,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                 PlayerEntity pl;
                 try
                 {
-                    pl = parsePlayer(StringArgumentType.getString(ctx, "name"), ctx.getSource(), true, true)
+                    pl = parsePlayer(StringArgumentType.getString(ctx, "name"), true, true)
                             .getPlayer();
                 }
                 catch (FECommandParsingException e)

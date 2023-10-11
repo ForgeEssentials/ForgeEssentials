@@ -15,6 +15,7 @@ import java.util.Set;
 
 import com.forgeessentials.core.environment.Environment;
 
+import cpw.mods.modlauncher.api.INameMappingService;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -52,6 +53,17 @@ public abstract class ServerUtil
             throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         Field field = object.getClass().getField(fieldName);
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(object, newValue);
+    }
+
+    public static void changeFinalFieldNonStaticFieldRefMap(Object object, String fieldName, Object newValue)
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    {
+        Field field = object.getClass().getField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName));
         field.setAccessible(true);
         Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);

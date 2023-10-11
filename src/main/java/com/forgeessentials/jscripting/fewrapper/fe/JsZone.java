@@ -8,7 +8,7 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
 
 public class JsZone<T extends Zone> extends JsWrapper<T>
 {
@@ -53,7 +53,7 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
         return that.getName();
     }
 
-    public boolean isPlayerInZone(JsEntityPlayer player)
+    public boolean isPlayerInZone(JsPlayerEntity player)
     {
         return that.isPlayerInZone(player.getThat());
     }

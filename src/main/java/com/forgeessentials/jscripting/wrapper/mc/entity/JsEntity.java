@@ -12,7 +12,6 @@ import com.forgeessentials.util.ServerUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
@@ -93,9 +92,9 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         return that.getId();
     }
 
-    public World getDimension()
+    public String getDimension()
     {
-        return that.level;
+        return that.level.dimension().location().toString();
     }
 
     public double getX()

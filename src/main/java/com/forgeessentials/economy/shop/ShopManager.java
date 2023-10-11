@@ -18,6 +18,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
@@ -222,7 +223,9 @@ public class ShopManager extends ServerEventHandler
     {
         if (event instanceof LeftClickBlock || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
             return;
-        ModuleCommands.eventHandler.playerActive((ServerPlayerEntity) event.getPlayer());
+        if(ModuleLauncher.getModuleList().contains("Commands")) {
+        	ModuleCommands.eventHandler.playerActive((ServerPlayerEntity) event.getPlayer());
+        }
         ItemStack equippedStack = event.getPlayer().getMainHandItem();
         Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 

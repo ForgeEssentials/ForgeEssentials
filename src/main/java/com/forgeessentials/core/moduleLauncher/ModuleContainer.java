@@ -41,6 +41,7 @@ public class ModuleContainer implements Comparable<Object>
     // other vars..
     public final String className;
     public final String name;
+    public final int version;
     private final boolean isCore;
     public boolean isLoadable = true;
     protected boolean doesOverride;
@@ -62,6 +63,7 @@ public class ModuleContainer implements Comparable<Object>
 
             isCore = false;
             name = "INVALID-MODULE";
+            version = 0;
             return;
         }
 
@@ -78,6 +80,7 @@ public class ModuleContainer implements Comparable<Object>
         name = annot.name();
         isCore = annot.isCore();
         doesOverride = annot.doesOverride();
+        version = annot.version();
 
         if (annot.canDisable())
         {
@@ -89,7 +92,7 @@ public class ModuleContainer implements Comparable<Object>
             }
             else
             {
-                LoggingHandler.felog.debug("Requested to enable module: " + name);
+                //LoggingHandler.felog.debug("Requested to enable module: " + name);
             }
         }
 
@@ -115,19 +118,24 @@ public class ModuleContainer implements Comparable<Object>
 
                 try
                 {
-                    if (!((boolean) m.invoke(c.getDeclaredConstructor().newInstance())))
+                    if (!((boolean) m.invoke(null)))
                     {
                         LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
                         return;
                     }
                 }
-                catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+                catch (NullPointerException e)
+                {
+                    LoggingHandler.felog.error(
+                            String.format("Module: %s Preconditions field is not static!", name), e);
+                }
+                catch (IllegalAccessException | InvocationTargetException  e)
                 {
                     LoggingHandler.felog.error(
                             String.format("Exception Raised when testing preconditions for module: %s", name), e);
                 }
-                catch (IllegalArgumentException | NoSuchMethodException | SecurityException e)
+                catch (IllegalArgumentException | SecurityException e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
 
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -33,12 +33,12 @@ public class JsPermissions
                 permissionNode, isProperty);
     }
 
-    public static boolean checkPermission(JsEntityPlayer player, String permissionNode)
+    public static boolean checkPermission(JsPlayerEntity player, String permissionNode)
     {
         return APIRegistry.perms.checkPermission(player.getThat(), permissionNode);
     }
 
-    public static String getPermissionProperty(JsEntityPlayer player, String permissionNode)
+    public static String getPermissionProperty(JsPlayerEntity player, String permissionNode)
     {
         return APIRegistry.perms.getPermissionProperty(player.getThat(), permissionNode);
     }

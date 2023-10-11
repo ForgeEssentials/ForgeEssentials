@@ -30,7 +30,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleServerVote extends ConfigLoaderBase
 {
     private static ForgeConfigSpec SERVERVOTE_CONFIG;

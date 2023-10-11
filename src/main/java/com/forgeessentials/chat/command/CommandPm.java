@@ -7,7 +7,7 @@ import java.util.WeakHashMap;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -113,7 +113,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             UserIdent player;
             try
             {
-                player = parsePlayer(name[0], null, true, true);
+                player = parsePlayer(name[0], true, true);
             }
             catch (FECommandParsingException e)
             {

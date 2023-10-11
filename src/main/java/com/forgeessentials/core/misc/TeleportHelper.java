@@ -236,9 +236,10 @@ public class TeleportHelper extends ServerEventHandler
             ((ServerPlayerEntity) player).teleportTo(point.getWorld(), point.getX(), point.getY(), point.getZ(),
                     point.getYaw(), point.getPitch());
 
+        }else {
+            ((ServerPlayerEntity) player).connection.teleport(point.getX(), point.getY(), point.getZ(), point.getYaw(),
+                    point.getPitch());
         }
-        ((ServerPlayerEntity) player).connection.teleport(point.getX(), point.getY(), point.getZ(), point.getYaw(),
-                point.getPitch());
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)

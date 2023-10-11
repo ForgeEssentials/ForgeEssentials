@@ -27,12 +27,6 @@ public class CommandFeReload extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public String @NotNull [] getDefaultSecondaryAliases()
-    {
-        return new String[] { "reload" };
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;

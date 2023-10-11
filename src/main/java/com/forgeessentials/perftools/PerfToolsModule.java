@@ -3,10 +3,10 @@ package com.forgeessentials.perftools;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
@@ -16,7 +16,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Perftools", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "Perftools", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class PerfToolsModule extends ConfigLoaderBase
 {
     private static ForgeConfigSpec PERF_CONFIG;

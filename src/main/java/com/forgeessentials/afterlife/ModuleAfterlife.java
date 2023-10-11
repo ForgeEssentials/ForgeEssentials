@@ -37,7 +37,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * Module to handle death-chest and respawn debuffs.
  */
 
-@FEModule(name = "Afterlife", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "Afterlife", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleAfterlife extends ServerEventHandler
 {
 

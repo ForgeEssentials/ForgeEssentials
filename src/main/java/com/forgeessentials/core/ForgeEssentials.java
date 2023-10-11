@@ -27,16 +27,16 @@ import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandTest;
 import com.forgeessentials.core.commands.CommandUuid;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
+import com.forgeessentials.core.misc.CommandPermissionManager;
 import com.forgeessentials.core.misc.Packet0HandshakeHandler;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
-import com.forgeessentials.core.misc.commandTools.PermissionManager;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
@@ -106,6 +106,7 @@ public class ForgeEssentials
 {
 
     public static final String MODID = "forgeessentials";
+    public static final int CURRENT_MODULE_VERSION =1;
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
     @Instance
@@ -361,7 +362,7 @@ public class ForgeEssentials
         @SubscribeEvent
         public void serverTickEvent(TickEvent.ServerTickEvent event)
         {
-            PermissionManager.registerCommandPermissions();
+            CommandPermissionManager.registerCommandPermissions();
             MinecraftForge.EVENT_BUS.unregister(this);
         }
     }
@@ -396,10 +397,10 @@ public class ForgeEssentials
         APIRegistry.perms.registerPermission(PERM_VERSIONINFO, DefaultPermissionLevel.OP,
                 "Shows notification to the player if FE version is outdated");
 
-        PermissionManager.registerCommandPermission("help", DefaultPermissionLevel.ALL);
-        PermissionManager.registerCommandPermission("config", DefaultPermissionLevel.OP);
-        PermissionManager.registerCommandPermission("forge", DefaultPermissionLevel.OP);
-        PermissionManager.registerCommandPermission("trigger", DefaultPermissionLevel.OP);
+        CommandPermissionManager.registerCommandPermission("help", DefaultPermissionLevel.ALL);
+        CommandPermissionManager.registerCommandPermission("config", DefaultPermissionLevel.OP);
+        CommandPermissionManager.registerCommandPermission("forge", DefaultPermissionLevel.OP);
+        CommandPermissionManager.registerCommandPermission("trigger", DefaultPermissionLevel.OP);
 
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5",

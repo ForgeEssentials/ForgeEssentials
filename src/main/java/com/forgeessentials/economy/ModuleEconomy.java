@@ -14,11 +14,11 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
@@ -66,7 +66,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
  * 
  * Handles wallets for each player, transactions and plot management.
  */
-@FEModule(name = "Economy", parentMod = ForgeEssentials.class)
+@FEModule(name = "Economy", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
     private static ForgeConfigSpec ECONOMY_CONFIG;

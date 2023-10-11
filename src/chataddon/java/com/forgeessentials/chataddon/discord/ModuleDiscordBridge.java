@@ -7,11 +7,12 @@ import java.util.Set;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chataddon.FEChatAddons;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
@@ -44,7 +45,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-@FEModule(name = "DiscordBridge", parentMod = FEChatAddons.class, defaultModule = false)
+@FEModule(name = "DiscordBridge", parentMod = FEChatAddons.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleDiscordBridge implements ConfigSaver
 {
     private static ForgeConfigSpec DISCORD_CONFIG;

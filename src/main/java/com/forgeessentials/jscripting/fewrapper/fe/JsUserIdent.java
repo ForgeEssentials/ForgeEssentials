@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
 
 public class JsUserIdent extends JsWrapper<UserIdent>
@@ -61,19 +61,19 @@ public class JsUserIdent extends JsWrapper<UserIdent>
         return that.getUsernameOrUuid();
     }
 
-    public JsEntityPlayer getPlayer()
+    public JsPlayerEntity getPlayer()
     {
-        return JsEntityPlayer.get(that.getPlayer());
+        return JsPlayerEntity.get(that.getPlayer());
     }
 
-    public JsEntityPlayer getFakePlayer()
+    public JsPlayerEntity getFakePlayer()
     {
-        return JsEntityPlayer.get(that.getFakePlayer());
+        return JsPlayerEntity.get(that.getFakePlayer());
     }
 
-    public JsEntityPlayer getFakePlayer(JsServerWorld world)
+    public JsPlayerEntity getFakePlayer(JsServerWorld world)
     {
-        return JsEntityPlayer.get(that.getFakePlayer(world.getThat()));
+        return JsPlayerEntity.get(that.getFakePlayer(world.getThat()));
     }
 
     public String toSerializeString()

@@ -144,10 +144,10 @@ declare namespace mc {
 		getLowPoint(): fe.Point;
 	}
 	
-	class ICommandSender extends Wrapper {
+	class CommandSource extends Wrapper {
 		getName(): string;
-		getPlayer(): entity.EntityPlayer;
-		doAs(userIdOrPlayer: any, hideChatOutput: boolean): ICommandSender;
+		getPlayer(): entity.PlayerEntity;
+		doAs(userIdOrPlayer: any, hideChatOutput: boolean): CommandSource;
 		chat(message: string): void;
 		chatConfirm(message: string): void;
 		chatNotification(message: string): void;
@@ -157,7 +157,7 @@ declare namespace mc {
 	}
 	
 	interface Server {
-		getServer(): ICommandSender;
+		getServer(): CommandSource;
 		/**
 		 * Runs a Minecraft command.
 		 * Be sure to separate each argument of the command as a single argument to this function.
@@ -165,11 +165,11 @@ declare namespace mc {
 		 * Right: runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);
 		 * Wrong: runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
 		 */
-		runCommand(sender: ICommandSender, cmd: string, ...args: any[]): void;
+		runCommand(sender: CommandSource, cmd: string, args: any[]): void;
 		/**
 		 * Runs a Minecraft command and ignores any errors it might throw
 		 */
-		tryRunCommand(sender: ICommandSender, cmd: string, ...args: any[]): void;
+		tryRunCommand(sender: CommandSource, cmd: string, args: any[]): void;
 		/**
 		 * Registers a new event handler.
 		 */
@@ -228,7 +228,7 @@ declare namespace mc.entity {
 		getId(): string;
 		getUuid(): java.util.UUID;
 		getEntityId(): int;
-		getDimension(): int;
+		getDimension(): string;
 		getX(): double;
 		getY(): double;
 		getZ(): double;
@@ -248,10 +248,10 @@ declare namespace mc.entity {
 		getEntityType(): string;
 	}
 	
-	class EntityList extends JavaList<Entity> {
+	class EntityList extends JavaList<> {
 	}
 	
-	class EntityLivingBase extends Entity {
+	class LivingEntityBase extends Entity {
 		getHealth(): float;
 		setHealth(value: float): void;
 		getMaxHealth(): float;
@@ -259,12 +259,12 @@ declare namespace mc.entity {
 		canEntityBeSeen(other: Entity): boolean;
 	}
 	
-	class EntityPlayer extends EntityLivingBase {
+	class PlayerEntity extends LivingEntityBase {
 		setPosition(x: double, y: double, z: double): void;
 		setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
-		asCommandSender(): mc.ICommandSender;
-		getInventory(): mc.item.InventoryPlayer;
-		getBedLocation(dimension: int): fe.Point;
+		asCommandSender(): mc.CommandSource;
+		getInventory(): mc.item.PlayerInventory;
+		getBedLocation(dimension: string): fe.Point;
 		getGameType(): net.minecraft.world.GameType;
 		/**
 		 * Sets the player's game mode and sends it to them.
@@ -296,16 +296,14 @@ declare namespace mc.entity {
 		 */
 		canHarvestBlock(block: mc.world.Block): boolean;
 		getEyeHeight(): float;
-		canAttackPlayer(player: EntityPlayer): boolean;
+		canAttackPlayer(player: PlayerEntity): boolean;
 		/**
 		 * Returns the current armor value as determined by a call to InventoryPlayer.getTotalArmorValue
 		 */
 		getTotalArmorValue(): int;
 		/**
-		 * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing
-		 * them anyway.
+		 * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing them anyway.
 		 */
-		getArmorVisibility(): float;
 		interactWith(entity: Entity): boolean;
 		/**
 		 * Returns the currently being used item by the player.
@@ -363,10 +361,10 @@ declare namespace mc.entity {
 		closeScreen(): void;
 	}
 	
-	class EntityPlayerList extends JavaList<EntityPlayer> {
+	class PlayerEntityList extends JavaList<> {
 	}
 	
-	class EntitySheep extends Entity {
+	class SheepEntity extends Entity {
 		getFleeceColor(): int;
 		setFleeceColor(color: int): void;
 		isSheared(): boolean;
@@ -384,10 +382,10 @@ declare namespace mc.event {
 		isCanceled(): boolean;
 		setCanceled(cancel: boolean): void;
 		hasResult(): boolean;
-		getResult(): net.minecraftforge.fml.common.eventhandler.Event.Result;
-		setResult(value: net.minecraftforge.fml.common.eventhandler.Event.Result): void;
-		getPhase(): net.minecraftforge.fml.common.eventhandler.EventPriority;
-		setPhase(value: net.minecraftforge.fml.common.eventhandler.EventPriority): void;
+		getResult(): net.minecraftforge.eventbus.api.Event.Result;
+		setResult(value: net.minecraftforge.eventbus.api.Event.Result): void;
+		getPhase(): net.minecraftforge.eventbus.api.EventPriority;
+		setPhase(value: net.minecraftforge.eventbus.api.EventPriority): void;
 		toString(): string;
 	}
 	
@@ -402,12 +400,16 @@ declare namespace mc.event.entity {
 	
 	class LivingEvent extends EntityEvent {
 		constructor();
-		getPlayer(): mc.entity.EntityLivingBase;
+		getPlayer(): mc.entity.LivingEntityBase;
 	}
 	
 }
 
 declare namespace mc.event.entity.player {
+	
+	class AchievementEvent extends PlayerEvent {
+		constructor();
+	}
 	
 	class AnvilRepairEvent extends PlayerEvent {
 		constructor();
@@ -443,7 +445,7 @@ declare namespace mc.event.entity.player {
 	
 	class PlayerEvent extends mc.event.entity.LivingEvent {
 		constructor();
-		getPlayer(): mc.entity.EntityPlayer;
+		getPlayer(): mc.entity.PlayerEntity;
 	}
 	
 	class PlayerInteractEvent extends PlayerEvent {
@@ -465,25 +467,12 @@ declare namespace mc.item {
 	class Enchantment extends Wrapper {
 	}
 	
-	class InteractionObject extends Wrapper {
-		getGuiID(): string;
-		getInventory(): Inventory;
-	}
-	
 	class Inventory extends Wrapper {
 		getStackInSlot(slot: int): ItemStack;
 		setStackInSlot(slot: int, stack: ItemStack): void;
 		isStackValidForSlot(slot: int, stack: ItemStack): boolean;
 		getSize(): int;
 		getStackLimit(): int;
-		getName(): string;
-		hasCustomName(): boolean;
-	}
-	
-	class InventoryPlayer extends Inventory {
-		getCurrentItem(): ItemStack;
-		getCurrentItemIndex(): int;
-		setCurrentItemIndex(index: int): void;
 	}
 	
 	class Item extends Wrapper {
@@ -515,6 +504,9 @@ declare namespace mc.item {
 		setRepairCost(cost: int): void;
 	}
 	
+	class PlayerInventory extends Inventory {
+	}
+	
 }
 
 declare namespace mc.util {
@@ -533,33 +525,34 @@ declare namespace mc.world {
 		getName(): string;
 	}
 	
+	class ServerWorld extends World {
+		static getServerWorld(dim: string): ServerWorld;
+		setWorldTime(time: long): void;
+		setSpawnLocation(x: int, y: int, z: int): void;
+	}
+	
 	class TileEntity extends Wrapper {
 		getInventory(): mc.item.Inventory;
 	}
 	
 	class World extends Wrapper {
-		static get(dim: int): WorldServer;
-		getDimension(): int;
+		static get(dim: string): ServerWorld;
+		getDimension(): string;
 		getDifficulty(): int;
-		getPlayerEntities(): mc.entity.EntityPlayerList;
+		getPlayerEntities(): mc.entity.PlayerEntityList;
 		getEntitiesWithinAABB(axisAlignedBB: mc.util.AxisAlignedBB): mc.entity.EntityList;
 		blockExists(x: int, y: int, z: int): boolean;
 		getBlock(x: int, y: int, z: int): Block;
 		setBlock(x: int, y: int, z: int, block: Block): void;
 		setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
 		getTileEntity(x: int, y: int, z: int): TileEntity;
-		asWorldServer(): WorldServer;
+		asWorldServer(): ServerWorld;
 		getWorldTime(): long;
 		getTotalWorldTime(): long;
 		/**
-		 * Sets the world time.
-		 */
-		setWorldTime(time: long): void;
-		setSpawnLocation(x: int, y: int, z: int): void;
-		/**
 		 * Called when checking if a certain block can be mined or not. The 'spawn safe zone' check is located here.
 		 */
-		canMineBlock(player: mc.entity.EntityPlayer, x: int, y: int, z: int): boolean;
+		canMineBlock(player: mc.entity.PlayerEntity, x: int, y: int, z: int): boolean;
 		getWeightedThunderStrength(weight: float): float;
 		/**
 		 * Not sure about this actually. Reverting this one myself.
@@ -596,17 +589,12 @@ declare namespace mc.world {
 		 */
 		canBlockSeeTheSky(x: int, y: int, z: int): boolean;
 		/**
-		 * Does the same as getBlockLightValue_do but without checking if its not a normal block
-		 */
-		getFullBlockLightValue(x: int, y: int, z: int): int;
-		/**
 		 * Gets the light value of a block location
 		 */
 		getBlockLightValue(x: int, y: int, z: int): int;
 		/**
-		 * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag
-		 * that indicates if its a half step block to get the maximum light value of a direct neighboring block (left,
-		 * right, forward, back, and up)
+		 * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag that indicates if its a half step block to get the maximum
+		 * light value of a direct neighboring block (left, right, forward, back, and up)
 		 */
 		getBlockLightValue_do(x: int, y: int, z: int, isHalfBlock: boolean): int;
 		/**
@@ -614,8 +602,7 @@ declare namespace mc.world {
 		 */
 		getHeightValue(x: int, z: int): int;
 		/**
-		 * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light
-		 * values aren't linear for brightness). Args: x, y, z
+		 * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light values aren't linear for brightness). Args: x, y, z
 		 */
 		getLightBrightness(x: int, y: int, z: int): float;
 		/**
@@ -630,7 +617,6 @@ declare namespace mc.world {
 		 * gets the current fullness of the moon expressed as a float between 1.0 and 0.0, in steps of .25
 		 */
 		getCurrentMoonPhaseFactor(): float;
-		getCurrentMoonPhaseFactorBody(): float;
 		/**
 		 * Return getCelestialAngle() * 2 * PI
 		 */
@@ -638,19 +624,15 @@ declare namespace mc.world {
 		/**
 		 * Gets the closest player to the entity within the specified distance (if distance is less than 0 then ignored).
 		 */
-		getClosestPlayerToEntity(entity: mc.entity.Entity, dist: double): mc.entity.EntityPlayer;
+		getClosestPlayerToEntity(entity: mc.entity.Entity, dist: double): mc.entity.PlayerEntity;
 		/**
 		 * Gets the closest player to the point within the specified distance (distance can be set to less than 0 to not limit the distance).
 		 */
-		getClosestPlayer(x: double, y: double, z: double, dist: double): mc.entity.EntityPlayer;
+		getClosestPlayer(x: double, y: double, z: double, dist: double): mc.entity.PlayerEntity;
 		/**
 		 * Retrieve the world seed from level.dat
 		 */
 		getSeed(): long;
-	}
-	
-	class WorldServer extends World {
-		static get(dim: int): WorldServer;
 	}
 	
 }
@@ -1016,18 +998,24 @@ declare namespace java.util {
 }
 declare namespace net.minecraft.world { 
 	class GameType extends java.lang.Enum {
+		static NOT_SET: GameType;
+		static SURVIVAL: GameType;
+		static CREATIVE: GameType;
+		static ADVENTURE: GameType;
+		static SPECTATOR: GameType;
 		static values(): GameType[];
 		static valueOf(arg0: string): GameType;
-		static getByID(arg0: int): GameType;
-		static parseGameTypeWithDefault(arg0: int, arg1: GameType): GameType;
-		static getByName(arg0: string): GameType;
-		static parseGameTypeWithDefault(arg0: string, arg1: GameType): GameType;
-		getID(): int;
+		static byId(arg0: int): GameType;
+		static byId(arg0: int, arg1: GameType): GameType;
+		static byName(arg0: string): GameType;
+		static byName(arg0: string, arg1: GameType): GameType;
+		getId(): int;
 		getName(): string;
-		configurePlayerCapabilities(arg0: net.minecraft.entity.player.PlayerCapabilities): void;
-		hasLimitedInteractions(): boolean;
+		getDisplayName(): net.minecraft.util.text.ITextComponent;
+		updatePlayerAbilities(arg0: net.minecraft.entity.player.PlayerAbilities): void;
+		isBlockPlacingRestricted(): boolean;
 		isCreative(): boolean;
-		isSurvivalOrAdventure(): boolean;
+		isSurvival(): boolean;
 	}
 	
 }

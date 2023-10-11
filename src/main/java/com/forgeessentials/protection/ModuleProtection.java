@@ -9,8 +9,8 @@ import java.util.UUID;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
@@ -107,7 +107,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
+@FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleProtection
 {
 

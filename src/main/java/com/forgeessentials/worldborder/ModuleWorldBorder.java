@@ -9,7 +9,7 @@ import java.util.Set;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
@@ -29,7 +29,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
+@FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleWorldBorder extends ServerEventHandler
 {
 

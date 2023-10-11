@@ -33,18 +33,18 @@ public class JsServer
 
     private ScriptInstance script;
 
-    private JsICommandSender server;
+    private JsCommandSource server;
 
     public JsServer(ScriptInstance script)
     {
         this.script = script;
     }
 
-    public JsICommandSender getServer()
+    public JsCommandSource getServer()
     {
         MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
         if (server == null || server.getThat().getServer() != srv)
-            server = JsICommandSender.get(srv.createCommandSourceStack());
+            server = JsCommandSource.get(srv.createCommandSourceStack());
         return server;
     }
 
@@ -55,7 +55,7 @@ public class JsServer
      * <b>Right:</b> runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);<br>
      * <b>Wrong:</b> runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
      */
-    public void runCommand(JsICommandSender sender, String cmd, Object... args)
+    public void runCommand(JsCommandSource sender, String cmd, Object... args)
     {
         doRunCommand(sender, false, cmd, args);
     }
@@ -63,12 +63,12 @@ public class JsServer
     /**
      * Runs a Minecraft command and ignores any errors it might throw
      */
-    public void tryRunCommand(JsICommandSender sender, String cmd, Object... args)
+    public void tryRunCommand(JsCommandSource sender, String cmd, Object... args)
     {
         doRunCommand(sender, true, cmd, args);
     }
 
-    private void doRunCommand(JsICommandSender sender, boolean ignoreErrors, String cmd, Object... args)
+    private void doRunCommand(JsCommandSource sender, boolean ignoreErrors, String cmd, Object... args)
     {
         if (sender == null)
             sender = server;

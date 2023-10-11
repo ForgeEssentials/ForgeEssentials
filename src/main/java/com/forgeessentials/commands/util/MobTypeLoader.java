@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.Type;
@@ -14,7 +13,6 @@ import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.google.common.collect.Maps;
 
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraftforge.fml.ModList;
@@ -34,11 +32,6 @@ public class MobTypeLoader
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
                 .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-        Map<Type, String> classModIds = Maps.newHashMap();
-
-        // Gather all @FEModule classes
-        data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
-                .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
         LoggingHandler.felog.info("Found {} FEMob annotations", data.size());
 
         String className;
@@ -46,7 +39,7 @@ public class MobTypeLoader
         for (ModFileScanData.AnnotationData asm : data)
         {
             Class<?> c = null;
-            className = asm.getClass().getName();
+            className = asm.getMemberName();
 
             try
             {
@@ -54,7 +47,7 @@ public class MobTypeLoader
             }
             catch (Exception e)
             {
-                LoggingHandler.felog.info("Error trying to load " + asm.getClass() + " as a FEMob!");
+                LoggingHandler.felog.info("Error trying to load " + asm.getMemberName() + " as a FEMob!");
                 e.printStackTrace();
                 return;
             }

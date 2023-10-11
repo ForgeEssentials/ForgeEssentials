@@ -8,8 +8,8 @@ import java.util.WeakHashMap;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityList;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayerList;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntityList;
 import com.forgeessentials.jscripting.wrapper.mc.util.JsAxisAlignedBB;
 import com.forgeessentials.util.ServerUtil;
 
@@ -67,14 +67,14 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return that.getDifficulty().ordinal();
     }
 
-    public JsEntityPlayerList getPlayerEntities()
+    public JsPlayerEntityList getPlayerEntities()
     {
         List<PlayerEntity> players = new ArrayList<>();
         for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             players.add((PlayerEntity) player);
         }
-        return new JsEntityPlayerList(players);
+        return new JsPlayerEntityList(players);
     }
 
     // TODO: this should take an entity type somehow
@@ -131,7 +131,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     /**
      * Called when checking if a certain block can be mined or not. The 'spawn safe zone' check is located here.
      */
-    public boolean canMineBlock(JsEntityPlayer player, int x, int y, int z)
+    public boolean canMineBlock(JsPlayerEntity player, int x, int y, int z)
     {
         return that.mayInteract(player.getThat(), new BlockPos(x, y, z));
     }
@@ -283,17 +283,17 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     /**
      * Gets the closest player to the entity within the specified distance (if distance is less than 0 then ignored).
      */
-    public JsEntityPlayer getClosestPlayerToEntity(JsEntity<?> entity, double dist)
+    public JsPlayerEntity getClosestPlayerToEntity(JsEntity<?> entity, double dist)
     {
-        return JsEntityPlayer.get(that.getNearestPlayer(entity.getThat(), dist));
+        return JsPlayerEntity.get(that.getNearestPlayer(entity.getThat(), dist));
     }
 
     /**
      * Gets the closest player to the point within the specified distance (distance can be set to less than 0 to not limit the distance).
      */
-    public JsEntityPlayer getClosestPlayer(double x, double y, double z, double dist)
+    public JsPlayerEntity getClosestPlayer(double x, double y, double z, double dist)
     {
-        return JsEntityPlayer.get(that.getNearestPlayer(x, y, z, dist, false));
+        return JsPlayerEntity.get(that.getNearestPlayer(x, y, z, dist, false));
     }
 
     /**
@@ -303,62 +303,4 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     {
         return ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed();
     }
-
-    // /**
-    // * Sets the strength of the rain.
-    // */
-    // @SideOnly(Side.CLIENT)
-    // public void setRainStrength(float strength)
-    // {
-    // that.setRainStrength(strength);
-    // }
-    //
-    // /**
-    // * Sets the strength of the thunder.
-    // */
-    // @SideOnly(Side.CLIENT)
-    // public void setThunderStrength(float strength)
-    // {
-    // that.setThunderStrength(strength);
-    // }
-    //
-    // /**
-    // * Returns horizon height for use in rendering the sky.
-    // */
-    // @SideOnly(Side.CLIENT)
-    // public double getHorizon()
-    // {
-    // return that.getHorizon();
-    // }
-    //
-    // /**
-    // * Returns the sun brightness - checks time of day, rain and thunder
-    // */
-    // @SideOnly(Side.CLIENT)
-    // public float getSunBrightness(float p_72971_1_)
-    // {
-    // return that.getSunBrightness(p_72971_1_);
-    // }
-    //
-    // @SideOnly(Side.CLIENT)
-    // public float getSunBrightnessBody(float p_72971_1_)
-    // {
-    // return that.getSunBrightnessBody(p_72971_1_);
-    // }
-    //
-    // @SideOnly(Side.CLIENT)
-    // public int getMoonPhase()
-    // {
-    // return that.getMoonPhase();
-    // }
-    //
-    // /**
-    // * Returns the name of the current chunk provider, by calling
-    // chunkprovider.makeString()
-    // */
-    // @SideOnly(Side.CLIENT)
-    // public String getProviderName()
-    // {
-    // return that.getProviderName();
-    // }
 }

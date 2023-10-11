@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.misc.commandTools.FECommandParsingException;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
@@ -134,7 +134,7 @@ public class FilterConfig
                 case "player":
                     try
                     {
-                        player = CommandUtils.parsePlayer(args.remove(0), ctx.getSource(), true, false);
+                        player = CommandUtils.parsePlayer(args.remove(0), true, false);
                         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Player To: " + player.getUsername());
                     }
                     catch (FECommandParsingException e)

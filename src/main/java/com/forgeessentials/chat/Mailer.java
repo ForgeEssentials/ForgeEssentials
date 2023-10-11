@@ -10,8 +10,8 @@ import java.util.Set;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.command.CommandMail;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;

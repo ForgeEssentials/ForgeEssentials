@@ -10,10 +10,10 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet06AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet09AuthRequest;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.commandTools.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
@@ -29,7 +29,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleAuth extends ConfigLoaderBase
 {
     private static ForgeConfigSpec AUTH_CONFIG;
@@ -62,7 +62,7 @@ public class ModuleAuth extends ConfigLoaderBase
     };
 
     @Preconditions
-    public boolean preInit()
+    public static boolean preInit()
     {
         return !FMLEnvironment.dist.isClient();
     }

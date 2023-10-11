@@ -1,7 +1,5 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import static net.minecraftforge.registries.ForgeRegistry.REGISTRIES;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +11,11 @@ import javax.annotation.Nullable;
 import org.objectweb.asm.Type;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-import com.google.common.collect.Maps;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
@@ -46,27 +42,28 @@ public class ModuleLauncher
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
                 .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
 
-        Map<Type, String> classModIds = Maps.newHashMap();
-
-        // Gather all @FEModule classes
-        data.stream().filter(a -> MOD.equals(a.getAnnotationType()))
-                .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
         LoggingHandler.felog.info("Found {} FEModule annotations", data.size());
         for (ModFileScanData.AnnotationData asm : data)
         {
             LoggingHandler.felog.debug("Found FEModule {}", asm.getMemberName());
         }
-        // started ASM handling for the module loading
-        // Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
 
         // Create THE MODULES!
         ModuleContainer temp, other;
         for (ModFileScanData.AnnotationData asm : data)
         {
             temp = new ModuleContainer(asm);
+            if(temp.version<ForgeEssentials.CURRENT_MODULE_VERSION) {
+            	temp.isLoadable=false;
+            	LoggingHandler.felog.error("Module: [" + temp.name + "] is outdated! Please update this module to use the latest dev jar! Disabling Module!");
+            }
+            if(temp.version>ForgeEssentials.CURRENT_MODULE_VERSION) {
+            	temp.isLoadable=false;
+            	LoggingHandler.felog.error("Module: [" + temp.name + "] is too new for this version of ForgeEssentials! Please update your ForgeEssentials installation! Disabling Module!");
+            }
             if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
             {
-                LoggingHandler.felog.debug("Checking if contanerMap contains: " + temp.name);
+                //LoggingHandler.felog.debug("Checking if contanerMap contains: " + temp.name);
                 if (containerMap.containsKey(temp.name))
                 {
                     other = containerMap.get(temp.name);
@@ -94,12 +91,6 @@ public class ModuleLauncher
                 LoggingHandler.felog.debug("Discovered FE module " + temp.name);
             }
         }
-
-        LoggingHandler.felog.debug("Gathering @FEModule classes");
-        // Gather all @FEModule classes
-        data.stream().filter(a -> Type.getType(ForgeEssentialsRegistrar.class).equals(a.getAnnotationType()))
-                .forEach(info -> classModIds.put(info.getClassType(), (String) info.getAnnotationData().get("value")));
-        LoggingHandler.felog.info(REGISTRIES, "Found {} ForgeEssentialsRegistrar annotations", data.size());
 
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())

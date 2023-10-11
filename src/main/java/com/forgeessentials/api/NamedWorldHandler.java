@@ -28,8 +28,6 @@ public interface NamedWorldHandler
 
     List<String> getWorldNames();
 
-    List<String> getShortWorldNames();
-
     public static class DefaultNamedWorldHandler implements NamedWorldHandler
     {
 
@@ -93,15 +91,5 @@ public interface NamedWorldHandler
         {
             return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
         }
-
-        @Override
-        public List<String> getShortWorldNames()
-        {
-            return new ArrayList<>(
-                    Arrays.asList(SHORT_WORLD_NAME_OVERWORLD, SHORT_WORLD_NAME_NETHER, SHORT_WORLD_NAME_END));
-
-        }
-
     }
-
 }

@@ -5,13 +5,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.util.PlayerInfo;
 
 import net.minecraftforge.event.TickEvent;
@@ -28,10 +29,10 @@ public class JsFEServer
     {
         int tickCount, tickStep, lastCount;
         String method;
-        JsICommandSender sender;
+        JsCommandSource sender;
         Object extraData;
 
-        CORoutine(int tickCount, int tickStep, String method, JsICommandSender sender, Object extraData)
+        CORoutine(int tickCount, int tickStep, String method, JsCommandSource sender, Object extraData)
         {
             this.tickCount = tickCount;
             this.lastCount = tickCount;
@@ -45,7 +46,7 @@ public class JsFEServer
     HashSet<CORoutine> coRoutineHashSet = new HashSet<>();
     private ScriptInstance script;
 
-    private JsICommandSender server;
+    private JsCommandSource server;
 
     public JsFEServer(ScriptInstance script)
     {
@@ -61,7 +62,7 @@ public class JsFEServer
     public void registerCommand(Object options) throws ScriptException
     {
         JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
-        // script.registerScriptCommand(new CommandJScriptCommand(script, opt));
+        script.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
 
     /**
@@ -75,9 +76,9 @@ public class JsFEServer
     /**
      * Returns the list of players who have ever connected.
      */
-    public Set<UserIdent> getAllPlayers()
+    public Set<JsUserIdent> getAllPlayers()
     {
-        return APIRegistry.perms.getServerZone().getKnownPlayers();
+        return APIRegistry.perms.getServerZone().getKnownPlayers().stream().map(JsUserIdent::new).collect(Collectors.toSet());
     }
 
     /**
@@ -109,12 +110,12 @@ public class JsFEServer
      * @param method
      * @param sender
      */
-    public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender)
+    public void AddCoRoutine(int count, int tickStep, String method, JsCommandSource sender)
     {
         AddCoRoutine(count, tickStep, method, sender, null);
     }
 
-    public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender, Object extraData)
+    public void AddCoRoutine(int count, int tickStep, String method, JsCommandSource sender, Object extraData)
     {
         coRoutineHashSet.add(new CORoutine(count * tickStep, tickStep, method, sender, extraData));
     }
