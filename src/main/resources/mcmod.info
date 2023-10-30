@@ -8,15 +8,16 @@
   "updateUrl": "",
   "authorList": [
 	"AbrarSyed",
-    "spacebuilder2020",
 	"luacs1998",
 	"olee",
 	"dries007",
 	"Malkierian",
+	"spacebuilder2020",
+	"maximuslotro/MaximustheMiner",
 	"and others"
   ],
-  "credits": "Thanks to everyone who has helped us so far",
-  "logoFile": "/logo.png",
+  "credits": "Thanks to everyone who has helped us so far.",
+  "logoFile": "logo.png",
   "screenshots": [
   ],
   "parent":"",
