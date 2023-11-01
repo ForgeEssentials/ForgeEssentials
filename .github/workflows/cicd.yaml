@@ -7,16 +7,23 @@ on:
   push:
     branches:
       - '**'
-  pull_request: { }
+  pull_request: {}
   release:
     types: released
 env:
   BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
 jobs:
-  build:
-
+  check:
     runs-on: ubuntu-latest
-
+    steps:
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
+    outputs:
+      canContinue: ${{ github.event_name != 'push' || steps.PR.outputs.pr_found != 'true' || steps.PR.outputs.pr_merged_at != null }}
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    if: needs.check.outputs.canContinue == 'true'
     steps:
       - uses: actions/checkout@v2
       - name: Get Build Number from Release
@@ -32,8 +39,8 @@ jobs:
           cache: gradle
       - name: Build with Gradle
         run: |
-         chmod +x gradlew
-         ./gradlew build
+          chmod +x gradlew
+          ./gradlew build
       - uses: actions/upload-artifact@v2
         with:
           name: binaries-${{ env.BUILD_NUMBER }}
@@ -44,10 +51,17 @@ jobs:
           path: jscripting/*.d.ts
       - env:
           CF_APIKEY: ${{ secrets.CF_APIKEY }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGE_LOG: ${{ github.event.release.body }}
         if: ${{ github.event.release }}
         run: |
           mkdir ./tmp
-          cp ./build/libs/*-server.jar ./tmp
+          cp ./build/libs/*.jar ./tmp
           chmod +x gradlew
           ./gradlew curseforge modrinth
+      - uses: softprops/action-gh-release@v0.1.15
+        if: ${{ github.event.release }}
+        with:
+          files: |
+            ./build/libs/*
+            jscripting/*.d.ts
