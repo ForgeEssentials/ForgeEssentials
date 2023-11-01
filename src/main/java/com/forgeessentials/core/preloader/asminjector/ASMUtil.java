@@ -2,7 +2,6 @@ package com.forgeessentials.core.preloader.asminjector;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

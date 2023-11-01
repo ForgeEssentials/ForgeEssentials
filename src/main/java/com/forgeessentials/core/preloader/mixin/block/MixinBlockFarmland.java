@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.mixin.block;
 
-import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.material.Material;

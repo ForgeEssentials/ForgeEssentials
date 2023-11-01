@@ -8,7 +8,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
