@@ -1,6 +1,6 @@
-ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials) 
-![GitHub repo size](https://img.shields.io/github/repo-size/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite?label=Repo%20size&logo=github&style=flat-square)
-[![](https://tokei.rs/b1/github/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite?category=lines)](https://tokei.ekzhang.com/b1/github/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite)
+ForgeEssentials [![Build Status](https://github.com/ForgeEssentials/ForgeEssentials/actions/workflows/cicd.yaml/badge.svg?branch=1.16.5/develop)](https://github.com/ForgeEssentials/ForgeEssentials/actions/workflows/cicd.yaml?query=branch%3A1.16.5%2Fdevelop) 
+![GitHub repo size](https://img.shields.io/github/repo-size/ForgeEssentials/ForgeEssentials?label=Repo%20size&logo=github&style=flat-square)
+[![](https://tokei.rs/b1/github/ForgeEssentials/ForgeEssentials?category=lines)](https://tokei.ekzhang.com/b1/github/ForgeEssentials/ForgeEssentials)
 ===================
 
 The code on this branch is for Minecraft 1.16.5.
@@ -14,7 +14,7 @@ There are many people there who can help you and it is the quickest way to reach
 
 # Reporting bugs
 Please follow these rules when reporting bugs:
-- Update to the latest build from [Discord](https://discord.gg/FNRQjmr) (#dev-builds channel) before reporting a bug.
+- Update to the latest build from [Discord](https://discord.gg/FNRQjmr) ([#dev-builds](https://discord.com/channels/264189448273526786/1149096704231100426) channel) before reporting a bug.
 - Check, if the bug was not already reported by using the search.
 - Always attach your ForgeEssentials/modlist.txt file
 - Always attach logs to your reports if you encountered crashes.  
@@ -26,7 +26,7 @@ Please follow these rules when reporting bugs:
 
 # Downloads
 **If you just want the latest stable releases, please get them from [Curse](https://www.curseforge.com/minecraft/mc-mods/forge-essentials-74735)**  
-Nightly builds with the latest features and bugfixes can be found on our [Jenkins build server](http://ci.forgeessentials.com/job/FE-1.12.2/).
+Nightly builds with the latest features and bugfixes can be found on our [Discord](https://discord.gg/FNRQjmr) in the [#dev-builds](https://discord.com/channels/264189448273526786/1149096704231100426) channel.
 
 # About
 The ForgeEssentials project consists many server features,  
