@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: "[1.12.2] [FEATURE]"
+title: "[1.16.5] [FEATURE]"
 labels: request
 assignees: ''
 
@@ -22,3 +22,5 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
+
+To ensure timely acceptance of a feature, make sure to visit our [Discord](https://discord.gg/FNRQjmr) and talk with us after making a request!
