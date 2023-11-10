@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[1.12.2] [BUG]"
+title: "[1.16.5] [BUG]"
 labels: needs-verification, potential bug
 assignees: ''
 
@@ -12,7 +12,7 @@ WARNING:  Do not delete any of the sections below.  Improperly filled out issues
 -->
 
 **Initial Steps**
-- [ ] I have updated to the latest build from [Jenkins](https://ci.forgeessentials.com/job/FE-1.12.2/) before reporting a bug
+- [ ] I have updated to the latest build from [Discord](https://discord.gg/FNRQjmr) in the [#dev-builds](https://discord.com/channels/264189448273526786/1149096704231100426) channel before reporting a bug
 - [ ] I have checked, if the bug was not already reported by using the [search](https://github.com/ForgeEssentials/ForgeEssentials/issues?q=).
 - [ ] Attached is my ForgeEssentials/modlist.txt, my latest.log, and my debug.log
 - [ ] Also, attached are the client logs (if applicable)
