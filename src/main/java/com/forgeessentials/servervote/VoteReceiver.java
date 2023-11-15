@@ -194,15 +194,13 @@ public class VoteReceiver extends Thread
     {
         while (running)
         {
-            Socket socket = null;
-            BufferedWriter writer = null;
-            BufferedInputStream in = null;
-            try
+            try (
+                    Socket socket = server.accept();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
+            )
             {
-                socket = server.accept();
                 socket.setSoTimeout(5000); // Don't hang on slow connections.
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                in = new BufferedInputStream(socket.getInputStream());
 
                 // Send them our version.
                 writer.write("VOTIFIER FECOMPAT " + challenge + "\n");
@@ -348,29 +346,6 @@ public class VoteReceiver extends Thread
             catch (GeneralSecurityException e)
             {
                 LoggingHandler.felog.fatal("Unable to decode vote");
-            }
-            finally
-            {
-                try
-                {
-                    // Clean up.
-                    if (writer != null)
-                    {
-                        writer.close();
-                    }
-                    if (in != null)
-                    {
-                        in.close();
-                    }
-                    if (socket != null)
-                    {
-                        socket.close();
-                    }
-                }
-                catch (IOException ignored)
-                {
-                    LoggingHandler.felog.error("Unable to close socket!");
-                }
             }
         }
 
