@@ -6,14 +6,6 @@ on:
     types:
       - requested
 jobs:
-  tmp:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: |
-          echo "${{ github.event.workflow_run.event }}"
-          echo "${{ github.event.workflow_run.referenced_workflows[0].ref }}"
-          echo "${{ github.event.workflow_run.head_branch }}"
   check:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.event == 'pull_request' }}
