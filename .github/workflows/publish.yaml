@@ -126,11 +126,17 @@ jobs:
                archive_format: 'zip',
             });
             fs.writeFileSync('${{github.workspace}}/jscripting.zip', Buffer.from(download.data));
+            
+            return await github.repos.getReleaseByTag({
+               owner: context.repo.owner,
+               repo: context.repo.repo, 
+              '${{ github.event.workflow_run.head_branch }}'
+            }).body;
           result-encoding: string
       - env:
           CF_APIKEY: ${{ secrets.CF_APIKEY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          CHANGE_LOG: ${{ github.event.workflow_run.event.release.body }}
+          CHANGE_LOG: ${{ steps.download-artifact.outputs.result }}
         run: |
           mkdir -p build/libs
           mkdir -p jscripting
