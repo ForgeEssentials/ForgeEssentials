@@ -30,7 +30,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
+@FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false, version = ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleServerVote extends ConfigLoaderBase
 {
     private static ForgeConfigSpec SERVERVOTE_CONFIG;
@@ -52,7 +52,7 @@ public class ModuleServerVote extends ConfigLoaderBase
         APIRegistry.scripts.addScriptType(scriptKey);
         try
         {
-            votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);
+            votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port, ConfigServerVote.token);
             votifier.start();
         }
         catch (Exception e1)
