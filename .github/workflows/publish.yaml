@@ -78,3 +78,70 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew publishToDiscord -i
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event.release }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Build Number from Release
+        run: |
+          FULL_VERSION=($(echo ${{ github.event.workflow_run.event.release.tag_name }} | tr "." "\n"))
+          echo "BUILD_NUMBER=${FULL_VERSION[2]}" >> $GITHUB_ENV
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          cache: gradle
+      - name: 'Download artifact'
+        uses: actions/github-script@v3.1.0
+        id: download-artifact
+        with:
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("binaries")
+            })[0];
+            
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/binaries.zip', Buffer.from(download.data));
+          
+            matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("ts-files")
+            })[0];
+            download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            fs.writeFileSync('${{github.workspace}}/jscripting.zip', Buffer.from(download.data));
+          result-encoding: string
+      - env:
+          CF_APIKEY: ${{ secrets.CF_APIKEY }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGE_LOG: ${{ github.event.workflow_run.event.release.body }}
+        run: |
+          mkdir -p build/libs
+          mkdir -p jscripting
+          unzip binaries.zip -d build/libs
+          unzip jscripting.zip -d jscripting
+          mkdir ./tmp
+          cp ./build/libs/*.jar ./tmp
+          chmod +x gradlew
+          ./gradlew curseforge modrinth
+      - uses: softprops/action-gh-release@v0.1.15
+        with:
+          files: |
+            ./build/libs/*
+            jscripting/*.d.ts
