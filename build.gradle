@@ -90,7 +90,7 @@ repositories {
  */
 
 // Get buildNumber from environment variable
-ext.buildNumber = "0"
+ext.buildNumber = "DEV"
 if (System.getenv("BUILD_NUMBER") != null) {
 	buildNumber = System.getenv("BUILD_NUMBER")
 
