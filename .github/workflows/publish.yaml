@@ -14,7 +14,7 @@ jobs:
   publish:
 
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[Skip Discord]') }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -36,29 +36,37 @@ jobs:
                repo: context.repo.repo,
                run_id: ${{github.event.workflow_run.id }},
             });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+            var matchArtifacts = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name.startsWith("binaries")
-            })[0];
-            var download = await github.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
             });
-            var fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/binaries.zip', Buffer.from(download.data));
-            var artifactSplit = matchArtifact.name.split("-");
-            version = artifactSplit[1];
-            if ( version == 'UNOFFICIAL') {
-              version += `-${artifactSplit[2]}`;
-            } else if (version == '${{ github.event.workflow_run.head_sha }}') {
-              version = `UNOFFICIAL-${version}`;
+            
+            if (matchArtifacts.length >= 1) {
+              var matchArtifact = matchArtifacts[0];
+            
+              var download = await github.actions.downloadArtifact({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 artifact_id: matchArtifact.id,
+                 archive_format: 'zip',
+              });
+              var fs = require('fs');
+              fs.writeFileSync('${{github.workspace}}/binaries.zip', Buffer.from(download.data));
+              var artifactSplit = matchArtifact.name.split("-");
+              version = artifactSplit[1];
+              if ( version == 'UNOFFICIAL') {
+                version += `-${artifactSplit[2]}`;
+              } else if (version == '${{ github.event.workflow_run.head_sha }}') {
+                version = `UNOFFICIAL-${version}`;
+              }
+              return version;
+            } else {
+              return '[Skip Discord]';
             }
-            return version;
           result-encoding: string
       - run: |
           mkdir -p build/libs
           unzip binaries.zip -d build/libs
+        if: ${{ steps.download-artifact.outputs.result  != '[Skip Discord]' }}
       - name: Publish Binaries to Discord
         working-directory: DiscordGradleBot
         env:
@@ -66,6 +74,7 @@ jobs:
           DEV_BUILD_CHANNEL_ID: '${{ vars.DEV_BUILD_CHANNEL_ID }}'
           RELEASE_CHANNEL_ID: '${{ vars.RELEASE_CHANNEL_ID }}'
           BUILD_NUMBER: '${{ steps.download-artifact.outputs.result }}'
+        if: ${{ steps.download-artifact.outputs.result  != '[Skip Discord]' }}
         run: |
           chmod +x gradlew
           ./gradlew publishToDiscord -i
