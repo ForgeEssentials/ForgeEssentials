@@ -35,12 +35,16 @@ public class ConfigServerVote
 
     public static String hostname;
     public static Integer port;
+    public static String token;
+    public static boolean allowClassic;
 
     static ForgeConfigSpec.ConfigValue<String> FEhostname;
     static ForgeConfigSpec.IntValue FEport;
     static ForgeConfigSpec.BooleanValue FEallowOfflineVotes;
     static ForgeConfigSpec.ConfigValue<String> FEmsgAll;
     static ForgeConfigSpec.ConfigValue<String> FEmsgVoter;
+    static ForgeConfigSpec.ConfigValue<String> FEtoken;
+    static ForgeConfigSpec.BooleanValue FEallowClassic;
 
     public static void load(Builder BUILDER, boolean isReload)
     {
@@ -57,6 +61,10 @@ public class ConfigServerVote
         FEhostname = BUILDER.comment("Set this to the hostname (or IP address) of your server.").define("hostname", "");
         FEport = BUILDER.comment("The port which the vote receiver should listen on.").defineInRange("port", 8192, 0,
                 65535);
+
+        FEtoken = BUILDER.comment("Token for Votifier V2 Protocol").define("token", "");
+
+        FEallowClassic = BUILDER.comment("Disable Classic / V1 and only use V2").define("allowClassic", true);
         BUILDER.pop();
     }
 
@@ -69,6 +77,9 @@ public class ConfigServerVote
         msgAll = FEmsgAll.get();
         msgVoter = FEmsgVoter.get();
 
+        token = FEtoken.get();
+        allowClassic = FEallowClassic.get();
+
         loadKeys();
 
         if (reload)
@@ -76,7 +87,7 @@ public class ConfigServerVote
             try
             {
                 ModuleServerVote.votifier.shutdown();
-                ModuleServerVote.votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);
+                ModuleServerVote.votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port, ConfigServerVote.token);
                 ModuleServerVote.votifier.start();
             }
             catch (Exception e1)
