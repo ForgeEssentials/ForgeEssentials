@@ -97,7 +97,7 @@ public class CommandMultiworld extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [seed]");
+            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [generatorOptions] [seed]");
             return;
         }
         // Get the world name
@@ -125,6 +125,11 @@ public class CommandMultiworld extends ParserCommandBase
         if (!arguments.isEmpty())
             worldType = arguments.remove();
 
+        String generatorOptions = "";
+        if (!arguments.isEmpty())
+        {
+            generatorOptions = arguments.remove();
+        }
         // Get the World Seed
         long seed = new Random().nextLong();
         if (!arguments.isEmpty())
