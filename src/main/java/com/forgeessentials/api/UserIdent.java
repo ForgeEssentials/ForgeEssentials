@@ -140,6 +140,10 @@ public class UserIdent
 
     /* ------------------------------------------------------------ */
 
+    public static synchronized UserIdent get(GameProfile profile)
+    {
+        return get(profile.getId(), profile.getName());
+    }
     public static synchronized UserIdent get(UUID uuid, String username)
     {
         if (uuid == null && (username == null || username.isEmpty()))

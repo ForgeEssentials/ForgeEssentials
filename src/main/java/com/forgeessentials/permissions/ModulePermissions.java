@@ -24,6 +24,7 @@ import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+import com.forgeessentials.permissions.ftbu_compat.FTBURankConfigHandler;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
@@ -37,7 +38,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
+
 import cpw.mods.fml.common.FMLCommonHandler;
+
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -67,6 +71,21 @@ public class ModulePermissions extends ConfigLoaderBase
         permissionHelper = new ZonedPermissionHelper();
         APIRegistry.perms = permissionHelper;
         PermissionManager.setPermissionProvider(permissionHelper);
+
+        if (Loader.isModLoaded("serverutilities"))
+        {
+            try
+            {
+                MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+                LoggingHandler.felog.debug("Rank Handler for GTNHFTBLib has been registered");
+            }
+            catch (NoClassDefFoundError e)
+            {
+                LoggingHandler.felog.error("GTNHFTBU is installed but an error was encountered while loading the compat!");
+            }
+        } else {
+            LoggingHandler.felog.debug("GTNHFTBLib is not loaded!");
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
