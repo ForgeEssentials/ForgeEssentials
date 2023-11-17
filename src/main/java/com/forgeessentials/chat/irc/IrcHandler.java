@@ -331,18 +331,19 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     public ICommandSender getIrcUser(String username)
     {
+    	IrcCommandSender sender=null;
         if (!isConnected())
-            return null;
+            return sender;
         for (User user : bot.getUserChannelDao().getAllUsers())
         {
             if (user.getNick().equals(username))
             {
-                IrcCommandSender sender = new IrcCommandSender(user);
+                sender = new IrcCommandSender(user);
                 ircUserCache.put(sender.getUser(), sender);
-                return sender;
+                break;
             }
         }
-        return null;
+        return sender;
     }
 
     private void processCommand(User user, String cmdLine)

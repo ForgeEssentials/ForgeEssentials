@@ -27,7 +27,7 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
     private IMessageHandler<? super REQ, ? extends REPLY> messageHandler;
 
     @Redirect(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lcpw/mods/fml/common/network/simpleimpl/IMessage;)V", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/network/simpleimpl/IMessageHandler;onMessage(Lcpw/mods/fml/common/network/simpleimpl/IMessage;Lcpw/mods/fml/common/network/simpleimpl/MessageContext;)Lcpw/mods/fml/common/network/simpleimpl/IMessage;", remap = false), remap = false)
-    private REPLY redirectNetworkHandler(IMessageHandler iMessageHandler, REQ message, MessageContext ctx) {
+    private REPLY redirectNetworkHandler(IMessageHandler<?, ?> iMessageHandler, REQ message, MessageContext ctx) {
 
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         if (ctx.side == Side.CLIENT || !ModuleAuth.isEnabled() || ModuleAuth.isAuthenticated(player) || ModuleAuth.isAllowedMethod(message)) {
