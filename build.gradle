@@ -212,6 +212,7 @@ dependencies {
 	// WorldEdit
 	buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.7.10", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
 	buildDep files('lib/Baubles-1.7.10-1.0.1.10-deobf.jar')
+	buildDep files('lib/ServerUtilities-2.0.2.jar')
 	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
