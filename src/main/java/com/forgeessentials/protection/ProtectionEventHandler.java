@@ -51,6 +51,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fe.event.entity.FallOnBlockEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
@@ -128,6 +129,19 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         // player -> entity
         handleDamageToEntityEvent(event, event.target, sourceIdent);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityAttackedEvent(EntityAttackedEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getEntity() == null)
+            return;
+
+        UserIdent ident = null;
+        if (event.source.getEntity() instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
+
+        handleDamageToEntityEvent(event, event.entity, ident);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
