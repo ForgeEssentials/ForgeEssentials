@@ -25,7 +25,7 @@ public class MixinEntityItemFrame
         SpecialEntityAttackedEvent event = new SpecialEntityAttackedEvent((EntityItemFrame) (Object) this, source, amount);
         if (MinecraftForge.EVENT_BUS.post(event))
         {
-            callback.setReturnValue(event.result);
+            callback.setReturnValue(false);
         }
     }
 }
