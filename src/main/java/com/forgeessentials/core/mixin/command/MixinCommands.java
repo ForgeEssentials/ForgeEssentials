@@ -11,7 +11,10 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import java.util.Map;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.google.common.collect.Maps;
@@ -21,7 +24,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 @Mixin(Commands.class)
 public class MixinCommands
 {
@@ -29,18 +31,20 @@ public class MixinCommands
      * @author maximuslotro
      * @reason Need to use custom permission handling to give players usable commands Overwrite method to Check if the sender has permission for the commands
      */
-    @Overwrite
-    public void sendCommands(ServerPlayerEntity p_197051_1_)
+	@Inject(method = "sendCommands(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", at = @At("HEAD"), cancellable = true, require = 1)
+    public void sendCommands(ServerPlayerEntity p_197051_1_, CallbackInfo callback)
     {
         final Map<CommandNode<CommandSource>, CommandNode<ISuggestionProvider>> map = Maps.newHashMap();
         final RootCommandNode<ISuggestionProvider> rootcommandnode = new RootCommandNode<>();
         map.put(ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher().getRoot(), rootcommandnode);
-        fillUsableCommandsNodes(ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher().getRoot(), rootcommandnode,
+        fillUsableCommandsNodesFE(ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher().getRoot(), rootcommandnode,
                 p_197051_1_.createCommandSourceStack(), map, "", new Boolean(false));
         p_197051_1_.connection.send(new SCommandListPacket(rootcommandnode));
+        callback.cancel();
     }
 
-    private void fillUsableCommandsNodes(CommandNode<CommandSource> p_197052_1_, CommandNode<ISuggestionProvider> p_197052_2_, CommandSource p_197052_3_,
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fillUsableCommandsNodesFE(CommandNode<CommandSource> p_197052_1_, CommandNode<ISuggestionProvider> p_197052_2_, CommandSource p_197052_3_,
                                          Map<CommandNode<CommandSource>, CommandNode<ISuggestionProvider>> p_197052_4_, String nodeString, boolean dontChangeNode)
     {
         for (CommandNode<CommandSource> commandnode : p_197052_1_.getChildren())
@@ -79,7 +83,7 @@ public class MixinCommands
                 p_197052_2_.addChild(commandnode1);
                 if (!commandnode.getChildren().isEmpty())
                 {
-                    fillUsableCommandsNodes(commandnode, commandnode1, p_197052_3_, p_197052_4_, newNode, new Boolean(dontChangeNode));
+                    fillUsableCommandsNodesFE(commandnode, commandnode1, p_197052_3_, p_197052_4_, newNode, new Boolean(dontChangeNode));
                 }
             }
             else {
