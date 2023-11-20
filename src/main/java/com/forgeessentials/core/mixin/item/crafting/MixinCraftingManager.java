@@ -1,5 +1,5 @@
 package com.forgeessentials.core.mixin.item.crafting;
-
+//TODO finish
 //@Mixin(CraftingManager.class)
 public abstract class MixinCraftingManager
 {
