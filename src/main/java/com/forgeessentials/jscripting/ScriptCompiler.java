@@ -32,7 +32,7 @@ public final class ScriptCompiler
 
     // private static CompiledScript initScript;
 
-    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+    public static Map<String, Class<? extends JsEvent<?>>> eventTypes = new HashMap<>();
 
     private static SimpleBindings rootPkg = new SimpleBindings();
 

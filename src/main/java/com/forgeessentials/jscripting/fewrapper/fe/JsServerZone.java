@@ -44,7 +44,7 @@ public class JsServerZone<T extends ServerZone> extends JsZone<T>
         return result;
     }
 
-    public JsZone getZoneAt(JsWorldPoint<?> worldPoint)
+    public JsZone<?> getZoneAt(JsWorldPoint<?> worldPoint)
     {
         return JsZone.get(that.getZoneAt(worldPoint.getThat()));
     }
