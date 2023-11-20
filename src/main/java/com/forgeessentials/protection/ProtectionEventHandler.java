@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.ChunkPosition;
@@ -51,7 +52,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
+import net.minecraftforge.fe.event.entity.SpecialEntityAttackedEvent;
 import net.minecraftforge.fe.event.entity.FallOnBlockEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
@@ -132,31 +133,27 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityAttackedEvent(EntityAttackedEvent event)
+    public void entityAttackedEvent(SpecialEntityAttackedEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getEntity() == null)
-            return;
-
-        UserIdent ident = null;
-        if (event.source.getEntity() instanceof EntityPlayer)
-            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
-
-        handleDamageToEntityEvent(event, event.entity, ident);
+    	handleEntitiesAttacked(event, event.source);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityAttackedEvent(LivingAttackEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getEntity() == null)
+    	handleEntitiesAttacked(event, event.source);
+    }
+
+    private void handleEntitiesAttacked(EntityEvent event, DamageSource source) {
+    	if (FMLCommonHandler.instance().getEffectiveSide().isClient() || source.getEntity() == null)
             return;
 
         UserIdent ident = null;
-        if (event.source.getEntity() instanceof EntityPlayer)
-            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
+        if (source.getEntity() instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) source.getEntity());
 
         handleDamageToEntityEvent(event, event.entity, ident);
     }
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void livingHurtEvent(LivingHurtEvent event)
     {
