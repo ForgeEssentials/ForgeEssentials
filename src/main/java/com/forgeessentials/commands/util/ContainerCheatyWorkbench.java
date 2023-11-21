@@ -17,7 +17,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     public ContainerCheatyWorkbench(InventoryPlayer playerInventory, World world)
     {
         super(playerInventory, world, BlockPos.ORIGIN);
-        world = world;
+        this.world = world;
     }
 
     /**
