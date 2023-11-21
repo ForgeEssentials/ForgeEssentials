@@ -742,7 +742,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             return true;
 
         EntityPlayer player = context.getPlayer();
-        UserIdent ident = player == null ? null : UserIdent.get(player);
+        UserIdent ident = null;
         int dim = context.getDimension();
         WorldPoint loc = null;
         WorldArea area = null;
@@ -753,6 +753,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             ident = APIRegistry.IDENT_CMDBLOCK;
         else if (context.getSender() instanceof RConConsoleSource)
             ident = APIRegistry.IDENT_RCON;
+        else if (player != null)
+            ident = UserIdent.get(player);
+
+        if (ident == null && player != null)
+            ident = UserIdent.get(player.getUniqueID(), player.getDisplayName());
 
         if (context.getTargetLocationStart() != null)
         {
