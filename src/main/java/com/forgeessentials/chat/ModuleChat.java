@@ -345,7 +345,7 @@ public class ModuleChat
     public static IChatComponent appendGroupPrefixSuffix(IChatComponent header, UserIdent ident, boolean isSuffix)
     {
         WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : new WorldPoint(0, 0, 0, 0);
-        for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident, new WorldPoint(ident.getPlayer())))
+        for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident, point))
         {
             String text = APIRegistry.perms.getGroupPermissionProperty(group.getGroup(), point, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
