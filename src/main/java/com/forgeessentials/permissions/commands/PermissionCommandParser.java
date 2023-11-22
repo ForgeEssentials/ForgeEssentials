@@ -269,15 +269,13 @@ public class PermissionCommandParser extends CommandUtils
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Possible usage:");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> : Display user info");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> ... : Work with zones");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> perms : List player's permissions");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    "/p user <player> group add|remove <group>: Player's group settings");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    "/p user <player> allow|deny|clear <perms> : Set permissions");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    "/p user <player> value <perm> <value> : Set permission property");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> spawn : Set player spawn");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> suffix|prefix clear|<value> : Set player's titles");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> ... : Work with zones");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> group add|remove <group>: Player's group settings");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> allow|deny|clear <perms> : Set permissions");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> value <perm> : View permission property");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> spawn  (bed enable|disable)|here|clear|(pos <pos>): Set player spawn");
             return;
         }
 
@@ -317,11 +315,6 @@ public class PermissionCommandParser extends CommandUtils
                 }
                 return;
             }
-            // args.info("Possible usage:");
-            // args.info("/p ... group add|remove <group>: Player's group settings");
-            // args.info("/p ... allow|deny|clear <perms> : Set permissions");
-            // args.info("/p ... value <perm> <value> : Set permission property");
-            // args.info("/p ... spawn : Set player spawn");
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     ident.getUsernameOrUuid() + "'s permissions in zone " + zone.getName() + ":");
             for (Entry<String, String> perm : zone.getPlayerPermissions(ident).entrySet())
@@ -508,9 +501,9 @@ public class PermissionCommandParser extends CommandUtils
         if (params.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm user " + ident.getUsernameOrUuid()
-                    + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+            + " zone "+zone.getName() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm user " + ident.getUsernameOrUuid()
-                    + " spawn bed (enable|disable): Enable/disable spawning at bed");
+            + " zone "+zone.getName() + " spawn bed (enable|disable): Enable/disable spawning at bed");
             return;
         }
 
@@ -611,14 +604,14 @@ public class PermissionCommandParser extends CommandUtils
             if (!mode.equals("add") && !mode.equals("remove") && !mode.equals("set"))
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "Syntax error. Please try this instead:");
-                ChatOutputHandler.chatError(ctx.getSource(), "/p user <player> group add|set|remove <GROUP>");
+                ChatOutputHandler.chatError(ctx.getSource(), "/p user <player> zone <zone> group add|set|remove <GROUP>");
                 return;
             }
 
             if (params.isEmpty())
             {
                 ChatOutputHandler.chatError(ctx.getSource(),
-                        "Usage: /p user " + ident.getUsername() + " group " + mode + " <group-name>");
+                        "Usage: /p user " + ident.getUsername() + " zone "+zone.getName()+" group " + mode + " <group-name>");
             }
             else
             {
@@ -672,15 +665,19 @@ public class PermissionCommandParser extends CommandUtils
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Possible usage:");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> : Display group info");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> users : Show users in this group");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> zone <zone> ... : Work with zones");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> create : Create a new group");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> users : Show users in this group");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> perms : List group's permissions");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> priority : Set group priority");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> priority : Set group priority");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> parent|include (add|remove <group>)|clear : Set group hierarchy");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> suffix|prefix clear|<value> : Set group titles");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> zone <zone> ... : Work with zones");
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    "/p group <group> allow|deny|clear <perms> : Set permissions");
+                    "/p group <group> zone <zone> allow|deny|clear <perms> : Set permissions");
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    "/p group <group> value <perm> <value> : Set permission property");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> spawn : Set group spawn");
+                    "/p group <group> zone <zone> value <perm> : View permission property");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> zone <zone> spawn (bed enable|disable)|here|clear|(pos <pos>): Set group spawn");
             return;
         }
 
@@ -907,9 +904,9 @@ public class PermissionCommandParser extends CommandUtils
             else
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        "/feperm group " + group + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+                        "/feperm group " + group + " zone "+zone.getName() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        "/feperm group " + group + " spawn bed (enable|disable): Enable/disable spawning at bed");
+                        "/feperm group " + group + " zone "+zone.getName() + " spawn bed (enable|disable): Enable/disable spawning at bed");
             }
             return;
         }
