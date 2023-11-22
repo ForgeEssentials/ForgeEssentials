@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.event == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.workflow_run.head_repository }}
           ref: ${{ github.event.workflow_run.head_branch }}
       - env:
           GH_TOKEN: ${{ github.token }}
