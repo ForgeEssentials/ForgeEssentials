@@ -42,7 +42,7 @@ public class UserIdentUtils
 
     public static String resolveMissingUsername(UUID id)
     {
-        String url = "https://api.mojang.com/user/profiles/" + id.toString().replace("-", "") + "/names";
+    	String url = "https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString().replace("-", "");
         return fetchData(url, "name");
     }
 
