@@ -16,12 +16,16 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.eventhandler.Event;
+
+import javax.annotation.Nullable;
 
 public class UserIdent
 {
@@ -143,7 +147,8 @@ public class UserIdent
     public static synchronized UserIdent get(GameProfile profile)
     {
         return get(profile.getId(), profile.getName());
-    }
+    } 
+
     public static synchronized UserIdent get(UUID uuid, String username)
     {
         if (uuid == null && (username == null || username.isEmpty()))
@@ -166,9 +171,17 @@ public class UserIdent
                 if (uuid != null && ident.uuid != uuid)
                 {
                     ident.uuid = uuid;
-                    byUuid.put(uuid,ident);
+                    byUuid.put(uuid, ident);
                 }
                 return ident;
+            }
+            if (username.startsWith("$NPC"))
+            {
+                return new NpcUserIdent(uuid, username);
+            }
+            else if (username.startsWith("$"))
+            {
+                return new ServerUserIdent(uuid, username);
             }
         }
 
@@ -215,6 +228,10 @@ public class UserIdent
     {
         if (player == null)
             throw new IllegalArgumentException();
+        
+        if (player instanceof FakePlayer) {
+            return getNpc(player.getDisplayName(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getPersistentID());
+        }
 
         UserIdent ident = byUuid.get(player.getPersistentID());
         if (ident == null)
@@ -309,16 +326,31 @@ public class UserIdent
         return (ServerUserIdent) ident;
     }
 
-    public static synchronized NpcUserIdent getNpc(String npcName)
+    public static synchronized NpcUserIdent getNpc(String npcName) {
+        return getNpc(npcName, null);
+    }
+
+    public static synchronized NpcUserIdent getNpc(String npcName, @Nullable UUID uuid)
     {
         String username = "$NPC" + (npcName == null ? "" : "_" + npcName.toUpperCase());
-        UUID _uuid = UUID.nameUUIDFromBytes(username.getBytes());
+        UUID _uuid = uuid != null ? uuid : UUID.nameUUIDFromBytes(username.getBytes());
 
         UserIdent ident = byUuid.get(_uuid);
-        if (ident != null)
+        if (ident == null)
             ident = byUsername.get(username);
+        else if (ident instanceof NpcUserIdent)
+        {
+            if (!username.equals(ident.username))
+                ident.username = username;
+        }
 
-        if (ident == null || !(ident instanceof NpcUserIdent))
+        if (uuid != null && ident instanceof NpcUserIdent)
+        {
+            if (!uuid.equals(ident.uuid))
+                ident.uuid = uuid;
+        }
+
+        if (!(ident instanceof NpcUserIdent))
             ident = new NpcUserIdent(_uuid, username);
 
         return (NpcUserIdent) ident;
