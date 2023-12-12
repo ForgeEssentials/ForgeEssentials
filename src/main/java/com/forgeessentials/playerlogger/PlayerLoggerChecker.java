@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 

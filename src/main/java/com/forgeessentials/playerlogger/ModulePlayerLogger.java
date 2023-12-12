@@ -1,11 +1,8 @@
 package com.forgeessentials.playerlogger;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;

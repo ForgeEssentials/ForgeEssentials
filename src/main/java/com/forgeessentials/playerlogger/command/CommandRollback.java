@@ -130,12 +130,26 @@ public class CommandRollback extends ParserCommandBase
         int step = -60;
         if (!args.isEmpty()) {
             String time = args.remove();
+            String day = null;
+            if (!args.isEmpty()) {
+                day = time;
+                time = args.remove();
+            }
             try
             {
                 SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
                 Date parsedDate = format.parse(time);
+
                 Date currentDate = new Date();
-                Date date = new Date();
+                Date date;
+
+                if (day != null)
+                {
+                    SimpleDateFormat dayFormat = new SimpleDateFormat("y-M-d");
+                    date = dayFormat.parse(day);
+                } else {
+                    date = new Date();
+                }
                 date.setSeconds(parsedDate.getSeconds());
                 date.setMinutes(parsedDate.getMinutes());
                 date.setHours(parsedDate.getHours());

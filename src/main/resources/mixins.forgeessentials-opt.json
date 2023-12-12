@@ -1,6 +1,5 @@
 {
     "package": "com.forgeessentials.core.preloader.mixin",
-    "plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
     "refmap": "mixins.forgeessentials.refmap.json",
     "mixins": [
         "fml.common.eventhandler.MixinEventBus"

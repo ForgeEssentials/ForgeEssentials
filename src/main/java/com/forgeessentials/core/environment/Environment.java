@@ -55,14 +55,12 @@ public class Environment
         String modName = FMLCommonHandler.instance().getModName();
         if (modName.contains("cauldron"))
         {
-            LoggingHandler.felog.error("You are attempting to run FE on Cauldron. This is completely unsupported.");
+            LoggingHandler.felog.error("You are attempting to run FE on Cauldron. Cauldron / Crucible Compatibility is in Alpha and is not recommended for mainstream use!");
 
-            LoggingHandler.felog.error("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
-            LoggingHandler.felog.error("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
             if (!ForgeEssentials.isSafeMode())
             {
                 LoggingHandler.felog.error("The server will now shut down as a precaution against data loss.");
-                throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
+                throw new RuntimeException("Sanity check failed: Detected Cauldron, this configuration is not fully supported. If you wish to use Cauldron, please turn on SafeMode via your main.cfg file!");
             }
             LoggingHandler.felog.error("FE safe mode has been enabled, you are proceeding at your own risk.");
             LoggingHandler.felog.error("Sanity check failed: Detected Cauldron, bad things may happen to your server.");

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraftforge.common.ForgeVersion;
+import com.forgeessentials.core.preloader.FELaunchHandler;
 
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -16,7 +16,20 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 public class FEMixinConfig implements IMixinConfigPlugin
 {
 
-    protected static List<String> injectedPatches = new ArrayList<String>();
+    public static int javaVersion;
+
+    static {
+        String version = System.getProperty("java.version");
+        if(version.startsWith("1.")) {
+            version = version.substring(2, 3);
+        } else {
+            int dot = version.indexOf(".");
+            if(dot != -1) { version = version.substring(0, dot); }
+        }
+        javaVersion = Integer.parseInt(version);
+    }
+
+    protected static List<String> injectedPatches = new ArrayList<>();
 
     @Override
     public void onLoad(String mixinPackage)
@@ -33,7 +46,15 @@ public class FEMixinConfig implements IMixinConfigPlugin
     @Override
     public List<String> getMixins()
     {
-        return null;
+        List<String> mixins = new ArrayList<>();
+        if (FELaunchHandler.isCauldron) {
+            //Add the mixin that is specific for when the server is Cauldron and/or it's forks.
+            mixins.add(Mixins.MixinNetHandlerPlayServerCauldron.getMixinRelativePath());
+        } else {
+            mixins.add(Mixins.MixinNetHandlerPlayServerForge.getMixinRelativePath());
+        }
+
+        return mixins;
     }
 
     @Override
@@ -45,10 +66,6 @@ public class FEMixinConfig implements IMixinConfigPlugin
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
     {
-        if (mixinClassName.contains("fml.common.eventhandler.MixinEventBus"))
-        {
-            return (!(ForgeVersion.buildVersion < 1517));
-        }
         return true;
     }
 

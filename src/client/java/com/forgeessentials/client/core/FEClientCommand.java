@@ -41,7 +41,7 @@ public class FEClientCommand extends CommandBase
         else if (args[0].equalsIgnoreCase("info"))
         {
             sender.addChatMessage(new ChatComponentText(String.format("Running ForgeEssentials client %s (%s)", //
-                    BuildInfo.getFullVersion(), BuildInfo.getBuildHash())));
+                    BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash())));
             sender.addChatMessage(new ChatComponentText(
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
         }

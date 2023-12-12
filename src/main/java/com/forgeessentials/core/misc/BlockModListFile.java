@@ -8,6 +8,7 @@ import java.util.Calendar;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
+import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -35,6 +36,7 @@ public class BlockModListFile
                 out.println("# --- ModList ---");
                 out.println("# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR)
                         + " (Server time)");
+                out.println("# Build: " + BuildInfo.getCurrentVersion());
                 out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".cfg");
                 out.println();
 

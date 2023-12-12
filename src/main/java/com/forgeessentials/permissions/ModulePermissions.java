@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.mcstats.Metrics.Plotter;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
@@ -25,6 +24,7 @@ import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+import com.forgeessentials.permissions.ftbu_compat.FTBURankConfigHandler;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
@@ -38,7 +38,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
+
 import cpw.mods.fml.common.FMLCommonHandler;
+
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -62,12 +65,29 @@ public class ModulePermissions extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private ItemPermissionManager itemPermissionManager;
 
+    public static boolean fakePlayerIsSpecialBunny = true;
+
     public ModulePermissions()
     {
         // Earliest initialization of permission system possible
         permissionHelper = new ZonedPermissionHelper();
         APIRegistry.perms = permissionHelper;
         PermissionManager.setPermissionProvider(permissionHelper);
+
+        if (Loader.isModLoaded("serverutilities"))
+        {
+            try
+            {
+                MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+                LoggingHandler.felog.debug("Rank Handler for GTNHFTBLib has been registered");
+            }
+            catch (NoClassDefFoundError e)
+            {
+                LoggingHandler.felog.error("GTNHFTBU is installed but an error was encountered while loading the compat!");
+            }
+        } else {
+            LoggingHandler.felog.debug("GTNHFTBLib is not loaded!");
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -82,14 +102,6 @@ public class ModulePermissions extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandPermissions());
         FECommandManager.registerCommand(new CommandPromote());
         FECommandManager.registerCommand(new CommandItemPermission());
-
-        ForgeEssentials.getMcStatsGeneralGraph().addPlotter(new Plotter("Areas") {
-            @Override
-            public int getValue()
-            {
-                return permissionHelper.getZones().size() - permissionHelper.getServerZone().getWorldZones().size() - 2;
-            }
-        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -211,6 +223,8 @@ public class ModulePermissions extends ConfigLoaderBase
     {
         persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "singlejson", PERSISTENCE_HELP).getString();
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+
+        fakePlayerIsSpecialBunny = config.getBoolean(CONFIG_CAT, "fakePlayerIsSpecialBunny", true, "Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!");
     }
 
     public DBConnector getDbConnector()

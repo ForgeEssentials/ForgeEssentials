@@ -37,6 +37,9 @@ public class ConfigServerVote extends ConfigLoaderBase
     public static String hostname;
     public static Integer port;
 
+    public static String token;
+    public static boolean allowClassic;
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -51,6 +54,10 @@ public class ConfigServerVote extends ConfigLoaderBase
                 .getString();
         msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
+        token = config.get(category, "token", "", "Token for Votifier V2 Protocol").getString();
+
+        allowClassic = config.get(category, "allowClassic", true, "Disable Classic / V1 and only use V2").getBoolean(true);
+
         loadKeys();
 
         if (isReload)
@@ -58,7 +65,7 @@ public class ConfigServerVote extends ConfigLoaderBase
             try
             {
                 ModuleServerVote.votifier.shutdown();
-                ModuleServerVote.votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);
+                ModuleServerVote.votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port, ConfigServerVote.token);
                 ModuleServerVote.votifier.start();
             }
             catch (Exception e1)

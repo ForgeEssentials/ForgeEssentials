@@ -10,7 +10,7 @@ public class JsInventoryPlayer<T extends InventoryPlayer> extends JsInventory<T>
      */
     public static <T extends InventoryPlayer> JsInventoryPlayer<T> get(T inventory)
     {
-        return inventory == null ? null : new JsInventoryPlayer(inventory);
+        return inventory == null ? null : new JsInventoryPlayer<>(inventory);
     }
 
     protected JsInventoryPlayer(T that)

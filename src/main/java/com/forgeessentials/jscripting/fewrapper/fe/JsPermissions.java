@@ -3,9 +3,6 @@ package com.forgeessentials.jscripting.fewrapper.fe;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -256,7 +253,7 @@ public class JsPermissions
         return APIRegistry.perms.getPrimaryGroup(ident.getThat());
     }
 
-    public JsZone getZoneAt(JsWorldPoint<?> worldPoint)
+    public JsZone<?> getZoneAt(JsWorldPoint<?> worldPoint)
     {
         return getServerZone().getZoneAt(worldPoint);
     }

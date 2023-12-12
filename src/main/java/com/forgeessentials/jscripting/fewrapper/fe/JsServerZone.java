@@ -6,7 +6,6 @@ import java.util.SortedSet;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.GroupEntry;
-import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
@@ -43,7 +42,7 @@ public class JsServerZone<T extends ServerZone> extends JsZone<T>
         return result;
     }
 
-    public JsZone getZoneAt(JsWorldPoint<?> worldPoint)
+    public JsZone<?> getZoneAt(JsWorldPoint<?> worldPoint)
     {
         return JsZone.get(that.getZoneAt(worldPoint.getThat()));
     }

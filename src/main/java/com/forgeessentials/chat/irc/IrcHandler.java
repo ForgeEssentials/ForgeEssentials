@@ -292,7 +292,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (!isConnected())
             return;
         // ignore messages to jtv
-        if (twitchMode && user.getNick() == "jtv")
+        if (twitchMode &&  "jtv".equals(user.getNick()))
             return;
         user.send().message(message);
     }
@@ -331,18 +331,19 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     public ICommandSender getIrcUser(String username)
     {
+    	IrcCommandSender sender=null;
         if (!isConnected())
-            return null;
+            return sender;
         for (User user : bot.getUserChannelDao().getAllUsers())
         {
             if (user.getNick().equals(username))
             {
-                IrcCommandSender sender = new IrcCommandSender(user);
+                sender = new IrcCommandSender(user);
                 ircUserCache.put(sender.getUser(), sender);
-                return sender;
+                break;
             }
         }
-        return null;
+        return sender;
     }
 
     private void processCommand(User user, String cmdLine)
@@ -403,7 +404,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)

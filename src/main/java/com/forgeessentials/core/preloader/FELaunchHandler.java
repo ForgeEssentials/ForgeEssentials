@@ -13,7 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -27,7 +26,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.launch.platform.MixinPlatformManager;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
@@ -38,7 +36,7 @@ public class FELaunchHandler implements ITweaker
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
-    public static final String FE_LIB_VERSION = "3";
+    public static final String FE_LIB_VERSION = "5";
 
     public static final FilenameFilter JAR_FILTER = new FilenameFilter() {
         @Override
@@ -60,6 +58,8 @@ public class FELaunchHandler implements ITweaker
 
     private static File jarLocation;
 
+    public static boolean isCauldron;
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -75,15 +75,23 @@ public class FELaunchHandler implements ITweaker
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
         // initialize mixin, if someone hasn't already done it for us
-        ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
+        @SuppressWarnings("unchecked")
+		ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
+        try {
+            Class.forName("org.bukkit.Bukkit", false, this.getClass().getClassLoader());
+            isCauldron = true;
+        } catch (ClassNotFoundException e) {
+
+        }
         if (!tweaks.contains("org.spongepowered.asm.launch.MixinTweaker"))
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
         }
+
+        tweaks.add("com.forgeessentials.core.preloader.FELaunchHandler");
         
         MixinBootstrap.init();
 
@@ -93,8 +101,8 @@ public class FELaunchHandler implements ITweaker
                 MixinBootstrap.getPlatform().addContainer(uri);
             } catch (NoSuchMethodError e) {
                 launchLog.warn("Mixin 8.x detecting, applying counter-measures!", e);
-                Class containerHandleURI = Class.forName("org.spongepowered.asm.launch.platform.container.ContainerHandleURI");
-                Class IContainerHandle = Class.forName("org.spongepowered.asm.launch.platform.container.IContainerHandle");
+                Class<?> containerHandleURI = Class.forName("org.spongepowered.asm.launch.platform.container.ContainerHandleURI");
+                Class<?> IContainerHandle = Class.forName("org.spongepowered.asm.launch.platform.container.IContainerHandle");
 
                 Method addContainer = MixinBootstrap.getPlatform().getClass().getDeclaredMethod("addContainer", IContainerHandle);
                 Object handleURI = containerHandleURI.getConstructor(new Class[]{URI.class}).newInstance(uri);

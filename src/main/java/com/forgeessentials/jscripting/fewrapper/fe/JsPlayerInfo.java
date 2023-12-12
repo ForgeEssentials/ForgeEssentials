@@ -1,17 +1,11 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WarpPoint;
 
 public class JsPlayerInfo extends JsWrapper<PlayerInfo>
 {
@@ -115,14 +109,14 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setWandDmg(wandDmg);
     }
 
-    public JsPoint getSel1()
+    public JsPoint<?> getSel1()
     {
-        return new JsPoint(that.getSel1());
+        return new JsPoint<>(that.getSel1());
     }
 
-    public JsPoint getSel2()
+    public JsPoint<?> getSel2()
     {
-        return new JsPoint(that.getSel2());
+        return new JsPoint<>(that.getSel2());
     }
 
     public int getSelDim()

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -355,11 +356,18 @@ public class ScriptInstance
             {
                 getPropertyBindings.put("o", object);
                 Object eval = props.script.eval(getPropertyBindings);
-                if (!(eval instanceof Bindings))
-                    throw new ScriptException("Unable to access properties");
-                Bindings bindings = (Bindings) eval;
-                for (int i = 0; i < props.fields.size(); i++)
-                    props.fields.get(i).set(instance, bindings.get(i));
+                if (eval instanceof Bindings)
+                {
+                    Bindings bindings = (Bindings) eval;
+                    for (int i = 0; i < props.fields.size(); i++)
+                        props.fields.get(i).set(instance, bindings.get(i));
+                } else if ( "org.mozilla.javascript.NativeArray".equals(eval.getClass().getName())) {
+                    Method get = eval.getClass().getMethod("get", int.class, Class.forName("org.mozilla.javascript.Scriptable"));
+                    for (int i = 0; i < props.fields.size(); i++)
+                        props.fields.get(i).set(instance, get.invoke(eval, i, eval));
+                } else {
+                    throw new ScriptException("Unable to access properties (" + eval.toString() + ")");
+                }
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {

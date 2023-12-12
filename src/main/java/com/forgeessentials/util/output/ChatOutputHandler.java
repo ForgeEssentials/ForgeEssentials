@@ -20,6 +20,7 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
@@ -83,7 +84,6 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         else
             sendMessage(recipient, stripFormatting(message));
     }
-
     /**
      * Sends a message to all clients
      *
@@ -92,7 +92,19 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(String message)
     {
-        broadcast(new ChatComponentText(message));;
+        broadcast(message, true);
+    }
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     * @param sendToDiscord
+     *            Broadcast Message to discord
+     */
+    public static void broadcast(String message, boolean sendToDiscord)
+    {
+        broadcast(new ChatComponentText(message), sendToDiscord);;
     }
 
     /**
@@ -103,7 +115,23 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(IChatComponent message)
     {
+        broadcast(message, true);
+    }
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     * @param sendToDiscord
+     *            Broadcast Message to discord
+     */
+    public static void broadcast(IChatComponent message, boolean sendToDiscord)
+    {
         MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
+        if (sendToDiscord && ModuleChat.instance != null)
+        {
+            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
+        }
     }
 
     /* ------------------------------------------------------------ */

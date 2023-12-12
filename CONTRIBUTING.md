@@ -1,14 +1,16 @@
 # Integrating ForgeEssentials with another mod
 To use ForgeEssentials and its powerful permission framework with from another mod, please take a look at the [developer documentation in the wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki/Developer-documentation).
 
+
 # Developing ForgeEssentials
 1. Download ForgeEssentials with git
-2. Run ForgeGradle setup
+2. Configure your `JAVA_HOME` environment variable to point to a JDK8 installation
+3. Run ForgeGradle setup
   (E.g., `./gradlew setupDecompWorkspace eclipse` when using eclipse)
-3. Configure the annotation processor as outlined [below](#Configuring-Annotation-Processing)
-4. Add ``-Dmixin.env.compatLevel=JAVA_7` to VM Options for both server and client
-5. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json` to the launch arguments of the server
-6. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
+4. Configure the annotation processor as outlined [below](#Configuring-Annotation-Processing)
+5. Add ``-Dmixin.env.compatLevel=JAVA_7` to VM Options for both server and client
+6. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json` to the launch arguments of the server
+7. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
 
 # Configuring Annotation Processing
 If you open ForgeEssentials in your IDE, you must turn on annotation processing, or your IDE will complain that it cannot find classes like `Action_`. You also might need to manually add `hibernate-jpamodelgen-4.3.7.jar` as annotation processor. Please refer to the respective IDE documentation on how to do this.

@@ -25,8 +25,10 @@ import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commands.player.CommandVanish;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
@@ -229,6 +231,11 @@ public class TeleportHelper extends ServerEventHandler
             transferPlayerToDimension(player, point.getDimension(), teleporter);
         }
         player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
+        UserIdent ident = UserIdent.get(player);
+        if (ModuleLauncher.getModuleList().contains("Commands") && CommandVanish.isVanished(ident)) {
+            //Forces a re-vanish since teleportation reveals the player
+            CommandVanish.vanish(ident, true);
+        }
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)

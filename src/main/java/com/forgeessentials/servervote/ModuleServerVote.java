@@ -8,9 +8,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
@@ -61,7 +58,7 @@ public class ModuleServerVote
     {
         try
         {
-            votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);
+            votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port, ConfigServerVote.token);
             votifier.start();
         }
         catch (Exception e1)
@@ -181,8 +178,8 @@ public class ModuleServerVote
         log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, vote.timeStamp));
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(new S02PacketChat(new ChatComponentText(
-                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
+            ChatOutputHandler.broadcast(
+                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
