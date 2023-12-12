@@ -489,7 +489,7 @@ public class ScriptInstance
 
     public void registerEventHandler(String event, Object handler)
     {
-        Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);
+        Class<? extends JsEvent<?>> eventType = ScriptCompiler.eventTypes.get(event);
         if (eventType == null)
         {
             chatError(SCRIPT_ERROR_TEXT + "Invalid event type " + event);

@@ -85,11 +85,7 @@ public class TeleportModule extends ConfigLoaderBase
     public void registerCommands(RegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandBack(true), event.getDispatcher());
-
-        CommandBed bed = new CommandBed(true);
-        FECommandManager.registerCommand(bed, event.getDispatcher());
-        MinecraftForge.EVENT_BUS.register(bed);
-
+        FECommandManager.registerCommand(new CommandBed(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandHome(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandSpawn(true), event.getDispatcher());
         FECommandManager.registerCommand(new CommandTp(true), event.getDispatcher());
