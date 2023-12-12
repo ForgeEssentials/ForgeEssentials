@@ -2,7 +2,6 @@ package com.forgeessentials.jscripting.wrapper.mc.event;
 
 import javax.script.ScriptException;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.ScriptInstance;
 
@@ -54,13 +53,13 @@ public abstract class JsEvent<T extends Event>
     public void _register()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        APIRegistry.FE_EVENTBUS.register(this);
+        //APIRegistry.FE_EVENTBUS.register(this);
     }
 
     public void _unregister()
     {
         MinecraftForge.EVENT_BUS.unregister(this);
-        APIRegistry.FE_EVENTBUS.unregister(this);
+        //APIRegistry.FE_EVENTBUS.unregister(this);
     }
 
     protected void _callEvent(T event)

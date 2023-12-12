@@ -21,7 +21,6 @@ package com.forgeessentials.servervote;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -225,7 +224,7 @@ public class VoteReceiver extends Thread
                         off += n;
                     }
                     String message = new String(block);
-                    HashMap data = gson.fromJson(message, HashMap.class);
+                    HashMap<?,?> data = gson.fromJson(message, HashMap.class);
                     String signature = data.get("signature").toString();
                     String payload = data.get("payload").toString();
 
@@ -237,7 +236,7 @@ public class VoteReceiver extends Thread
                     }
                     else
                     {
-                        HashMap _payload = gson.fromJson(payload, HashMap.class);
+                        HashMap<?,?> _payload = gson.fromJson(payload, HashMap.class);
                         if (!challenge.equals(_payload.get("challenge")))
                         {
                             writer.write("{\"status\":\"error\",\"errorMessage\":\"Invalid Challenge!\"}");
