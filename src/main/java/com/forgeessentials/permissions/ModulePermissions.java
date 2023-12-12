@@ -61,6 +61,8 @@ public class ModulePermissions extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private ItemPermissionManager itemPermissionManager;
 
+    public static boolean fakePlayerIsSpecialBunny = true;
+
     public ModulePermissions()
     {
         // Earliest initialization of permission system possible
@@ -202,6 +204,8 @@ public class ModulePermissions extends ConfigLoaderBase
     {
         persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "singlejson", PERSISTENCE_HELP).getString();
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+
+        fakePlayerIsSpecialBunny = config.getBoolean(CONFIG_CAT, "fakePlayerIsSpecialBunny", true, "Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!");
     }
 
     public DBConnector getDbConnector()
