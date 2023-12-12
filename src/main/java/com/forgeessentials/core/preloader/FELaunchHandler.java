@@ -75,11 +75,11 @@ public class FELaunchHandler implements ITweaker
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
         // initialize mixin, if someone hasn't already done it for us
-        ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
+        @SuppressWarnings("unchecked")
+		ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
         try {
             Class.forName("org.bukkit.Bukkit", false, this.getClass().getClassLoader());
             isCauldron = true;
@@ -101,8 +101,8 @@ public class FELaunchHandler implements ITweaker
                 MixinBootstrap.getPlatform().addContainer(uri);
             } catch (NoSuchMethodError e) {
                 launchLog.warn("Mixin 8.x detecting, applying counter-measures!", e);
-                Class containerHandleURI = Class.forName("org.spongepowered.asm.launch.platform.container.ContainerHandleURI");
-                Class IContainerHandle = Class.forName("org.spongepowered.asm.launch.platform.container.IContainerHandle");
+                Class<?> containerHandleURI = Class.forName("org.spongepowered.asm.launch.platform.container.ContainerHandleURI");
+                Class<?> IContainerHandle = Class.forName("org.spongepowered.asm.launch.platform.container.IContainerHandle");
 
                 Method addContainer = MixinBootstrap.getPlatform().getClass().getDeclaredMethod("addContainer", IContainerHandle);
                 Object handleURI = containerHandleURI.getConstructor(new Class[]{URI.class}).newInstance(uri);

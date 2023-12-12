@@ -69,7 +69,7 @@ public class FEPlayerEvent extends PlayerEvent
         String newInvGroupName;
         Map<String, List<ItemStack>> newInvGroup;
 
-        public InventoryGroupChange(EntityPlayer player, String newInvGroupName, Map newInvGroup)
+        public InventoryGroupChange(EntityPlayer player, String newInvGroupName, Map<String, List<ItemStack>> newInvGroup)
         {
             super(player);
             this.newInvGroup = newInvGroup;

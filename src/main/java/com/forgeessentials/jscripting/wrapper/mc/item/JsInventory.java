@@ -12,7 +12,7 @@ public class JsInventory<T extends IInventory> extends JsWrapper<T>
      */
     public static <T extends IInventory> JsInventory<T> get(T inventory)
     {
-        return inventory == null ? null : new JsInventory(inventory);
+        return inventory == null ? null : new JsInventory<>(inventory);
     }
 
     protected JsInventory(T that)

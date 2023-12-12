@@ -253,7 +253,7 @@ public class JsPermissions
         return APIRegistry.perms.getPrimaryGroup(ident.getThat());
     }
 
-    public JsZone getZoneAt(JsWorldPoint<?> worldPoint)
+    public JsZone<?> getZoneAt(JsWorldPoint<?> worldPoint)
     {
         return getServerZone().getZoneAt(worldPoint);
     }
