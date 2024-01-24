@@ -165,7 +165,6 @@ public class SQLProvider extends ZonePersistenceProvider
             return list;
         }
 
-        @SuppressWarnings("unused")
         public Map<Integer, Map<String, Object>> loadIntMap(String key) throws SQLException
         {
             ResultSet resultSet = db.createStatement().executeQuery(createSelectStatement());

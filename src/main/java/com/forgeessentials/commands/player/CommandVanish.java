@@ -118,7 +118,7 @@ public class CommandVanish extends ParserCommandBase
             vanishedPlayers.add(ident);
             EntityTrackerEntry tracker = ((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
 
-            Set<EntityPlayerMP> tracked = new HashSet<>(tracker.trackingPlayers);
+            Set<EntityPlayerMP> tracked = new HashSet<EntityPlayerMP>(tracker.trackingPlayers);
             world.getEntityTracker().removePlayerFromTrackers(player);
             tracked.forEach(otherPlayer -> {
                 player.playerNetServerHandler.sendPacket(new S0CPacketSpawnPlayer(otherPlayer));

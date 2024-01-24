@@ -74,7 +74,7 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
 
     public JsZone<?> getParent()
     {
-        return new JsZone(that.getParent());
+        return new JsZone<>(that.getParent());
     }
 
     public JsServerZone<?> getServerZone()
