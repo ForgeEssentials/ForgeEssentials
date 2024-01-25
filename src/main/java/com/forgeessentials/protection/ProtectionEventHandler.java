@@ -939,6 +939,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         case "adventure":
             return GameType.ADVENTURE;
         default:
+            GameType[] allGameTypes = GameType.values();
+            for (GameType gameType : allGameTypes)
+            {
+                if (gameType.getName().equalsIgnoreCase(gm))
+                    return gameType;
+            }
             return GameType.NOT_SET;
         }
     }
