@@ -28,7 +28,7 @@ public class CUIComms
     }
 
     public static final String[] worldEditSelectionCommands = new String[] { "pos1", "pos2", "sel", "desel", "hpos1",
-            "hpos2", "/hunk", "expand", "contract", "outset", "inset", "shift" };
+            "hpos2", "/hunk", "expand", "contract", "outset", "inset", "shift", "/deselect", "deselect" };
 
     protected List<ServerPlayerEntity> updatedSelectionPlayers = new ArrayList<>();
 
