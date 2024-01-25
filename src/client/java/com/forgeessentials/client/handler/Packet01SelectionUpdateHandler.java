@@ -1,6 +1,7 @@
 package com.forgeessentials.client.handler;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
@@ -29,7 +30,7 @@ public class Packet01SelectionUpdateHandler extends Packet01SelectionUpdate
     	}
     	if(point1!=null||point2!=null) {
     		Minecraft mc = Minecraft.getInstance();
-    		Selection selection = new Selection(null, point1, point2);
+    		Selection selection = new Selection(mc.player.level.dimension().getRegistryName().toString(), point1, point2);
     		return new Packet01SelectionUpdateHandler(selection);
     	}
         return new Packet01SelectionUpdateHandler(null);

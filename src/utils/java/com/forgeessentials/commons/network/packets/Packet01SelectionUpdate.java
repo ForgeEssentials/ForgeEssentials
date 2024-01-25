@@ -23,6 +23,7 @@ public class Packet01SelectionUpdate implements IFEPacket
     public static Packet01SelectionUpdate decode(PacketBuffer byteBuf)
     {
     	//This should never be called on the server and the client has its own handler
+    	NetworkUtils.feletworklog.warn("Recieved a deformed Packet01SelectionUpdate on the wrong handler");
         return new Packet01SelectionUpdate(null);
     }
 
