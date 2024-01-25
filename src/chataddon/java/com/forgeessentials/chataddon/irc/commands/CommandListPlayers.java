@@ -39,7 +39,6 @@ public class CommandListPlayers implements IrcCommand
     @Override
     public void processCommand(MessageEvent event, String[] args)
     {
-    	System.out.println("Running list command");
     	event.respondWith("List of players:");
         for (String username : ServerLifecycleHooks.getCurrentServer().getPlayerNames())
         	event.respondWith(" - " + username);

@@ -40,7 +40,6 @@ public class CommandHelp implements IrcCommand
     @Override
     public void processCommand(MessageEvent event, String[] args)
     {
-    	System.out.println("Running help command");
     	event.respondWith("List of commands:");
         for (Entry<String, IrcCommand> command : ModuleIRCBridge.getInstance().commands.entrySet())
         {
