@@ -140,20 +140,39 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     private WorldSettings.GameType getGameTypeFromString(String string)
     {
-        if (string.equalsIgnoreCase(WorldSettings.GameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
+        int id;
+
+        try
+        {
+            id = Integer.parseInt(string);
+        }
+        catch(NumberFormatException e)
+        {
+            id = -1;
+        }
+
+        if (string.equalsIgnoreCase(WorldSettings.GameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || id == 0)
         {
             return WorldSettings.GameType.SURVIVAL;
         }
-        else if (string.equalsIgnoreCase(WorldSettings.GameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
+        else if (string.equalsIgnoreCase(WorldSettings.GameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || id == 1)
         {
             return WorldSettings.GameType.CREATIVE;
         }
-        else if (string.equalsIgnoreCase(WorldSettings.GameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
+        else if (string.equalsIgnoreCase(WorldSettings.GameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || id == 2)
         {
             return WorldSettings.GameType.ADVENTURE;
         }
         else
         {
+            WorldSettings.GameType[] allGameTypes = WorldSettings.GameType.values();
+
+            for (WorldSettings.GameType gameType : allGameTypes)
+            {
+                if (string.equalsIgnoreCase(gameType.getName()) || id == gameType.getID())
+                    return gameType;
+            }
+
             return null;
         }
     }
@@ -169,7 +188,15 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
+            WorldSettings.GameType[] allGameTypes = WorldSettings.GameType.values();
+            String[] names = new String[allGameTypes.length];
+
+            for (int i = 0; i < allGameTypes.length; i++)
+            {
+                names[i] = allGameTypes[i].getName().toLowerCase();
+            }
+
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else
         {
