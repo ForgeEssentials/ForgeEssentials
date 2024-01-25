@@ -193,7 +193,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
             for (int i = 0; i < allGameTypes.length; i++)
             {
-                names[i] = allGameTypes[i].getName();
+                names[i] = allGameTypes[i].getName().toLowerCase();
             }
 
             return getListOfStringsMatchingLastWord(args, names);
