@@ -48,7 +48,12 @@ public class CommandPermissions extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments)
     {
-        PermissionCommandParser.parseMain(arguments);
+    	try {
+    		PermissionCommandParser.parseMain(arguments);
+    	}catch(NullPointerException e) {
+    		e.printStackTrace();
+    		arguments.error("Null error while parsing arguments");
+    	}
     }
 
 }

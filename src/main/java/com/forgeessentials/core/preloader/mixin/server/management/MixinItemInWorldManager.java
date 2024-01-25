@@ -14,8 +14,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cpw.mods.fml.common.eventhandler.Event;
 
@@ -32,9 +34,11 @@ public abstract class MixinItemInWorldManager
     @Shadow
     abstract boolean isCreative();
 
-    // Fixes a few Forge bugs, and adds PlayerPostInteractEvent.
-    @Overwrite
-    public boolean activateBlockOrUseItem(EntityPlayer player, World world, ItemStack item, int x, int y, int z, int side, float dx, float dy, float dz)
+    /**
+     * Fixes a few Forge bugs, and adds PlayerPostInteractEvent.
+     */
+	@Inject(method = "activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIIIFFF)Z", at = @At("HEAD"), cancellable = true)
+    public void activateBlockOrUseItem(EntityPlayer player, World world, ItemStack item, int x, int y, int z, int side, float dx, float dy, float dz, CallbackInfoReturnable<Boolean> callback)
     {
         PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, x, y, z, side, world);
         if (event.isCanceled())
@@ -42,7 +46,8 @@ public abstract class MixinItemInWorldManager
             // PATCH: Fix a Forge bug related to fake players
             if (thisPlayerMP.playerNetServerHandler != null)
                 thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
-            return false;
+            callback.setReturnValue(false);
+            return;
         }
 
         // PATCH: Fix a Forge bug allowing onItemUseFirst to trigger even if event.useItem is set to DENY
@@ -52,7 +57,8 @@ public abstract class MixinItemInWorldManager
             MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, item, x, y, z, side, dx, dy, dz));
             if (item.stackSize <= 0)
                 ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, item);
-            return true;
+            callback.setReturnValue(true);
+            return;
         }
 
         Block block = world.getBlock(x, y, z);
@@ -95,6 +101,7 @@ public abstract class MixinItemInWorldManager
                 MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, item, x, y, z, side, dx, dy, dz));
         }
 
-        return result;
+        callback.setReturnValue(result);
+        return;
     }
 }
