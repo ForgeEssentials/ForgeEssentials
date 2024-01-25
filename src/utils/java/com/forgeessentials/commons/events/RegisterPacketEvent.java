@@ -4,7 +4,5 @@ import net.minecraftforge.eventbus.api.Event;
 
 public class RegisterPacketEvent extends Event
 {
-    public RegisterPacketEvent()
-    {
-    }
+    public RegisterPacketEvent() {}
 }
