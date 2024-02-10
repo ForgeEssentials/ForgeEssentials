@@ -334,7 +334,6 @@ public class ForgeEssentials
         FECommandManager.aliaseManager.saveData();
 
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStartingEvent(e));
-        System.out.println("Showing version update");
         if(BuildInfo.isOutdated()) {
         	LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         	LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s",BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
