@@ -97,7 +97,7 @@ public class CommandMultiworld extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [generatorOptions] [seed]");
+            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [seed] [generatorOptions]");
             return;
         }
         // Get the world name
@@ -125,11 +125,6 @@ public class CommandMultiworld extends ParserCommandBase
         if (!arguments.isEmpty())
             worldType = arguments.remove();
 
-        String generatorOptions = "";
-        if (!arguments.isEmpty())
-        {
-            generatorOptions = arguments.remove();
-        }
         // Get the World Seed
         long seed = new Random().nextLong();
         if (!arguments.isEmpty())
@@ -145,13 +140,20 @@ public class CommandMultiworld extends ParserCommandBase
             }
         }
 
+        // Get generator options
+        String generatorOptions = "";
+        if (!arguments.isEmpty())
+        {
+            generatorOptions = arguments.remove();
+        }
+
         if (!arguments.isEmpty())
             throw new TranslatedCommandException("Too many arguments");
 
         if (arguments.isTabCompletion)
             return;
 
-        Multiworld world = new Multiworld(name, provider, worldType, seed);
+        Multiworld world = new Multiworld(name, provider, worldType, seed, generatorOptions);
         try
         {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
