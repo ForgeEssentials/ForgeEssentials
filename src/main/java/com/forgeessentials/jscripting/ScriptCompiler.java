@@ -76,7 +76,6 @@ public final class ScriptCompiler
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void registerWrapperClass(ClassInfo classInfo, String packageBase)
     {
         if (!classInfo.getSimpleName().startsWith("Js") || classInfo.getName().equals(JsWrapper.class.getName()))

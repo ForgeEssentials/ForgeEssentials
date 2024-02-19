@@ -884,6 +884,15 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void permissionChange(Group.ModifyPermission e)
     {
+    	if(Zone.GROUP_DEFAULT.equals(e.group)||Zone.GROUP_PLAYERS.equals(e.group)) {
+        	for (PlayerInfo info : PlayerInfo.getAll())
+            {
+                if (info.ident.hasPlayer()) {
+                    sendPermissionUpdate(info.ident, true);
+                }
+            }
+            return;
+        }
         if (e.serverZone.getGroupPlayers().get(e.group) == null)
             return;
         for (UserIdent ident : e.serverZone.getGroupPlayers().get(e.group))
@@ -939,6 +948,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         case "adventure":
             return GameType.ADVENTURE;
         default:
+            GameType[] allGameTypes = GameType.values();
+            for (GameType gameType : allGameTypes)
+            {
+                if (gameType.getName().equalsIgnoreCase(gm))
+                    return gameType;
+            }
             return GameType.NOT_SET;
         }
     }

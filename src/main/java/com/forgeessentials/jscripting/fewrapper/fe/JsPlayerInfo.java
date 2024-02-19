@@ -109,14 +109,14 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setWandDmg(wandDmg);
     }
 
-    public JsPoint getSel1()
+    public JsPoint<?> getSel1()
     {
-        return new JsPoint(that.getSel1());
+        return new JsPoint<>(that.getSel1());
     }
 
-    public JsPoint getSel2()
+    public JsPoint<?> getSel2()
     {
-        return new JsPoint(that.getSel2());
+        return new JsPoint<>(that.getSel2());
     }
 
     public int getSelDim()

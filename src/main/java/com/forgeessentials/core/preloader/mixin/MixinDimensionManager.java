@@ -8,20 +8,20 @@ import net.minecraftforge.fe.DimensionManagerHelper;
 import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(DimensionManager.class)
 public abstract class MixinDimensionManager
 {
 
-    @Shadow
+    @Shadow(remap = false)
     private static Hashtable<Integer, Boolean> spawnSettings;
 
-    @Shadow
+    @Shadow(remap = false)
     public static int getProviderType(int dim)
     {
         return 0;
@@ -41,14 +41,18 @@ public abstract class MixinDimensionManager
         }
     }
 
-    @Overwrite
-    public static boolean shouldLoadSpawn(int dim)
+    @Inject(
+            method = "shouldLoadSpawn(I)Z",
+            at = @At("HEAD"),
+            cancellable = true,
+            remap = false)
+    private static void shouldLoadSpawn(int dim, CallbackInfoReturnable<Boolean> cir)
     {
-        Boolean shouldSpawnOverride = DimensionManagerHelper.keepLoaded.get(dim);
+    	Boolean shouldSpawnOverride = DimensionManagerHelper.keepLoaded.get(dim);
         if (shouldSpawnOverride != null)
-            return shouldSpawnOverride;
+        	cir.setReturnValue(shouldSpawnOverride);
         int id = getProviderType(dim);
-        return spawnSettings.containsKey(id) && spawnSettings.get(id);
+        cir.setReturnValue(spawnSettings.containsKey(id) && spawnSettings.get(id));
     }
 
 }
