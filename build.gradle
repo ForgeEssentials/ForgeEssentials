@@ -93,7 +93,11 @@ repositories {
 ext.buildNumber = "DEV"
 if (System.getenv("BUILD_NUMBER") != null) {
 	buildNumber = System.getenv("BUILD_NUMBER")
-
+}
+// Make numeric build number in case of dev enviroment so forge does not have a heart attack
+ext.buildNumberNumber = "0"
+if (buildNumber != "DEV"){
+	buildNumberNumber = buildNumber
 }
 
 ext.set 'changelog', System.getenv("CHANGE_LOG")
@@ -378,11 +382,8 @@ project.processResources {
 		include 'META-INF/mods.toml'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
-			'version': "$mod_base.$mod_major",
-			'mod_name': mod_name,
-			'mod_download': mod_download,
-			'buildHash': gitCommitHash,
-			'buildNumber': buildNumber,
+			'version': "$mod_base.$mod_major.$buildNumberNumber",
+			'mod_name': mod_name
 		)
 	}
 }
@@ -393,7 +394,7 @@ project.processClientResources {
 		include 'META-INF/mods.toml'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
-			'version': "$mod_base.$mod_major",
+			'version': "$mod_base.$mod_major.$buildNumberNumber",
 			'mod_name': mod_name_client
 		)
 	}
@@ -405,7 +406,7 @@ project.processChataddonResources {
 		include 'META-INF/mods.toml'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
-			'version': "$mod_base.$mod_major.$buildNumber",
+			'version': "$mod_base.$mod_major.$buildNumberNumber",
 			'mod_name': mod_name_chatAddon
 		)
 	}

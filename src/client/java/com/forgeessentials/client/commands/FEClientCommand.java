@@ -69,9 +69,11 @@ public class FEClientCommand extends BaseCommand
             }
             if (num == 2)
             {
-                instance.gui.getChat()
-                        .addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)",
-                                BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash())));
+                instance.gui.getChat().addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)-%s", 
+                		BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType())));
+                if (BuildInfo.isOutdated()) {
+                	instance.gui.getChat().addMessage(new StringTextComponent(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion())));
+                }
                 instance.gui.getChat().addMessage(new StringTextComponent(
                         "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
                 instance.gui.getChat().addMessage(new StringTextComponent("Injected patches:"));

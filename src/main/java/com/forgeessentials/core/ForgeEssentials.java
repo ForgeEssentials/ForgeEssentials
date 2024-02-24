@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Level;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
@@ -201,8 +200,8 @@ public class ForgeEssentials
     public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info("ForgeEssentials CommonSetup");
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getCurrentVersion(),
-                BuildInfo.getBuildHash()));
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)-%s", BuildInfo.getCurrentVersion(),
+                BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
     	// Handle submodules parents, must be called after mod loading
         moduleLauncher.handleModuleParents();
         if (safeMode) {
@@ -275,17 +274,6 @@ public class ForgeEssentials
 
     }
 
-    @SubscribeEvent
-    public void newVersion(NewVersionEvent e)
-    {
-        LoggingHandler.felog
-                .warn("-------------------------------------------------------------------------------------");
-        LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s",
-                BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
-        LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
-        LoggingHandler.felog
-                .warn("-------------------------------------------------------------------------------------");
-    }
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
@@ -316,6 +304,7 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
+        BuildInfo.startVersionChecks(MODID);
     	LoggingHandler.felog.info("Registered " + FECommandManager.getTotalCommandNumber() + " commands");
         LoggingHandler.felog.info("ForgeEssentials ServerAboutToStart");
 
@@ -345,6 +334,12 @@ public class ForgeEssentials
         FECommandManager.aliaseManager.saveData();
 
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStartingEvent(e));
+        if(BuildInfo.isOutdated()) {
+        	LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+        	LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s",BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
+        	LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
+        	LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+        }
     }
 
     @SubscribeEvent
@@ -476,7 +471,7 @@ public class ForgeEssentials
             // Show version notification
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
                 ChatOutputHandler.chatWarning(player, Translator.format(
-                        "ForgeEssentials build #%s outdated. Current build is #%s. Consider updating to get latest security and bug fixes.",
+                        "ForgeEssentials server build #%s is outdated. The current build is #%s. Consider updating to get latest security and bug fixes.",
                         BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
         }
     }
@@ -578,7 +573,6 @@ public class ForgeEssentials
         safeMode = FEsafeMode.get();
         HelpFixer.hideWorldEditCommands = FEhideWorldEditCommands.get();
         logCommandsToConsole = FElogCommandsToConsole.get();
-        BuildInfo.startVersionChecks();
     }
 
     /* ------------------------------------------------------------ */

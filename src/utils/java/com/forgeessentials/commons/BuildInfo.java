@@ -8,18 +8,15 @@ import java.util.jar.Manifest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.forgeessentials.commons.events.NewVersionEvent;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.VersionChecker;
 
 public abstract class BuildInfo
 {
 
     public static final Logger febuildinfo = LogManager.getLogger("FEUpdateChecker");
 
-    private static final String BUILD_TYPE = "@_RELEASETYPE_@";
+    private static String BUILD_TYPE = "@_RELEASETYPE_@";
 
     private static String buildHash = "N/A";
 
@@ -27,15 +24,10 @@ public abstract class BuildInfo
 
     public static boolean needCheckVersion = false;
 
-    protected static int minorNumberLatest = 0;
-
-    protected static int majorNumberLatest = 0;
+    protected static boolean outdated = false;
+    protected static String versionLatest = "N/A";
 
     private static Thread checkVersionThread;
-
-    // private static Thread checkBuildTypesThread;
-
-    // private static Properties buildTypes = new Properties();
 
     /* ------------------------------------------------------------ */
 
@@ -58,30 +50,16 @@ public abstract class BuildInfo
 
     /* ------------------------------------------------------------ */
 
-    public static void startVersionChecks()
+    public static void startVersionChecks(String modid)
     {
         if (needCheckVersion)
         {
-            // Check for latest version asap
-            checkVersionThread = new Thread(new Runnable() {
-                @Override
-                public void run()
-                {
-                	if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
-                		ServerVersionChecker.doCheckLatestVersion();
-                	}
-                }
-            }, "FEversionCheckThread");
-            checkVersionThread.start();
-
-            // checkBuildTypesThread = new Thread(new Runnable() {
-            // @Override
-            // public void run()
-            // {
-            // doCheckBuildTypes();
-            // }
-            // });
-            // checkBuildTypesThread.start();
+        	VersionChecker.CheckResult result = VersionChecker.getResult(ModList.get().getModContainerById(modid).get().getModInfo());
+            if (result != null && (result.status == VersionChecker.Status.OUTDATED || result.status == VersionChecker.Status.BETA_OUTDATED))
+            {
+            	outdated=true;
+            	versionLatest = result.target.toString();
+            }
         }
     }
 
@@ -101,7 +79,9 @@ public abstract class BuildInfo
                     }
                     catch (NumberFormatException e)
                     {
-                        MINOR_VERSION = 0;
+                    	if(manifest.getMainAttributes().getValue("BuildNumber").equals("DEV")) {
+                    		BUILD_TYPE = "DevBuild";
+                    	}
                     }
                 }
             }
@@ -113,46 +93,6 @@ public abstract class BuildInfo
         catch (IOException e1)
         {
             febuildinfo.error(String.format("Unable to get FE version information (%s)", BASE_VERSION));
-        }
-    }
-
-    // private static void doCheckBuildTypes()
-    // {
-    // try
-    // {
-    // URL buildInfoUrl = new URL("http://files.forgeessentials.com/buildtypes_" + MC_BASE_VERSION + ".txt");
-    // URLConnection con = buildInfoUrl.openConnection();
-    // con.setConnectTimeout(6000);
-    // con.setReadTimeout(12000);
-    // con.connect();
-    // buildTypes.load(con.getInputStream());
-    // }
-    // catch (IOException e)
-    // {
-    // System.err.println("Unable to retrieve build types");
-    // }
-    // }
-
-    // private static void joinBuildTypeThread()
-    // {
-    // if (checkBuildTypesThread == null)
-    // return;
-    // try
-    // {
-    // checkBuildTypesThread.join();
-    // checkBuildTypesThread = null;
-    // }
-    // catch (InterruptedException e)
-    // {
-    // /* do nothing */
-    // }
-    // }
-
-    public static void postNewVersionNotice()
-    {
-        if (majorNumberLatest != 0)
-        {
-            MinecraftForge.EVENT_BUS.post(new NewVersionEvent());
         }
     }
 
@@ -173,19 +113,16 @@ public abstract class BuildInfo
 
     public static String getLatestVersion()
     {
-        return BASE_VERSION + '.' + majorNumberLatest + '.' + minorNumberLatest;
+        return versionLatest;
     }
 
     public static boolean isOutdated()
     {
-        return majorNumberLatest > Integer.parseInt(MAJOR_VERSION) || minorNumberLatest > MINOR_VERSION;
+        return outdated;
     }
 
     public static String getBuildType()
     {
-        // joinBuildTypeThread();
-        // return buildTypes.getProperty(Integer.toString(buildNumber),
-        // BUILD_TYPE_NIGHTLY);
         return BUILD_TYPE;
     }
 

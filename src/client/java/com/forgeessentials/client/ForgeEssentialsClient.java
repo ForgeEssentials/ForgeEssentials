@@ -25,12 +25,12 @@ import com.forgeessentials.client.handler.Packet10TransferHandler;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.forgeessentials.commons.network.packets.Packet08AuthReply;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.ConnectingScreen;
 import net.minecraft.client.gui.screen.DirtMessageScreen;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
@@ -46,6 +46,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -145,8 +146,16 @@ public class ForgeEssentialsClient
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void newVersion(NewVersionEvent e)
+    public void login(EntityJoinWorldEvent event)
     {
+        if (event.getEntity() instanceof ClientPlayerEntity)
+        {
+        	BuildInfo.startVersionChecks(MODID);
+            if (BuildInfo.isOutdated())
+            {
+                event.getEntity().sendMessage(new StringTextComponent("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found"), event.getEntity().getUUID());
+            }
+        }
     }
 
     public static void getServerMods(List<String> e)
@@ -174,8 +183,8 @@ public class ForgeEssentialsClient
                 }
             }
             BuildInfo.getBuildInfo(jarLocation);
-            feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(),
-                    BuildInfo.getBuildHash()));
+            feclientlog.info(String.format("Running ForgeEssentials client %s (%s)-%s", BuildInfo.getCurrentVersion(),
+                    BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
 
             // Initialize with configuration options
             ClientConfig c = new ClientConfig();
@@ -184,8 +193,7 @@ public class ForgeEssentialsClient
             allowPermissionRender = c.allowPermissionRender.get();
             allowQuestionerShortcuts = c.allowQuestionerShortcuts.get();
             allowAuthAutoLogin = c.allowAuthAutoLogin.get();
-            if (!c.versioncheck.get())
-                BuildInfo.needCheckVersion = false;
+            BuildInfo.needCheckVersion = c.versioncheck.get();
 
             if (allowCUI)
                 MinecraftForge.EVENT_BUS.register(cuiRenderer);
@@ -195,8 +203,6 @@ public class ForgeEssentialsClient
                 MinecraftForge.EVENT_BUS.register(permissionOverlay);
             if (allowQuestionerShortcuts)
                 new QuestionerKeyHandler();
-            // BuildInfo.startVersionChecks();
-
         }
         else
         {
@@ -274,8 +280,11 @@ public class ForgeEssentialsClient
         {
             Minecraft instance = Minecraft.getInstance();
             instance.gui.getChat()
-                    .addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)",
-                            BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash())));
+                    .addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)-%s",
+                            BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType())));
+            if (BuildInfo.isOutdated()) {
+            	instance.gui.getChat().addMessage(new StringTextComponent(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion())));
+            }
             instance.gui.getChat().addMessage(new StringTextComponent(
                     "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
             instance.gui.getChat().addMessage(new StringTextComponent("Injected patches:"));
