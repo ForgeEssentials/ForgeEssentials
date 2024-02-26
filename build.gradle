@@ -105,9 +105,11 @@ ext.set 'releaseType', 'beta'
 
 // Get commit hash
 
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.apache.tools.ant.filters.ReplaceTokens
 import org.ajoberstar.grgit.Grgit
+import org.apache.tools.ant.filters.ReplaceTokens
+
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
@@ -115,8 +117,8 @@ ext.gitCommitHash = repo.log().find().abbreviatedId
 version = "$mod_base.$mod_major.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.16
+targetCompatibility = 1.16
 //java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Running Tasks: ' +project.gradle.startParameter.taskNames)
@@ -192,7 +194,7 @@ project.afterEvaluate {
 
 // Set up forge options
 minecraft {
-	mappings channel: 'official', version: '1.16.5'
+	mappings channel: 'official', version: '1.17.1'
     //accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
     runs {
 	    client {
