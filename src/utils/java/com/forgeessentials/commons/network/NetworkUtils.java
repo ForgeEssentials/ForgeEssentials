@@ -6,17 +6,17 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkUtils
 {
@@ -50,7 +50,7 @@ public class NetworkUtils
      * Registers a packet that will be sent to the server from the client.
      */
     public static <MSG extends IFEPacket> void registerClientToServer(int index, Class<MSG> type,
-            BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+            BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder,
             BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler)
     {
         registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_SERVER);
@@ -61,7 +61,7 @@ public class NetworkUtils
      * Registers a packet that will be sent to the client from the server.
      */
     public static <MSG extends IFEPacket> void registerServerToClient(int index, Class<MSG> type,
-            BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+            BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder,
             BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler)
     {
         registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_CLIENT);
@@ -71,7 +71,7 @@ public class NetworkUtils
      * INTERNAL METHOD, DO NOT CALL.
      */
     private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type,
-            BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+            BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder,
             BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler, NetworkDirection networkDirection)
     {
         if (registeredMessages.contains(index + networkDirection.toString()))
@@ -105,7 +105,7 @@ public class NetworkUtils
      * Send a packet to a specific player.<br>
      * Must be called Server side.
      */
-    public static <MSG extends IFEPacket> void sendTo(MSG msg, ServerPlayerEntity player)
+    public static <MSG extends IFEPacket> void sendTo(MSG msg, ServerPlayer player)
     {
         if (!(player instanceof FakePlayer))
         {
