@@ -1,6 +1,6 @@
 package com.forgeessentials.commons.selections;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public class Selection extends WorldArea
 {
@@ -17,7 +17,7 @@ public class Selection extends WorldArea
         this.end = end;
     }
 
-    public Selection(World world, AreaBase area)
+    public Selection(Level world, AreaBase area)
     {
         this(world.dimension().location().toString(), area.getLowPoint(), area.getHighPoint());
     }

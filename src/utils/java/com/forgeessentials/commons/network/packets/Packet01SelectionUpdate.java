@@ -2,13 +2,13 @@ package com.forgeessentials.commons.network.packets;
 
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet01SelectionUpdate implements IFEPacket
 {
@@ -19,7 +19,7 @@ public class Packet01SelectionUpdate implements IFEPacket
         this.selection = sel;
     }
 
-    public static Packet01SelectionUpdate decode(PacketBuffer byteBuf)
+    public static Packet01SelectionUpdate decode(FriendlyByteBuf byteBuf)
     {
         Selection selection = new Selection(byteBuf.readUtf(),
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble())
@@ -30,7 +30,7 @@ public class Packet01SelectionUpdate implements IFEPacket
     }
 
     @Override
-    public void encode(PacketBuffer byteBuf)
+    public void encode(FriendlyByteBuf byteBuf)
     {
         if (selection == null)
         {

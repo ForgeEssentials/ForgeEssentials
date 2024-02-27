@@ -1,6 +1,6 @@
 package com.forgeessentials.commons.selections;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public class WorldArea extends AreaBase
 {
@@ -24,7 +24,7 @@ public class WorldArea extends AreaBase
         return dim;
     }
 
-    public void setDimension(World dimensionId)
+    public void setDimension(Level dimensionId)
     {
         this.dim = dimensionId.dimension().location().toString();
     }

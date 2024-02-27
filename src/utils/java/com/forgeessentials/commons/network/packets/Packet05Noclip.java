@@ -2,11 +2,11 @@ package com.forgeessentials.commons.network.packets;
 
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet05Noclip implements IFEPacket
 {
@@ -17,13 +17,13 @@ public class Packet05Noclip implements IFEPacket
         this.noclip = noclip;
     }
 
-    public static Packet05Noclip decode(PacketBuffer buf)
+    public static Packet05Noclip decode(FriendlyByteBuf buf)
     {
         return new Packet05Noclip(buf.readBoolean());
     }
 
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         buf.writeBoolean(noclip);
     }

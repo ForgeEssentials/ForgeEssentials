@@ -2,22 +2,22 @@ package com.forgeessentials.commons.network.packets;
 
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet00Handshake implements IFEPacket
 {
 
-    public static Packet00Handshake decode(PacketBuffer buf)
+    public static Packet00Handshake decode(FriendlyByteBuf buf)
     {
         return new Packet00Handshake();
     }
 
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
     }
 

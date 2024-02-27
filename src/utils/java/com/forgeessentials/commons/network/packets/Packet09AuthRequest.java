@@ -2,11 +2,11 @@ package com.forgeessentials.commons.network.packets;
 
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet09AuthRequest implements IFEPacket
 {
@@ -20,13 +20,13 @@ public class Packet09AuthRequest implements IFEPacket
         this.hash = hash;
     }
 
-    public static Packet09AuthRequest decode(PacketBuffer buf)
+    public static Packet09AuthRequest decode(FriendlyByteBuf buf)
     {
         return new Packet09AuthRequest(buf.readUtf());
     }
 
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         buf.writeUtf(hash);
     }

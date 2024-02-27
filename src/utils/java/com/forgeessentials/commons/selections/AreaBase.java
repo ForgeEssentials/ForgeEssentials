@@ -3,7 +3,7 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 
 public class AreaBase
 {
@@ -227,8 +227,8 @@ public class AreaBase
         return new Point((high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
     }
 
-    public AxisAlignedBB toAxisAlignedBB()
+    public AABB toAxisAlignedBB()
     {
-        return new AxisAlignedBB(low.x, low.y, low.z, high.x, high.y, high.z);
+        return new AABB(low.x, low.y, low.z, high.x, high.y, high.z);
     }
 }

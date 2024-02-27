@@ -3,9 +3,9 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class Point
 {
@@ -41,7 +41,7 @@ public class Point
         z = (int) Math.floor(entity.position().z);
     }
 
-    public Point(Vector3d vector)
+    public Point(Vec3 vector)
     {
         this((int) vector.x, (int) vector.y, (int) vector.z);
     }
@@ -161,9 +161,9 @@ public class Point
         blockPos = null;
     }
 
-    public Vector3d toVec3()
+    public Vec3 toVec3()
     {
-        return new Vector3d(x, y, z);
+        return new Vec3(x, y, z);
     }
 
     // ------------------------------------------------------------

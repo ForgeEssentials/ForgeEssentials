@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.VersionChecker;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class BuildInfo
 {
@@ -55,10 +55,10 @@ public abstract class BuildInfo
         if (needCheckVersion)
         {
         	VersionChecker.CheckResult result = VersionChecker.getResult(ModList.get().getModContainerById(modid).get().getModInfo());
-            if (result != null && (result.status == VersionChecker.Status.OUTDATED || result.status == VersionChecker.Status.BETA_OUTDATED))
+            if (result != null && (result.status() == VersionChecker.Status.OUTDATED || result.status() == VersionChecker.Status.BETA_OUTDATED))
             {
             	outdated=true;
-            	versionLatest = result.target.toString();
+            	versionLatest = result.target().toString();
             }
         }
     }

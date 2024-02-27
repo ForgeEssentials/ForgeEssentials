@@ -3,17 +3,17 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.gson.annotations.Expose;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import com.google.gson.annotations.Expose;
 
 public class WarpPoint
 {
@@ -31,7 +31,7 @@ public class WarpPoint
     protected double zd;
 
     @Expose(serialize = false)
-    protected ServerWorld world;
+    protected ServerLevel world;
 
     // ------------------------------------------------------------
 
@@ -45,7 +45,7 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(ServerWorld world, double x, double y, double z, float playerPitch, float playerYaw)
+    public WarpPoint(ServerLevel world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
         this.dim = world.dimension().location().toString();
@@ -56,7 +56,7 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(ServerWorld world, BlockPos pos, float playerPitch, float playerYaw)
+    public WarpPoint(ServerLevel world, BlockPos pos, float playerPitch, float playerYaw)
     {
         this.world = world;
         this.dim = world.dimension().location().toString();
@@ -72,7 +72,7 @@ public class WarpPoint
         this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
     }
 
-    public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw)
+    public WarpPoint(ResourceKey<Level> dimension, BlockPos location, float pitch, float yaw)
     {
         this(dimension.location().toString(), location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch,
                 yaw);
@@ -95,8 +95,8 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x,
-                entity.position().y, entity.position().z, entity.xRot, entity.yRot);
+        this(entity.level instanceof ServerLevel ? (ServerLevel) entity.level : null, entity.position().x,
+                entity.position().y, entity.position().z, entity.xRotO, entity.yRotO);
     }
 
     public WarpPoint(WarpPoint point)
@@ -171,12 +171,12 @@ public class WarpPoint
         this.dim = dim;
     }
 
-    public ServerWorld getWorld()
+    public ServerLevel getWorld()
     {
         if (world != null && world.dimension().location().toString().equals(dim))
             return world.getLevel();
         world = ServerLifecycleHooks.getCurrentServer()
-                .getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+                .getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
         if (world == null)
         {
             System.out.println("argument.dimension.invalid" + dim);
@@ -247,9 +247,9 @@ public class WarpPoint
             yd = 0;
     }
 
-    public Vector3d toVec3()
+    public Vec3 toVec3()
     {
-        return new Vector3d(xd, yd, zd);
+        return new Vec3(xd, yd, zd);
     }
 
     public WorldPoint toWorldPoint()

@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet03PlayerPermissions implements IFEPacket
 {
@@ -32,7 +32,7 @@ public class Packet03PlayerPermissions implements IFEPacket
         this.breakIds = breakeIds;
     }
 
-    public static Packet03PlayerPermissions decode(PacketBuffer buf)
+    public static Packet03PlayerPermissions decode(FriendlyByteBuf buf)
     {
         boolean reset1 = buf.readBoolean();
         Set<String> placeIds1 = new HashSet<>();
@@ -48,7 +48,7 @@ public class Packet03PlayerPermissions implements IFEPacket
     }
 
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         buf.writeBoolean(reset);
         if (placeIds != null)

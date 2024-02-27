@@ -2,11 +2,11 @@ package com.forgeessentials.commons.network.packets;
 
 import java.util.function.Supplier;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet10ClientTransfer implements IFEPacket
 {
@@ -36,13 +36,13 @@ public class Packet10ClientTransfer implements IFEPacket
         this.sendNow = sendNow;
     }
 
-    public static Packet10ClientTransfer decode(PacketBuffer buf)
+    public static Packet10ClientTransfer decode(FriendlyByteBuf buf)
     {
         return new Packet10ClientTransfer(buf.readUtf(), buf.readUtf(), buf.readUtf(), buf.readUtf(), buf.readBoolean());
     }
 
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         buf.writeUtf(destinationAddress);
         buf.writeUtf(destinationAddressName);
