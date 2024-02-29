@@ -27,8 +27,8 @@ public class CUIComms
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static final String[] worldEditSelectionCommands = new String[] { "pos1", "pos2", "sel", "desel", "hpos1",
-            "hpos2", "/hunk", "expand", "contract", "outset", "inset", "shift" };
+    public static final String[] worldEditSelectionCommands = new String[] { "/pos1", "/pos2", "/sel", "/desel", "/hpos1",
+            "/hpos2", "/hunk", "expand", "contract", "outset", "inset", "shift", "/deselect" };
 
     protected List<ServerPlayerEntity> updatedSelectionPlayers = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class CUIComms
             CommandInfo info = CommandUtils.getCommandInfo(e);
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (info.getCommandName().equals(weCmd) && !(info.getSource().getEntity() instanceof FakePlayer))
+                if ((info.getCommandName().equals(weCmd) || info.getCommandName().startsWith("/"))&& !(info.getSource().getEntity() instanceof FakePlayer))
                 {
                     updatedSelectionPlayers.add((ServerPlayerEntity) info.getSource().getEntity());
                     return;

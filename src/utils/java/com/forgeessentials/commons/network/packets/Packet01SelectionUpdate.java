@@ -2,9 +2,10 @@ package com.forgeessentials.commons.network.packets;
 
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
 import net.minecraft.network.PacketBuffer;
@@ -14,19 +15,16 @@ public class Packet01SelectionUpdate implements IFEPacket
 {
     protected Selection selection;
 
-    public Packet01SelectionUpdate(Selection sel)
+    public Packet01SelectionUpdate(@Nullable Selection sel)
     {
         this.selection = sel;
     }
 
     public static Packet01SelectionUpdate decode(PacketBuffer byteBuf)
     {
-        Selection selection = new Selection(byteBuf.readUtf(),
-                byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble())
-                        : null,
-                byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble())
-                        : null);
-        return new Packet01SelectionUpdate(selection);
+    	//This should never be called on the server and the client has its own handler
+    	NetworkUtils.feletworklog.warn("Recieved a deformed Packet01SelectionUpdate on the wrong handler");
+        return new Packet01SelectionUpdate(null);
     }
 
     @Override
@@ -38,7 +36,6 @@ public class Packet01SelectionUpdate implements IFEPacket
             byteBuf.writeBoolean(false);
             return;
         }
-        byteBuf.writeUtf(selection.getDimension());
 
         if (selection.getStart() != null)
         {
@@ -65,6 +62,7 @@ public class Packet01SelectionUpdate implements IFEPacket
         }
     }
 
+    @Nullable
     public Selection getSelection()
     {
         return selection;
