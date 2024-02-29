@@ -97,7 +97,8 @@ public class CommandMultiworld extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [seed]");
+            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [seed*] [generatorOptions]"
+                + "\n* You can enter \"-\" instead of a number or text to ignore the seed parameter for the cause want to enter generatorOptions but no seed.");
             return;
         }
         // Get the world name
@@ -136,8 +137,17 @@ public class CommandMultiworld extends ParserCommandBase
             }
             catch (NumberFormatException e)
             {
-                seed = arg.hashCode();
+                if (!arg.equals("-")) {
+                    seed = arg.hashCode();
+                }
             }
+        }
+
+        // Get generator options
+        String generatorOptions = "";
+        if (!arguments.isEmpty())
+        {
+            generatorOptions = arguments.remove();
         }
 
         if (!arguments.isEmpty())
@@ -146,7 +156,7 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Multiworld world = new Multiworld(name, provider, worldType, seed);
+        Multiworld world = new Multiworld(name, provider, worldType, seed, generatorOptions);
         try
         {
             ModuleMultiworld.getMultiworldManager().addWorld(world);

@@ -127,6 +127,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
+            if (world.generatorOptions == null) {
+                world.generatorOptions = "";
+            }
+
             worlds.put(world.getName(), world);
             try
             {
@@ -272,10 +276,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
             WorldSettings worldSettings = new WorldSettings(world.seed, GameType.SURVIVAL, world.mapFeaturesEnabled, false, world.worldTypeObj);
-
+            worldSettings.func_82750_a(world.generatorOptions);
             // Create WorldServer with settings
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
-                    overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler,
+                    world.name, world.dimensionId, worldSettings, //
                     overworld, mcServer.theProfiler, world);
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.dimensionId = world.dimensionId;
