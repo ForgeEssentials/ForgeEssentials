@@ -11,6 +11,7 @@
       "block.MixinBlockFarmland",
       "command.MixinCommandHandler",
       "entity.MixinEntity",
+      "entity.MixinEntityItemFrame",
       "entity.MixinEntityTracker",
       "entity.player.MixinEntityPlayerMP",
       "item.crafting.MixinCraftingManager",
