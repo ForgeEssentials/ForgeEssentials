@@ -2,16 +2,16 @@ package com.forgeessentials.client.mixin;
 
 import java.util.function.Supplier;
 
+import net.minecraftforge.fmllegacy.network.FMLHandshakeHandler;
+import net.minecraftforge.fmllegacy.network.FMLHandshakeMessages;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.At;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-
-import net.minecraftforge.fml.network.FMLHandshakeHandler;
-import net.minecraftforge.fml.network.FMLHandshakeMessages;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 @Mixin(FMLHandshakeHandler.class)
 public class ServerModListMixin
