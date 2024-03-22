@@ -36,7 +36,6 @@ plugins {
 }
 apply plugin: 'jacoco'
 apply plugin: 'org.spongepowered.mixin'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 
 sonarqube {
