@@ -18,8 +18,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           sleep 5
-          echo ${{ github.event.workflow_run.pull_requests }}
-          FILES=$(gh pr view ${{ github.event.workflow_run.pull_requests[1].number }} --json files --jq '.files.[].path')
+          echo ${{ github.event.workflow_run.pull_requests[0] }}
+          echo ${{ github.event.workflow_run.pull_requests[0].number }}
+          FILES=$(gh pr view ${{ github.event.workflow_run.pull_requests[0].number }} --json files --jq '.files.[].path')
           if [[ $FILES =~ "gradle" ]]
           then
             echo Protected Files found, unable to approve
