@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 
 import net.minecraft.client.Minecraft;
@@ -62,64 +63,64 @@ public class Packet01SelectionUpdateCUIRenderrer
     private static void renderBox(Matrix4f matrix, BufferBuilder buffer, Tesselator tessellator, Vec3 cornerVertex, Double offsetX, Double offsetY, Double offsetZ, float r, float g, float b, float alpha)
     {
         // FRONT
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
         // BACK
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
         // betweens.
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x+offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y-offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(cornerVertex.x-offsetX), (float)(cornerVertex.y+offsetY), (float)(cornerVertex.z+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
@@ -167,64 +168,64 @@ public class Packet01SelectionUpdateCUIRenderrer
     		z1=z2=v.z;
     	}
         // FRONT
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
         // BACK
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
         // betweens.
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z1+offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y1+offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();
 
-    	buffer.begin(1, DefaultVertexFormat.POSITION_COLOR);
+    	buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix, (float)(x1+offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         buffer.vertex(matrix, (float)(x2-offsetX), (float)(y2-offsetY), (float)(z2-offsetZ)).color(r, g, b, alpha).endVertex();
         tessellator.end();

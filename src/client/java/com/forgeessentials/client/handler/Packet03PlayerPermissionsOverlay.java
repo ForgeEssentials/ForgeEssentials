@@ -9,8 +9,10 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +29,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class Packet03PlayerPermissionsOverlay extends AbstractGui
+public class Packet03PlayerPermissionsOverlay extends GuiComponent
 {
 
     protected ResourceLocation deniedPlaceTexture;
@@ -134,7 +136,7 @@ public class Packet03PlayerPermissionsOverlay extends AbstractGui
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
         BufferBuilder wr = Tesselator.getInstance().getBuilder();
-        wr.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION_TEX);
+        wr.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_TEX);
         int zLevel = 1000;
         wr.vertex(xPos, yPos + height, zLevel).uv(0, 1).endVertex();
         wr.vertex(xPos + width, yPos + height, zLevel).uv(1, 1).endVertex();

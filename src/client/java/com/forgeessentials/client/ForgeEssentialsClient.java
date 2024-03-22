@@ -3,7 +3,6 @@ package com.forgeessentials.client;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,11 +29,13 @@ import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.forgeessentials.commons.network.packets.Packet08AuthReply;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.DisconnectedScreen;
 import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -59,7 +60,6 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 @Mod(ForgeEssentialsClient.MODID)
@@ -350,8 +350,8 @@ public class ForgeEssentialsClient
         } else {
             mc.clearLevel();
         }
-        mc.setScreen(new MultiplayerScreen(new TitleScreen()));
-        mc.setScreen(new ConnectingScreen(mc.screen, mc, new ServerData(destinationName, destinationAddress, false)));
+        //TODO add invalid arg checking
+        ConnectScreen.startConnecting(mc.screen, mc, new ServerAddress(destinationAddress.split(":")[0],Integer.parseInt(destinationName.split(":")[1])), new ServerData(destinationName, destinationAddress, false));
     }
     /* ------------------------------------------------------------ */
 
