@@ -75,7 +75,7 @@ public class ChatConfig extends ConfigLoaderBase
         for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, MUTEDCMD_HELP).getStringList())
             mutedCommands.add(cmd);
 
-        coloredTabMenuEnabled = config.getBoolean(CAT_SB, "Enabled", false, "Whether or not to enable the tab menu");
+        coloredTabMenuEnabled = config.getBoolean(CAT_SB, "Enabled", false, "Whether or not to enable the tab menu colors");
         ModuleChat.instance.setChatLogging(config.get(CATEGORY, "LogChat", true, "Log all chat messages").getBoolean(true));
     }
 

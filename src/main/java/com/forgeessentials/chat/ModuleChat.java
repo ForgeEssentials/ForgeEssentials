@@ -126,6 +126,10 @@ public class ModuleChat
 
         censor = new Censor();
         mailer = new Mailer();
+        if (ChatConfig.coloredTabMenuEnabled)
+        {
+            scoreBoardColors = new ScoreBoardColors();
+        }
 
         setupChatReplacements();
     }
@@ -191,9 +195,10 @@ public class ModuleChat
         APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
         APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");
         APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");
+
         if (ChatConfig.coloredTabMenuEnabled)
         {
-            scoreBoardColors = new ScoreBoardColors();
+            scoreBoardColors.registerPerms();
         }
     }
 
