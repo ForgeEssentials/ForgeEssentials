@@ -7,12 +7,12 @@ import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 public class EffectBlock extends WorldBorderEffect
 {
     @Override
-    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
     }
 

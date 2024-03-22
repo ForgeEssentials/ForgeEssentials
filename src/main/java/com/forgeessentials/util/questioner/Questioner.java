@@ -10,8 +10,8 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -22,7 +22,7 @@ public class Questioner extends ServerEventHandler
 
     public static final String MSG_STILL_ACTIVE = "Error. There is still an unanswered question left";
 
-    private static Map<PlayerEntity, QuestionData> questions = new HashMap<>();
+    private static Map<Player, QuestionData> questions = new HashMap<>();
 
     public static int DEFAULT_TIMEOUT = 120;
 
@@ -46,8 +46,8 @@ public class Questioner extends ServerEventHandler
         question.sendQuestion();
     }
 
-    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout,
-            PlayerEntity source) throws QuestionerStillActiveException
+    public static void add(Player target, String question, QuestionerCallback callback, int timeout,
+            Player source) throws QuestionerStillActiveException
     {
         try
         {
@@ -59,20 +59,20 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout)
+    public static void add(Player target, String question, QuestionerCallback callback, int timeout)
             throws QuestionerStillActiveException
     {
         add(target, question, callback, timeout, null);
     }
 
-    public static void add(PlayerEntity target, String question, QuestionerCallback callback)
+    public static void add(Player target, String question, QuestionerCallback callback)
             throws QuestionerStillActiveException
     {
         add(target, question, callback, DEFAULT_TIMEOUT);
     }
 
-    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout,
-            PlayerEntity source) throws QuestionerStillActiveException
+    public static void addChecked(Player target, String question, QuestionerCallback callback, int timeout,
+            Player source) throws QuestionerStillActiveException
     {
         try
         {
@@ -84,7 +84,7 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout)
+    public static void addChecked(Player target, String question, QuestionerCallback callback, int timeout)
             throws QuestionerStillActiveException
     {
         try
@@ -97,7 +97,7 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback)
+    public static void addChecked(Player target, String question, QuestionerCallback callback)
             throws QuestionerStillActiveException
     {
         try
@@ -110,7 +110,7 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static synchronized void answer(PlayerEntity playerAnswering, Boolean answer) throws CommandException
+    public static synchronized void answer(Player playerAnswering, Boolean answer) throws CommandRuntimeException
     {
         QuestionData question = questions.remove(playerAnswering);
         if (question != null)
@@ -124,10 +124,10 @@ public class Questioner extends ServerEventHandler
 
     public static synchronized void tick()
     {
-        Iterator<Entry<PlayerEntity, QuestionData>> it = questions.entrySet().iterator();
+        Iterator<Entry<Player, QuestionData>> it = questions.entrySet().iterator();
         while (it.hasNext())
         {
-            Entry<PlayerEntity, QuestionData> question = it.next();
+            Entry<Player, QuestionData> question = it.next();
             if (question.getValue().isTimeout())
             {
                 it.remove();
@@ -135,7 +135,7 @@ public class Questioner extends ServerEventHandler
                 {
                     question.getValue().doAnswer(null);
                 }
-                catch (CommandException ignored)
+                catch (CommandRuntimeException ignored)
                 {
                 }
 
@@ -143,17 +143,17 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static void cancel(PlayerEntity target) throws CommandException
+    public static void cancel(Player target) throws CommandRuntimeException
     {
         answer(target, null);
     }
 
-    public static void confirm(PlayerEntity target) throws CommandException
+    public static void confirm(Player target) throws CommandRuntimeException
     {
         answer(target, true);
     }
 
-    public static void deny(PlayerEntity target) throws CommandException
+    public static void deny(Player target) throws CommandRuntimeException
     {
         answer(target, false);
     }

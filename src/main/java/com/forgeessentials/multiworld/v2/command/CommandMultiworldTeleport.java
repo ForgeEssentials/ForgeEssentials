@@ -14,15 +14,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class CommandMultiworldTeleport extends ForgeEssentialsCommandBuilder
@@ -51,7 +51,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
         		.then(Commands.argument("target", EntityArgument.player())
@@ -61,15 +61,15 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-    	ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "target");
-    	ServerWorld dim = DimensionArgument.getDimension(ctx, "dim");
+    	ServerPlayer player = EntityArgument.getPlayer(ctx, "target");
+    	ServerLevel dim = DimensionArgument.getDimension(ctx, "dim");
     	BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "pos");
 
     	Multiworld multiworld = ModuleMultiworldV2.getMultiworldManager()
 				.getMultiworld(dim.dimension().location().toString());
-		ServerWorld world = multiworld != null
+		ServerLevel world = multiworld != null
 				? multiworld.getWorldServer()
 				: APIRegistry.namedWorldHandler.getWorld(dim.dimension().location().toString());
 		if (world == null) {

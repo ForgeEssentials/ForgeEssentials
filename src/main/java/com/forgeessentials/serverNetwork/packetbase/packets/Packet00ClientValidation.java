@@ -3,7 +3,7 @@ package com.forgeessentials.serverNetwork.packetbase.packets;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class Packet00ClientValidation extends FEPacket
 {
@@ -18,7 +18,7 @@ public class Packet00ClientValidation extends FEPacket
     }
 
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         buf.writeUtf(channelName);
         buf.writeVarInt(versionNumber);
@@ -26,7 +26,7 @@ public class Packet00ClientValidation extends FEPacket
     }
 
     @Override
-    public void decode(PacketBuffer buf)
+    public void decode(FriendlyByteBuf buf)
     {
         channelName = buf.readUtf();
         versionNumber = buf.readVarInt();

@@ -3,13 +3,13 @@ package com.forgeessentials.afterlife;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
-public class InventoryGrave extends Inventory
+public class InventoryGrave extends SimpleContainer
 {
 
     private Grave grave;
@@ -23,7 +23,7 @@ public class InventoryGrave extends Inventory
     }
 
     @Override
-    public void startOpen(PlayerEntity player)
+    public void startOpen(Player player)
     {
         grave.setOpen(true);
         for (int i = 0; i < getContainerSize(); i++)
@@ -32,7 +32,7 @@ public class InventoryGrave extends Inventory
     }
 
     @Override
-    public void stopOpen(PlayerEntity player)
+    public void stopOpen(Player player)
     {
         for (int i = 0; i < getContainerSize(); i++)
         {
@@ -50,9 +50,9 @@ public class InventoryGrave extends Inventory
         }
     }
 
-    public ITextComponent getDisplayName()
+    public Component getDisplayName()
     {
-        return new StringTextComponent(name);
+        return new TextComponent(name);
     }
 
 }

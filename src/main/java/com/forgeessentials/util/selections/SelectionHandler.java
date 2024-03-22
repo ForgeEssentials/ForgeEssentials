@@ -14,10 +14,10 @@ import com.forgeessentials.util.events.player.FEPlayerEvent.ClientHandshakeEstab
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,7 +35,7 @@ public class SelectionHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                sendUpdate((ServerPlayerEntity) e.getPlayer());
+                sendUpdate((ServerPlayer) e.getPlayer());
             }
         });
     }
@@ -48,7 +48,7 @@ public class SelectionHandler extends ServerEventHandler
             return;
 
         // get info now rather than later
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled())
@@ -68,12 +68,12 @@ public class SelectionHandler extends ServerEventHandler
 
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setStart((ServerPlayerEntity) event.getPlayer(), point);
-        SelectionHandler.setDimension((ServerPlayerEntity) event.getPlayer(), point.getDimension());
+        SelectionHandler.setStart((ServerPlayer) event.getPlayer(), point);
+        SelectionHandler.setDimension((ServerPlayer) event.getPlayer(), point.getDimension());
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(),
                 event.getPos().getZ());
-        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
-        SelectionHandler.sendUpdate((ServerPlayerEntity) event.getPlayer());
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, ChatFormatting.DARK_PURPLE);
+        SelectionHandler.sendUpdate((ServerPlayer) event.getPlayer());
         event.setCanceled(true);
     }
 
@@ -85,10 +85,10 @@ public class SelectionHandler extends ServerEventHandler
             return;
 
         // get info now rather than later
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
-        if (!info.isWandEnabled() || event.getHand() == Hand.OFF_HAND)
+        if (!info.isWandEnabled() || event.getHand() == InteractionHand.OFF_HAND)
         {
             return;
         }
@@ -107,17 +107,17 @@ public class SelectionHandler extends ServerEventHandler
 
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setEnd((ServerPlayerEntity) event.getPlayer(), point);
-        SelectionHandler.setDimension((ServerPlayerEntity) event.getPlayer(), point.getDimension());
+        SelectionHandler.setEnd((ServerPlayer) event.getPlayer(), point);
+        SelectionHandler.setDimension((ServerPlayer) event.getPlayer(), point.getDimension());
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(),
                 event.getPos().getZ());
-        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
-        SelectionHandler.sendUpdate((ServerPlayerEntity) event.getPlayer());
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, ChatFormatting.DARK_PURPLE);
+        SelectionHandler.sendUpdate((ServerPlayer) event.getPlayer());
         event.setCanceled(true);
 
     }
 
-    public static void sendUpdate(ServerPlayerEntity player)
+    public static void sendUpdate(ServerPlayer player)
     {
         if (PlayerInfo.get(player).getHasFEClient())
         {
@@ -132,27 +132,27 @@ public class SelectionHandler extends ServerEventHandler
         }
     }
 
-    public static Selection getSelection(ServerPlayerEntity player)
+    public static Selection getSelection(ServerPlayer player)
     {
         return selectionProvider.getSelection(player);
     }
 
-    public static void setDimension(ServerPlayerEntity player, String dim)
+    public static void setDimension(ServerPlayer player, String dim)
     {
         selectionProvider.setDimension(player, dim);
     }
 
-    public static void setStart(ServerPlayerEntity player, Point start)
+    public static void setStart(ServerPlayer player, Point start)
     {
         selectionProvider.setStart(player, start);
     }
 
-    public static void setEnd(ServerPlayerEntity player, Point end)
+    public static void setEnd(ServerPlayer player, Point end)
     {
         selectionProvider.setEnd(player, end);
     }
 
-    public static void select(ServerPlayerEntity player, String dimension, AreaBase area)
+    public static void select(ServerPlayer player, String dimension, AreaBase area)
     {
         selectionProvider.select(player, dimension, area);
     }

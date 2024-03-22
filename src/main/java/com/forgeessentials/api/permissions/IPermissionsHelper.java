@@ -8,7 +8,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.IPermissionHandler;
 
@@ -50,7 +50,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * @param player
      * @param permissionNode
      */
-    boolean checkPermission(PlayerEntity player, String permissionNode);
+    boolean checkPermission(Player player, String permissionNode);
 
     /**
      * Gets a permission-property for a player
@@ -59,7 +59,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(PlayerEntity player, String permissionNode);
+    String getPermissionProperty(Player player, String permissionNode);
 
     /**
      * Register a permission description

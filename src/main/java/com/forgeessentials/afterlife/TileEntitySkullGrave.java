@@ -4,10 +4,10 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.SkullTileEntity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
-public class TileEntitySkullGrave extends SkullTileEntity
+public class TileEntitySkullGrave extends SkullBlockEntity
 {
 
     public TileEntitySkullGrave()

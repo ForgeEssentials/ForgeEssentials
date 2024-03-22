@@ -16,9 +16,9 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.handler.chat.QueryChatHandler.Request;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -33,7 +33,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
 
     public static final String PERM = PERM_REMOTE + ".chat.query";
 
-    private static Map<Long, TextComponent> chatLog = new TreeMap<>();
+    private static Map<Long, BaseComponent> chatLog = new TreeMap<>();
 
     public QueryChatHandler()
     {
@@ -47,7 +47,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     {
         ChatFormat format = request.data == null ? ChatFormat.PLAINTEXT : ChatFormat.fromString(request.data.format);
         Map<Long, Object> messages = new HashMap<>();
-        for (Entry<Long, TextComponent> message : chatLog.entrySet())
+        for (Entry<Long, BaseComponent> message : chatLog.entrySet())
         {
             if (request.data != null && message.getKey() < request.data.timestamp)
                 continue;
@@ -62,12 +62,12 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
         onMessage(event.getComponent());
     }
 
-    public static void onMessage(ITextComponent message)
+    public static void onMessage(Component message)
     {
         Long key = System.currentTimeMillis();
         while (chatLog.containsKey(key))
             key++;
-        TextComponent me = new StringTextComponent("");
+        BaseComponent me = new TextComponent("");
         me.append(message);
         chatLog.put(key, me);
         while (chatLog.size() > BUFFER_SIZE)

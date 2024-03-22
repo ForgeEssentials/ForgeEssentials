@@ -6,11 +6,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -20,6 +20,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
+import ServerPlayer;
+
 public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
 {
 
@@ -28,7 +30,7 @@ public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public ServerPlayerEntity player;
+    public ServerPlayer player;
 
     public boolean place;
 
@@ -51,13 +53,13 @@ public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (player == null)
             player = getServerPlayer(ctx.getSource());

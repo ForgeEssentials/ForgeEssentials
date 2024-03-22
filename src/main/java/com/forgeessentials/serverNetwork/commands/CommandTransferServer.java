@@ -15,10 +15,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,7 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
         		.then(Commands.argument("player", EntityArgument.player())
@@ -61,7 +61,7 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
         				);
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_servers = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_servers = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>();
         if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
             for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
@@ -76,11 +76,11 @@ public class CommandTransferServer extends ForgeEssentialsCommandBuilder
                 listArgs.add(ModuleNetworking.getLocalClient().getRemoteServerId());
             }
         }
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
     	ModuleNetworking.getInstance().getTranferManager().sendPlayerToServer(EntityArgument.getPlayer(ctx, "player"), StringArgumentType.getString(ctx, "serverId"));
     	return Command.SINGLE_SUCCESS;

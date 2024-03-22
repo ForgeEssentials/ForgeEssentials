@@ -3,24 +3,24 @@ package com.forgeessentials.commands.util;
 import com.forgeessentials.commands.player.CommandNoClip;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommandsEventHandler extends ServerEventHandler
 {
 
-    public static int getWorldHour(World world)
+    public static int getWorldHour(Level world)
     {
         return (int) ((world.getDayTime() % 24000) / 1000);
     }
 
-    public static int getWorldDays(World world)
+    public static int getWorldDays(Level world)
     {
         return (int) (world.getDayTime() / 24000);
     }
 
-    public static void makeWorldTimeHours(World world, int target)
+    public static void makeWorldTimeHours(Level world, int target)
     {
         world.getTimeOfDay((getWorldDays(world) + 1) * 24000 + (target * 1000));
     }

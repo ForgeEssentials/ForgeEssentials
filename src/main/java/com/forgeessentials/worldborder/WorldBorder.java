@@ -15,8 +15,8 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class WorldBorder implements Loadable
 {
@@ -37,7 +37,7 @@ public class WorldBorder implements Loadable
     private AreaBase area;
 
     @Expose(serialize = false)
-    private Map<PlayerEntity, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
+    private Map<Player, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
 
     public WorldBorder(Point center, int xSize, int zSize, String registryKey)
     {
@@ -123,12 +123,12 @@ public class WorldBorder implements Loadable
         area = new AreaBase(minP, maxP);
     }
 
-    public Set<WorldBorderEffect> getOrCreateActiveEffects(PlayerEntity player)
+    public Set<WorldBorderEffect> getOrCreateActiveEffects(Player player)
     {
         return activeEffects.computeIfAbsent(player, k -> new HashSet<>());
     }
 
-    public Set<WorldBorderEffect> getActiveEffects(PlayerEntity player)
+    public Set<WorldBorderEffect> getActiveEffects(Player player)
     {
         return activeEffects.get(player);
     }
@@ -139,7 +139,7 @@ public class WorldBorder implements Loadable
         DataManager.getInstance().save(this, key.replace(":", "-"));
     }
 
-    public static WorldBorder load(World world)
+    public static WorldBorder load(Level world)
     {
         String key = world.dimension().location().toString();
         return DataManager.getInstance().load(WorldBorder.class, key.replace(":", "-"));

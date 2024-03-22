@@ -9,7 +9,7 @@ import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import com.forgeessentials.util.events.world.FireEvent;
 
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
 {
@@ -27,7 +27,7 @@ public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
     {
         Action01Block action = new Action01Block();
         action.time = date;
-        action.world = ((ServerWorld) event.getWorld()).getLevel().dimension().location().toString();
+        action.world = ((ServerLevel) event.getWorld()).getLevel().dimension().location().toString();
         action.block = getBlock(event.getState().getBlock());
         action.entity = tileEntityBlob;
         action.type = ActionBlockType.BURN;

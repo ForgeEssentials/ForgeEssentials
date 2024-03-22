@@ -20,11 +20,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +61,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("help")
@@ -552,19 +552,19 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                         );
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_ListArgs = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_ListArgs = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>(Arrays.asList(PermissionCommandParser.parseListArgs));
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_players = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_players = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>(Arrays.asList(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerNamesArray()));
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_parseUserGroupArgs = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_parseUserGroupArgs = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>(Arrays.asList(PermissionCommandParser.parseUserGroupArgs));
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_zones = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_zones = (ctx, builder) -> {
         List<String> listzones = new ArrayList<>();
         for (Zone z : APIRegistry.perms.getZones())
         {
@@ -584,17 +584,17 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             }
         }
         listzones.add("MainServerZone");
-        return ISuggestionProvider.suggest(listzones, builder);
+        return SharedSuggestionProvider.suggest(listzones, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_group = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_group = (ctx, builder) -> {
         List<String> listgroup = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
-        return ISuggestionProvider.suggest(listgroup, builder);
+        return SharedSuggestionProvider.suggest(listgroup, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_perm = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_perm = (ctx, builder) -> {
         List<String> listperm = new ArrayList<>(APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
-        return ISuggestionProvider.suggest(listperm, builder);
+        return SharedSuggestionProvider.suggest(listperm, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_GroupPerm = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_GroupPerm = (ctx, builder) -> {
         Zone zone;
         try
         {
@@ -605,9 +605,9 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             zone = APIRegistry.perms.getServerZone();
         }
         List<String> listclear = new ArrayList<>(zone.getGroupPermissions(StringArgumentType.getString(ctx, "group")).keySet());
-        return ISuggestionProvider.suggest(listclear, builder);
+        return SharedSuggestionProvider.suggest(listclear, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_GlobalPerm = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_GlobalPerm = (ctx, builder) -> {
         Zone zone;
         try
         {
@@ -618,9 +618,9 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             zone = APIRegistry.perms.getServerZone();
         }
         List<String> listclear = new ArrayList<>(zone.getGroupPermissions(Zone.GROUP_DEFAULT).keySet());
-        return ISuggestionProvider.suggest(listclear, builder);
+        return SharedSuggestionProvider.suggest(listclear, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_PlayerPerm = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_PlayerPerm = (ctx, builder) -> {
         List<String> listclear = new ArrayList<>();
         Zone zone;
         try
@@ -637,11 +637,11 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             listclear.addAll(zone.getPlayerPermissions(ident).keySet());
         }
         catch (FECommandParsingException ignored){}
-        return ISuggestionProvider.suggest(listclear, builder);
+        return SharedSuggestionProvider.suggest(listclear, builder);
     };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {

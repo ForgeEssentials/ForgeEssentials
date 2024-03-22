@@ -12,10 +12,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -46,7 +46,7 @@ public class CommandGod extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
         		.then(Commands.literal("me")
@@ -59,7 +59,7 @@ public class CommandGod extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("me"))
         {
@@ -68,7 +68,7 @@ public class CommandGod extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("others"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
             	setGod(player, BoolArgumentType.getBool(ctx, "toggle"));
@@ -82,7 +82,7 @@ public class CommandGod extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public void setGod(ServerPlayerEntity player, boolean enabled)
+    public void setGod(ServerPlayer player, boolean enabled)
     {
         APIRegistry.perms.setPlayerPermission(UserIdent.get(player), "fe.protection.damageby.*", enabled ? false : true);
         if (enabled)

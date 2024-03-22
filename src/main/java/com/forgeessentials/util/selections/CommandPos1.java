@@ -12,11 +12,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("atLocation")
@@ -45,9 +45,9 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        ServerPlayer player = getServerPlayer(ctx.getSource());
         int x, y, z;
 
         if (params.equals("here"))
@@ -75,9 +75,9 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(player);
+        HitResult mop = PlayerUtil.getPlayerLookingSpot(player);
 
-        if (mop.getType() == RayTraceResult.Type.MISS)
+        if (mop.getType() == HitResult.Type.MISS)
         {
             ChatOutputHandler.chatError(player, "You must first look at the ground!");
             return Command.SINGLE_SUCCESS;

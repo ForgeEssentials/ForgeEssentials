@@ -11,11 +11,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,16 +51,16 @@ public class CommandTppos extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("pos", BlockPosArgument.blockPos())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
+        ServerPlayer sender = getServerPlayer(ctx.getSource());
         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
         TeleportHelper.teleport(sender, new WarpPoint(sender.level.dimension(), pos, sender.xRot, sender.yRot));
         return Command.SINGLE_SUCCESS;

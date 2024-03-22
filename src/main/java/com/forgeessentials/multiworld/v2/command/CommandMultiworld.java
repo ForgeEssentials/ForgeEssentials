@@ -23,12 +23,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -62,7 +62,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
         		.then(Commands.literal("list")
@@ -130,40 +130,40 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
         						.executes(CommandContext -> execute(CommandContext, "delete"))));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_dims = (ctx, builder) -> {
-        return ISuggestionProvider.suggest(ModuleMultiworldV2.getMultiworldManager().getDimensionsNames(), builder);
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_dims = (ctx, builder) -> {
+        return SharedSuggestionProvider.suggest(ModuleMultiworldV2.getMultiworldManager().getDimensionsNames(), builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_dimTypes = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_dimTypes = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionTypes().keySet()) {
     		types.add(name.replace(':', '+'));
     	}
-        return ISuggestionProvider.suggest(types, builder);
+        return SharedSuggestionProvider.suggest(types, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_chunkgens = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_chunkgens = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getChunkGenerators()) {
     		types.add(name.replace(':', '+'));
     	}
-        return ISuggestionProvider.suggest(types, builder);
+        return SharedSuggestionProvider.suggest(types, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_biomeTypes = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_biomeTypes = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getBiomeProviders()) {
     		types.add(name.replace(':', '+'));
     	}
-        return ISuggestionProvider.suggest(types, builder);
+        return SharedSuggestionProvider.suggest(types, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_dimSettings = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_dimSettings = (ctx, builder) -> {
     	Set<String> types = new HashSet<>();
     	for(String name : ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getDimensionSettings().keySet()) {
     		types.add(name.replace(':', '+'));
     	}
-        return ISuggestionProvider.suggest(types, builder);
+        return SharedSuggestionProvider.suggest(types, builder);
     };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
     	switch(params.split(":")[0]) {
     		case "help":
@@ -262,7 +262,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
     				return Command.SINGLE_SUCCESS;
     			}
     			String worldName = StringArgumentType.getString(ctx, "name");
-        		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getSeed();
+        		Long seed = ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD).getSeed();
         		String biomeProvider = "";
         		String dimensionSettings = "";
         		String chunkgenerator = "";
@@ -355,7 +355,7 @@ public class CommandMultiworld extends ForgeEssentialsCommandBuilder
 	                    					}
 	                    				} catch (MultiworldException e) {
 	                    					ChatOutputHandler.chatError(ctx.getSource(), e.type.error);
-	                    					throw new CommandException(new StringTextComponent(e.type.error));
+	                    					throw new CommandRuntimeException(new TextComponent(e.type.error));
 	                    				}
 	                            }
 	                        }, 20);

@@ -3,14 +3,14 @@ package com.forgeessentials.compat.worldedit;
 import com.forgeessentials.api.APIRegistry;
 import com.sk89q.worldedit.forge.ForgePermissionsProvider;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class PermissionsHandler implements ForgePermissionsProvider
 {
 
     @Override
-    public boolean hasPermission(ServerPlayerEntity player, String permission)
+    public boolean hasPermission(ServerPlayer player, String permission)
     {
     	System.out.println("Checking We Permission: "+permission);
         return APIRegistry.perms.checkPermission(player, permission);

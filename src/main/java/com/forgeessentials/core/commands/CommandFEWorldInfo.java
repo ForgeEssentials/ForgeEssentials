@@ -7,8 +7,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -22,16 +22,16 @@ public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Showing all world provider names:");
-        for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+        for (Level world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("%s - %s",
                     world.dimension().location().getPath(), world.dimension().location().toString()));

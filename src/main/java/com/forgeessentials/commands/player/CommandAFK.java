@@ -19,10 +19,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +76,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("timeout")
@@ -100,13 +100,13 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "afk"));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_group = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_group = (ctx, builder) -> {
         List<String> listgroup = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
-        return ISuggestionProvider.suggest(listgroup, builder);
+        return SharedSuggestionProvider.suggest(listgroup, builder);
     };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         UserIdent ident = UserIdent.get(ctx.getSource());
 

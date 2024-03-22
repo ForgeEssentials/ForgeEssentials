@@ -16,15 +16,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +43,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
                 .then(Commands.literal("regen")
@@ -65,7 +65,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         switch (params)
         {
@@ -83,7 +83,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "regen":
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             ModuleRemote.getInstance().setPasskey(getIdent(player), ModuleRemote.getInstance().generatePasskey());
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Generated new passkey");
             showPasskey(ctx.getSource(), getIdent(player), false);
@@ -91,7 +91,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "setkey":
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             String key = StringArgumentType.getString(ctx, "key");
             if (!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL))
             {
@@ -106,7 +106,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "block":
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!getIdent(player).hasUuid())
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found",
@@ -126,7 +126,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "kick":
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!getIdent(player).hasUuid())
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found",
@@ -188,7 +188,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "qr":
         {
-            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
+            if (!(ctx.getSource().getEntity() instanceof Player))
             {
                 ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 return Command.SINGLE_SUCCESS;
@@ -215,7 +215,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
      * @param ident
      * @param hideKey
      */
-    public void showPasskey(CommandSource source, UserIdent ident, boolean hideKey)
+    public void showPasskey(CommandSourceStack source, UserIdent ident, boolean hideKey)
     {
         String passkey = ModuleRemote.getInstance().getPasskey(ident);
         if (hideKey && !ident.hasPlayer())
@@ -224,7 +224,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString)
                 .replaceAll("\\|", "%7C");
 
-        TextComponent qrLink = new StringTextComponent("[QR code]");
+        BaseComponent qrLink = new TextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
         {
             ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr");
@@ -235,14 +235,14 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
             qrLink.withStyle((style) -> style.withClickEvent(click));
         }
-        qrLink.withStyle(TextFormatting.RED);
-        qrLink.withStyle(TextFormatting.UNDERLINE);
-        TextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ");
+        qrLink.withStyle(ChatFormatting.RED);
+        qrLink.withStyle(ChatFormatting.UNDERLINE);
+        BaseComponent msg = new TextComponent("Remote passkey = " + passkey + " ");
         msg.append(qrLink);
 
         ChatOutputHandler.sendMessage(source, msg);
         ChatOutputHandler.sendMessage(source,
-                new StringTextComponent("Port = " + ModuleRemote.getInstance().getPort()));
+                new TextComponent("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override

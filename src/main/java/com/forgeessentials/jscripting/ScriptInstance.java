@@ -38,9 +38,9 @@ import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.BaseComponent;
 
 public class ScriptInstance
 {
@@ -119,7 +119,7 @@ public class ScriptInstance
 
     private static Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
 
-    private WeakReference<CommandSource> lastSender;
+    private WeakReference<CommandSourceStack> lastSender;
 
     /* ************************************************************ */
     /* PROPERTY ACCESSING */
@@ -197,7 +197,7 @@ public class ScriptInstance
     /* Script invocation */
 
     public Object callGlobal(String fn, Object... args)
-            throws NoSuchMethodException, ScriptException, CommandException
+            throws NoSuchMethodException, ScriptException, CommandRuntimeException
     {
         try
         {
@@ -561,9 +561,9 @@ public class ScriptInstance
         chatError(lastSender == null ? null : lastSender.get(), message);
     }
 
-    public void chatError(CommandSource sender, String message)
+    public void chatError(CommandSourceStack sender, String message)
     {
-        TextComponent msg = ChatOutputHandler.error(message);
+        BaseComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
@@ -575,7 +575,7 @@ public class ScriptInstance
      *
      * @param sender
      */
-    public void setLastSender(CommandSource sender)
+    public void setLastSender(CommandSourceStack sender)
     {
         this.lastSender = new WeakReference<>(sender);
     }

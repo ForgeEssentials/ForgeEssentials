@@ -3,12 +3,12 @@ package com.forgeessentials.teleport.portal;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
@@ -48,7 +48,7 @@ public class CommandPortal extends ForgeEssentialsCommandBuilder {
 	}
 
 	@Override
-	public LiteralArgumentBuilder<CommandSource> setExecution() {
+	public LiteralArgumentBuilder<CommandSourceStack> setExecution() {
 		return baseBuilder
 				.then(Commands.literal("create")
 						.then(Commands.argument("portalName", StringArgumentType.word())
@@ -98,10 +98,10 @@ public class CommandPortal extends ForgeEssentialsCommandBuilder {
 						);
 	}
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_PORTALS = (ctx, builder) -> ISuggestionProvider.suggest(new ArrayList<>(PortalManager.getInstance().portals.keySet()), builder);
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_PORTALS = (ctx, builder) -> SharedSuggestionProvider.suggest(new ArrayList<>(PortalManager.getInstance().portals.keySet()), builder);
 
     @Override
-	public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandException {
+	public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandRuntimeException {
 
 		switch (params) {
 			case "create" :
@@ -124,7 +124,7 @@ public class CommandPortal extends ForgeEssentialsCommandBuilder {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static void parseCreate(CommandContext<CommandSource> ctx, boolean recreate) {
+	private static void parseCreate(CommandContext<CommandSourceStack> ctx, boolean recreate) {
 
 		String name = StringArgumentType.getString(ctx, "portalName");
 		if (!recreate && PortalManager.getInstance().portals.containsKey(name)) {
@@ -167,7 +167,7 @@ public class CommandPortal extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Created new portal leading to %s", target.toString());
 	}
 
-	private static void parseTarget(CommandContext<CommandSource> ctx) {
+	private static void parseTarget(CommandContext<CommandSourceStack> ctx) {
 
 		String name = StringArgumentType.getString(ctx, "portalName");
 		if (!PortalManager.getInstance().portals.containsKey(name)) {
@@ -194,7 +194,7 @@ public class CommandPortal extends ForgeEssentialsCommandBuilder {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set target for portal %s to %s", name, target.toString());
 	}
 
-	private static void parseDelete(CommandContext<CommandSource> ctx) {
+	private static void parseDelete(CommandContext<CommandSourceStack> ctx) {
 
 		String name = StringArgumentType.getString(ctx, "portalName");
 		if (!PortalManager.getInstance().portals.containsKey(name)) {
@@ -209,7 +209,7 @@ public class CommandPortal extends ForgeEssentialsCommandBuilder {
 	/**
 	 * Print lists of portals, their locations and dimensions
 	 */
-	private static void listPortals(CommandContext<CommandSource> ctx) {
+	private static void listPortals(CommandContext<CommandSourceStack> ctx) {
 		ChatOutputHandler.chatConfirmation(ctx.getSource(), "Registered portals:");
 		for (Entry<String, Portal> entry : PortalManager.getInstance().portals
 				.entrySet()) {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -15,7 +15,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 public class FEPlayerEvent extends PlayerEvent
 {
 
-    public FEPlayerEvent(PlayerEntity player)
+    public FEPlayerEvent(Player player)
     {
         super(player);
     }
@@ -26,7 +26,7 @@ public class FEPlayerEvent extends PlayerEvent
     public static class NoPlayerInfoEvent extends FEPlayerEvent
     {
 
-        public NoPlayerInfoEvent(PlayerEntity player)
+        public NoPlayerInfoEvent(Player player)
         {
             super(player);
         }
@@ -40,7 +40,7 @@ public class FEPlayerEvent extends PlayerEvent
     {
         public final boolean afk;
 
-        public PlayerAFKEvent(PlayerEntity player, boolean afk)
+        public PlayerAFKEvent(Player player, boolean afk)
         {
             super(player);
             this.afk = afk;
@@ -49,7 +49,7 @@ public class FEPlayerEvent extends PlayerEvent
 
     public static class ClientHandshakeEstablished extends FEPlayerEvent
     {
-        public ClientHandshakeEstablished(PlayerEntity player)
+        public ClientHandshakeEstablished(Player player)
         {
             super(player);
         }
@@ -63,7 +63,7 @@ public class FEPlayerEvent extends PlayerEvent
         String newInvGroupName;
         Map<String, List<ItemStack>> newInvGroup;
 
-        public InventoryGroupChange(PlayerEntity player, String newInvGroupName,
+        public InventoryGroupChange(Player player, String newInvGroupName,
                 Map<String, List<ItemStack>> newInvGroup)
         {
             super(player);

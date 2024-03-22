@@ -10,11 +10,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +52,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("self")
@@ -72,7 +72,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         String[] args = params.split("-");
         if (args[1].equals("self"))
@@ -103,7 +103,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
         }
         else if (args[1].equals("others"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (args[0].equals("max"))
             {
                 ItemStack item = player.getMainHandItem();
@@ -133,12 +133,12 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         String[] args = params.split("-");
         if (args[1].equals("others"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (args[0].equals("max"))
             {
                 ItemStack item = player.getMainHandItem();

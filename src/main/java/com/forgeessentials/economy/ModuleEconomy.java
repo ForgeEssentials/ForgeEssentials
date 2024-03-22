@@ -41,14 +41,14 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.CommandEvent;
@@ -135,7 +135,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
         APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL,
                 "Whether to show a message if a bounty is given");
-        for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
             if (LivingEntity.class.isAssignableFrom(e.getValue().getClass()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
@@ -178,7 +178,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                     Translator.format("You have now %s", wallet.toString()));
     }
 
-    public static int tryRemoveItems(PlayerEntity player, ItemStack itemStack, int amount)
+    public static int tryRemoveItems(Player player, ItemStack itemStack, int amount)
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemStack);
@@ -206,7 +206,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         return amount;
     }
 
-    public static int countInventoryItems(PlayerEntity player, ItemStack itemType)
+    public static int countInventoryItems(Player player, ItemStack itemType)
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemType);
@@ -235,7 +235,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onXPPickup(PlayerXpEvent.PickupXp e)
     {
-        if (e.getEntity() instanceof ServerPlayerEntity)
+        if (e.getEntity() instanceof ServerPlayer)
         {
             UserIdent ident = UserIdent.get(e.getPlayer().getGameProfile().getId());
             double xpMultiplier = ServerUtil
@@ -250,9 +250,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onDeath(LivingDeathEvent e)
     {
-        if (e.getEntity() instanceof ServerPlayerEntity)
+        if (e.getEntity() instanceof ServerPlayer)
         {
-            UserIdent ident = UserIdent.get((ServerPlayerEntity) e.getEntity());
+            UserIdent ident = UserIdent.get((ServerPlayer) e.getEntity());
             Long deathtoll = ServerUtil
                     .tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
@@ -269,13 +269,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatOutputHandler.chatNotification(((PlayerEntity) e.getEntity()).createCommandSourceStack(),
+            ChatOutputHandler.chatNotification(((Player) e.getEntity()).createCommandSourceStack(),
                     Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.getSource().getDirectEntity() instanceof ServerPlayerEntity)
+        if (e.getSource().getDirectEntity() instanceof ServerPlayer)
         {
-            UserIdent killer = UserIdent.get((ServerPlayerEntity) e.getSource().getDirectEntity());
+            UserIdent killer = UserIdent.get((ServerPlayer) e.getSource().getDirectEntity());
             String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
             double bounty = ServerUtil
                     .parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
@@ -295,10 +295,10 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         if (event.getParseResults().getContext().getNodes().isEmpty())
             return;
-        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
+        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer))
             return;
         CommandInfo info = CommandUtils.getCommandInfo(event);
-        UserIdent ident = UserIdent.get((ServerPlayerEntity) info.getSource().getEntity());
+        UserIdent ident = UserIdent.get((ServerPlayer) info.getSource().getEntity());
 
         if (event.getParseResults().getContext().getArguments().size() >= 0)
         {
@@ -313,7 +313,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             {
                 event.setCanceled(true);
                 info.getSource()
-                        .sendFailure(new StringTextComponent("You do not have enough money to use this command."));
+                        .sendFailure(new TextComponent("You do not have enough money to use this command."));
             }
         }
     }

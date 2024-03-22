@@ -11,19 +11,19 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,9 +39,9 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
 
     public static final String VIRTUALCHEST_TAG = "VirtualChestItems";
 
-    public static final List<ContainerType<ChestContainer>> chestTypes = ImmutableList.of(ContainerType.GENERIC_9x1,
-            ContainerType.GENERIC_9x2, ContainerType.GENERIC_9x3, ContainerType.GENERIC_9x4, ContainerType.GENERIC_9x5,
-            ContainerType.GENERIC_9x6);
+    public static final List<MenuType<ChestMenu>> chestTypes = ImmutableList.of(MenuType.GENERIC_9x1,
+            MenuType.GENERIC_9x2, MenuType.GENERIC_9x3, MenuType.GENERIC_9x4, MenuType.GENERIC_9x5,
+            MenuType.GENERIC_9x6);
 
     public static int size = 54;
     public static int rowCount = 6;
@@ -72,7 +72,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "me"))
                 .then(Commands.argument("player", EntityArgument.player())
@@ -80,9 +80,9 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity playerServer;
+        ServerPlayer playerServer;
         if (params.equals("me"))
         {
             playerServer = getServerPlayer(ctx.getSource());
@@ -97,33 +97,33 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
         }
         playerServer.nextContainerCounter();
 
-        playerServer.openMenu(new SimpleNamedContainerProvider(
-                (syncId, inv, player) -> new ChestContainer(
+        playerServer.openMenu(new SimpleMenuProvider(
+                (syncId, inv, player) -> new ChestMenu(
                         CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
                         Objects.requireNonNull(getVirtualChest(1, playerServer)), CommandVirtualchest.rowCount),
-                new StringTextComponent(CommandVirtualchest.name)));
+                new TextComponent(CommandVirtualchest.name)));
         return Command.SINGLE_SUCCESS;
     }
 
-    public static Inventory getVirtualChest(int id, PlayerEntity player)
+    public static SimpleContainer getVirtualChest(int id, Player player)
     {
         // TODO add multiple virtualChests
         int maxNumberVC = 1;
         // if (id > maxNumberVC) return null;
         int rows = CommandVirtualchest.rowCount;
-        ListNBT virtualchests = PlayerUtil.getPersistedTag(player, false).getList(VIRTUALCHEST_TAG, 9);
+        ListTag virtualchests = PlayerUtil.getPersistedTag(player, false).getList(VIRTUALCHEST_TAG, 9);
         if (virtualchests.size() < maxNumberVC)
             for (int i = 0; i < maxNumberVC - virtualchests.size() + 1; i++)
-                virtualchests.add(new ListNBT());
-        Inventory inv = new Inventory(rows * 9);
-        ListNBT virtualchest = virtualchests.getList(id - 1);
+                virtualchests.add(new ListTag());
+        SimpleContainer inv = new SimpleContainer(rows * 9);
+        ListTag virtualchest = virtualchests.getList(id - 1);
         for (int i = 0; i < virtualchest.size(); i++)
             inv.setItem(i, ItemStack.of(virtualchest.getCompound(i)));
         inv.addListener(inventory -> {
             virtualchests.remove(id - 1);
-            ListNBT stacks = new ListNBT();
+            ListTag stacks = new ListTag();
             for (int i = 0; i < inv.getContainerSize(); i++)
-                stacks.add(inv.getItem(i).save(new CompoundNBT()));
+                stacks.add(inv.getItem(i).save(new CompoundTag()));
             virtualchests.add(id - 1, stacks);
             PlayerUtil.getPersistedTag(player, true).put(VIRTUALCHEST_TAG, virtualchests);
         });

@@ -19,9 +19,9 @@ import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectBlock;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -41,7 +41,7 @@ public class ModuleWorldBorder extends ServerEventHandler
 
     private static ModuleWorldBorder instance;
 
-    private Map<ServerWorld, WorldBorder> borders = new HashMap<>();
+    private Map<ServerLevel, WorldBorder> borders = new HashMap<>();
 
     public ModuleWorldBorder()
     {
@@ -74,8 +74,8 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        borders.put((ServerWorld) event.getWorld(), WorldBorder.load((World) event.getWorld()));
-        getBorder((World) event.getWorld());
+        borders.put((ServerLevel) event.getWorld(), WorldBorder.load((Level) event.getWorld()));
+        getBorder((Level) event.getWorld());
     }
 
     @SubscribeEvent
@@ -89,7 +89,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         WorldBorder border = getBorder(event.after.getWorld());
         if (border != null && border.isEnabled())
         {
@@ -176,7 +176,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         // Tick effects
-        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
+        for (ServerPlayer player : ServerUtil.getPlayerList())
         {
             WorldBorder border = getBorder(player.level);
             if (border != null && border.isEnabled())
@@ -193,14 +193,14 @@ public class ModuleWorldBorder extends ServerEventHandler
         }
     }
 
-    public WorldBorder getBorder(World world)
+    public WorldBorder getBorder(Level world)
     {
         WorldBorder border = borders.get(world);
         if (border == null)
         {
             border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE,
                     world.dimension().location().toString());
-            borders.put((ServerWorld) world, border);
+            borders.put((ServerLevel) world, border);
         }
         return border;
     }

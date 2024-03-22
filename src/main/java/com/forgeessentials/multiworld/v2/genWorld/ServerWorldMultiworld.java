@@ -4,34 +4,34 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.listener.IChunkStatusListener;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.spawner.ISpecialSpawner;
-import net.minecraft.world.storage.IServerWorldInfo;
-import net.minecraft.world.storage.SaveFormat;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.portal.PortalForcer;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.progress.ChunkProgressListener;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.CustomSpawner;
+import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraft.world.level.storage.LevelStorageSource;
 
-public class ServerWorldMultiworld extends ServerWorld
+public class ServerWorldMultiworld extends ServerLevel
 {
 
-	private Teleporter worldTeleporter;
+	private PortalForcer worldTeleporter;
 
 	public ServerWorldMultiworld(MinecraftServer mcServer, 
-			Executor executor, SaveFormat.LevelSave levelSave, 
-			IServerWorldInfo derivedworldinfo, RegistryKey<World> worldKey, 
-			DimensionType type, IChunkStatusListener chunkListener, 
+			Executor executor, LevelStorageSource.LevelStorageAccess levelSave, 
+			ServerLevelData derivedworldinfo, ResourceKey<Level> worldKey, 
+			DimensionType type, ChunkProgressListener chunkListener, 
 			ChunkGenerator chunkGenerator, boolean debug, long seed, 
-			List<ISpecialSpawner> spawn, boolean tick) {
+			List<CustomSpawner> spawn, boolean tick) {
 		super(mcServer, executor, levelSave, derivedworldinfo, worldKey, type, chunkListener, chunkGenerator, debug, seed, spawn, tick);
-		this.worldTeleporter = new Teleporter(this);
+		this.worldTeleporter = new PortalForcer(this);
 	}
 
 	@Override
-	public Teleporter getPortalForcer() {
+	public PortalForcer getPortalForcer() {
 		return this.worldTeleporter;
 	}
 }

@@ -1,17 +1,17 @@
 package com.forgeessentials.protection;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.GhastEntity;
-import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.passive.AmbientEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.AbstractGolem;
+import net.minecraft.world.entity.animal.Squid;
+import net.minecraft.world.entity.TamableAnimal;
 
 public enum MobType
 {
@@ -35,26 +35,26 @@ public enum MobType
 
     public static MobType getMobType(Entity entity)
     {
-        if (entity instanceof EnderDragonEntity || entity instanceof WitherEntity)
+        if (entity instanceof EnderDragon || entity instanceof WitherBoss)
             return MobType.BOSS;
 
-        if (entity instanceof GolemEntity)
+        if (entity instanceof AbstractGolem)
             return MobType.GOLEM;
 
-        if (entity instanceof SlimeEntity)
-            return ((SlimeEntity) entity).getSize() >= 2 ? MobType.HOSTILE : MobType.PASSIVE;
+        if (entity instanceof Slime)
+            return ((Slime) entity).getSize() >= 2 ? MobType.HOSTILE : MobType.PASSIVE;
 
-        if (entity instanceof TameableEntity)
-            return ((TameableEntity) entity).isTame() ? MobType.TAMED : MobType.TAMABLE;
+        if (entity instanceof TamableAnimal)
+            return ((TamableAnimal) entity).isTame() ? MobType.TAMED : MobType.TAMABLE;
 
         // Check for other creatures
-        if (entity instanceof AnimalEntity || entity instanceof AmbientEntity || entity instanceof SquidEntity)
+        if (entity instanceof Animal || entity instanceof AmbientCreature || entity instanceof Squid)
             return MobType.PASSIVE;
 
-        if (entity instanceof VillagerEntity)
+        if (entity instanceof Villager)
             return MobType.VILLAGER;
 
-        if (entity instanceof MobEntity || entity instanceof GhastEntity)
+        if (entity instanceof Mob || entity instanceof Ghast)
             return MobType.HOSTILE;
 
         return MobType.UNKNOWN;

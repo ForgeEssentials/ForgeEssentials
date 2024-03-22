@@ -10,11 +10,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +44,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
         return DefaultPermissionLevel.OP;
     }
 
-    public String getUsage(CommandSource sender)
+    public String getUsage(CommandSourceStack sender)
     {
         return "/kill <player> Commit suicide or kill other players (with special permission).";
     }
@@ -57,19 +57,19 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("victim", EntityArgument.player())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (EntityArgument.getPlayer(ctx, "victim") != getServerPlayer(ctx.getSource())
                 && hasPermission(getServerPlayer(ctx.getSource()).createCommandSourceStack(), ModuleCommands.PERM + ".kill.others"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "victim");
             if (!player.hasDisconnected())
             {
                 player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
@@ -92,9 +92,9 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "victim");
         if (!player.hasDisconnected())
         {
             player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);

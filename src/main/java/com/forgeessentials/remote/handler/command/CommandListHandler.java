@@ -12,7 +12,7 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.mojang.brigadier.tree.CommandNode;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -32,7 +32,7 @@ public class CommandListHandler extends GenericRemoteHandler<String>
     {
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        Map<CommandNode<CommandSource>, String> map = server.getCommands().getDispatcher()
+        Map<CommandNode<CommandSourceStack>, String> map = server.getCommands().getDispatcher()
                 .getSmartUsage(server.getCommands().getDispatcher().getRoot(), server.createCommandSourceStack());
 
         List<String> commands = new ArrayList<>(map.values());

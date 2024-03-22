@@ -1,17 +1,19 @@
 package com.forgeessentials.util.events.world;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+
+import ResourceKey;
 
 @Cancelable
 public class WorldPreLoadEvent extends Event
 {
 
-    public final RegistryKey<World> dim;
+    public final ResourceKey<Level> dim;
 
-    public WorldPreLoadEvent(RegistryKey<World> dim)
+    public WorldPreLoadEvent(ResourceKey<Level> dim)
     {
         this.dim = dim;
     }

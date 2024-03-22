@@ -5,17 +5,17 @@ import java.util.UUID;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-public class NetworkParentSendingOnClientCommandSender implements ICommandSource
+public class NetworkParentSendingOnClientCommandSender implements CommandSource
 {
     String connectedId;
 
@@ -24,7 +24,7 @@ public class NetworkParentSendingOnClientCommandSender implements ICommandSource
         this.connectedId = connectedId;
     }
     @Override
-    public void sendMessage(ITextComponent chatComponent, UUID senderUUID)
+    public void sendMessage(Component chatComponent, UUID senderUUID)
     {
         if(ModuleNetworking.getInstance().getClient().isChannelOpen()) {
             ModuleNetworking.getInstance().getClient().sendPacket(new Packet11SharedCommandResponse(chatComponent.getString()));
@@ -49,12 +49,12 @@ public class NetworkParentSendingOnClientCommandSender implements ICommandSource
         return false;
     }
 
-    public CommandSource createCommandSourceStack()
+    public CommandSourceStack createCommandSourceStack()
     {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ServerWorld serverworld = server.overworld();
-        return new CommandSource(this, Vector3d.ZERO, Vector2f.ZERO,
+        ServerLevel serverworld = server.overworld();
+        return new CommandSourceStack(this, Vec3.ZERO, Vec2.ZERO,
                 serverworld, 4, "Parent@"+connectedId,
-                new StringTextComponent("Parent@"+connectedId), server, new FakePlayer(serverworld, new GameProfile(UUID.fromString("35763490-CD67-428C-9A29-4DED4429A488"), "Parent@"+connectedId)));
+                new TextComponent("Parent@"+connectedId), server, new FakePlayer(serverworld, new GameProfile(UUID.fromString("35763490-CD67-428C-9A29-4DED4429A488"), "Parent@"+connectedId)));
     }
 }

@@ -1,6 +1,8 @@
 package com.forgeessentials.economy;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+
+import ServerPlayer;
 
 /**
  * Represents an offer to transact an object.
@@ -11,15 +13,15 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 public class Offer<T>
 {
 
-    public ServerPlayerEntity seller;
+    public ServerPlayer seller;
 
-    public ServerPlayerEntity buyer;
+    public ServerPlayer buyer;
 
     public T item;
 
     public long price;
 
-    public Offer(ServerPlayerEntity buyer, ServerPlayerEntity seller, T item, long price)
+    public Offer(ServerPlayer buyer, ServerPlayer seller, T item, long price)
     {
         this.seller = seller;
         this.buyer = buyer;

@@ -16,20 +16,23 @@ import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import CommandSourceStack;
+import ServerPlayer;
+
 public class CommandContextParcer {
-    public final CommandSource sender;
-    public final ServerPlayerEntity senderPlayer;
+    public final CommandSourceStack sender;
+    public final ServerPlayer senderPlayer;
     public final UserIdent ident;
-    public final CommandContext<CommandSource> context;
+    public final CommandContext<CommandSourceStack> context;
     public final String methodParms;
     
-    public CommandContextParcer(CommandContext<CommandSource> ctx, String params)
+    public CommandContextParcer(CommandContext<CommandSourceStack> ctx, String params)
     {
     	this.context = ctx;
     	this.sender = context.getSource();
@@ -43,7 +46,7 @@ public class CommandContextParcer {
     	ChatOutputHandler.sendMessage(sender, message);
     }
 
-    public void sendMessage(TextComponent message)
+    public void sendMessage(BaseComponent message)
     {
     	ChatOutputHandler.sendMessage(sender, message);
     }
@@ -82,7 +85,7 @@ public class CommandContextParcer {
 
     public boolean hasPermission(String perm)
     {
-        if (sender.getEntity() instanceof PlayerEntity)
+        if (sender.getEntity() instanceof Player)
         return APIRegistry.perms.checkPermission(senderPlayer, perm);
         else return true;
     }
@@ -103,7 +106,7 @@ public class CommandContextParcer {
 
     public WorldPoint getSenderPoint()
     {
-        CommandSource s = sender != null ? sender : ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
+        CommandSourceStack s = sender != null ? sender : ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
         return new WorldPoint(s.getLevel().dimension(), s.getPosition());
     }
 

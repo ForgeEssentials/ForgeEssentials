@@ -11,16 +11,16 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentUtils;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 
 /**
  *
  */
-public class JsCommandSource extends JsWrapper<CommandSource>
+public class JsCommandSource extends JsWrapper<CommandSourceStack>
 {
 
     private JsPlayerEntity player;
@@ -28,17 +28,17 @@ public class JsCommandSource extends JsWrapper<CommandSource>
     /**
      * @tsd.ignore
      */
-    public static JsCommandSource get(CommandSource sender)
+    public static JsCommandSource get(CommandSourceStack sender)
     {
         return sender == null ? null : new JsCommandSource(sender);
     }
 
-    private JsCommandSource(CommandSource that)
+    private JsCommandSource(CommandSourceStack that)
     {
         super(that);
     }
 
-    public JsCommandSource(CommandSource that, JsPlayerEntity jsPlayer)
+    public JsCommandSource(CommandSourceStack that, JsPlayerEntity jsPlayer)
     {
         super(that);
         this.player = jsPlayer;
@@ -51,9 +51,9 @@ public class JsCommandSource extends JsWrapper<CommandSource>
 
     public JsPlayerEntity getPlayer()
     {
-        if (player != null || !(that.getEntity() instanceof PlayerEntity))
+        if (player != null || !(that.getEntity() instanceof Player))
             return player;
-        return player = new JsPlayerEntity((PlayerEntity) that.getEntity(), this);
+        return player = new JsPlayerEntity((Player) that.getEntity(), this);
     }
 
     public JsCommandSource doAs(Object userIdOrPlayer, boolean hideChatOutput)
@@ -102,8 +102,8 @@ public class JsCommandSource extends JsWrapper<CommandSource>
             Entity senderEntity = this.that.getEntityOrException();
             if (senderEntity != null)
             {
-                ITextComponent itextcomponent = ITextComponent.Serializer.fromJson(msg);
-                this.that.sendSuccess(TextComponentUtils.updateForEntity(this.that, itextcomponent, senderEntity, 0),
+                Component itextcomponent = Component.Serializer.fromJson(msg);
+                this.that.sendSuccess(ComponentUtils.updateForEntity(this.that, itextcomponent, senderEntity, 0),
                         true);
             }
         }

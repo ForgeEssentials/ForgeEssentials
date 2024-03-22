@@ -1,9 +1,11 @@
 package com.forgeessentials.util.events.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
+
+import DamageSource;
 
 @Cancelable
 public class EntityAttackedEvent extends EntityEvent

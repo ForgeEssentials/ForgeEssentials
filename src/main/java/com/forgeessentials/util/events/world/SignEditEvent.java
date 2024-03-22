@@ -1,10 +1,14 @@
 package com.forgeessentials.util.events.world;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+
+import BlockPos;
+import Component;
+import ServerPlayer;
 
 /**
  * Forge PR 1459
@@ -15,15 +19,15 @@ public class SignEditEvent extends Event
 {
     public final BlockPos pos;
     public String[] text;
-    public final ServerPlayerEntity editor;
-    public ITextComponent[] formatted;
+    public final ServerPlayer editor;
+    public Component[] formatted;
 
-    public SignEditEvent(BlockPos pos, String[] text, ServerPlayerEntity editor)
+    public SignEditEvent(BlockPos pos, String[] text, ServerPlayer editor)
     {
         super();
         this.pos = pos;
         this.text = text;
         this.editor = editor;
-        this.formatted = new ITextComponent[] { null, null, null, null };
+        this.formatted = new Component[] { null, null, null, null };
     }
 }

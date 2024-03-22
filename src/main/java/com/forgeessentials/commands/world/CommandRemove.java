@@ -13,12 +13,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +55,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                 .then(Commands.argument("position", BlockPosArgument.blockPos())
@@ -65,7 +65,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         int radius = 10;
         double centerX;
@@ -78,7 +78,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
         centerZ = BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ();
 
         List<ItemEntity> entityList = getServerPlayer(ctx.getSource()).getLevel().getEntitiesOfClass(ItemEntity.class,
-                new AxisAlignedBB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1,
+                new AABB(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1,
                         centerY + radius + 1, centerZ + radius + 1));
 
         int counter = 0;
@@ -91,7 +91,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         int radius = 0;
         WorldPoint center = new WorldPoint("minecraft:overworld", 0, 0, 0);
@@ -108,7 +108,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
 
         List<ItemEntity> entityList = ServerUtil.getWorldFromString(center.getDimension()).getEntitiesOfClass(
                 ItemEntity.class,
-                new AxisAlignedBB(center.getX() - radius, center.getY() - radius, center.getZ() - radius,
+                new AABB(center.getX() - radius, center.getY() - radius, center.getZ() - radius,
                         center.getX() + radius + 1, center.getY() + radius + 1, center.getZ() + radius + 1));
 
         int counter = 0;

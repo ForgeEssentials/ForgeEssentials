@@ -5,38 +5,38 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.util.PlayerInfo;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PlayerInfoSelectionProvider implements ISelectionProvider
 {
 
     @Override
-    public Selection getSelection(ServerPlayerEntity player)
+    public Selection getSelection(ServerPlayer player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         return new Selection(pi.getSelDim(), pi.getSel1(), pi.getSel2());
     }
 
     @Override
-    public void setDimension(ServerPlayerEntity player, String dim)
+    public void setDimension(ServerPlayer player, String dim)
     {
         PlayerInfo.get(player).setSelDim(dim);
     }
 
     @Override
-    public void setStart(ServerPlayerEntity player, Point start)
+    public void setStart(ServerPlayer player, Point start)
     {
         PlayerInfo.get(player).setSel1(start);
     }
 
     @Override
-    public void setEnd(ServerPlayerEntity player, Point end)
+    public void setEnd(ServerPlayer player, Point end)
     {
         PlayerInfo.get(player).setSel2(end);
     }
 
     @Override
-    public void select(ServerPlayerEntity player, String dimension, AreaBase area)
+    public void select(ServerPlayer player, String dimension, AreaBase area)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setSelDim(dimension);

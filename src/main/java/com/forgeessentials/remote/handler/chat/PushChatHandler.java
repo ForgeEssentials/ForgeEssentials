@@ -15,9 +15,9 @@ import com.forgeessentials.remote.handler.chat.PushChatHandler.Request;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -59,12 +59,12 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        ITextComponent message = event.getComponent();
+        Component message = event.getComponent();
         String username = event.getUsername();
         pushMessage(message, username);
     }
 
-    protected void pushMessage(ITextComponent message, String username)
+    protected void pushMessage(Component message, String username)
     {
         RemoteResponse<?>[] messages = new RemoteResponse<?>[ChatFormat.values().length];
         if (!pushSessions.isEmpty())
@@ -83,7 +83,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
                     format = ChatFormat.PLAINTEXT;
                 if (messages[format.ordinal()] == null)
                 {
-                    TextComponent mes = new StringTextComponent("");
+                    BaseComponent mes = new TextComponent("");
                     format.format(mes);
                     messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT,
                             new ChatResponse(username, format.format(mes)));
@@ -93,7 +93,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
         }
     }
 
-    public static void onMessage(ITextComponent message, String username)
+    public static void onMessage(Component message, String username)
     {
         instance.pushMessage(message, username);
     }

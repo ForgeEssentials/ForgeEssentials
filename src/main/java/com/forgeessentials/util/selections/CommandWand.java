@@ -12,11 +12,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 //Depreciated
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("unbind").executes(CommandContext -> execute(CommandContext, "unbind")))
@@ -44,7 +44,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (ModuleLauncher.getModuleList().contains(WEIntegration.weModule))
         {
@@ -58,7 +58,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         // Get the wand item (or hands)
         Item wandItem;
         String wandId, wandName;
-        PlayerEntity player = getServerPlayer(ctx.getSource());
+        Player player = getServerPlayer(ctx.getSource());
         if (getServerPlayer(ctx.getSource()).getMainHandItem() != null)
         {
             wandName = player.getMainHandItem().getDisplayName().getString();
@@ -77,7 +77,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         if ((params.equals("unbind")) && ((info.isWandEnabled() && info.getWandID().equals(wandId))))
         {
             ChatOutputHandler.sendMessage(ctx.getSource(),
-                    TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+                    ChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
 
         }

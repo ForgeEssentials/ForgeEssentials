@@ -32,10 +32,10 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PermissionCommandParser extends CommandUtils
@@ -82,7 +82,7 @@ public class PermissionCommandParser extends CommandUtils
     public static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
     public static final String[] parseSpawnArgs = { "here", "clear", "bed" };
 
-    public static void parseMain(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseMain(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -139,13 +139,13 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseSave(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseSave(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
             ModulePermissions.permissionHelper.setDirty(false);
             ModulePermissions.permissionHelper.save();
-            for (ServerPlayerEntity serverplayerentity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            for (ServerPlayer serverplayerentity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
                 ServerLifecycleHooks.getCurrentServer().getCommands().sendCommands(serverplayerentity);
             }
@@ -187,7 +187,7 @@ public class PermissionCommandParser extends CommandUtils
     // -- Listings
     // ------------------------------------------------------------
 
-    public static void parseList(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseList(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -231,7 +231,7 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseTest(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseTest(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -263,7 +263,7 @@ public class PermissionCommandParser extends CommandUtils
     // -- User
     // ------------------------------------------------------------
 
-    public static void parseUser(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseUser(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -300,8 +300,8 @@ public class PermissionCommandParser extends CommandUtils
         parseUserInner(ctx, params, ident, null);
     }
 
-    public static void parseUserInner(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident,
-            Zone zone) throws CommandException
+    public static void parseUserInner(CommandContext<CommandSourceStack> ctx, List<String> params, UserIdent ident,
+            Zone zone) throws CommandRuntimeException
     {
         // Display help or player info
         if (params.isEmpty())
@@ -405,16 +405,16 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseUserFormat(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident,
-            Zone zone, boolean isPlayer) throws CommandException
+    public static void parseUserFormat(CommandContext<CommandSourceStack> ctx, List<String> params, UserIdent ident,
+            Zone zone, boolean isPlayer) throws CommandRuntimeException
     {
         // String fixPerm = "fe.chat." + (isPlayer ? "playerformat" : "textformat");
         // TODO: Implement Player / Text Format as an option in the command
         // EX: /p user [] format [player|text] [format values]
     }
 
-    public static void parseUserPrefixSuffix(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident,
-            Zone zone, boolean isSuffix) throws CommandException
+    public static void parseUserPrefixSuffix(CommandContext<CommandSourceStack> ctx, List<String> params, UserIdent ident,
+            Zone zone, boolean isSuffix) throws CommandRuntimeException
     {
         String fixName = isSuffix ? "suffix" : "prefix";
         if (params.isEmpty())
@@ -443,8 +443,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseUserPermissions(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident,
-            Zone zone, PermissionAction type) throws CommandException
+    public static void parseUserPermissions(CommandContext<CommandSourceStack> ctx, List<String> params, UserIdent ident,
+            Zone zone, PermissionAction type) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -495,8 +495,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseUserSpawn(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident,
-            Zone zone) throws CommandException
+    public static void parseUserSpawn(CommandContext<CommandSourceStack> ctx, List<String> params, UserIdent ident,
+            Zone zone) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -582,7 +582,7 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseUserGroup(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident,
+    public static void parseUserGroup(CommandContext<CommandSourceStack> ctx, List<String> params, UserIdent ident,
             Zone zone)
     {
         if (params.isEmpty())
@@ -654,12 +654,12 @@ public class PermissionCommandParser extends CommandUtils
     // -- Group
     // ------------------------------------------------------------
 
-    public static void parseGlobal(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseGlobal(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         parseGroupInner(ctx, params, Zone.GROUP_DEFAULT, null);
     }
 
-    public static void parseGroup(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
+    public static void parseGroup(CommandContext<CommandSourceStack> ctx, List<String> params) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -712,8 +712,8 @@ public class PermissionCommandParser extends CommandUtils
         parseGroupInner(ctx, params, group, null);
     }
 
-    public static void parseGroupInner(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone)
-            throws CommandException
+    public static void parseGroupInner(CommandContext<CommandSourceStack> ctx, List<String> params, String group, Zone zone)
+            throws CommandRuntimeException
     {
         String cmd = params.remove(0).toLowerCase();
 
@@ -808,8 +808,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseGroupPrefixSuffix(CommandContext<CommandSource> ctx, List<String> params, String group,
-            Zone zone, boolean isSuffix) throws CommandException
+    public static void parseGroupPrefixSuffix(CommandContext<CommandSourceStack> ctx, List<String> params, String group,
+            Zone zone, boolean isSuffix) throws CommandRuntimeException
     {
         String fixName = isSuffix ? "suffix" : "prefix";
         if (params.isEmpty())
@@ -835,8 +835,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseGroupPermissions(CommandContext<CommandSource> ctx, List<String> params, String group,
-            Zone zone, PermissionAction type) throws CommandException
+    public static void parseGroupPermissions(CommandContext<CommandSourceStack> ctx, List<String> params, String group,
+            Zone zone, PermissionAction type) throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -888,8 +888,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseGroupSpawn(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone,
-            boolean commandSetspawn) throws CommandException
+    public static void parseGroupSpawn(CommandContext<CommandSourceStack> ctx, List<String> params, String group, Zone zone,
+            boolean commandSetspawn) throws CommandRuntimeException
     {
         if (params.get(0).equals("help"))
         {
@@ -986,8 +986,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseGroupPriority(CommandContext<CommandSource> ctx, List<String> params, String group)
-            throws CommandException
+    public static void parseGroupPriority(CommandContext<CommandSourceStack> ctx, List<String> params, String group)
+            throws CommandRuntimeException
     {
         if (params.isEmpty())
         {
@@ -1009,8 +1009,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseGroupInclude(CommandContext<CommandSource> ctx, List<String> params, String group,
-            boolean isParent) throws CommandException
+    public static void parseGroupInclude(CommandContext<CommandSourceStack> ctx, List<String> params, String group,
+            boolean isParent) throws CommandRuntimeException
     {
         final String displayName1 = (isParent ? " parent" : " include");
 
@@ -1072,7 +1072,7 @@ public class PermissionCommandParser extends CommandUtils
     // -- Utils
     // ------------------------------------------------------------
 
-    public static Zone parseZone(CommandContext<CommandSource> ctx, List<String> params)
+    public static Zone parseZone(CommandContext<CommandSourceStack> ctx, List<String> params)
     {
         String zoneId = params.get(0).replace("-", ":");
         if(zoneId.equals("MainServerZone")) {
@@ -1091,7 +1091,7 @@ public class PermissionCommandParser extends CommandUtils
             if (zone != null)
                 return zone;
 
-            ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            ServerLevel world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world);
 
@@ -1103,7 +1103,7 @@ public class PermissionCommandParser extends CommandUtils
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
                 if (wz.getName().equals(zoneId))
                     return wz;
-            ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            ServerLevel world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world);
 
@@ -1124,7 +1124,7 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static Zone parseZoneSafe(CommandSource ctx, String zoneId)
+    public static Zone parseZoneSafe(CommandSourceStack ctx, String zoneId)
     {
         zoneId = zoneId.replace("-", ":");
         if(zoneId.equals("MainServerZone")) {
@@ -1142,7 +1142,7 @@ public class PermissionCommandParser extends CommandUtils
             if (zone != null)
                 return zone;
 
-            ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            ServerLevel world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world);
             return null;
@@ -1152,7 +1152,7 @@ public class PermissionCommandParser extends CommandUtils
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
                 if (wz.getName().equals(zoneId))
                     return wz;
-            ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            ServerLevel world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world);
 
@@ -1166,8 +1166,8 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void listUserPermissions(CommandSource sender, UserIdent ident, boolean showGroupPerms)
-            throws CommandException
+    public static void listUserPermissions(CommandSourceStack sender, UserIdent ident, boolean showGroupPerms)
+            throws CommandRuntimeException
     {
         ChatOutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
 
@@ -1227,7 +1227,7 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void listGroupPermissions(CommandSource sender, String group)
+    public static void listGroupPermissions(CommandSourceStack sender, String group)
     {
         Map<Zone, Map<String, String>> groupPerms = ModulePermissions.permissionHelper.enumGroupPermissions(group,
                 false);
@@ -1253,7 +1253,7 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void listZones(CommandSource sender, WorldPoint location)
+    public static void listZones(CommandSourceStack sender, WorldPoint location)
     {
         ChatOutputHandler.chatNotification(sender, "Zones at position " + location.toString());
         for (Zone zone : APIRegistry.perms.getServerZone().getZonesAt(location))
@@ -1264,7 +1264,7 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void listWorlds(CommandSource sender) throws CommandException
+    public static void listWorlds(CommandSourceStack sender) throws CommandRuntimeException
     {
         ChatOutputHandler.chatNotification(sender, "World IDs:");
         for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
@@ -1278,25 +1278,25 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void listGroups(CommandSource sender) throws CommandException
+    public static void listGroups(CommandSourceStack sender) throws CommandRuntimeException
     {
         ChatOutputHandler.chatNotification(sender, "Groups:");
         for (String group : APIRegistry.perms.getServerZone().getGroups())
             ChatOutputHandler.chatNotification(sender, " - " + group);
     }
 
-    public static void listUsers(CommandSource sender) throws CommandException
+    public static void listUsers(CommandSourceStack sender) throws CommandRuntimeException
     {
         ChatOutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
             ChatOutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
 
         ChatOutputHandler.chatNotification(sender, "Online players:");
-        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
+        for (ServerPlayer player : ServerUtil.getPlayerList())
             ChatOutputHandler.chatNotification(sender, " - " + player.getDisplayName().getString());
     }
 
-    public static void listGroupUsers(CommandSource sender, String group)
+    public static void listGroupUsers(CommandSourceStack sender, String group)
     {
         Set<UserIdent> players = ModulePermissions.permissionHelper.getServerZone().getGroupPlayers().get(group);
         ChatOutputHandler.chatNotification(sender, "Players in group " + group + ":");

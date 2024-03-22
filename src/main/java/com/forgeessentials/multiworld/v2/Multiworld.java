@@ -12,16 +12,18 @@ import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import GameType;
 
 public class Multiworld
 {
@@ -85,8 +87,8 @@ public class Multiworld
 	}
 
 	public void removeAllPlayersFromWorld() {
-		ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
-		for (ServerPlayerEntity player : ServerUtil.getPlayerList()) {
+		ServerLevel overworld = ServerLifecycleHooks.getCurrentServer().overworld();
+		for (ServerPlayer player : ServerUtil.getPlayerList()) {
 			if (player.level.dimension().location().toString().equals(getResourceName())) {
 				BlockPos playerPos = player.blockPosition();
 				int y = WorldUtil.placeInWorld(player.level, playerPos.getX(),
@@ -101,7 +103,7 @@ public class Multiworld
 	public void updateWorldSettings() {
 		if (!worldLoaded)
 			return;
-		ServerWorld worldServer = getWorldServer();
+		ServerLevel worldServer = getWorldServer();
 		worldServer.setSpawnSettings(allowHostileCreatures, allowPeacefulCreatures);
 	}
 
@@ -113,12 +115,12 @@ public class Multiworld
 		return FENameSpace+":"+getInternalName();
 	}
 
-	public ServerWorld getWorldServer() {
+	public ServerLevel getWorldServer() {
 		return ServerLifecycleHooks.getCurrentServer().getLevel(getResourceLocationUnique());
 	}
 
-	public RegistryKey<World> getResourceLocationUnique() {
-		return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(getResourceName()));
+	public ResourceKey<Level> getResourceLocationUnique() {
+		return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(getResourceName()));
 	}
 
 	public String getBiomeProvider() {
@@ -220,7 +222,7 @@ public class Multiworld
      * Teleport the player to the multiworld
      * 
      */
-	public void teleport(ServerPlayerEntity player, boolean instant) {
+	public void teleport(ServerPlayer player, boolean instant) {
 		teleport(player, getWorldServer(), instant);
 	}
 
@@ -228,7 +230,7 @@ public class Multiworld
      * Teleport the player to the multiworld
      * 
      */
-	public static void teleport(ServerPlayerEntity player, ServerWorld world,
+	public static void teleport(ServerPlayer player, ServerLevel world,
 			boolean instant) {
 		teleport(player, world, player.position().x, player.position().y,
 				player.position().x, instant);
@@ -238,7 +240,7 @@ public class Multiworld
 	 * Teleport the player to the multiworld
 	 * 
 	 */
-	public static void teleport(ServerPlayerEntity player, ServerWorld world,
+	public static void teleport(ServerPlayer player, ServerLevel world,
 			double x, double y, double z, boolean instant) {
 		boolean worldChange = player.level.dimension() != world.dimension();
 		if (worldChange)
@@ -256,12 +258,12 @@ public class Multiworld
 			displayWelcomeMessage(player);
 	}
 
-	public static void displayDepartMessage(ServerPlayerEntity player) {
+	public static void displayDepartMessage(ServerPlayer player) {
 		String msg = "Leaving " + " (" + player.level.dimension().location().getPath() + ")";
 		ChatOutputHandler.sendMessage(player, msg);
 	}
 
-	public static void displayWelcomeMessage(ServerPlayerEntity player) {
+	public static void displayWelcomeMessage(ServerPlayer player) {
 		String msg = "Entering " + " (" + player.level.dimension().location().getPath() + ")";
 		ChatOutputHandler.sendMessage(player, msg);
 	}

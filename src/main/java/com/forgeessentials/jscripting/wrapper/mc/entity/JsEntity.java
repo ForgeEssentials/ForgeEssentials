@@ -10,8 +10,10 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
 import com.forgeessentials.util.ServerUtil;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+
+import Entity;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
@@ -196,7 +198,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
      */
     public void _setNbt(String value)
     {
-        ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundNBT.class));
+        ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundTag.class));
     }
 
     public String getEntityType()

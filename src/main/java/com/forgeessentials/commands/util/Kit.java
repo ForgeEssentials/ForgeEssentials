@@ -9,8 +9,10 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import ItemStack;
 
 public class Kit
 {
@@ -25,7 +27,7 @@ public class Kit
 
     private ItemStack[] armor;
 
-    public Kit(PlayerEntity player, String name, int cooldown)
+    public Kit(Player player, String name, int cooldown)
     {
         this.cooldown = cooldown;
         this.name = name;
@@ -64,7 +66,7 @@ public class Kit
         return armor;
     }
 
-    public void giveKit(PlayerEntity player)
+    public void giveKit(Player player)
     {
         if (!APIRegistry.perms.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN))
         {

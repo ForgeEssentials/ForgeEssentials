@@ -5,13 +5,13 @@ import java.util.List;
 
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.phys.HitResult;
 
 public abstract class PlayerUtil
 {
@@ -23,7 +23,7 @@ public abstract class PlayerUtil
      * @param newItems
      * @return
      */
-    public static List<ItemStack> swapInventory(PlayerEntity player, List<ItemStack> newItems)
+    public static List<ItemStack> swapInventory(Player player, List<ItemStack> newItems)
     {
         List<ItemStack> oldItems = new ArrayList<>();
         for (int slotIdx = 0; slotIdx < player.inventory.getContainerSize(); slotIdx++)
@@ -43,7 +43,7 @@ public abstract class PlayerUtil
      * @param player
      * @param item
      */
-    public static void give(PlayerEntity player, ItemStack item)
+    public static void give(Player player, ItemStack item)
     {
         ItemEntity entityitem = player.drop(item, false);
         if (entityitem != null)
@@ -60,7 +60,7 @@ public abstract class PlayerUtil
      * @param effectString
      *            Comma separated list of id:duration:amplifier or id:duration tuples
      */
-    public static void applyPotionEffects(PlayerEntity player, String effectString)
+    public static void applyPotionEffects(Player player, String effectString)
     {
         String[] effects = effectString.replaceAll("\\s", "").split(","); // example = 9:5:0
         for (String poisonEffect : effects)
@@ -83,12 +83,12 @@ public abstract class PlayerUtil
                     int amplifier = 0;
                     if (effectValues.length == 3)
                         amplifier = Integer.parseInt(effectValues[2]);
-                    if (Effect.byId(potionID) == null)
+                    if (MobEffect.byId(potionID) == null)
                     {
                         LoggingHandler.felog.warn("Invalid potion ID {}", potionID);
                         continue;
                     }
-                    player.addEffect(new EffectInstance(Effect.byId(potionID), effectDuration * 20, amplifier, false,
+                    player.addEffect(new MobEffectInstance(MobEffect.byId(potionID), effectDuration * 20, amplifier, false,
                             true, true));
                 }
                 catch (NumberFormatException e)
@@ -105,9 +105,9 @@ public abstract class PlayerUtil
      * @param player
      * @return
      */
-    public static CompoundNBT getPersistedTag(PlayerEntity player, boolean createIfMissing)
+    public static CompoundTag getPersistedTag(Player player, boolean createIfMissing)
     {
-        CompoundNBT tag = player.getPersistentData();
+        CompoundTag tag = player.getPersistentData();
         if (createIfMissing)// ?
             player.getPersistentData();
         return tag;
@@ -121,9 +121,9 @@ public abstract class PlayerUtil
      * @param player
      * @return The position as a MovingObjectPosition Null if not existent.
      */
-    public static RayTraceResult getPlayerLookingSpot(PlayerEntity player)
+    public static HitResult getPlayerLookingSpot(Player player)
     {
-        if (player instanceof PlayerEntity)
+        if (player instanceof Player)
             return getPlayerLookingSpot(player,
                     player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getValue());
         else
@@ -138,7 +138,7 @@ public abstract class PlayerUtil
      *            Keep max distance to 5.
      * @return The position as a MovingObjectPosition Null if not existent.
      */
-    public static RayTraceResult getPlayerLookingSpot(PlayerEntity player, double maxDistance)
+    public static HitResult getPlayerLookingSpot(Player player, double maxDistance)
     {
         return player.pick(maxDistance, 1.0F, true);
     }

@@ -31,16 +31,16 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -84,7 +84,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("save").executes(CommandContext -> execute(CommandContext, "save")))
                 .then(Commands.literal("set")
@@ -96,7 +96,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
@@ -126,7 +126,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseSetprice(CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseSetprice(CommandContext<CommandSourceStack> ctx) throws CommandRuntimeException
     {
         Item item = ItemArgument.getItem(ctx, "item").getItem();
         double price = DoubleArgumentType.getDouble(ctx, "price");
@@ -139,7 +139,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 Translator.format("Set price for %s to %d", itemId, (int) price));
     }
 
-    public static void calcPriceList(CommandContext<CommandSource> ctx, boolean save)
+    public static void calcPriceList(CommandContext<CommandSourceStack> ctx, boolean save)
     {
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
@@ -160,8 +160,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
                 {
                     RecipeManager manager= ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager();
-                    Collection<IRecipe<?>> recpies = manager.getRecipes();
-                    for (IRecipe<?> recipe : recpies)
+                    Collection<Recipe<?>> recpies = manager.getRecipes();
+                    for (Recipe<?> recipe : recpies)
                     {
                         if (recipe.getResultItem() == ItemStack.EMPTY)
                         {
@@ -234,8 +234,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                     {
                         changedPrice = false;
                         RecipeManager manager= ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager();
-                        Collection<IRecipe<?>> recpies = manager.getRecipes();
-                        for (IRecipe<?> recipe : recpies)
+                        Collection<Recipe<?>> recpies = manager.getRecipes();
+                        for (Recipe<?> recipe : recpies)
                         {
                             if (recipe.getResultItem() == ItemStack.EMPTY)
                             {
@@ -328,7 +328,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         return Integer.toString((int) Math.floor(value));
     }
 
-    private static Map<String, Double> loadPriceList(CommandContext<CommandSource> ctx)
+    private static Map<String, Double> loadPriceList(CommandContext<CommandSourceStack> ctx)
     {
         Map<String, Double> priceMap = new TreeMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
@@ -359,7 +359,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         return priceMap;
     }
 
-    private static void writeToConfig(CommandSource source, Map<String, Double> priceMap)
+    private static void writeToConfig(CommandSourceStack source, Map<String, Double> priceMap)
     {
         try
         {
@@ -509,12 +509,12 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static List<Ingredient> getRecipeItems(IRecipe<?> recipe)
+    public static List<Ingredient> getRecipeItems(Recipe<?> recipe)
     {
         return recipe.getIngredients();
     }
 
-    public static double getRecipePrice(IRecipe<?> recipe, Map<String, Double> priceMap,
+    public static double getRecipePrice(Recipe<?> recipe, Map<String, Double> priceMap,
             Map<String, Double> priceMapFull)
     {
         double price = 0;

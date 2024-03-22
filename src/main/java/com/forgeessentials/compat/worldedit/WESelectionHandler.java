@@ -19,8 +19,8 @@ import com.sk89q.worldedit.regions.selector.EllipsoidRegionSelector;
 import com.sk89q.worldedit.regions.selector.ExtendingCuboidRegionSelector;
 import com.sk89q.worldedit.regions.selector.Polygonal2DRegionSelector;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 public class WESelectionHandler implements ISelectionProvider
 {
@@ -31,12 +31,12 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public Selection getSelection(ServerPlayerEntity player)
+    public Selection getSelection(ServerPlayer player)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         if (session.getSelectionWorld() == null)
             return null;
-        World world = ((ForgeWorld) session.getSelectionWorld()).getWorld();
+        Level world = ((ForgeWorld) session.getSelectionWorld()).getWorld();
         RegionSelector regionSelector = session.getRegionSelector(session.getSelectionWorld());
 
         if (regionSelector instanceof CuboidRegionSelector)
@@ -122,7 +122,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setDimension(ServerPlayerEntity player, String dim)
+    public void setDimension(ServerPlayer player, String dim)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(APIRegistry.namedWorldHandler.getWorld(dim));
@@ -130,7 +130,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setStart(ServerPlayerEntity player, Point start)
+    public void setStart(ServerPlayer player, Point start)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         session.getRegionSelector(session.getSelectionWorld())
@@ -138,7 +138,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setEnd(ServerPlayerEntity player, Point end)
+    public void setEnd(ServerPlayer player, Point end)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         session.getRegionSelector(session.getSelectionWorld())
@@ -146,7 +146,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void select(ServerPlayerEntity player, String dimension, AreaBase area)
+    public void select(ServerPlayer player, String dimension, AreaBase area)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(APIRegistry.namedWorldHandler.getWorld(dimension));

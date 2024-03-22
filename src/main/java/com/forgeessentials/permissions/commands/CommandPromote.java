@@ -18,10 +18,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +52,7 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
@@ -61,13 +61,13 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "help"));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_GROUPS = (ctx, builder) -> {
         List<String> completeList = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
-        return ISuggestionProvider.suggest(completeList, builder);
+        return SharedSuggestionProvider.suggest(completeList, builder);
     };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {

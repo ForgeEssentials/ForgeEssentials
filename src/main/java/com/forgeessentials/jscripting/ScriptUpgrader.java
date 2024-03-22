@@ -22,7 +22,7 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class ScriptUpgrader
@@ -34,7 +34,7 @@ public class ScriptUpgrader
             "interact_right", "interact_use", "login", "logout", "playerdeath", "respawn", "sleep", "start", "stop",
             "wake" };
 
-    public static void upgradeOldScripts(CommandSource sender)
+    public static void upgradeOldScripts(CommandSourceStack sender)
     {
         File baseDir = new File(ForgeEssentials.getFEDirectory(), "Scripting");
         if (!baseDir.exists())

@@ -3,7 +3,7 @@ package com.forgeessentials.serverNetwork.packetbase.packets;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class Packet05SharedCloseSession extends FEPacket {
 
@@ -17,12 +17,12 @@ public class Packet05SharedCloseSession extends FEPacket {
         this.reason = reason;
     }
     @Override
-    public void encode(PacketBuffer buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(reason);
     }
 
     @Override
-    public void decode(PacketBuffer buf) {
+    public void decode(FriendlyByteBuf buf) {
         reason = buf.readUtf();
     }
 

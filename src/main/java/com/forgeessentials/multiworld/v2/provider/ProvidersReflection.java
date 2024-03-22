@@ -5,8 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+
+import ChunkGenerator;
 
 public class ProvidersReflection {
 	public static ChunkGenerator getChunkProvider(String className, Class<?>[] classes, Object[] initargs){
@@ -25,13 +27,13 @@ public class ProvidersReflection {
 		}
     }
 
-    public static BiomeProvider getBiomeProvider(String className, Class<?>[] classes, Object[] initargs){
+    public static BiomeSource getBiomeProvider(String className, Class<?>[] classes, Object[] initargs){
 		try {
 			Class<?> clazz = Class.forName(className);
 	    	Constructor<?> ctor = clazz.getConstructor(classes);
 	    	Object object = ctor.newInstance(initargs);
-	    	if(object instanceof BiomeProvider) {
-	    		return (BiomeProvider) object;
+	    	if(object instanceof BiomeSource) {
+	    		return (BiomeSource) object;
 	    	}
 	    	LoggingHandler.felog.debug("[Multiworld] Null BiomeProvider:");
 	    	return null;

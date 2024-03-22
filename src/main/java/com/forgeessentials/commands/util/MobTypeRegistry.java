@@ -8,8 +8,8 @@ import java.util.Set;
 import com.forgeessentials.api.EnumMobType;
 import com.google.common.collect.HashMultimap;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 
 public class MobTypeRegistry
 {
@@ -40,9 +40,9 @@ public class MobTypeRegistry
      */
     public static boolean isTamed(LivingEntity mob)
     {
-        if (mob instanceof TameableEntity)
+        if (mob instanceof TamableAnimal)
         {
-            return ((TameableEntity) mob).isTame();
+            return ((TamableAnimal) mob).isTame();
         }
         else if (MobTypeRegistry.get(EnumMobType.TAMEABLE).contains(mob.getClass().getName()))
         {

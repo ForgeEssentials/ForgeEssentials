@@ -10,21 +10,21 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +38,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
 
     private static final String TAG_NAME = "FEbinding";
 
-    public static final String LORE_TEXT_TAG = TextFormatting.RESET.toString() + TextFormatting.AQUA;
+    public static final String LORE_TEXT_TAG = ChatFormatting.RESET.toString() + ChatFormatting.AQUA;
 
     @Override
     public @NotNull String getPrimaryAlias()
@@ -59,7 +59,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("left")
@@ -80,7 +80,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {
@@ -94,13 +94,13 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
         // If sub-command is "clear"
         if (side.equals("clear"))
         {
-            ItemStack is = ((PlayerEntity) ctx.getSource().getEntity()).getMainHandItem();
+            ItemStack is = ((Player) ctx.getSource().getEntity()).getMainHandItem();
             if (is == ItemStack.EMPTY)
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
                 return Command.SINGLE_SUCCESS;
             }
-            CompoundNBT tag = is.getTag();
+            CompoundTag tag = is.getTag();
             if (tag != null)
                 tag.remove(TAG_NAME);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared bound commands from item");
@@ -116,20 +116,20 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ItemStack is = ((PlayerEntity) ctx.getSource().getEntity()).getMainHandItem();
+        ItemStack is = ((Player) ctx.getSource().getEntity()).getMainHandItem();
         if (is == ItemStack.EMPTY)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
             return Command.SINGLE_SUCCESS;
         }
-        CompoundNBT tag = ItemUtil.getTagCompound(is);
-        CompoundNBT bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
-        CompoundNBT display = tag.getCompound("display");
+        CompoundTag tag = ItemUtil.getTagCompound(is);
+        CompoundTag bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
+        CompoundTag display = tag.getCompound("display");
 
         if (option.equals("none"))
         {
             bindTag.remove(side);
-            display.put("Lore", new ListNBT());
+            display.put("Lore", new ListTag());
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     Translator.format("Cleared " + side + " bound command from item"));
             return Command.SINGLE_SUCCESS;
@@ -140,9 +140,9 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             bindTag.putString(side, command);
 
             String loreStart = LORE_TEXT_TAG + side + "> ";
-            StringNBT loreTag = StringNBT.valueOf(loreStart + command);
+            StringTag loreTag = StringTag.valueOf(loreStart + command);
 
-            ListNBT lore = display.getList("Lore", 9);
+            ListTag lore = display.getList("Lore", 9);
             for (int i = 0; i < lore.size(); ++i)
             {
                 if (lore.getString(i).startsWith(loreStart))
@@ -163,12 +163,12 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getEntity() instanceof ServerPlayerEntity))
+        if (!(event.getEntity() instanceof ServerPlayer))
             return;
         ItemStack stack = event.getPlayer().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getTag() == null || !stack.getTag().contains(TAG_NAME))
             return;
-        CompoundNBT nbt = stack.getTag().getCompound(TAG_NAME);
+        CompoundTag nbt = stack.getTag().getCompound(TAG_NAME);
 
         String command;
         if (event instanceof LeftClickBlock)

@@ -1,9 +1,9 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.command.arguments.ItemArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.item.ItemArgument;
 
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
@@ -24,7 +24,7 @@ public class JsCommandArgs extends JsWrapper<CommandContextParcer> {
 
 	public final JsUserIdent ident;
 
-	public final CommandContext<CommandSource> context;
+	public final CommandContext<CommandSourceStack> context;
 
 	public final String params;
 

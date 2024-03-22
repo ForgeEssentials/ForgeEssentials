@@ -15,8 +15,10 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Charsets;
 
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
+
+import BaseComponent;
 
 public final class Translator
 {
@@ -45,24 +47,24 @@ public final class Translator
         return text;
     }
 
-    public static TextComponent translateITC(String text)
+    public static BaseComponent translateITC(String text)
     {
         String translated = translations.get(text);
         if (translated != null)
-            return new StringTextComponent(translated);
+            return new TextComponent(translated);
         translations.put(text, null);
         save();
-        return new StringTextComponent(text);
+        return new TextComponent(text);
     }
 
-    public static TextComponent translateITC(String text, Object[] args)
+    public static BaseComponent translateITC(String text, Object[] args)
     {
         String translated = translations.get(text);
         if (translated != null)
-            return new StringTextComponent(translated + Arrays.toString(args));
+            return new TextComponent(translated + Arrays.toString(args));
         translations.put(text, null);
         save();
-        return new StringTextComponent(text + Arrays.toString(args));
+        return new TextComponent(text + Arrays.toString(args));
     }
 
     public static void save()

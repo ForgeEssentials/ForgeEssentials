@@ -15,9 +15,9 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -72,19 +72,19 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public ITextComponent getDisplayName()
+    public Component getDisplayName()
     {
-        return session.getUserIdent() != null ? new StringTextComponent(session.getUserIdent().getUsernameOrUuid())
-                : new StringTextComponent("anonymous");
+        return session.getUserIdent() != null ? new TextComponent(session.getUserIdent().getUsernameOrUuid())
+                : new TextComponent("anonymous");
     }
 
     @Override
-    public void sendMessage(ITextComponent chatComponent, UUID uuid)
+    public void sendMessage(Component chatComponent, UUID uuid)
     {
         // TODO: Instead of directly sending the messages to the client, cache them and
         // send them all after the running
         // command finished (only if enabled)
-        CommandSource receiver = ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
+        CommandSourceStack receiver = ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer().createCommandSourceStack();
         ChatOutputHandler.sendMessageI(receiver, chatComponent);

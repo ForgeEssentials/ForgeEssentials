@@ -33,28 +33,28 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.border.IBorderListener;
-import net.minecraft.world.chunk.listener.IChunkStatusListenerFactory;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
-import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
-import net.minecraft.world.server.ChunkManager;
-import net.minecraft.world.server.ServerChunkProvider;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.DerivedWorldInfo;
-import net.minecraft.world.storage.IServerConfiguration;
-import net.minecraft.world.storage.SaveFormat.LevelSave;
+import net.minecraft.util.ProgressListener;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.border.BorderChangeListener;
+import net.minecraft.server.level.progress.ChunkProgressListenerFactory;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.DerivedLevelData;
+import net.minecraft.world.level.storage.WorldData;
+import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -64,12 +64,12 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class MultiworldManager extends ServerEventHandler implements NamedWorldHandler
 {
-	public static final Function<MinecraftServer, IChunkStatusListenerFactory> CHUNK_STATUS_LISTENER_FACTORY_FIELD =
-			getInstanceField(MinecraftServer.class, "field_213220_d");
+	public static final Function<MinecraftServer, ChunkProgressListenerFactory> CHUNK_STATUS_LISTENER_FACTORY_FIELD =
+			getInstanceField(MinecraftServer.class, "progressListenerFactory");
 		public static final Function<MinecraftServer, Executor> BACKGROUND_EXECUTOR_FIELD =
-			getInstanceField(MinecraftServer.class, "field_213217_au");
-		public static final Function<MinecraftServer, LevelSave> ANVIL_CONVERTER_FOR_ANVIL_FILE_FIELD =
-			getInstanceField(MinecraftServer.class, "field_71310_m");
+			getInstanceField(MinecraftServer.class, "executor");
+		public static final Function<MinecraftServer, LevelStorageAccess> ANVIL_CONVERTER_FOR_ANVIL_FILE_FIELD =
+			getInstanceField(MinecraftServer.class, "storageSource");
 
 		// helper for making the above private field getters via reflection
 		@SuppressWarnings("unchecked") // also throws ClassCastException if the types are wrong
@@ -107,7 +107,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * List of worlds that have been marked for removal
      */
-    protected ArrayList<ServerWorld> worldsToUnloadAndRemove = new ArrayList<>();
+    protected ArrayList<ServerLevel> worldsToUnloadAndRemove = new ArrayList<>();
 
     private NamedWorldHandler parentNamedWorldHandler;
 
@@ -190,9 +190,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     }
 
     @Override
-    public ServerWorld getWorld(String name)
+    public ServerLevel getWorld(String name)
     {
-    	ServerWorld world = parentNamedWorldHandler.getWorld(name);
+    	ServerLevel world = parentNamedWorldHandler.getWorld(name);
         if (world != null)
             return world;
 
@@ -254,13 +254,13 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         APIRegistry.perms.getServerZone().getWorldZone(world.getResourceName())
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
     }
-	private Dimension dimensionGenerator(MinecraftServer server, Multiworld world) throws MultiworldException
+	private LevelStem dimensionGenerator(MinecraftServer server, Multiworld world) throws MultiworldException
 	{
 		long seed = BiomeManager.obfuscateSeed(world.getSeed());
 		Registry<Biome> biomeRegistry =server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
 		DimensionType dimType = providerHandler.getDimensionTypeByName(world.getDimensionType());
-		BiomeProvider biomeProvider = providerHandler.generateBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
-		DimensionSettings dimSettings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
+		BiomeSource biomeProvider = providerHandler.generateBiomeProviderByName(world.getBiomeProvider(), biomeRegistry, seed);
+		NoiseGeneratorSettings dimSettings = providerHandler.getDimensionSettingsByName(world.getDimensionSetting());
 		ChunkGenerator  chunkGenerator = providerHandler.generateChunkGeneratorByName(
 	    		  biomeRegistry, world.getChunkGenerator(), 
 	    		  biomeProvider, seed, () -> dimSettings);
@@ -274,32 +274,32 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		if(chunkGenerator==null)
 			throw new MultiworldException(Type.NO_CHUNK_GENERATOR);
 
-		return new Dimension(() -> dimType, chunkGenerator);
+		return new LevelStem(() -> dimType, chunkGenerator);
 	}
 
-	private ServerWorld createAndRegisterWorldAndDimension(MinecraftServer server, RegistryKey<World> worldKey, Multiworld world) throws MultiworldException
+	private ServerLevel createAndRegisterWorldAndDimension(MinecraftServer server, ResourceKey<Level> worldKey, Multiworld world) throws MultiworldException
 	{
 		@SuppressWarnings("deprecation")
-		Map<RegistryKey<World>, ServerWorld> map = server.forgeGetWorldMap();
+		Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
 
-		ServerWorld existingLevel = map.get(worldKey);
+		ServerLevel existingLevel = map.get(worldKey);
 
 		if (existingLevel != null) {
 			return existingLevel;
 		}
-		ServerWorld overworld = server.getLevel(World.OVERWORLD);
-		RegistryKey<Dimension> dimensionKey = RegistryKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
-		Dimension dimension = dimensionGenerator(server, world);
+		ServerLevel overworld = server.getLevel(Level.OVERWORLD);
+		ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, worldKey.location());
+		LevelStem dimension = dimensionGenerator(server, world);
 
-		IChunkStatusListenerFactory chunkListenerFactory = CHUNK_STATUS_LISTENER_FACTORY_FIELD.apply(server);
+		ChunkProgressListenerFactory chunkListenerFactory = CHUNK_STATUS_LISTENER_FACTORY_FIELD.apply(server);
 		Executor executor = BACKGROUND_EXECUTOR_FIELD.apply(server);
-		LevelSave levelSave = ANVIL_CONVERTER_FOR_ANVIL_FILE_FIELD.apply(server);
+		LevelStorageAccess levelSave = ANVIL_CONVERTER_FOR_ANVIL_FILE_FIELD.apply(server);
 
-		IServerConfiguration serverConfig = server.getWorldData();
-		DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
+		WorldData serverConfig = server.getWorldData();
+		WorldGenSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
 		dimensionGeneratorSettings.dimensions().register(dimensionKey, dimension, Lifecycle.experimental());
-		DerivedWorldInfo derivedworldinfo = new DerivedWorldInfo(serverConfig, serverConfig.overworldData());
-		ServerWorld newWorld = new ServerWorldMultiworld(
+		DerivedLevelData derivedworldinfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
+		ServerLevel newWorld = new ServerWorldMultiworld(
 			server,
 			executor,
 			levelSave,
@@ -315,7 +315,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 				// the dimension loader is hardcoded to initialize preexisting non-overworld worlds with no special spawn lists
 				// so this can probably be left empty for best results and spawns should be handled via other means
 			false); // "tick time", true for overworld, always false for everything else
-		overworld.getWorldBorder().addListener(new IBorderListener.Impl(newWorld.getWorldBorder()));
+		overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newWorld.getWorldBorder()));
 		map.put(worldKey, newWorld);
 
 		// update forge's world cache (very important, if we don't do this then the new world won't tick!)
@@ -336,7 +336,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         try
         {
         	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        	RegistryKey<World> worldKey = world.getResourceLocationUnique();
+        	ResourceKey<Level> worldKey = world.getResourceLocationUnique();
 
 //            ISaveHandler savehandler = new MiltiworldDimensionSavedDataManager(overworld.getSaveHandler(), world);
 //
@@ -356,7 +356,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 //            //if (!mcServer.isSingleplayer())
 //            //    worldServer.getLevelData().h.setGameType(mcServer.getGameType());
 
-        	ServerWorld worldServer = createAndRegisterWorldAndDimension(server, worldKey, world);
+        	ServerLevel worldServer = createAndRegisterWorldAndDimension(server, worldKey, world);
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
@@ -402,8 +402,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     public File unregisterWorld(Multiworld world)
     {
-    	ServerChunkProvider serverW = world.getWorldServer().getChunkSource();
-        File folder = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, serverW.chunkMap, "field_219270_x");
+    	ServerChunkCache serverW = world.getWorldServer().getChunkSource();
+        File folder = ObfuscationReflectionHelper.getPrivateValue(ChunkMap.class, serverW.chunkMap, "storageFolder");
         world.worldLoaded = false;
         world.removeAllPlayersFromWorld();
         worldsToUnloadAndRemove.add(ServerLifecycleHooks.getCurrentServer().getLevel(world.getResourceLocationUnique()));
@@ -478,7 +478,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
-        Multiworld mw = getMultiworld(((ServerWorld)event.getWorld()).dimension().location().toString());
+        Multiworld mw = getMultiworld(((ServerLevel)event.getWorld()).dimension().location().toString());
         if (mw != null)
             mw.worldLoaded = false;
     }
@@ -487,15 +487,15 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      * Unregister all worlds that have been marked for removal
      */
 	protected void unregisterDimensions() {
-		for (Iterator<ServerWorld> it = worldsToUnloadAndRemove.iterator(); it.hasNext();) {
-			ServerWorld world = it.next();
+		for (Iterator<ServerLevel> it = worldsToUnloadAndRemove.iterator(); it.hasNext();) {
+			ServerLevel world = it.next();
 			// Check with DimensionManager, whether the world is still loaded
 			if (ServerLifecycleHooks.getCurrentServer().getLevel(world.dimension()) != null) {
 				try {
 					LoggingHandler.felog.info("[MultiWorld] Saving chunks for level '{}'/{}", world,
 							world.dimension().location());
 					world.noSave = true;
-					world.save((IProgressUpdate) null, true, true);
+					world.save((ProgressListener) null, true, true);
 					try {
 						MinecraftForge.EVENT_BUS.post(
 								new net.minecraftforge.event.world.WorldEvent.Unload(world));
@@ -505,20 +505,20 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 								(Throwable) ioexception1);
 					}
 					@SuppressWarnings("deprecation")
-					Map<RegistryKey<World>, ServerWorld> map = ServerLifecycleHooks.getCurrentServer().forgeGetWorldMap();
+					Map<ResourceKey<Level>, ServerLevel> map = ServerLifecycleHooks.getCurrentServer().forgeGetWorldMap();
 					map.remove(world.dimension());
 					
-					IServerConfiguration serverConfig = ServerLifecycleHooks.getCurrentServer().getWorldData();
-					DimensionGeneratorSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
-					SimpleRegistry<Dimension> registry = ObfuscationReflectionHelper.getPrivateValue(DimensionGeneratorSettings.class, dimensionGeneratorSettings, "field_236208_h_");
-					BiMap<ResourceLocation, Dimension> storage = ObfuscationReflectionHelper.getPrivateValue(SimpleRegistry.class, registry, "field_82596_a");
-					BiMap<RegistryKey<Dimension>, Dimension> keyStorage = ObfuscationReflectionHelper.getPrivateValue(SimpleRegistry.class, registry, "field_239649_bb_");
-					Map<Dimension, Lifecycle> lifecycles = ObfuscationReflectionHelper.getPrivateValue(SimpleRegistry.class, registry, "field_243535_bj");
-					Dimension dim = storage.get(world.dimension().location());
+					WorldData serverConfig = ServerLifecycleHooks.getCurrentServer().getWorldData();
+					WorldGenSettings dimensionGeneratorSettings = serverConfig.worldGenSettings();
+					MappedRegistry<LevelStem> registry = ObfuscationReflectionHelper.getPrivateValue(WorldGenSettings.class, dimensionGeneratorSettings, "dimensions");
+					BiMap<ResourceLocation, LevelStem> storage = ObfuscationReflectionHelper.getPrivateValue(MappedRegistry.class, registry, "storage");
+					BiMap<ResourceKey<LevelStem>, LevelStem> keyStorage = ObfuscationReflectionHelper.getPrivateValue(MappedRegistry.class, registry, "keyStorage");
+					Map<LevelStem, Lifecycle> lifecycles = ObfuscationReflectionHelper.getPrivateValue(MappedRegistry.class, registry, "lifecycles");
+					LevelStem dim = storage.get(world.dimension().location());
 					storage.remove(world.dimension().location(), dim);
 					keyStorage.remove(world.dimension(), dim);
 					lifecycles.remove(dim);
-					ObfuscationReflectionHelper.setPrivateValue(DimensionGeneratorSettings.class, dimensionGeneratorSettings, registry, "field_236208_h_");
+					ObfuscationReflectionHelper.setPrivateValue(WorldGenSettings.class, dimensionGeneratorSettings, registry, "dimensions");
 				}catch(Exception e) {
 					e.printStackTrace();
 					LoggingHandler.felog.error("FAILED TO DELETE WORLD: "+world.dimension().location().toString()+" from dimReg, YOU NEED TO MANUALY REMOVE IT FROM level.dat/data/WorldGenSettings/dimensions");

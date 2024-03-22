@@ -9,10 +9,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,14 +43,14 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("name", StringArgumentType.greedyString())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
 
         ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();
@@ -61,7 +61,7 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
         }
 
         String nameS = StringArgumentType.getString(ctx, "name").trim();
-        is.setHoverName(new StringTextComponent(nameS));
+        is.setHoverName(new TextComponent(nameS));
         return Command.SINGLE_SUCCESS;
     }
 }

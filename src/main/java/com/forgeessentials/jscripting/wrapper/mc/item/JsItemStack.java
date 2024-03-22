@@ -4,9 +4,9 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
 
 public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 {
@@ -110,7 +110,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public void setDisplayName(String name)
     {
-        that.setHoverName(new StringTextComponent(name));
+        that.setHoverName(new TextComponent(name));
     }
 
     public boolean hasDisplayName()
@@ -155,7 +155,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
      */
     public void _setNbt(String value)
     {
-        that.setTag(value == null ? null : DataManager.fromJson(value, CompoundNBT.class));
+        that.setTag(value == null ? null : DataManager.fromJson(value, CompoundTag.class));
     }
 
 }

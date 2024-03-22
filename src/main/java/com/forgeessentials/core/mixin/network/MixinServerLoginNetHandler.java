@@ -12,16 +12,16 @@ import com.forgeessentials.serverNetwork.ModuleNetworking;
 import com.forgeessentials.serverNetwork.utils.ServerType;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.network.login.ServerLoginNetHandler;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 
-@Mixin(ServerLoginNetHandler.class)
+@Mixin(ServerLoginPacketListenerImpl.class)
 public class MixinServerLoginNetHandler
 {
     @Shadow
-    public void disconnect(ITextComponent p_194026_1_) {}
+    public void disconnect(Component p_194026_1_) {}
     
     @Shadow
     private GameProfile gameProfile;
@@ -41,7 +41,7 @@ public class MixinServerLoginNetHandler
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER&&
                 !ModuleNetworking.getInstance().getClient().isChannelOpen()&&
                 ModuleNetworking.getLocalClient().isDisableConnectionsIfServerNotFound()){
-            disconnect((new StringTextComponent("Disconnected ServerHead")).withStyle(TextFormatting.RED));
+            disconnect((new TextComponent("Disconnected ServerHead")).withStyle(ChatFormatting.RED));
             ci.cancel();
             return;
         }
@@ -49,7 +49,7 @@ public class MixinServerLoginNetHandler
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER&&
                 ModuleNetworking.getLocalClient().isDisableClientOnlyConnections()){
             if(!ModuleNetworking.getInstance().getTranferManager().incommongPlayers.contains(gameProfile.getId())) {
-                disconnect((new StringTextComponent("Must join from root server")).withStyle(TextFormatting.RED));
+                disconnect((new TextComponent("Must join from root server")).withStyle(ChatFormatting.RED));
                 ci.cancel();
                 return;
             }
@@ -58,7 +58,7 @@ public class MixinServerLoginNetHandler
         }
         //Fix for double logging on server network
         if(ModuleNetworking.getInstance().getTranferManager().onlinePlayers.contains(gameProfile.getId())){
-            disconnect((new StringTextComponent("Double Login")).withStyle(TextFormatting.RED));
+            disconnect((new TextComponent("Double Login")).withStyle(ChatFormatting.RED));
             ci.cancel();
         }
     }

@@ -18,8 +18,8 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -65,7 +65,7 @@ public class NetworkDataManager extends ServerEventHandler
         }
     }
 
-    public void sendPlayerToServer(PlayerEntity player, String serverName) {
+    public void sendPlayerToServer(Player player, String serverName) {
         if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
             for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
             {
@@ -81,24 +81,24 @@ public class NetworkDataManager extends ServerEventHandler
             }
         }
     }
-    public void sendPlayerToAddress(PlayerEntity player, String server, String serverName) {
+    public void sendPlayerToAddress(Player player, String server, String serverName) {
         if(PlayerInfo.get(player).getHasFEClient()) {
-            NetworkUtils.sendTo(new Packet10ClientTransfer(server, serverName, null, null, true), (ServerPlayerEntity) player);
+            NetworkUtils.sendTo(new Packet10ClientTransfer(server, serverName, null, null, true), (ServerPlayer) player);
         }
     }
     public void sendAllPlayersToAddress(String server, String serverName) {
-        for(PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+        for(Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
             sendPlayerToAddress(p, server, serverName);
         }
     }
 
-    public void sendPlayerFallback(PlayerEntity player, String serverFallback, String serverFallbackName) {
+    public void sendPlayerFallback(Player player, String serverFallback, String serverFallbackName) {
         if(PlayerInfo.get(player).getHasFEClient()) {
-            NetworkUtils.sendTo(new Packet10ClientTransfer(null, null, serverFallback, serverFallbackName, false), (ServerPlayerEntity) player);
+            NetworkUtils.sendTo(new Packet10ClientTransfer(null, null, serverFallback, serverFallbackName, false), (ServerPlayer) player);
         }
     }
     public void sendAllPlayersFallback(String serverFallback, String serverFallbackName) {
-        for(PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+        for(Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
             sendPlayerFallback(p, serverFallback, serverFallbackName);
         }
     }

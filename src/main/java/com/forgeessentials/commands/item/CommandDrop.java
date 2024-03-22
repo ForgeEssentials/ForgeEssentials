@@ -9,20 +9,20 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("pos", Vec3Argument.vec3())
                 .then(Commands.argument("count", IntegerArgumentType.integer(0, 64))
@@ -62,24 +62,24 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        Vector3d vector = Vec3Argument.getVec3(ctx, "pos");
-        World world = null;
+        Vec3 vector = Vec3Argument.getVec3(ctx, "pos");
+        Level world = null;
         int x = (int) vector.x;
         int y = (int) vector.y;
         int z = (int) vector.z;
 
-        if (ctx.getSource().getEntity() instanceof ServerPlayerEntity)
+        if (ctx.getSource().getEntity() instanceof ServerPlayer)
         {
             world = ctx.getSource().getEntity().level;
         }
         else
         {
-            ICommandSource source = CommandUtils.GetSource(ctx.getSource());
+            CommandSource source = CommandUtils.GetSource(ctx.getSource());
             if (source instanceof MinecraftServer)
             {
-                world = ((DedicatedServer) source).getLevel(World.OVERWORLD);
+                world = ((DedicatedServer) source).getLevel(Level.OVERWORLD);
             }
         }
         BlockPos pos = new BlockPos(x, y, z);
@@ -89,10 +89,10 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
         ItemStack itemstack = ItemArgument.getItem(ctx, "item").createItemStack(j, false);
         ItemStack tmpStack;
 
-        TileEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof IInventory)
+        BlockEntity tileEntity = world.getBlockEntity(pos);
+        if (tileEntity instanceof Container)
         {
-            IInventory inventory = (IInventory) tileEntity;
+            Container inventory = (Container) tileEntity;
             for (int slot = 0; slot < inventory.getContainerSize(); ++slot)
             {
                 itemstack.setCount(count);

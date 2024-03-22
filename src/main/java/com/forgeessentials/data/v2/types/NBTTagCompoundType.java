@@ -14,19 +14,19 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
-import net.minecraft.nbt.ByteArrayNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.DoubleNBT;
-import net.minecraft.nbt.FloatNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.IntArrayNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NumberNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class NBTTagCompoundType implements DataType<CompoundNBT>
+public class NBTTagCompoundType implements DataType<CompoundTag>
 {
 
     public static final char JSON_BYTE = 'b';
@@ -42,14 +42,14 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
 
     // @SuppressWarnings({ "unchecked"})
     @Override
-    public JsonElement serialize(CompoundNBT src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement serialize(CompoundTag src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
         Set<String> tags = src.getAllKeys();
         for (String tagName : tags)
         {
-            INBT tag = src.get(tagName);
-            NumberNBT tagPrimitive = (tag instanceof NumberNBT) ? (NumberNBT) tag : null;
+            Tag tag = src.get(tagName);
+            NumericTag tagPrimitive = (tag instanceof NumericTag) ? (NumericTag) tag : null;
 
             switch (tag.getId())
             {
@@ -76,7 +76,7 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
             case NBT.TAG_BYTE_ARRAY:
             {
                 JsonArray jsonArray = new JsonArray();
-                ByteArrayNBT tagByteArray = (ByteArrayNBT) tag;
+                ByteArrayTag tagByteArray = (ByteArrayTag) tag;
                 for (byte value : tagByteArray.getAsByteArray())
                 {
                     jsonArray.add(new JsonPrimitive(value));
@@ -85,11 +85,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 break;
             }
             case NBT.TAG_STRING:
-                result.add(JSON_STRING + ":" + tagName, new JsonPrimitive(((StringNBT) tag).getAsString()));
+                result.add(JSON_STRING + ":" + tagName, new JsonPrimitive(((StringTag) tag).getAsString()));
                 break;
             case NBT.TAG_LIST:
             {
-                ListNBT tagList = (ListNBT) tag;
+                ListTag tagList = (ListTag) tag;
                 JsonArray jsonArray = new JsonArray();
                 String typeId;
                 switch (tagList.getElementType())
@@ -135,12 +135,12 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 break;
             }
             case NBT.TAG_COMPOUND:
-                result.add(JSON_COMPOUND + ":" + tagName, context.serialize(tag, CompoundNBT.class));
+                result.add(JSON_COMPOUND + ":" + tagName, context.serialize(tag, CompoundTag.class));
                 break;
             case NBT.TAG_INT_ARRAY:
             {
                 JsonArray jsonArray = new JsonArray();
-                IntArrayNBT tagIntArray = (IntArrayNBT) tag;
+                IntArrayTag tagIntArray = (IntArrayTag) tag;
                 for (int value : tagIntArray.getAsIntArray())
                 {
                     jsonArray.add(new JsonPrimitive(value));
@@ -156,13 +156,13 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
     }
 
     @Override
-    public CompoundNBT deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public CompoundTag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException
     {
         try
         {
             JsonObject obj = json.getAsJsonObject();
-            CompoundNBT result = new CompoundNBT();
+            CompoundTag result = new CompoundTag();
             for (Entry<String, JsonElement> tagData : obj.entrySet())
             {
                 char tagType = tagData.getKey().charAt(0);
@@ -181,7 +181,7 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                         int index = 0;
                         for (JsonElement el : jsonArray)
                             byteArray[index++] = (byte) context.deserialize(el, Byte.class);
-                        result.put(tagName, new ByteArrayNBT(byteArray));
+                        result.put(tagName, new ByteArrayTag(byteArray));
                     }
                     else
                     {
@@ -194,11 +194,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_STRING:
                     if (tagData.getValue().isJsonArray())
                     {
-                        ListNBT tagList = new ListNBT();
+                        ListTag tagList = new ListTag();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                            StringNBT s = StringNBT.valueOf(context.<String> deserialize(el, String.class));
+                            StringTag s = StringTag.valueOf(context.<String> deserialize(el, String.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -215,11 +215,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_INT:
                     if (tagData.getValue().isJsonArray())
                     {
-                        ListNBT tagList = new ListNBT();
+                        ListTag tagList = new ListTag();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                            IntNBT s = IntNBT.valueOf((int) context.deserialize(el, Integer.class));
+                            IntTag s = IntTag.valueOf((int) context.deserialize(el, Integer.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -241,7 +241,7 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                         int index = 0;
                         for (JsonElement el : jsonArray)
                             intArray[index++] = (int) context.deserialize(el, Integer.class);
-                        result.put(tagName, new IntArrayNBT(intArray));
+                        result.put(tagName, new IntArrayTag(intArray));
                     }
                     else
                     {
@@ -251,11 +251,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_FLOAT:
                     if (tagData.getValue().isJsonArray())
                     {
-                        ListNBT tagList = new ListNBT();
+                        ListTag tagList = new ListTag();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                            FloatNBT s = FloatNBT.valueOf((float) context.deserialize(el, Float.class));
+                            FloatTag s = FloatTag.valueOf((float) context.deserialize(el, Float.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -272,11 +272,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_DOUBLE:
                     if (tagData.getValue().isJsonArray())
                     {
-                        ListNBT tagList = new ListNBT();
+                        ListTag tagList = new ListTag();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                            DoubleNBT s = DoubleNBT.valueOf((double) context.deserialize(el, Double.class));
+                            DoubleTag s = DoubleTag.valueOf((double) context.deserialize(el, Double.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -293,17 +293,17 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_COMPOUND:
                     if (tagData.getValue().isJsonArray())
                     {
-                        ListNBT tagList = new ListNBT();
+                        ListTag tagList = new ListTag();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                            tagList.add((CompoundNBT) context.deserialize(el, CompoundNBT.class));
+                            tagList.add((CompoundTag) context.deserialize(el, CompoundTag.class));
                         }
                         result.put(tagName, tagList);
                     }
                     else if (tagData.getValue().isJsonObject())
                     {
-                        result.put(tagName, (CompoundNBT) context.deserialize(tagData.getValue(), CompoundNBT.class));
+                        result.put(tagName, (CompoundTag) context.deserialize(tagData.getValue(), CompoundTag.class));
                     }
                     else
                     {
@@ -326,9 +326,9 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
     }
 
     @Override
-    public Class<CompoundNBT> getType()
+    public Class<CompoundTag> getType()
     {
-        return CompoundNBT.class;
+        return CompoundTag.class;
     }
 
 }

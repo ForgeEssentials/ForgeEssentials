@@ -6,7 +6,7 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class JsWarpPoint extends JsWrapper<WarpPoint>
 {

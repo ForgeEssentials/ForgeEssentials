@@ -11,7 +11,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
@@ -52,7 +52,7 @@ public class WorldZone extends Zone implements Loadable
     }
 
     @Override
-    public boolean isPlayerInZone(PlayerEntity player)
+    public boolean isPlayerInZone(Player player)
     {
         return player.level.dimension().location().toString().equals(dimensionID);
     }

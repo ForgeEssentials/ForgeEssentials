@@ -13,10 +13,10 @@ import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.BlockStateArgument;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 
 public class FilterConfig
 {
@@ -79,7 +79,7 @@ public class FilterConfig
         {
             globalConfig.parse(null, null);
         }
-        catch (CommandException ignored)
+        catch (CommandRuntimeException ignored)
         {
 
         }
@@ -106,7 +106,7 @@ public class FilterConfig
         return new Date(System.currentTimeMillis() - before);
     }
 
-    public void parse(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
+    public void parse(CommandContext<CommandSourceStack> ctx, List<String> args) throws CommandRuntimeException
     {
         if (args != null)
         {
@@ -168,7 +168,7 @@ public class FilterConfig
     {
     }
 
-    public void parseActions(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
+    public void parseActions(CommandContext<CommandSourceStack> ctx, List<String> args) throws CommandRuntimeException
     {
         // while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
@@ -194,7 +194,7 @@ public class FilterConfig
         }
     }
 
-    public void parseBlock(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
+    public void parseBlock(CommandContext<CommandSourceStack> ctx, List<String> args) throws CommandRuntimeException
     {
         // while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
@@ -212,7 +212,7 @@ public class FilterConfig
         }
     }
 
-    public void parseBefore(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
+    public void parseBefore(CommandContext<CommandSourceStack> ctx, List<String> args) throws CommandRuntimeException
     {
         if (!args.isEmpty())
         {
@@ -242,7 +242,7 @@ public class FilterConfig
         }
     }
 
-    public void parseAfter(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
+    public void parseAfter(CommandContext<CommandSourceStack> ctx, List<String> args) throws CommandRuntimeException
     {
         if (!args.isEmpty())
         {
@@ -272,7 +272,7 @@ public class FilterConfig
         }
     }
 
-    public void parseRange(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
+    public void parseRange(CommandContext<CommandSourceStack> ctx, List<String> args) throws CommandRuntimeException
     {
         if (!args.isEmpty())
         {

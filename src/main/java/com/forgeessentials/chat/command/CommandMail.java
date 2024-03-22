@@ -15,10 +15,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("read").executes(CommandContext -> execute(CommandContext, "read")))
                 .then(Commands.literal("readall").executes(CommandContext -> execute(CommandContext, "readall")))
@@ -61,7 +61,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {
@@ -74,7 +74,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
 
         if (params.equals("read"))
         {
-            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
+            if (!(ctx.getSource().getEntity() instanceof Player))
             {
                 ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 return Command.SINGLE_SUCCESS;
@@ -91,7 +91,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("readall"))
         {
-            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
+            if (!(ctx.getSource().getEntity() instanceof Player))
             {
                 ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 return Command.SINGLE_SUCCESS;
@@ -110,7 +110,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("send"))
         {
-            PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            Player player = EntityArgument.getPlayer(ctx, "player");
             UserIdent receiver = UserIdent.get(player);
             Mailer.sendMail(getIdent(ctx.getSource()), receiver, StringArgumentType.getString(ctx, "message"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
@@ -120,7 +120,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public static void readMail(CommandSource sender, Mail mail)
+    public static void readMail(CommandSourceStack sender, Mail mail)
     {
         ChatOutputHandler.chatNotification(sender,
                 Translator.format("Mail from %s on the %s",

@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 
 import com.forgeessentials.api.APIRegistry;
@@ -17,7 +16,6 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet05Noclip;
-import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.compat.worldedit.WEIntegration;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -64,10 +62,10 @@ import com.forgeessentials.util.selections.SelectionHandler;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -78,22 +76,21 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 /**
@@ -170,13 +167,13 @@ public class ForgeEssentials
         instance = this;
         // Set mod as server only
         MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST,
-                () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, 
+        		()->new IExtensionPoint.DisplayTest(()->"ANY", (remote, isServer)-> true));
         modMain = FMLJavaModLoadingContext.get().getModEventBus();
         tasks = new TaskRegistry();
 
-        List<ModInfo> mods = ModList.get().getMods();
-        for (ModInfo mod : mods)
+        List<IModInfo> mods = ModList.get().getMods();
+        for (IModInfo mod : mods)
         {
             if (mod.getModId().equals("forgeessentials"))
             {
@@ -318,7 +315,7 @@ public class ForgeEssentials
         FECommandManager.loadConfigurableCommand();
 
         MinecraftForge.EVENT_BUS.post(new FEModuleServerAboutToStartEvent(e));
-        new BaublesCompat();
+        //new BaublesCompat();
     }
 
     @SubscribeEvent
@@ -432,9 +429,9 @@ public class ForgeEssentials
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (event.getEntity() instanceof PlayerEntity)
+        if (event.getEntity() instanceof Player)
         {
-            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+            ServerPlayer player = (ServerPlayer) event.getPlayer();
             UserIdent.login(player);
             PlayerInfo.login(player.getGameProfile().getId());
             try
@@ -443,7 +440,7 @@ public class ForgeEssentials
             }
             catch (JsonParseException e)
             {
-                player.connection.disconnect(new StringTextComponent(
+                player.connection.disconnect(new TextComponent(
                         "Unable to Parse PlayerInfo file, please contact your admin for assistance and ask them to check the log!"));
                 LoggingHandler.felog.fatal(
                         "Unable to Parse PlayerInfo file!  If this is date related, please check S:format_gson_compat in your main.cfg file!",
@@ -458,13 +455,13 @@ public class ForgeEssentials
                     String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!",
                             event.getPlayer().getDisplayName().getString());
                     Entity entity = event.getEntity();
-                    if (!(entity instanceof ServerPlayerEntity))
+                    if (!(entity instanceof ServerPlayer))
                     {
                         return;
                     }
 
-                    ServerPlayerEntity serverplayer = (ServerPlayerEntity) entity;
-                    serverplayer.connection.disconnect(new StringTextComponent(msg));
+                    ServerPlayer serverplayer = (ServerPlayer) entity;
+                    serverplayer.connection.disconnect(new TextComponent(msg));
                 }
             }
 
@@ -479,19 +476,19 @@ public class ForgeEssentials
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (event.getEntity() instanceof PlayerEntity)
+        if (event.getEntity() instanceof Player)
         {
             PlayerInfo.logout(event.getPlayer().getGameProfile().getId());
-            UserIdent.logout((PlayerEntity) event.getPlayer());
+            UserIdent.logout((Player) event.getPlayer());
         }
     }
 
     @SubscribeEvent
     public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
     {
-        if (event.getEntity() instanceof PlayerEntity)
+        if (event.getEntity() instanceof Player)
         {
-            UserIdent.get((PlayerEntity) event.getPlayer());
+            UserIdent.get((Player) event.getPlayer());
         }
     }
 
@@ -504,7 +501,7 @@ public class ForgeEssentials
             return;
         boolean perm = false;
         CommandInfo info = CommandUtils.getCommandInfo(event);
-        if (info.getSource().getEntity() instanceof ServerPlayerEntity)
+        if (info.getSource().getEntity() instanceof ServerPlayer)
         {
             perm = checkPerms("command." + info.getPermissionNode(), CommandUtils.getServerPlayer(info.getSource()));
         }
@@ -523,11 +520,11 @@ public class ForgeEssentials
         if (!perm)
         {
             event.setCanceled(true);
-            info.getSource().sendFailure(new StringTextComponent("You dont have permission to use this command!"));
+            info.getSource().sendFailure(new TextComponent("You dont have permission to use this command!"));
         }
     }
 
-    public boolean checkPerms(String commandPermissionNode, ServerPlayerEntity sender)
+    public boolean checkPerms(String commandPermissionNode, ServerPlayer sender)
     {
         //LoggingHandler.felog.debug("Checking command perm: " + commandPermissionNode);
         return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandPermissionNode);

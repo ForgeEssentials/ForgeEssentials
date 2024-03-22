@@ -9,9 +9,9 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class PlayerLoggerEvent<T>
 {
@@ -42,12 +42,12 @@ public abstract class PlayerLoggerEvent<T>
         return ModulePlayerLogger.getLogger().getPlayer(ident.getUuid(), ident.getUsername());
     }
 
-    public PlayerData getPlayer(PlayerEntity player)
+    public PlayerData getPlayer(Player player)
     {
         return ModulePlayerLogger.getLogger().getPlayer(player.getGameProfile().getId(), player.getDisplayName().getString());
     }
 
-    public Blob getTileEntityBlob(TileEntity tileEntity)
+    public Blob getTileEntityBlob(BlockEntity tileEntity)
     {
         return PlayerLogger.tileEntityToBlob(tileEntity);
     }

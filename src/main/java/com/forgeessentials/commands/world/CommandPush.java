@@ -7,20 +7,20 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.block.AbstractButtonBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeverBlock;
-import net.minecraft.block.StoneButtonBlock;
-import net.minecraft.block.WoodButtonBlock;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeverBlock;
+import net.minecraft.world.level.block.StoneButtonBlock;
+import net.minecraft.world.level.block.WoodButtonBlock;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,29 +51,29 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("pos", BlockPosArgument.blockPos())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        CommandSource sender = ctx.getSource();
+        CommandSourceStack sender = ctx.getSource();
         BlockPos posI = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
         int x = posI.getX();
         int y = posI.getY();
         int z = posI.getZ();
-        World world = null;
+        Level world = null;
 
-        if (GetSource(sender) instanceof TileEntity)
+        if (GetSource(sender) instanceof BlockEntity)
         {
-            world = ((TileEntity) GetSource(sender)).getLevel();
+            world = ((BlockEntity) GetSource(sender)).getLevel();
         }
-        else if (GetSource(sender) instanceof ServerPlayerEntity)
+        else if (GetSource(sender) instanceof ServerPlayer)
         {
-            world = ((ServerPlayerEntity) GetSource(sender)).level;
+            world = ((ServerPlayer) GetSource(sender)).level;
         }
         else if (GetSource(sender) instanceof DedicatedServer)
         {
@@ -90,9 +90,9 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            if (state.getBlock() instanceof AbstractButtonBlock)
+            if (state.getBlock() instanceof ButtonBlock)
             {
-                AbstractButtonBlock button = (AbstractButtonBlock) state.getBlock();
+                ButtonBlock button = (ButtonBlock) state.getBlock();
                 button.press(state, world, pos);
             }
             if (state.getBlock() instanceof LeverBlock)
@@ -106,30 +106,30 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity playermp = getServerPlayer(ctx.getSource());
+        ServerPlayer playermp = getServerPlayer(ctx.getSource());
         BlockPos posI = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
         int x = posI.getX();
         int y = posI.getY();
         int z = posI.getZ();
-        World world = null;
+        Level world = null;
 
         world = playermp.level;
         BlockPos pos = new BlockPos(x, y, z);
         BlockState state = world.getBlockState(pos);
 
         if ((state == Blocks.AIR.defaultBlockState()
-                || !(state.getBlock() instanceof AbstractButtonBlock) && !(state.getBlock() instanceof LeverBlock)))
+                || !(state.getBlock() instanceof ButtonBlock) && !(state.getBlock() instanceof LeverBlock)))
         {
             ChatOutputHandler.chatError(ctx.getSource(), "Button/Lever Not Found");
             return Command.SINGLE_SUCCESS;
         }
         else
         {
-            if (state.getBlock() instanceof AbstractButtonBlock)
+            if (state.getBlock() instanceof ButtonBlock)
             {
-                AbstractButtonBlock button = (AbstractButtonBlock) state.getBlock();
+                ButtonBlock button = (ButtonBlock) state.getBlock();
                 button.press(state, world, pos);
             }
             if (state.getBlock() instanceof LeverBlock)

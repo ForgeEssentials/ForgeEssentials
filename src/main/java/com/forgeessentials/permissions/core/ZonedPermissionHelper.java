@@ -46,15 +46,15 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -104,7 +104,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     private boolean disableDebug;
 
-    public Set<PlayerEntity> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<>());
+    public Set<Player> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<>());
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
@@ -431,23 +431,23 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        TextComponent msg1 = new StringTextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
-        msg1.withStyle(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
+        BaseComponent msg1 = new TextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
+        msg1.withStyle(Zone.PERMISSION_FALSE.equals(value) ? ChatFormatting.RED : ChatFormatting.DARK_GREEN);
 
-        TextComponent msg2;
+        BaseComponent msg2;
         if (zone == null)
         {
-            msg2 = new StringTextComponent("  permission not set");
-            msg2.withStyle(TextFormatting.YELLOW);
+            msg2 = new TextComponent("  permission not set");
+            msg2.withStyle(ChatFormatting.YELLOW);
         }
         else
         {
-            TextComponent msgZone = new StringTextComponent(zone.getName());
-            msgZone.withStyle(TextFormatting.LIGHT_PURPLE);
+            BaseComponent msgZone = new TextComponent(zone.getName());
+            msgZone.withStyle(ChatFormatting.LIGHT_PURPLE);
 
-            TextComponent msgUser = new StringTextComponent(
+            BaseComponent msgUser = new TextComponent(
                     ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
-            msgUser.withStyle(TextFormatting.GOLD);
+            msgUser.withStyle(ChatFormatting.GOLD);
 
             if (isGroupPermission)
             {
@@ -455,17 +455,17 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 // FEPermissions.GROUP_NAME);
                 // if (groupName == null)
                 // groupName = group;
-                TextComponent msgGroup = new StringTextComponent(group);
-                msgGroup.withStyle(TextFormatting.LIGHT_PURPLE);
+                BaseComponent msgGroup = new TextComponent(group);
+                msgGroup.withStyle(ChatFormatting.LIGHT_PURPLE);
 
-                msg2 = new TranslationTextComponent("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
+                msg2 = new TranslatableComponent("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
             }
             else
             {
-                msg2 = new TranslationTextComponent("  zone %s user %s", msgZone, msgUser);
+                msg2 = new TranslatableComponent("  zone %s user %s", msgZone, msgUser);
             }
         }
-        for (PlayerEntity sender : permissionDebugUsers)
+        for (Player sender : permissionDebugUsers)
         {
             if (point != null && new WorldPoint(sender).distance(point) > 32)
                 continue;
@@ -614,7 +614,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             firstDirtyTime = 0;
             save();
-            for (ServerPlayerEntity serverplayerentity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            for (ServerPlayer serverplayerentity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
                 ServerLifecycleHooks.getCurrentServer().getCommands().sendCommands(serverplayerentity);
             }
@@ -772,7 +772,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public boolean hasPermission(GameProfile player, String permissionNode, @Nullable IContext context)
     {
         UserIdent ident = null;
-        World w = context != null ? context.getWorld() : null;
+        Level w = context != null ? context.getWorld() : null;
         String dim = w != null ? w.dimension().location().toString() : "minecraft:overworld";
         WorldPoint loc = null;
         WorldArea area = null;
@@ -781,7 +781,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             if (context instanceof AreaContext)
             {
-                AxisAlignedBB areac = context.get(ContextKeys.AREA);
+                AABB areac = context.get(ContextKeys.AREA);
 
                 if (areac != null)
                 {
@@ -955,7 +955,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(PlayerEntity player, String permissionNode)
+    public boolean checkPermission(Player player, String permissionNode)
     {
         UserIdent ident = UserIdent.get(player);
         return checkBooleanPermission(getPermission(ident, new WorldPoint(player), null,
@@ -963,7 +963,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public String getPermissionProperty(PlayerEntity player, String permissionNode)
+    public String getPermissionProperty(Player player, String permissionNode)
     {
         UserIdent ident = UserIdent.get(player);
         return getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)),

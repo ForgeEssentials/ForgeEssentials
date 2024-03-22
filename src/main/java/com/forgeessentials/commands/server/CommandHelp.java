@@ -17,20 +17,20 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandHelp extends ForgeEssentialsCommandBuilder
 {
-    CommandDispatcher<CommandSource> dispatcher;
+    CommandDispatcher<CommandSourceStack> dispatcher;
 
-    public CommandHelp(boolean enabled, CommandDispatcher<CommandSource> disp)
+    public CommandHelp(boolean enabled, CommandDispatcher<CommandSourceStack> disp)
     {
         this(enabled);
         dispatcher = disp;
@@ -77,7 +77,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "empty"))
                 .then(Commands.argument("page", IntegerArgumentType.integer(0, 1000))
@@ -85,7 +85,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("empty"))
         {
@@ -104,7 +104,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
      * ChatOutputHandler.sendMessage(sender, chatMsg); }
      */
 
-    public void showHelpPage(CommandContext<CommandSource> ctx) throws CommandException
+    public void showHelpPage(CommandContext<CommandSourceStack> ctx) throws CommandRuntimeException
     {
         if (messages == null || messages.size() == 0)
             showHelpPage(ctx, 1);
@@ -113,10 +113,10 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
                     ScriptArguments.processSafe(message, ctx.getSource()));
     }
 
-    public void showHelpPage(CommandContext<CommandSource> ctx, int page) throws CommandException
+    public void showHelpPage(CommandContext<CommandSourceStack> ctx, int page) throws CommandRuntimeException
     {
         List<String> scmds = new ArrayList<>();
-        Map<CommandNode<CommandSource>, String> map = dispatcher.getSmartUsage(dispatcher.getRoot(), ctx.getSource());
+        Map<CommandNode<CommandSourceStack>, String> map = dispatcher.getSmartUsage(dispatcher.getRoot(), ctx.getSource());
         for (String s : map.values())
         {
             String scmd = "/" + s;
@@ -133,11 +133,11 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
             page = totalpages;
         }
 
-        TextFormatting commandcolour = TextFormatting.getById(commandColor);
-        TextFormatting subcommandcolour = TextFormatting.getById(subCommandColor);
+        ChatFormatting commandcolour = ChatFormatting.getById(commandColor);
+        ChatFormatting subcommandcolour = ChatFormatting.getById(subCommandColor);
 
         ChatOutputHandler.sendMessage(ctx.getSource(), "#####################################################",
-                TextFormatting.WHITE);
+                ChatFormatting.WHITE);
 
         for (int n = 0; n < ((amountperpage * page)); n++)
         {
@@ -153,13 +153,13 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
                 String acmd = cmdlspl[0];
                 String csuffix = commandline.replaceAll(acmd, "");
 
-                TextComponent tc = new StringTextComponent("");
+                BaseComponent tc = new TextComponent("");
 
-                TextComponent tc0 = new StringTextComponent(acmd);
+                BaseComponent tc0 = new TextComponent(acmd);
                 tc0.withStyle(commandcolour);
                 tc.append(tc0);
 
-                TextComponent tc1 = new StringTextComponent(csuffix);
+                BaseComponent tc1 = new TextComponent(csuffix);
                 tc1.withStyle(subcommandcolour);
                 tc.append(tc1);
 
@@ -167,6 +167,6 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
             }
         }
         ChatOutputHandler.sendMessage(ctx.getSource(), " Page " + page + " / " + totalpages + ", /help <page>",
-                TextFormatting.YELLOW);
+                ChatFormatting.YELLOW);
     }
 }

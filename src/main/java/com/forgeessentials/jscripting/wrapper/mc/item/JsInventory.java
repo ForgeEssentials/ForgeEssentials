@@ -2,15 +2,17 @@ package com.forgeessentials.jscripting.wrapper.mc.item;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.world.Container;
 
-public class JsInventory<T extends IInventory> extends JsWrapper<T>
+import Container;
+
+public class JsInventory<T extends Container> extends JsWrapper<T>
 {
 
     /**
      * @tsd.ignore
      */
-    public static <T extends IInventory> JsInventory<T> get(T inventory)
+    public static <T extends Container> JsInventory<T> get(T inventory)
     {
         return inventory == null ? null : new JsInventory<>(inventory);
     }

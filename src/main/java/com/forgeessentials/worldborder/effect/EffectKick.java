@@ -10,9 +10,9 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TextComponent;
 
 /**
  * Expected syntax: <interval> (in seconds)
@@ -23,13 +23,13 @@ public class EffectKick extends WorldBorderEffect
     private int timeout = 0;
 
     @Override
-    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
         timeout = IntegerArgumentType.getInteger(ctx, "timeout");
     }
 
     @Override
-    public void activate(WorldBorder border, ServerPlayerEntity player)
+    public void activate(WorldBorder border, ServerPlayer player)
     {
         if (!player.getServer().isDedicatedServer())
         {
@@ -43,12 +43,12 @@ public class EffectKick extends WorldBorderEffect
     }
 
     @Override
-    public void tick(WorldBorder border, ServerPlayerEntity player)
+    public void tick(WorldBorder border, ServerPlayer player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.connection.disconnect(new StringTextComponent("You left the world border"));
+            player.connection.disconnect(new TextComponent("You left the world border"));
             // For safety restart the timeout
             pi.startTimeout(this.getClass().getName(), timeout);
         }

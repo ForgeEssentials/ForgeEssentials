@@ -612,7 +612,7 @@ public class TsdGenerator extends Doclet
                 TimeZone.class.getName(), "-external", Locale.class.getName(),
                 // "-external", Instant.class.getName(),
                 // "-external", Collection.class.getName(),
-                "-external", net.minecraft.world.GameType.class.getName());
+                "-external", net.minecraft.world.level.GameType.class.getName());
 
         FileUtils.copyFileToDirectory(feDtsFile, outDir);
         FileUtils.copyFileToDirectory(mcDtsFile, outDir);

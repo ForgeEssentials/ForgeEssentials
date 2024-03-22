@@ -4,8 +4,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,10 +41,10 @@ public class CompatReiMinimap
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
         ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
-                new StringTextComponent(getPermissionCodes(e.getPlayer()) + "Weird stuff be afoot"));
+                new TextComponent(getPermissionCodes(e.getPlayer()) + "Weird stuff be afoot"));
     }
 
-    public static String getPermissionCodes(PlayerEntity user)
+    public static String getPermissionCodes(Player user)
     {
         String MOTD = "\u00a7e\u00a7f";
         if (APIRegistry.perms.checkPermission(user, PERM_CAVEMAP))

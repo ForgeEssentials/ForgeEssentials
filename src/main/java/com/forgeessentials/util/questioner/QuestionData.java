@@ -3,19 +3,21 @@ package com.forgeessentials.util.questioner;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+
+import Player;
 
 public class QuestionData
 {
 
-    private PlayerEntity target;
+    private Player target;
 
-    private PlayerEntity source;
+    private Player source;
 
     private String question;
 
@@ -25,8 +27,8 @@ public class QuestionData
 
     private QuestionerCallback callback;
 
-    public QuestionData(PlayerEntity target, String question, QuestionerCallback callback, int timeout,
-            PlayerEntity source)
+    public QuestionData(Player target, String question, QuestionerCallback callback, int timeout,
+            Player source)
     {
         this.target = target;
         this.timeout = timeout;
@@ -44,47 +46,47 @@ public class QuestionData
 
     public void sendYesNoMessage()
     {
-        TextComponent yesMessage = new StringTextComponent("/feyes");
+        BaseComponent yesMessage = new TextComponent("/feyes");
         ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feyes");
         yesMessage.withStyle((style) -> style.withClickEvent(click));
-        yesMessage.withStyle(TextFormatting.RED);
-        yesMessage.withStyle(TextFormatting.UNDERLINE);
+        yesMessage.withStyle(ChatFormatting.RED);
+        yesMessage.withStyle(ChatFormatting.UNDERLINE);
 
-        TextComponent noMessage = new StringTextComponent("/feno");
+        BaseComponent noMessage = new TextComponent("/feno");
         ClickEvent click1 = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feno");
         noMessage.withStyle((style) -> style.withClickEvent(click1));
-        noMessage.withStyle(TextFormatting.RED);
-        noMessage.withStyle(TextFormatting.UNDERLINE);
+        noMessage.withStyle(ChatFormatting.RED);
+        noMessage.withStyle(ChatFormatting.UNDERLINE);
 
-        TextComponent yesNoMessage = new StringTextComponent("Type ");
+        BaseComponent yesNoMessage = new TextComponent("Type ");
         yesNoMessage.append(yesMessage);
-        yesNoMessage.append(new StringTextComponent(" or "));
+        yesNoMessage.append(new TextComponent(" or "));
         yesNoMessage.append(noMessage);
-        yesNoMessage.append(new StringTextComponent(" " + Translator.format("(timeout: %d)", timeout)));
+        yesNoMessage.append(new TextComponent(" " + Translator.format("(timeout: %d)", timeout)));
 
         ChatOutputHandler.sendMessage(target.createCommandSourceStack(), yesNoMessage);
     }
 
-    protected void doAnswer(Boolean answer) throws CommandException
+    protected void doAnswer(Boolean answer) throws CommandRuntimeException
     {
         callback.respond(answer);
     }
 
-    public void confirm() throws CommandException
+    public void confirm() throws CommandRuntimeException
     {
         Questioner.confirm(target);
         // TODO: Maybe send a message, because it was not confirmed through user
         // interaction?
     }
 
-    public void deny() throws CommandException
+    public void deny() throws CommandRuntimeException
     {
         Questioner.deny(target);
         // TODO: Maybe send a message, because it was not denied through user
         // interaction?
     }
 
-    public void cancel() throws CommandException
+    public void cancel() throws CommandRuntimeException
     {
         Questioner.cancel(target);
         // TODO: Maybe send a message, because it was not canceled through user
@@ -93,12 +95,12 @@ public class QuestionData
 
     /* ------------------------------------------------------------ */
 
-    public PlayerEntity getTarget()
+    public Player getTarget()
     {
         return target;
     }
 
-    public PlayerEntity getSource()
+    public Player getSource()
     {
         return source;
     }

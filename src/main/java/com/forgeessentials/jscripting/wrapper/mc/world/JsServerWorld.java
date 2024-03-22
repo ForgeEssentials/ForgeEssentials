@@ -1,9 +1,9 @@
 package com.forgeessentials.jscripting.wrapper.mc.world;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
-public class JsServerWorld extends JsWorld<ServerWorld>
+public class JsServerWorld extends JsWorld<ServerLevel>
 {
 
     public static JsServerWorld getServerWorld(String dim)
@@ -14,7 +14,7 @@ public class JsServerWorld extends JsWorld<ServerWorld>
     /**
      * Sets the world time.
      */
-    public JsServerWorld(ServerWorld that)
+    public JsServerWorld(ServerLevel that)
     {
         super(that);
     }

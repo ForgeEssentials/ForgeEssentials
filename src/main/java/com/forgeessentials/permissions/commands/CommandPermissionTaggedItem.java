@@ -20,14 +20,14 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +58,7 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("mode")
@@ -77,12 +77,12 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("reset").executes(context -> execute(context, "reset")));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_GROUPS = (ctx, builder) -> {
         List<String> completeList = new ArrayList<>(APIRegistry.perms.getServerZone().getGroups());
-        return ISuggestionProvider.suggest(completeList, builder);
+        return SharedSuggestionProvider.suggest(completeList, builder);
     };
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_PERMS = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_PERMS = (ctx, builder) -> {
         List<String> listperm = new ArrayList<>(APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
         for (int index = 0; index < listperm.size(); index++)
         {
@@ -91,11 +91,11 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
                 listperm.set(index, listperm.get(index).replace("*", "+"));
             }
         }
-        return ISuggestionProvider.suggest(listperm, builder);
+        return SharedSuggestionProvider.suggest(listperm, builder);
     };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if(!ItemPermissionManager.isEnabled()) {
         	ChatOutputHandler.chatError(ctx.getSource(), "Command requires ItemPermissionManager to be enabled!");
@@ -130,7 +130,7 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
             parseGroup(ctx, stack, subCmd);
             break;
         case "reset":
-            CompoundNBT stackTag = stack.getTag();
+            CompoundTag stackTag = stack.getTag();
             if (stackTag != null)
                 stackTag.remove(ItemPermissionManager.TAG_BASE);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted permission item settings");
@@ -141,8 +141,8 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseMode(CommandContext<CommandSource> ctx, ItemStack stack, String[] params)
-            throws CommandException
+    public static void parseMode(CommandContext<CommandSourceStack> ctx, ItemStack stack, String[] params)
+            throws CommandRuntimeException
     {
         String subCmd = params[1];
 
@@ -162,38 +162,38 @@ public class CommandPermissionTaggedItem extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parsePermission(CommandContext<CommandSource> ctx, ItemStack stack, String[] params)
-            throws CommandException
+    public static void parsePermission(CommandContext<CommandSourceStack> ctx, ItemStack stack, String[] params)
+            throws CommandRuntimeException
     {
         String permission = StringArgumentType.getString(ctx, "perm");
 
         String value = params[1];
 
-        getSettingsTag(stack).add(StringNBT.valueOf(permission + "=" + value));
+        getSettingsTag(stack).add(StringTag.valueOf(permission + "=" + value));
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set permission %s=%s for item", permission, value);
     }
 
-    public static void parseGroup(CommandContext<CommandSource> ctx, ItemStack stack, String[] params)
-            throws CommandException
+    public static void parseGroup(CommandContext<CommandSourceStack> ctx, ItemStack stack, String[] params)
+            throws CommandRuntimeException
     {
         String group = StringArgumentType.getString(ctx, "group");
 
-        getSettingsTag(stack).add(StringNBT.valueOf(group));
+        getSettingsTag(stack).add(StringTag.valueOf(group));
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added group %s to item", group);
     }
 
-    public static CompoundNBT getOrCreatePermissionTag(ItemStack stack)
+    public static CompoundTag getOrCreatePermissionTag(ItemStack stack)
     {
-        CompoundNBT stackTag = ItemUtil.getTagCompound(stack);
-        CompoundNBT tag = stackTag.getCompound(ItemPermissionManager.TAG_BASE);
+        CompoundTag stackTag = ItemUtil.getTagCompound(stack);
+        CompoundTag tag = stackTag.getCompound(ItemPermissionManager.TAG_BASE);
         stackTag.put(ItemPermissionManager.TAG_BASE, tag);
         return tag;
     }
 
-    public static ListNBT getSettingsTag(ItemStack stack)
+    public static ListTag getSettingsTag(ItemStack stack)
     {
-        CompoundNBT tag = getOrCreatePermissionTag(stack);
-        ListNBT settings = ItemPermissionManager.getSettingsTag(tag);
+        CompoundTag tag = getOrCreatePermissionTag(stack);
+        ListTag settings = ItemPermissionManager.getSettingsTag(tag);
         tag.put(ItemPermissionManager.TAG_SETTINGS, settings);
         return settings;
     }

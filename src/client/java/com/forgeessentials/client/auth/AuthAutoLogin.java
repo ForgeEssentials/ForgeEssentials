@@ -10,6 +10,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.StringNBT;
 
+import CompoundNBT;
+
 public class AuthAutoLogin
 {
     private final File KEYSTORE_FILE;

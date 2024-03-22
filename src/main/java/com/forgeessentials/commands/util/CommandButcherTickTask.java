@@ -12,25 +12,29 @@ import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonPartEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.GhastEntity;
-import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.passive.AmbientEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.GolemEntity;
-import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.AbstractGolem;
+import net.minecraft.world.entity.animal.Squid;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
+
+import AABB;
+import CommandSourceStack;
+import ServerLevel;
 
 public class CommandButcherTickTask implements TickTask
 {
@@ -48,10 +52,10 @@ public class CommandButcherTickTask implements TickTask
         }
     }
 
-    private CommandSource sender;
+    private CommandSourceStack sender;
     private ButcherMobType mobType;
-    private AxisAlignedBB aabb;
-    private ServerWorld world;
+    private AABB aabb;
+    private ServerLevel world;
     private int radius;
 
     private int maxChunkX;
@@ -63,7 +67,7 @@ public class CommandButcherTickTask implements TickTask
 
     private static final int MAX_TICK_KILLS = 1;
 
-    public CommandButcherTickTask(CommandSource sender, ServerWorld world, ButcherMobType mobType, AxisAlignedBB aabb,
+    public CommandButcherTickTask(CommandSourceStack sender, ServerLevel world, ButcherMobType mobType, AABB aabb,
             int radius)
     {
         this.sender = sender;
@@ -73,21 +77,21 @@ public class CommandButcherTickTask implements TickTask
         if (radius > -1)
         {
             this.aabb = aabb;
-            minChunkX = MathHelper.floor((aabb.minX - world.getMaxEntityRadius()) / 16.0D);
-            maxChunkX = MathHelper.floor((aabb.maxX + world.getMaxEntityRadius()) / 16.0D);
-            minChunkZ = MathHelper.floor((aabb.minZ - world.getMaxEntityRadius()) / 16.0D);
-            maxChunkZ = MathHelper.floor((aabb.maxZ + world.getMaxEntityRadius()) / 16.0D);
+            minChunkX = Mth.floor((aabb.minX - world.getMaxEntityRadius()) / 16.0D);
+            maxChunkX = Mth.floor((aabb.maxX + world.getMaxEntityRadius()) / 16.0D);
+            minChunkZ = Mth.floor((aabb.minZ - world.getMaxEntityRadius()) / 16.0D);
+            maxChunkZ = Mth.floor((aabb.maxZ + world.getMaxEntityRadius()) / 16.0D);
         }
     }
 
-    public CommandButcherTickTask(CommandSource sender, ServerWorld world, String mobType, AxisAlignedBB aabb,
+    public CommandButcherTickTask(CommandSourceStack sender, ServerLevel world, String mobType, AABB aabb,
             int radius)
     {
         this(sender, world, CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase()), aabb, radius);
     }
 
-    public static void schedule(CommandSource sender, ServerWorld world, String mobType, AxisAlignedBB aabb, int radius)
-            throws CommandException
+    public static void schedule(CommandSourceStack sender, ServerLevel world, String mobType, AABB aabb, int radius)
+            throws CommandRuntimeException
     {
         try
         {
@@ -157,36 +161,36 @@ public class CommandButcherTickTask implements TickTask
         case ALL:
             return true;
         case HOSTILE:
-            if (entity instanceof MobEntity || entity instanceof GhastEntity)
+            if (entity instanceof Mob || entity instanceof Ghast)
                 return true;
-            if (entity instanceof SlimeEntity && ((SlimeEntity) entity).getSize() > 0)
+            if (entity instanceof Slime && ((Slime) entity).getSize() > 0)
                 return true;
             return MobTypeRegistry.getCollectionForMobType(EnumMobType.HOSTILE).contains(className);
             case PASSIVE:
             // Filter out tamed creatures
-            if (entity instanceof TameableEntity && ((TameableEntity) entity).isTame())
+            if (entity instanceof TamableAnimal && ((TamableAnimal) entity).isTame())
                 return false;
             if (MobTypeRegistry.getCollectionForMobType(EnumMobType.TAMEABLE).contains(className)
                     && MobTypeRegistry.isTamed(entity))
                 return false;
             // Check for other creatures
-            if (entity instanceof AnimalEntity || entity instanceof AmbientEntity || entity instanceof SquidEntity)
+            if (entity instanceof Animal || entity instanceof AmbientCreature || entity instanceof Squid)
                 return true;
                 return MobTypeRegistry.getCollectionForMobType(EnumMobType.PASSIVE).contains(className);
             case VILLAGER:
-            if (entity instanceof VillagerEntity)
+            if (entity instanceof Villager)
                 return true;
                 return MobTypeRegistry.getCollectionForMobType(EnumMobType.VILLAGER).contains(className);
             case TAMABLE:
-                return entity instanceof TameableEntity;
+                return entity instanceof TamableAnimal;
             case TAMED:
-                return entity instanceof TameableEntity && ((TameableEntity) entity).isTame();
+                return entity instanceof TamableAnimal && ((TamableAnimal) entity).isTame();
             case GOLEM:
-            if (entity instanceof GolemEntity)
+            if (entity instanceof AbstractGolem)
                 return true;
                 return MobTypeRegistry.getCollectionForMobType(EnumMobType.GOLEM).contains(className);
             case BOSS:
-            if (entity instanceof EnderDragonEntity || entity instanceof WitherEntity)
+            if (entity instanceof EnderDragon || entity instanceof WitherBoss)
                 return true;
             if (MobTypeRegistry.getCollectionForMobType(EnumMobType.BOSS).contains(className))
                 return true;
@@ -197,9 +201,9 @@ public class CommandButcherTickTask implements TickTask
 
     private static void killEntity(Entity entity)
     {
-        if (entity instanceof EnderDragonEntity)
+        if (entity instanceof EnderDragon)
         {
-            for (EnderDragonPartEntity part : ((EnderDragonEntity) entity).getSubEntities())
+            for (EnderDragonPart part : ((EnderDragon) entity).getSubEntities())
                 part.remove();
         }
         entity.kill();

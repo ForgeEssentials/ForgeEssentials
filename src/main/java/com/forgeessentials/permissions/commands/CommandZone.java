@@ -24,10 +24,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,7 +72,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "help"))
                 .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
@@ -115,7 +115,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                                 .executes(context -> execute(context, "entry-message")))))));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_WORLDZONES = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_WORLDZONES = (ctx, builder) -> {
         List<String> availableZones = new ArrayList<>();
         for (Zone z : APIRegistry.perms.getZones())
         {
@@ -125,15 +125,15 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                 availableZones.add(Integer.toString(z.getId()));
             }
         }
-        return ISuggestionProvider.suggest(availableZones, builder);
+        return SharedSuggestionProvider.suggest(availableZones, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_AREATYPES = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_AREATYPES = (ctx, builder) -> {
         List<String> availableTypes = new ArrayList<>(Arrays.asList(AreaShape.valueNames()));
-        return ISuggestionProvider.suggest(availableTypes, builder);
+        return SharedSuggestionProvider.suggest(availableTypes, builder);
     };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
@@ -197,7 +197,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         return worldZone.getAreaZone(arg);
     }
 
-    public void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException
+    public void parseList(CommandContext<CommandSourceStack> ctx, String params) throws CommandRuntimeException
     {
         String[] arg = params.split("-");
         final int PAGE_SIZE = 12;
@@ -258,8 +258,8 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params)
-            throws CommandException
+    public void parseDefine(CommandContext<CommandSourceStack> ctx, boolean redefine, String params)
+            throws CommandRuntimeException
     {
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
@@ -313,7 +313,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException
+    public void parseDelete(CommandContext<CommandSourceStack> ctx, String params) throws CommandRuntimeException
     {
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
@@ -329,7 +329,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been deleted.", areaZone.getName());
     }
 
-    public void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException
+    public void parseSelect(CommandContext<CommandSourceStack> ctx, String params) throws CommandRuntimeException
     {
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
@@ -348,7 +348,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been selected.", areaName);
     }
 
-    public void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException
+    public void parseInfo(CommandContext<CommandSourceStack> ctx, String params) throws CommandRuntimeException
     {
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
@@ -367,8 +367,8 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
     }
 
-    public void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params)
-            throws CommandException
+    public void parseEntryExitMessage(CommandContext<CommandSourceStack> ctx, boolean isEntry, String params)
+            throws CommandRuntimeException
     {
         String[] arg = params.toString().split("-");
         String areaName = StringArgumentType.getString(ctx, "Zone");

@@ -18,25 +18,25 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.play.server.SEntityEquipmentPacket;
-import net.minecraft.network.play.server.SEntityMetadataPacket;
-import net.minecraft.network.play.server.SEntityPropertiesPacket;
-import net.minecraft.network.play.server.SEntityVelocityPacket;
-import net.minecraft.network.play.server.SPlayEntityEffectPacket;
-import net.minecraft.network.play.server.SSetPassengersPacket;
-import net.minecraft.network.play.server.SSpawnMobPacket;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
+import net.minecraft.network.protocol.game.ClientboundAddMobPacket;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,14 +79,14 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("player", EntityArgument.player())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
     	ChatOutputHandler.chatWarning(ctx.getSource(), "This command has not been fully ported");
 //        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
@@ -120,13 +120,13 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
 
     public static void vanish(UserIdent ident, boolean vanish)
     {
-        ServerPlayerEntity player = ident.getPlayerMP();
-        ServerWorld world = (ServerWorld) player.getLevel();
-        List<ServerPlayerEntity> players = world.players();
+        ServerPlayer player = ident.getPlayerMP();
+        ServerLevel world = (ServerLevel) player.getLevel();
+        List<ServerPlayer> players = world.players();
         if (vanish)
         {
             vanishedPlayers.add(ident);
-            for (ServerPlayerEntity playerO : players)
+            for (ServerPlayer playerO : players)
             {
                 player.stopSeenByPlayer(playerO);
                 playerO.sendRemoveEntity(player);
@@ -136,7 +136,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
         {
 
             vanishedPlayers.remove(ident);
-            for (ServerPlayerEntity playerO : players)
+            for (ServerPlayer playerO : players)
             {
                 sendPairingData(player, playerO.connection::send);
                 player.startSeenByPlayer(playerO);
@@ -145,29 +145,29 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void sendPairingData(ServerPlayerEntity player, Consumer<IPacket<?>> p_219452_1_)
+    public static void sendPairingData(ServerPlayer player, Consumer<Packet<?>> p_219452_1_)
     {
         if (player.isAlive())
         {
             LoggingHandler.felog.warn("Fetching packet for removed entity " + player);
         }
 
-        IPacket<?> ipacket = player.getAddEntityPacket();
-        player.yHeadRot = MathHelper.floor(player.getYHeadRot() * 256.0F / 360.0F);
+        Packet<?> ipacket = player.getAddEntityPacket();
+        player.yHeadRot = Mth.floor(player.getYHeadRot() * 256.0F / 360.0F);
         p_219452_1_.accept(ipacket);
         if (!player.getEntityData().isEmpty())
         {
-            p_219452_1_.accept(new SEntityMetadataPacket(player.getId(), player.getEntityData(), true));
+            p_219452_1_.accept(new ClientboundSetEntityDataPacket(player.getId(), player.getEntityData(), true));
         }
 
         boolean flag = false;
         if (player instanceof LivingEntity)
         {
-            Collection<ModifiableAttributeInstance> collection = ((LivingEntity) player).getAttributes()
+            Collection<AttributeInstance> collection = ((LivingEntity) player).getAttributes()
                     .getSyncableAttributes();
             if (!collection.isEmpty())
             {
-                p_219452_1_.accept(new SEntityPropertiesPacket(player.getId(), collection));
+                p_219452_1_.accept(new ClientboundUpdateAttributesPacket(player.getId(), collection));
             }
 
             if (((LivingEntity) player).isFallFlying())
@@ -176,16 +176,16 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
             }
         }
 
-        if (flag && !(ipacket instanceof SSpawnMobPacket))
+        if (flag && !(ipacket instanceof ClientboundAddMobPacket))
         {
-            p_219452_1_.accept(new SEntityVelocityPacket(player.getId(), player.getDeltaMovement()));
+            p_219452_1_.accept(new ClientboundSetEntityMotionPacket(player.getId(), player.getDeltaMovement()));
         }
 
         if (player instanceof LivingEntity)
         {
-            List<Pair<EquipmentSlotType, ItemStack>> list = Lists.newArrayList();
+            List<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
 
-            for (EquipmentSlotType equipmentslottype : EquipmentSlotType.values())
+            for (EquipmentSlot equipmentslottype : EquipmentSlot.values())
             {
                 ItemStack itemstack = ((LivingEntity) player).getItemBySlot(equipmentslottype);
                 if (!itemstack.isEmpty())
@@ -196,27 +196,27 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
 
             if (!list.isEmpty())
             {
-                p_219452_1_.accept(new SEntityEquipmentPacket(player.getId(), list));
+                p_219452_1_.accept(new ClientboundSetEquipmentPacket(player.getId(), list));
             }
         }
 
         if (player instanceof LivingEntity)
         {
 
-            for (EffectInstance effectinstance : ((LivingEntity) player).getActiveEffects())
+            for (MobEffectInstance effectinstance : ((LivingEntity) player).getActiveEffects())
             {
-                p_219452_1_.accept(new SPlayEntityEffectPacket(player.getId(), effectinstance));
+                p_219452_1_.accept(new ClientboundUpdateMobEffectPacket(player.getId(), effectinstance));
             }
         }
 
         if (!player.getPassengers().isEmpty())
         {
-            p_219452_1_.accept(new SSetPassengersPacket(player));
+            p_219452_1_.accept(new ClientboundSetPassengersPacket(player));
         }
 
         if (player.isPassenger())
         {
-            p_219452_1_.accept(new SSetPassengersPacket(player.getVehicle()));
+            p_219452_1_.accept(new ClientboundSetPassengersPacket(player.getVehicle()));
         }
 
     }

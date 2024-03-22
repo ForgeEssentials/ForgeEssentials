@@ -23,7 +23,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+
+import BlockPos;
 
 /**
  *

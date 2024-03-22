@@ -8,10 +8,10 @@ import com.forgeessentials.playerlogger.entity.Action02Command;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.CommandBlockLogic;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BaseCommandBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -33,9 +33,9 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         CommandInfo info = CommandUtils.getCommandInfo(event);
         action.command = info.getCommandName();
         action.arguments = info.getActualArgsString();
-        if (event.getParseResults().getContext().getSource().getEntity() instanceof PlayerEntity)
+        if (event.getParseResults().getContext().getSource().getEntity() instanceof Player)
         {
-            PlayerEntity player = ((PlayerEntity) event.getParseResults().getContext().getSource().getEntity());
+            Player player = ((Player) event.getParseResults().getContext().getSource().getEntity());
             action.player = getPlayer(player);
             action.world = player.level.dimension().location().toString();
             action.x = (int) player.position().x;
@@ -43,9 +43,9 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
             action.z = (int) player.position().z;
         }
         else if (CommandUtils
-                .GetSource(event.getParseResults().getContext().getSource()) instanceof CommandBlockLogic)
+                .GetSource(event.getParseResults().getContext().getSource()) instanceof BaseCommandBlock)
         {
-            CommandBlockLogic block = ((CommandBlockLogic) CommandUtils
+            BaseCommandBlock block = ((BaseCommandBlock) CommandUtils
                     .GetSource(event.getParseResults().getContext().getSource()));
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
             action.world = block.getLevel().dimension().location().toString();
@@ -57,7 +57,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         else
         {
             action.player = getPlayer(UserIdent.getVirtualPlayer("console"));
-            ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
+            ServerLevel overworld = ServerLifecycleHooks.getCurrentServer().overworld();
             action.world = overworld.dimension().location().toString();
             BlockPos pos = new BlockPos(0, 0, 0);
             action.x = pos.getX();

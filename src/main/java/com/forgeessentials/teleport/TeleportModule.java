@@ -23,8 +23,8 @@ import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -147,7 +147,7 @@ public class TeleportModule extends ConfigLoaderBase
         if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingLocationCheck(e.getPlayer(), e.getPos())
                 || (e.getPlayer().isCrouching()))
         {
-            ((ServerPlayerEntity) e.getPlayer()).setRespawnPosition(e.getPlayer().level.dimension(), e.getPos(), 0,
+            ((ServerPlayer) e.getPlayer()).setRespawnPosition(e.getPlayer().level.dimension(), e.getPos(), 0,
                     false, false);
             ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
         }

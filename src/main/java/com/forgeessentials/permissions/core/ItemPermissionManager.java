@@ -11,11 +11,11 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -60,7 +60,7 @@ public class ItemPermissionManager extends ServerEventHandler
     {
         if (!enabled || event.ident == null || !event.ident.hasPlayer())
             return;
-        PlayerInventory inventory = event.ident.getPlayer().inventory;
+        Inventory inventory = event.ident.getPlayer().inventory;
         for (int slotIdx = 0; slotIdx < inventory.getContainerSize(); slotIdx++)
         {
             ItemStack stack = inventory.getItem(slotIdx);
@@ -76,7 +76,7 @@ public class ItemPermissionManager extends ServerEventHandler
         List<String> groups = GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident));
         if (!enabled || ident == null || !ident.hasPlayer())
             return groups;
-        PlayerInventory inventory = ident.getPlayer().inventory;
+        Inventory inventory = ident.getPlayer().inventory;
         for (int slotIdx = 0; slotIdx < inventory.getContainerSize(); slotIdx++)
         {
             ItemStack stack = inventory.getItem(slotIdx);
@@ -84,7 +84,7 @@ public class ItemPermissionManager extends ServerEventHandler
                 continue;
             boolean isEquipped = slotIdx == inventory.selected || slotIdx > inventory.getContainerSize();
 
-            CompoundNBT tag = getPermissionTag(stack);
+            CompoundTag tag = getPermissionTag(stack);
             if (tag == null)
                 continue;
 
@@ -105,7 +105,7 @@ public class ItemPermissionManager extends ServerEventHandler
             }
 
             // Check permissions
-            ListNBT settings = getSettingsTag(tag);
+            ListTag settings = getSettingsTag(tag);
             for (int i = 0; i < settings.size(); i++)
             {
                 String setting = settings.getString(i);
@@ -117,26 +117,26 @@ public class ItemPermissionManager extends ServerEventHandler
         return groups;
     }
 
-    public static CompoundNBT getPermissionTag(ItemStack stack)
+    public static CompoundTag getPermissionTag(ItemStack stack)
     {
-        CompoundNBT stackTag = stack.getTag();
+        CompoundTag stackTag = stack.getTag();
         if (stackTag != null)
         {
-            INBT baseTag = stackTag.get(TAG_BASE);
-            if (baseTag instanceof CompoundNBT)
-                return (CompoundNBT) baseTag;
+            Tag baseTag = stackTag.get(TAG_BASE);
+            if (baseTag instanceof CompoundTag)
+                return (CompoundTag) baseTag;
         }
         return null;
     }
 
-    public static ListNBT getSettingsTag(CompoundNBT tag)
+    public static ListTag getSettingsTag(CompoundTag tag)
     {
         return tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
     }
 
     public static void check(PermissionCheckEvent event, ItemStack stack, boolean isEquipped)
     {
-        CompoundNBT tag = getPermissionTag(stack);
+        CompoundTag tag = getPermissionTag(stack);
         if (tag == null)
             return;
 
@@ -157,7 +157,7 @@ public class ItemPermissionManager extends ServerEventHandler
         }
 
         // Check permissions
-        ListNBT settings = getSettingsTag(tag);
+        ListTag settings = getSettingsTag(tag);
         for (int i = 0; i < settings.size(); i++)
         {
             String setting = settings.getString(i);

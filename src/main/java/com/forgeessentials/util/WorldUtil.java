@@ -3,12 +3,12 @@ package com.forgeessentials.util;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public abstract class WorldUtil
 {
@@ -23,7 +23,7 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static boolean isFree(World world, int x, int y, int z, int h)
+    public static boolean isFree(Level world, int x, int y, int z, int h)
     {
         int testedH = 0;
         for (int i = 0; i < h; i++)
@@ -45,7 +45,7 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock)
+    public static boolean isSafeToReplace(Level world, int x, int y, int z, int h, boolean replaceRock)
     {
         int testedH = 0;
         for (int i = 0; i < h; i++)
@@ -76,7 +76,7 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static int placeInWorld(World world, int x, int y, int z, int h, boolean replaceRock)
+    public static int placeInWorld(Level world, int x, int y, int z, int h, boolean replaceRock)
     {
         if (y >= 0 && isSafeToReplace(world, x, y, z, h, false))
         {
@@ -109,7 +109,7 @@ public abstract class WorldUtil
      * @param z
      * @return y value
      */
-    public static int placeInWorld(World world, int x, int y, int z)
+    public static int placeInWorld(Level world, int x, int y, int z)
     {
         return placeInWorld(world, x, y, z, 2, false);
     }
@@ -119,7 +119,7 @@ public abstract class WorldUtil
         return p.setY(placeInWorld(p.getWorld(), p.getX(), p.getY(), p.getZ()));
     }
 
-    public static void placeInWorld(PlayerEntity player)
+    public static void placeInWorld(Player player)
     {
         WorldPoint p = placeInWorld(new WorldPoint(player));
         player.setPos(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);

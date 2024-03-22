@@ -14,7 +14,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -99,7 +99,7 @@ public class ModuleMultiworldV2 extends ConfigLoaderBase
 	public static MultiworldManager getMultiworldManager() {
 		return multiworldManager;
 	}
-	public static boolean isMultiWorld(ServerWorld world) {
+	public static boolean isMultiWorld(ServerLevel world) {
 		return world instanceof ServerWorldMultiworld||world.dimension().location().getNamespace().equals(Multiworld.FENameSpace);
 		
 	}

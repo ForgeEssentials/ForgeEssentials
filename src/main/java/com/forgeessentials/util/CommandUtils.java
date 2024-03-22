@@ -11,19 +11,21 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.mojang.brigadier.context.ParsedCommandNode;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import CommandSource;
+
 public class CommandUtils
 {
-    public static ICommandSource GetSource(CommandSource source)
+    public static CommandSource GetSource(CommandSourceStack source)
     {
-        return ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, source,
-                "field_197041_c");
+        return ObfuscationReflectionHelper.getPrivateValue(CommandSourceStack.class, source,
+                "source");
     }
 
     public static UserIdent parsePlayer(String name, boolean mustExist, boolean mustBeOnline)
@@ -42,7 +44,7 @@ public class CommandUtils
 
         protected String commandName;
 
-        protected CommandSource source;
+        protected CommandSourceStack source;
 
         protected List<String> commandRelativeArgs;
 
@@ -53,7 +55,7 @@ public class CommandUtils
             return commandName;
         }
 
-        public CommandSource getSource()
+        public CommandSourceStack getSource()
         {
             return source;
         }
@@ -95,7 +97,7 @@ public class CommandUtils
         if (event.getParseResults().getContext().getNodes().size() > 1)
         {
             // System.out.println(event.getParseResults().getReader().getString());
-            for (ParsedCommandNode<CommandSource> node : event.getParseResults().getContext().getNodes())
+            for (ParsedCommandNode<CommandSourceStack> node : event.getParseResults().getContext().getNodes())
             {
                 info.commandRelativeArgs.add(node.getNode().getName());
                 // System.out.println(node.getNode().getName());
@@ -233,9 +235,9 @@ public class CommandUtils
     // ------------------------------------------------------------
     // Utilities
 
-    public static ServerPlayerEntity getServerPlayer(CommandSource source)
+    public static ServerPlayer getServerPlayer(CommandSourceStack source)
     {
-        return (source.getEntity() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) source.getEntity() : null;
+        return (source.getEntity() instanceof ServerPlayer) ? (ServerPlayer) source.getEntity() : null;
     }
 
     public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
@@ -348,20 +350,20 @@ public class CommandUtils
         return result;
     }
 
-    public static UserIdent getIdent(ServerPlayerEntity senderPlayer)
+    public static UserIdent getIdent(ServerPlayer senderPlayer)
     {
         return (senderPlayer == null) ? null : UserIdent.get(senderPlayer);
     }
 
-    public static UserIdent getIdent(CommandSource sender)
+    public static UserIdent getIdent(CommandSourceStack sender)
     {
-        ServerPlayerEntity senderPlayer = getServerPlayer(sender);
+        ServerPlayer senderPlayer = getServerPlayer(sender);
         return (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender
                 ? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent()
                 : null) : UserIdent.get(senderPlayer);
     }
 
-    public WorldPoint getSenderPoint(CommandSource sender)
+    public WorldPoint getSenderPoint(CommandSourceStack sender)
     {
         BlockPos pos = new BlockPos(sender.getPosition().x, sender.getPosition().y, sender.getPosition().z);
         return new WorldPoint(sender.getLevel(), pos);

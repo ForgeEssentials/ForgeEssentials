@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -17,22 +18,22 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.rcon.RConConsoleSource;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.rcon.RconConsoleSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.tileentity.CommandBlockLogic;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.level.BaseCommandBlock;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class UserIdent
 {
@@ -108,16 +109,16 @@ public class UserIdent
     protected int hashCode;
 
     @Expose(serialize = false)
-    protected WeakReference<PlayerEntity> player;
+    protected WeakReference<Player> player;
 
     /* ------------------------------------------------------------ */
 
-    private UserIdent(PlayerEntity player)
+    private UserIdent(Player player)
     {
         this(null, null, player);
     }
 
-    private UserIdent(UUID identUuid, String identUsername, PlayerEntity identPlayer)
+    private UserIdent(UUID identUuid, String identUsername, Player identPlayer)
     {
         if (identUsername != null && identUsername.isEmpty())
             identUsername = null;
@@ -231,13 +232,13 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
-    public static synchronized UserIdent get(CommandSource sender)
+    public static synchronized UserIdent get(CommandSourceStack sender)
     {
-        if (sender.getEntity() instanceof PlayerEntity)
+        if (sender.getEntity() instanceof Player)
         {
-            return get((ServerPlayerEntity) sender.getEntity());
+            return get((ServerPlayer) sender.getEntity());
         }
-        ICommandSource source = CommandUtils.GetSource(sender);
+        CommandSource source = CommandUtils.GetSource(sender);
         if (source instanceof DoAsCommandSender)
         {
             return ((DoAsCommandSender) source).getIdent();
@@ -246,11 +247,11 @@ public class UserIdent
         {
             return APIRegistry.IDENT_SERVER;
         }
-        else if (source instanceof RConConsoleSource)
+        else if (source instanceof RconConsoleSource)
         {
             return APIRegistry.IDENT_RCON;
         }
-        else if (source instanceof CommandBlockLogic)
+        else if (source instanceof BaseCommandBlock)
         {
             return APIRegistry.IDENT_CMDBLOCK;
         }
@@ -280,7 +281,7 @@ public class UserIdent
     // player) : null;
     // }
 
-    public static synchronized UserIdent get(PlayerEntity player)
+    public static synchronized UserIdent get(Player player)
     {
         if (player == null)
             throw new IllegalArgumentException();
@@ -318,9 +319,9 @@ public class UserIdent
         return ident;
     }
 
-    public static synchronized UserIdent get(String uuidOrUsername, CommandSource sender, boolean mustExist)
+    public static synchronized UserIdent get(String uuidOrUsername, CommandSourceStack sender, boolean mustExist)
     {
-        PlayerEntity player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
+        Player player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                 UserIdent.getPlayerByUsername(uuidOrUsername);
         if (player != null)
             return get(player);
@@ -342,7 +343,7 @@ public class UserIdent
                 try
                 {
                     boolean found = false;
-                    for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+                    for (Level world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
                     {
                         for (Entity entity : world.players())
                         {
@@ -372,14 +373,14 @@ public class UserIdent
         }
     }
 
-    public static synchronized UserIdent get(String uuidOrUsername, CommandSource sender)
+    public static synchronized UserIdent get(String uuidOrUsername, CommandSourceStack sender)
     {
         return get(uuidOrUsername, sender, false);
     }
 
     public static synchronized UserIdent get(String uuidOrUsername, boolean mustExist)
     {
-        return get(uuidOrUsername, (CommandSource) null, mustExist);
+        return get(uuidOrUsername, (CommandSourceStack) null, mustExist);
     }
 
     public static synchronized UserIdent get(String uuidOrUsername)
@@ -455,7 +456,7 @@ public class UserIdent
         return (NpcUserIdent) ident;
     }
 
-    public static synchronized void login(PlayerEntity player)
+    public static synchronized void login(Player player)
     {
         UserIdent ident = byUuid.get(player.getGameProfile().getId());
         UserIdent usernameIdent = byUsername.get(player.getDisplayName().getString());
@@ -488,7 +489,7 @@ public class UserIdent
         }
     }
 
-    public static synchronized void logout(PlayerEntity player)
+    public static synchronized void logout(Player player)
     {
         UserIdent ident = UserIdent.get(player);
         ident.player = null;
@@ -508,7 +509,7 @@ public class UserIdent
 
     public boolean hasPlayer()
     {
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         return player != null && !(player instanceof FakePlayer);
         // return ServerUtil.getPlayerList().contains(player);
     }
@@ -557,31 +558,31 @@ public class UserIdent
 
     public void refreshPlayer()
     {
-        PlayerEntity player = UserIdent.getPlayerByUuid(uuid);
+        Player player = UserIdent.getPlayerByUuid(uuid);
         this.player = player == null ? null : new WeakReference<>(player);
     }
 
-    public PlayerEntity getPlayer()
+    public Player getPlayer()
     {
         return player == null ? null : player.get();
     }
 
-    public ServerPlayerEntity getPlayerMP()
+    public ServerPlayer getPlayerMP()
     {
-        return player == null ? null : (ServerPlayerEntity) player.get();
+        return player == null ? null : (ServerPlayer) player.get();
     }
 
-    public PlayerEntity getFakePlayer()
+    public Player getFakePlayer()
     {
-        PlayerEntity player = getPlayerMP();
+        Player player = getPlayerMP();
         if (player != null)
             return player;
         return FakePlayerFactory.get(ServerUtil.getOverworld(), getGameProfile());
     }
 
-    public PlayerEntity getFakePlayer(ServerWorld world)
+    public Player getFakePlayer(ServerLevel world)
     {
-        PlayerEntity player = getPlayerMP();
+        Player player = getPlayerMP();
         if (player != null)
             return player;
         return FakePlayerFactory.get(world, getGameProfile());
@@ -612,7 +613,7 @@ public class UserIdent
 
     public GameProfile getGameProfile()
     {
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         if (player != null)
         {
             if (!player.getGameProfile().isComplete())
@@ -706,9 +707,9 @@ public class UserIdent
         {
             return other.equals(uuid);
         }
-        else if (other instanceof PlayerEntity)
+        else if (other instanceof Player)
         {
-            return ((PlayerEntity) other).getGameProfile().getId().equals(uuid);
+            return ((Player) other).getGameProfile().getId().equals(uuid);
         }
         else
         {
@@ -730,7 +731,7 @@ public class UserIdent
 
     /* ------------------------------------------------------------ */
 
-    public static PlayerEntity getPlayerByUsername(String username)
+    public static Player getPlayerByUsername(String username)
     {
         MinecraftServer mc = ServerLifecycleHooks.getCurrentServer();
         if (mc == null)
@@ -739,25 +740,25 @@ public class UserIdent
         return configurationManager == null ? null : configurationManager.getPlayerByName(username);
     }
 
-    public static PlayerEntity getPlayerByMatchOrUsername(CommandSource sender, String match)
+    public static Player getPlayerByMatchOrUsername(CommandSourceStack sender, String match)
     {
         try
         {
-            PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
+            Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
                     .getPlayer(sender.getEntity().getUUID());
             if (player != null)
                 return player;
             return getPlayerByUsername(match);
         }
-        catch (CommandException e)
+        catch (CommandRuntimeException e)
         {
             return null;
         }
     }
 
-    public static PlayerEntity getPlayerByUuid(UUID uuid)
+    public static Player getPlayerByUuid(UUID uuid)
     {
-        for (PlayerEntity player : ServerUtil.getPlayerList())
+        for (Player player : ServerUtil.getPlayerList())
             if (player.getGameProfile().getId().equals(uuid))
                 return player;
         return null;
@@ -765,7 +766,8 @@ public class UserIdent
 
     public static GameProfile getGameProfileByUuid(UUID uuid)
     {
-        return ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
+    	Optional<GameProfile> profile = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
+        return profile.isPresent() ? profile.get() : null;
     }
 
     public static String join(Iterable<UserIdent> users, String glue)

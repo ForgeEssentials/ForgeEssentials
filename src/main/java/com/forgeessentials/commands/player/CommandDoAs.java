@@ -13,11 +13,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +55,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("player", StringArgumentType.word())
@@ -65,7 +65,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         String playerS = StringArgumentType.getString(ctx, "player");
         String message = StringArgumentType.getString(ctx, "command");
@@ -74,9 +74,9 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(ctx.getSource(), "/doas <player> <command> Run a command as another player.");
             return Command.SINGLE_SUCCESS;
         }
-        if ((ctx.getSource().getEntity() instanceof ServerPlayerEntity) && playerS.equalsIgnoreCase("_CONSOLE_"))
+        if ((ctx.getSource().getEntity() instanceof ServerPlayer) && playerS.equalsIgnoreCase("_CONSOLE_"))
         {
-            ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+            ServerPlayer player = getServerPlayer(ctx.getSource());
             if (!hasPermission(player.createCommandSourceStack(), "fe.commands.doas.console"))
             {
                 ChatOutputHandler.chatWarning(player, FEPermissions.MSG_NO_COMMAND_PERM);
@@ -88,7 +88,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        PlayerEntity player = UserIdent.getPlayerByUsername(playerS);
+        Player player = UserIdent.getPlayerByUsername(playerS);
         if (player != null)
         {
             ChatOutputHandler.chatWarning(player,

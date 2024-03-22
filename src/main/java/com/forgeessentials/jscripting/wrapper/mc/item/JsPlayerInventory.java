@@ -1,14 +1,16 @@
 package com.forgeessentials.jscripting.wrapper.mc.item;
 
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
 
-public class JsPlayerInventory<T extends PlayerInventory> extends JsInventory<T>
+import Inventory;
+
+public class JsPlayerInventory<T extends Inventory> extends JsInventory<T>
 {
 
     /**
      * @tsd.ignore
      */
-    public static <T extends PlayerInventory> JsPlayerInventory<T> get(T inventory)
+    public static <T extends Inventory> JsPlayerInventory<T> get(T inventory)
     {
         return inventory == null ? null : new JsPlayerInventory<>(inventory);
     }

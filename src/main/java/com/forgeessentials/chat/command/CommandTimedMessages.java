@@ -13,10 +13,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
                 .then(Commands.literal("add")
@@ -76,7 +76,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
@@ -116,7 +116,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public void parseAdd(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    public void parseAdd(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException
     {
         String message = StringArgumentType.getString(ctx, "message");
         if (message.isEmpty())
@@ -130,18 +130,18 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
         ModuleChat.timedMessages.save(false);
     }
 
-    public void parseList(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    public void parseList(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException
     {
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of messages:");
         for (int i = 0; i < ModuleChat.timedMessages.getMessages().size(); i++)
         {
-            TextComponent message = new StringTextComponent(String.format("%d: ", i));
+            BaseComponent message = new TextComponent(String.format("%d: ", i));
             message.append(ModuleChat.timedMessages.formatMessage(ModuleChat.timedMessages.getMessages().get(i)));
             ChatOutputHandler.sendMessage(ctx.getSource(), message);
         }
     }
 
-    public void parseDelete(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    public void parseDelete(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException
     {
         int num = IntegerArgumentType.getInteger(ctx, "number");
         if (num > ModuleChat.timedMessages.getMessages().size() - 1)
@@ -154,7 +154,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
         ModuleChat.timedMessages.save(false);
     }
 
-    public void parseSend(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    public void parseSend(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException
     {
         int index = IntegerArgumentType.getInteger(ctx, "number");
         if (index > ModuleChat.timedMessages.getMessages().size() - 1)
@@ -165,14 +165,14 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
         ModuleChat.timedMessages.broadcastMessage(index);
     }
 
-    public void parseInterval(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    public void parseInterval(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException
     {
         int index = IntegerArgumentType.getInteger(ctx, "number");
         ModuleChat.timedMessages.setInterval(index);
         ModuleChat.timedMessages.save(false);
     }
 
-    public void parseShuffle(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    public void parseShuffle(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException
     {
         boolean newShuffle = BoolArgumentType.getBool(ctx, "bool");
         if (newShuffle != ModuleChat.timedMessages.getShuffle())

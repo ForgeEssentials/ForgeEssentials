@@ -31,9 +31,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,7 +101,7 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("set")
@@ -115,19 +115,19 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
                 .executes(CommandContext -> execute(CommandContext, "help"));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_SETTINGS = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_SETTINGS = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>(aliases.keySet());
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_VALUE = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_VALUE = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>();
         listArgs.add(Zone.PERMISSION_TRUE);
         listArgs.add(Zone.PERMISSION_FALSE);
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {

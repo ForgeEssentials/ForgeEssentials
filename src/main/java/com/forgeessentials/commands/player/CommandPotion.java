@@ -15,15 +15,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.PotionArgument;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.MobEffectArgument;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,16 +99,16 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("clear")
                         .then(Commands.argument("targets", EntityArgument.entities())
-                                .then(Commands.argument("effect", PotionArgument.effect())
+                                .then(Commands.argument("effect", MobEffectArgument.effect())
                                         .executes(CommandContext -> execute(CommandContext, "clear-effect")))
                                 .executes(CommandContext -> execute(CommandContext, "clear-target"))))
                 .then(Commands.literal("give").then(Commands.argument("targets", EntityArgument.entities())
-                        .then(Commands.argument("effect", PotionArgument.effect()).then(Commands
+                        .then(Commands.argument("effect", MobEffectArgument.effect()).then(Commands
                                 .argument("seconds", IntegerArgumentType.integer(1, 1000000))
                                 .then(Commands.argument("amplifier", IntegerArgumentType.integer(0, 255))
                                         .then(Commands.argument("hideParticles", BoolArgumentType.bool())
@@ -119,7 +119,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("clear-target"))
         {
@@ -127,8 +127,8 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
             {
                 if (entity instanceof LivingEntity)
                 {
-                    if (entity instanceof PlayerEntity
-                            && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource())))
+                    if (entity instanceof Player
+                            && ((Player) entity).equals(getServerPlayer(ctx.getSource())))
                     {
                         ((LivingEntity) entity).removeAllEffects();
                     }
@@ -154,10 +154,10 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
             {
                 if (entity instanceof LivingEntity)
                 {
-                    if (entity instanceof PlayerEntity
-                            && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource())))
+                    if (entity instanceof Player
+                            && ((Player) entity).equals(getServerPlayer(ctx.getSource())))
                     {
-                        ((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
+                        ((LivingEntity) entity).removeEffect(MobEffectArgument.getEffect(ctx, "effect"));
                     }
                     else
                     {
@@ -168,17 +168,17 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
                                             entity.getDisplayName().getString()));
                             continue;
                         }
-                        ((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
+                        ((LivingEntity) entity).removeEffect(MobEffectArgument.getEffect(ctx, "effect"));
                     }
                 }
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     Translator.format("Removed effect %s from all target(s)",
-                            PotionArgument.getEffect(ctx, "effect").getDisplayName().getString()));
+                            MobEffectArgument.getEffect(ctx, "effect").getDisplayName().getString()));
             return Command.SINGLE_SUCCESS;
         }
         Collection<? extends Entity> targets = EntityArgument.getEntities(ctx, "targets");
-        Effect ID = PotionArgument.getEffect(ctx, "effect");
+        MobEffect ID = MobEffectArgument.getEffect(ctx, "effect");
         Integer dur = null;
         int ampl = 0;
         boolean hideParticals = true;
@@ -219,10 +219,10 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
         {
             if (entity instanceof LivingEntity)
             {
-                if (entity instanceof PlayerEntity
-                        && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource())))
+                if (entity instanceof Player
+                        && ((Player) entity).equals(getServerPlayer(ctx.getSource())))
                 {
-                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
+                    MobEffectInstance effectinstance = new MobEffectInstance(ID, dur, ampl, false, !hideParticals);
                     ((LivingEntity) entity).addEffect(effectinstance);
                 }
                 else
@@ -233,7 +233,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
                                 "You dont have permission to give effects to %s", entity.getDisplayName().getString()));
                         continue;
                     }
-                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
+                    MobEffectInstance effectinstance = new MobEffectInstance(ID, dur, ampl, false, !hideParticals);
                     ((LivingEntity) entity).addEffect(effectinstance);
                 }
             }
@@ -244,7 +244,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("clear-target"))
         {
@@ -263,15 +263,15 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
             for (Entity entity : EntityArgument.getEntities(ctx, "targets"))
             {
                 if (entity instanceof LivingEntity)
-                    ((LivingEntity) entity).removeEffect(PotionArgument.getEffect(ctx, "effect"));
+                    ((LivingEntity) entity).removeEffect(MobEffectArgument.getEffect(ctx, "effect"));
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     Translator.format("Removed effect %s from all target(s)",
-                            PotionArgument.getEffect(ctx, "effect").getDisplayName().getString()));
+                            MobEffectArgument.getEffect(ctx, "effect").getDisplayName().getString()));
             return Command.SINGLE_SUCCESS;
         }
         Collection<? extends Entity> targets = EntityArgument.getEntities(ctx, "targets");
-        Effect ID = PotionArgument.getEffect(ctx, "effect");
+        MobEffect ID = MobEffectArgument.getEffect(ctx, "effect");
         Integer dur = null;
         int ampl = 0;
         boolean hideParticals = true;
@@ -312,7 +312,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
         {
             if (entity instanceof LivingEntity)
             {
-                EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, hideParticals);
+                MobEffectInstance effectinstance = new MobEffectInstance(ID, dur, ampl, false, hideParticals);
                 ((LivingEntity) entity).addEffect(effectinstance);
             }
         }

@@ -10,16 +10,16 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +57,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("player")
@@ -70,15 +70,15 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("player"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (player == getServerPlayer(ctx.getSource()))
             {
-                LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
-                lightningboltentity.moveTo(Vector3d
+                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+                lightningboltentity.moveTo(Vec3
                         .atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
                 lightningboltentity.setVisualOnly(false);
                 player.level.addFreshEntity(lightningboltentity);
@@ -89,8 +89,8 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
             {
                 if (hasPermission(ctx.getSource(), ModuleCommands.PERM + ".smite.others"))
                 {
-                    LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
-                    lightningboltentity.moveTo(Vector3d.atBottomCenterOf(
+                    LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+                    lightningboltentity.moveTo(Vec3.atBottomCenterOf(
                             new BlockPos(player.position().x, player.position().y, player.position().z)));
                     lightningboltentity.setVisualOnly(false);
                     player.level.addFreshEntity(lightningboltentity);
@@ -109,8 +109,8 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
         if (params.equals("location"))
         {
             BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
-            LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
-            lightningboltentity.moveTo(Vector3d.atBottomCenterOf(pos));
+            LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
+            lightningboltentity.moveTo(Vec3.atBottomCenterOf(pos));
             lightningboltentity.setVisualOnly(false);
             ctx.getSource().getLevel().addFreshEntity(lightningboltentity);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "I hope that didn't start a fire.");
@@ -118,16 +118,16 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("looking"))
         {
-            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(getServerPlayer(ctx.getSource()), 500);
-            if (mop.getType() == RayTraceResult.Type.MISS)
+            HitResult mop = PlayerUtil.getPlayerLookingSpot(getServerPlayer(ctx.getSource()), 500);
+            if (mop.getType() == HitResult.Type.MISS)
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "You must first look at the ground!");
             }
             else
             {
                 BlockPos pos = new BlockPos(mop.getLocation().x, mop.getLocation().y, mop.getLocation().z);
-                LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
-                lightningboltentity.moveTo(Vector3d.atBottomCenterOf(pos));
+                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
+                lightningboltentity.moveTo(Vec3.atBottomCenterOf(pos));
                 lightningboltentity.setVisualOnly(false);
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "I hope that didn't start a fire.");
             }
@@ -137,13 +137,13 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if (!player.hasDisconnected())
         {
-            LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
-            lightningboltentity.moveTo(Vector3d
+            LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+            lightningboltentity.moveTo(Vec3
                     .atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
             lightningboltentity.setVisualOnly(false);
             player.level.addFreshEntity(lightningboltentity);

@@ -11,8 +11,8 @@ import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.mojang.brigadier.ParseResults;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -38,7 +38,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
         String commandName = request.data;
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        final ParseResults<CommandSource> command = server.getCommands().getDispatcher()
+        final ParseResults<CommandSourceStack> command = server.getCommands().getDispatcher()
                 .parse(commandName, server.createCommandSourceStack());
         if (!command.getReader().canRead())
             error(String.format("Command \"/%s\" not found", commandName));
@@ -51,7 +51,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
             {
                 try
                 {
-                    CommandSource sender;
+                    CommandSourceStack sender;
                     if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
                         sender = session.getUserIdent().getPlayer().createCommandSourceStack();
                     else
@@ -59,7 +59,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                     server.getCommands().performCommand(sender, commandName);
                     session.trySendMessage(RemoteResponse.success(request));
                 }
-                catch (CommandException e)
+                catch (CommandRuntimeException e)
                 {
                     session.trySendMessage(RemoteResponse.error(request, e.getMessage()));
                 }

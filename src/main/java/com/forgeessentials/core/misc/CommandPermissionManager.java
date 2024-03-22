@@ -11,7 +11,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -80,7 +80,7 @@ public class CommandPermissionManager
         }
     }
 
-    public static DefaultPermissionLevel getDefaultCommandPermFromNode(CommandNode<CommandSource> commandNode)
+    public static DefaultPermissionLevel getDefaultCommandPermFromNode(CommandNode<CommandSourceStack> commandNode)
     {
     	try {
             if (commandNode.canUse(new CommandFaker().createCommandSourceStack(0)))
@@ -121,14 +121,14 @@ public class CommandPermissionManager
      */
     public static Map<String, DefaultPermissionLevel> getAllUsage()
     {
-        CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
         final TreeMap<String, DefaultPermissionLevel> result = new TreeMap<>();
         getAllUsage(dispatcher.getRoot(), result, "", dispatcher, DefaultPermissionLevel.ALL);
         return result;
     }
 
-    private static void getAllUsage(final CommandNode<CommandSource> node, final Map<String, DefaultPermissionLevel> result, final String prefix,
-            CommandDispatcher<CommandSource> dispatcher, DefaultPermissionLevel parentLevel)
+    private static void getAllUsage(final CommandNode<CommandSourceStack> node, final Map<String, DefaultPermissionLevel> result, final String prefix,
+            CommandDispatcher<CommandSourceStack> dispatcher, DefaultPermissionLevel parentLevel)
     {
         if (node instanceof ArgumentCommandNode && !ModulePermissions.fullcommandNode)
         {
@@ -154,7 +154,7 @@ public class CommandPermissionManager
             // CommandDispatcher.ARGUMENT_SEPARATOR + redirect));
              if (!node.getRedirect().getChildren().isEmpty())
              {
-                 for (final CommandNode<CommandSource> child : node.getRedirect().getChildren())
+                 for (final CommandNode<CommandSourceStack> child : node.getRedirect().getChildren())
                  {
                      getAllUsage(child, result, prefix.isEmpty() ? child.getUsageText() : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + child.getUsageText(),
                              dispatcher, parentLevel);
@@ -163,7 +163,7 @@ public class CommandPermissionManager
         }
         else if (!node.getChildren().isEmpty())
         {
-            for (final CommandNode<CommandSource> child : node.getChildren())
+            for (final CommandNode<CommandSourceStack> child : node.getChildren())
             {
                 getAllUsage(child, result, prefix.isEmpty() ? child.getUsageText() : prefix + CommandDispatcher.ARGUMENT_SEPARATOR + child.getUsageText(),
                         dispatcher, parentLevel);

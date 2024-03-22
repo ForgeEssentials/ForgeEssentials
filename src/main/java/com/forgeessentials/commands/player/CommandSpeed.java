@@ -8,12 +8,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import java.util.UUID;
@@ -47,7 +47,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
         		.then(Commands.literal("reset")
@@ -60,12 +60,12 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatWarning(ctx.getSource(),
                 "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         // float speed = Float.parseFloat(args[0]);
-        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        ServerPlayer player = getServerPlayer(ctx.getSource());
         if (params.equals("current"))
         {
             if (((player.getAttributeBaseValue(Attributes.MOVEMENT_SPEED)) / 0.05F) == 2.0)
@@ -82,7 +82,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
         if (params.equals("reset"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), "Resetting speed to regular walking speed.");
-            ModifiableAttributeInstance modifiableattributeinstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            AttributeInstance modifiableattributeinstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (modifiableattributeinstance != null) {
                if (modifiableattributeinstance.getModifier(FE_SPEED_MODIFER) != null) {
                   modifiableattributeinstance.removeModifier(FE_SPEED_MODIFER);
@@ -101,7 +101,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
             multiplier = 10;
         }
 
-        ModifiableAttributeInstance modifiableattributeinstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance modifiableattributeinstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (modifiableattributeinstance != null) {
             if (modifiableattributeinstance.getModifier(FE_SPEED_MODIFER) != null) {
                modifiableattributeinstance.removeModifier(FE_SPEED_MODIFER);

@@ -1,10 +1,12 @@
 package com.forgeessentials.multiworld.v2.provider;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+
+import BiomeSource;
 
 public abstract class BiomeProviderHolderBase {
-	public abstract BiomeProvider createBiomeProvider(Registry<Biome> biomes, long seed);
+	public abstract BiomeSource createBiomeProvider(Registry<Biome> biomes, long seed);
 	public abstract String getClassName();
 }

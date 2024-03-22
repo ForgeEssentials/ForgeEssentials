@@ -1,6 +1,6 @@
 package com.forgeessentials.api;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 public interface ScriptHandler
 {
@@ -20,7 +20,7 @@ public interface ScriptHandler
      * @param sender
      *            an ICommandSender, if null will default to console
      */
-    boolean runEventScripts(String key, CommandSource sender);
+    boolean runEventScripts(String key, CommandSourceStack sender);
 
     /**
      * Call when you want scripts with your custom key to be run.
@@ -30,5 +30,5 @@ public interface ScriptHandler
      * @param sender
      *            an ICommandSender, if null will default to console
      */
-    boolean runEventScripts(String key, CommandSource sender, Object additionalData);
+    boolean runEventScripts(String key, CommandSourceStack sender, Object additionalData);
 }

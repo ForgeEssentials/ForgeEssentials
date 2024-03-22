@@ -11,11 +11,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +58,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("clearSelf").executes(CommandContext -> execute(CommandContext, "delS")))
@@ -75,23 +75,23 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("delS"))
         {
-            ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), null);
+            ModuleChat.setPlayerNickname((Player) ctx.getSource().getEntity(), null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname removed.");
             return Command.SINGLE_SUCCESS;
         }
         if (params.equals("setS"))
         {
             String name = StringArgumentType.getString(ctx, "name");
-            ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name);
+            ModuleChat.setPlayerNickname((Player) ctx.getSource().getEntity(), name);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname set to " + name);
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if (params.equals("delO"))
         {
             ModuleChat.setPlayerNickname(player, null);
@@ -110,7 +110,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("delS") || params.equals("setS"))
         {
@@ -119,7 +119,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if (params.equals("delO"))
         {
             ModuleChat.setPlayerNickname(player, null);

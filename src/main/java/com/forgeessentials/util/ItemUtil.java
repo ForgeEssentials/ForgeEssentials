@@ -3,31 +3,33 @@ package com.forgeessentials.util;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.StandingSignBlock;
-import net.minecraft.block.WallSignBlock;
-import net.minecraft.entity.item.HangingEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.SignTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.StandingSignBlock;
+import net.minecraft.world.level.block.WallSignBlock;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import Component;
+
 public final class ItemUtil
 {
-    public static ITextComponent[] getText(SignTileEntity sign)
+    public static Component[] getText(SignBlockEntity sign)
     {
-        return ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign,
-                "field_145915_a");
+        return ObfuscationReflectionHelper.getPrivateValue(SignBlockEntity.class, sign,
+                "messages");
     }
 
-    public static void setText(SignTileEntity sign, ITextComponent[] text)
+    public static void setText(SignBlockEntity sign, Component[] text)
     {
-        ObfuscationReflectionHelper.setPrivateValue(SignTileEntity.class, sign, text, "field_145915_a");
+        ObfuscationReflectionHelper.setPrivateValue(SignBlockEntity.class, sign, text, "messages");
     }
 
     public static int getItemDamage(ItemStack stack)
@@ -49,7 +51,7 @@ public final class ItemUtil
 
     public static boolean isItemFrame(HangingEntity entity)
     {
-        return entity instanceof ItemFrameEntity;
+        return entity instanceof ItemFrame;
     }
 
     public static boolean isSign(Block block)
@@ -57,31 +59,31 @@ public final class ItemUtil
         return block instanceof WallSignBlock || block instanceof StandingSignBlock;
     }
 
-    public static ITextComponent[] getSignText(WorldPoint point)
+    public static Component[] getSignText(WorldPoint point)
     {
-        TileEntity te = point.getTileEntity();
-        if (te instanceof SignTileEntity)
+        BlockEntity te = point.getTileEntity();
+        if (te instanceof SignBlockEntity)
         {
-            SignTileEntity sign = (SignTileEntity) te;
+            SignBlockEntity sign = (SignBlockEntity) te;
             return ItemUtil.getText(sign);
         }
         return null;
     }
 
-    public static CompoundNBT getTagCompound(ItemStack itemStack)
+    public static CompoundTag getTagCompound(ItemStack itemStack)
     {
-        CompoundNBT tag = itemStack.getTag();
+        CompoundTag tag = itemStack.getTag();
         if (tag == null)
         {
-            tag = new CompoundNBT();
+            tag = new CompoundTag();
             itemStack.setTag(tag);
         }
         return tag;
     }
 
-    public static CompoundNBT getCompoundTag(CompoundNBT tag, String side)
+    public static CompoundTag getCompoundTag(CompoundTag tag, String side)
     {
-        CompoundNBT subTag = tag.getCompound(side);
+        CompoundTag subTag = tag.getCompound(side);
         tag.put(side, subTag);
         return subTag;
     }

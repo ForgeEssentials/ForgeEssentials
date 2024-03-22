@@ -7,9 +7,9 @@ import java.util.List;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerLevel;
 
 public interface NamedWorldHandler
 {
@@ -22,7 +22,7 @@ public interface NamedWorldHandler
     static final String SHORT_WORLD_NAME_NETHER = "the_nether";
     static final String SHORT_WORLD_NAME_OVERWORLD = "overworld";
 
-    ServerWorld getWorld(String name);
+    ServerLevel getWorld(String name);
 
     String getWorldName(String dimId);
 
@@ -32,25 +32,25 @@ public interface NamedWorldHandler
     {
 
         @Override
-        public ServerWorld getWorld(String regName)
+        public ServerLevel getWorld(String regName)
         {
             regName = regName.toLowerCase();
             switch (regName)
             {
             case SHORT_WORLD_NAME_OVERWORLD:
             case WORLD_NAME_OVERWORLD:
-                return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD);
             case SHORT_WORLD_NAME_NETHER:
             case WORLD_NAME_NETHER:
-                return ServerLifecycleHooks.getCurrentServer().getLevel(World.NETHER);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(Level.NETHER);
             case SHORT_WORLD_NAME_END:
             case WORLD_NAME_END:
-                return ServerLifecycleHooks.getCurrentServer().getLevel(World.END);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(Level.END);
             default:
             {
                 try
                 {
-                    ServerWorld world = ServerUtil.getWorldFromString(regName);
+                    ServerLevel world = ServerUtil.getWorldFromString(regName);
 
                     if (world == null)
                     {

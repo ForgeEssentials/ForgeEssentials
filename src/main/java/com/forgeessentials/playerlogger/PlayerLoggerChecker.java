@@ -16,9 +16,9 @@ import com.forgeessentials.playerlogger.entity.Action03PlayerEvent;
 import com.forgeessentials.playerlogger.entity.Action04PlayerPosition;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -57,22 +57,22 @@ public class PlayerLoggerChecker
         CheckBlock(point, fc, ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSourceStack sender)
     {
         CheckBlock(point, fc, sender, 4);
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSourceStack sender, int pageSize)
     {
         CheckBlock(point, fc, sender, pageSize, false);
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSourceStack sender, int pageSize, boolean newCheck)
     {
         CheckBlock(point, fc, sender, pageSize, newCheck, null);
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck,
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSourceStack sender, int pageSize, boolean newCheck,
             net.minecraftforge.event.entity.player.PlayerInteractEvent action)
     {
         LoggerCheckInfo info = playerInfo.get(sender.getTextName());

@@ -13,9 +13,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +48,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("player", StringArgumentType.word())
                 .then(Commands.argument("duration", StringArgumentType.word())
@@ -56,7 +56,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
                                 .executes(CommandContext -> execute(CommandContext)))));
     }
 
-    public int execute(CommandContext<CommandSource> ctx, String... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String... params) throws CommandSyntaxException
     {
         String name = StringArgumentType.getString(ctx, "player");
         String reason = StringArgumentType.getString(ctx, "reasion");
@@ -88,7 +88,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
         if (ident.hasPlayer())
             ident.getPlayerMP().connection.disconnect(
-                    new StringTextComponent(Translator.format("You have been banned for %s", durationString)));
+                    new TextComponent(Translator.format("You have been banned for %s", durationString)));
 
         if (!reason.isEmpty())
         {

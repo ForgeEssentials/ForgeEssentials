@@ -20,10 +20,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.entity.Entity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -84,7 +84,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("warp")
@@ -100,10 +100,10 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> ISuggestionProvider.suggest(new ArrayList<>(getWarps().keySet()), builder);
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_WARPS = (ctx, builder) -> SharedSuggestionProvider.suggest(new ArrayList<>(getWarps().keySet()), builder);
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {

@@ -13,11 +13,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,16 +29,16 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public static Map<PlayerEntity, WeakReference<PlayerEntity>> replyMap = new WeakHashMap<>();
+    public static Map<Player, WeakReference<Player>> replyMap = new WeakHashMap<>();
 
-    public static void messageSent(PlayerEntity argFrom, PlayerEntity argTo)
+    public static void messageSent(Player argFrom, Player argTo)
     {
         replyMap.put(argTo, new WeakReference<>(argFrom));
     }
 
-    public static PlayerEntity getReplyTarget(PlayerEntity sender)
+    public static Player getReplyTarget(Player sender)
     {
-        WeakReference<PlayerEntity> replyTarget = replyMap.get(sender);
+        WeakReference<Player> replyTarget = replyMap.get(sender);
         if (replyTarget == null)
             return null;
         return replyTarget.get();
@@ -71,16 +71,16 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("message", StringArgumentType.greedyString())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        PlayerEntity target = getReplyTarget(getServerPlayer(ctx.getSource()));
+        Player target = getReplyTarget(getServerPlayer(ctx.getSource()));
         if (target == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No reply target found");
@@ -91,7 +91,7 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(ctx.getSource(), "You can't be the recipient");
             return Command.SINGLE_SUCCESS;
         }
-        TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
+        BaseComponent message = new TextComponent(StringArgumentType.getString(ctx, "message"));
         ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
         return Command.SINGLE_SUCCESS;
     }

@@ -16,10 +16,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,7 +38,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         RAIN, THUNDER;
 
-        public static WeatherType fromString(CommandSource source, String name) throws CommandException
+        public static WeatherType fromString(CommandSourceStack source, String name) throws CommandRuntimeException
         {
             name = name.toLowerCase();
             switch (name)
@@ -60,7 +60,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         FORCE, ENABLED, DISABLED, START, STOP;
 
-        public static WeatherState fromString(CommandSource source, String name) throws CommandException
+        public static WeatherState fromString(CommandSourceStack source, String name) throws CommandRuntimeException
         {
             name = name.toLowerCase();
             switch (name)
@@ -126,7 +126,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("rain")
                 .then(Commands.literal("enable").executes(CommandContext -> execute(CommandContext, "rain-enable")))
@@ -148,7 +148,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {
@@ -156,7 +156,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerWorld world = getServerPlayer(ctx.getSource()).getLevel();
+        ServerLevel world = getServerPlayer(ctx.getSource()).getLevel();
         String dim = world.dimension().location().toString();
 
         String[] args = params.split("-");
@@ -220,12 +220,12 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         if (event.phase == Phase.START)
             return;
-        ServerWorld world = (ServerWorld) event.world;
+        ServerLevel world = (ServerLevel) event.world;
         if (world.getGameTime() % 60 == 0)
             updateWorld(world);
     }
 
-    public static void updateWorld(ServerWorld world)
+    public static void updateWorld(ServerLevel world)
     {
         String dim = world.dimension().location().toString();
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);

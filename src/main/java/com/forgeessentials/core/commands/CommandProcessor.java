@@ -8,18 +8,18 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.tileentity.CommandBlockLogic;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.rcon.RconConsoleSource;
+import net.minecraft.world.level.BaseCommandBlock;
 
 public class CommandProcessor extends CommandUtils
 {
     // ------------------------------------------------------------
     // Command processing
 
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         try
         {
@@ -31,16 +31,16 @@ public class CommandProcessor extends CommandUtils
                 LoggingHandler.felog.error("Please report this to the devs");
                 return Command.SINGLE_SUCCESS;
             }
-            ICommandSource source = CommandUtils.GetSource(ctx.getSource());
-            if (source instanceof ServerPlayerEntity)
+            CommandSource source = CommandUtils.GetSource(ctx.getSource());
+            if (source instanceof ServerPlayer)
             {
                 processCommandPlayer(ctx, params);
             }
-            else if (source instanceof CommandBlockLogic)
+            else if (source instanceof BaseCommandBlock)
             {
                 processCommandBlock(ctx, params);
             }
-            else if (source instanceof RConConsoleSource)
+            else if (source instanceof RconConsoleSource)
             {
                 processCommandConsole(ctx, params);
             }
@@ -63,19 +63,19 @@ public class CommandProcessor extends CommandUtils
         return Command.SINGLE_SUCCESS;
     }
 
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatError(ctx.getSource(), "This command cannot be used as player");
         return Command.SINGLE_SUCCESS;
     }
 
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
         return Command.SINGLE_SUCCESS;
     }
 
-    public int processCommandBlock(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandBlock(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         return processCommandConsole(ctx, params);
     }

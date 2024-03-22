@@ -11,8 +11,8 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
@@ -39,8 +39,8 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         UserIdent ident = session.getUserIdent();
         if (ident != null)
         {
-            ServerPlayerEntity player = ident.getPlayerMP();
-            TranslationTextComponent message = new TranslationTextComponent("chat.type.text",
+            ServerPlayer player = ident.getPlayerMP();
+            TranslatableComponent message = new TranslatableComponent("chat.type.text",
                     new Object[] { player.getDisplayName().getString(), ForgeHooks.newChatWithLinks(request.data) });
             ServerChatEvent event = new ServerChatEvent(player, request.data, message);
             if (MinecraftForge.EVENT_BUS.post(event))
@@ -50,7 +50,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         }
         else
         {
-            TranslationTextComponent message = new TranslationTextComponent("chat.type.text",
+            TranslatableComponent message = new TranslatableComponent("chat.type.text",
                     new Object[] { "anonymous", ForgeHooks.newChatWithLinks(request.data) });
             ChatOutputHandler.broadcast(message);
             QueryChatHandler.onMessage(message);

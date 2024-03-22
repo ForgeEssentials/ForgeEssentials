@@ -13,22 +13,24 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import ChatFormatting;
 
 public final class ChatOutputHandler
 {
@@ -43,7 +45,7 @@ public final class ChatOutputHandler
             "((?:(?:http|https):\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_\\.]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
             Pattern.CASE_INSENSITIVE);
 
-    public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+    public static ChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     public static DiscordMessageHandlerBase discordMessageHandler = new DiscordMessageHandlerBase();
 
@@ -57,14 +59,14 @@ public final class ChatOutputHandler
      * @param message
      *            The message to send.
      */
-    public static void sendMessage(CommandSource recipient, String message)
+    public static void sendMessage(CommandSourceStack recipient, String message)
     {
-        sendMessageI(recipient, new StringTextComponent(message));
+        sendMessageI(recipient, new TextComponent(message));
     }
 
-    public static void sendMessage(PlayerEntity recipient, String message)
+    public static void sendMessage(Player recipient, String message)
     {
-        sendMessageI(recipient.createCommandSourceStack(), new StringTextComponent(message));
+        sendMessageI(recipient.createCommandSourceStack(), new TextComponent(message));
     }
 
     /**
@@ -73,12 +75,12 @@ public final class ChatOutputHandler
      * @param recipient
      * @param message
      */
-    public static void sendMessage(CommandSource recipient, TextComponent message)
+    public static void sendMessage(CommandSourceStack recipient, BaseComponent message)
     {
         sendMessageI(recipient, message);
     }
 
-    public static void sendMessage(PlayerEntity recipient, TextComponent message)
+    public static void sendMessage(Player recipient, BaseComponent message)
     {
         sendMessageI(recipient.createCommandSourceStack(), message);
     }
@@ -89,13 +91,13 @@ public final class ChatOutputHandler
      * @param recipient
      * @param message
      */
-    public static void sendMessageI(CommandSource recipient, ITextComponent message)
+    public static void sendMessageI(CommandSourceStack recipient, Component message)
     {
         Entity entity = recipient.getEntity();
-        if (entity instanceof FakePlayer && ((ServerPlayerEntity) entity).connection.getConnection() == null)
+        if (entity instanceof FakePlayer && ((ServerPlayer) entity).connection.getConnection() == null)
             LoggingHandler.felog
                     .info(String.format("Fakeplayer %s: %s", entity.getDisplayName().getString(), message.plainCopy()));
-        else if (entity instanceof ServerPlayerEntity)
+        else if (entity instanceof ServerPlayer)
         {
             recipient.sendSuccess(message, false);
         }
@@ -113,12 +115,12 @@ public final class ChatOutputHandler
      * @param color
      *            Color of text to format
      */
-    public static void sendMessage(CommandSource recipient, String message, TextFormatting color)
+    public static void sendMessage(CommandSourceStack recipient, String message, ChatFormatting color)
     {
         message = formatColors(message);
-        if (recipient.getEntity() instanceof PlayerEntity)
+        if (recipient.getEntity() instanceof Player)
         {
-            TextComponent component = new StringTextComponent(message);
+            BaseComponent component = new TextComponent(message);
             component.withStyle(color);
             sendMessage(recipient, component);
         }
@@ -126,9 +128,9 @@ public final class ChatOutputHandler
             sendMessage(recipient, stripFormatting(message));
     }
 
-    public static void sendMessage(PlayerEntity recipient, String message, TextFormatting color)
+    public static void sendMessage(Player recipient, String message, ChatFormatting color)
     {
-        TextComponent component = new StringTextComponent(message);
+        BaseComponent component = new TextComponent(message);
         component.withStyle(color);
         sendMessage(recipient, component);
     }
@@ -146,7 +148,7 @@ public final class ChatOutputHandler
 
     public static void broadcast(String message, boolean sendToDiscord)
     {
-        broadcast(new StringTextComponent(message), sendToDiscord);
+        broadcast(new TextComponent(message), sendToDiscord);
     }
 
     /**
@@ -157,10 +159,10 @@ public final class ChatOutputHandler
      * @param sendToDiscord
      *            Broadcast Message to discord
      */
-    public static void broadcast(TextComponent message, boolean sendToDiscord)
+    public static void broadcast(BaseComponent message, boolean sendToDiscord)
     {
         // TODO: merge ITexcComponent and TextComponent methods to avoid duplication
-        for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT,
                     p.getGameProfile().getId());
@@ -178,7 +180,7 @@ public final class ChatOutputHandler
      * @param message
      *            The message to send
      */
-    public static void broadcast(ITextComponent message)
+    public static void broadcast(Component message)
     {
         broadcast(message, true);
     }
@@ -191,9 +193,9 @@ public final class ChatOutputHandler
      * @param sendToDiscord
      *            Broadcast Message to discord
      */
-    public static void broadcast(ITextComponent message, boolean sendToDiscord)
+    public static void broadcast(Component message, boolean sendToDiscord)
     {
-        for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT,
                     p.getGameProfile().getId());
@@ -207,24 +209,24 @@ public final class ChatOutputHandler
 
     /* ------------------------------------------------------------ */
 
-    public static TextComponent confirmation(String message)
+    public static BaseComponent confirmation(String message)
     {
-        return setChatColor(new StringTextComponent(formatColors(message)), chatConfirmationColor);
+        return setChatColor(new TextComponent(formatColors(message)), chatConfirmationColor);
     }
 
-    public static TextComponent notification(String message)
+    public static BaseComponent notification(String message)
     {
-        return setChatColor(new StringTextComponent(formatColors(message)), chatNotificationColor);
+        return setChatColor(new TextComponent(formatColors(message)), chatNotificationColor);
     }
 
-    public static TextComponent warning(String message)
+    public static BaseComponent warning(String message)
     {
-        return setChatColor(new StringTextComponent(formatColors(message)), chatWarningColor);
+        return setChatColor(new TextComponent(formatColors(message)), chatWarningColor);
     }
 
-    public static TextComponent error(String message)
+    public static BaseComponent error(String message)
     {
-        return setChatColor(new StringTextComponent(formatColors(message)), chatErrorColor);
+        return setChatColor(new TextComponent(formatColors(message)), chatErrorColor);
     }
 
     /**
@@ -234,7 +236,7 @@ public final class ChatOutputHandler
      * @param color
      * @return message
      */
-    public static TextComponent setChatColor(TextComponent message, TextFormatting color)
+    public static BaseComponent setChatColor(BaseComponent message, ChatFormatting color)
     {
         message.withStyle(color);
         return message;
@@ -250,22 +252,22 @@ public final class ChatOutputHandler
      * @param msg
      *            the message to be sent
      */
-    public static void chatError(CommandSource sender, String msg, Object... args)
+    public static void chatError(CommandSourceStack sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatErrorColor);
     }
 
-    public static void chatError(CommandSource sender, String msg)
+    public static void chatError(CommandSourceStack sender, String msg)
     {
         sendMessage(sender, msg, chatErrorColor);
     }
 
-    public static void chatError(PlayerEntity sender, String msg, Object... args)
+    public static void chatError(Player sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatErrorColor);
     }
 
-    public static void chatError(PlayerEntity sender, String msg)
+    public static void chatError(Player sender, String msg)
     {
         sendMessage(sender, msg, chatErrorColor);
     }
@@ -278,22 +280,22 @@ public final class ChatOutputHandler
      * @param msg
      *            the message to be sent
      */
-    public static void chatConfirmation(CommandSource sender, String msg, Object... args)
+    public static void chatConfirmation(CommandSourceStack sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatConfirmationColor);
     }
 
-    public static void chatConfirmation(CommandSource sender, String msg)
+    public static void chatConfirmation(CommandSourceStack sender, String msg)
     {
         sendMessage(sender, msg, chatConfirmationColor);
     }
 
-    public static void chatConfirmation(PlayerEntity sender, String msg, Object... args)
+    public static void chatConfirmation(Player sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatConfirmationColor);
     }
 
-    public static void chatConfirmation(PlayerEntity sender, String msg)
+    public static void chatConfirmation(Player sender, String msg)
     {
         sendMessage(sender, msg, chatConfirmationColor);
     }
@@ -306,22 +308,22 @@ public final class ChatOutputHandler
      * @param msg
      *            the message to be sent
      */
-    public static void chatWarning(CommandSource sender, String msg, Object... args)
+    public static void chatWarning(CommandSourceStack sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatWarningColor);
     }
 
-    public static void chatWarning(CommandSource sender, String msg)
+    public static void chatWarning(CommandSourceStack sender, String msg)
     {
         sendMessage(sender, msg, chatWarningColor);
     }
 
-    public static void chatWarning(PlayerEntity sender, String msg, Object... args)
+    public static void chatWarning(Player sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatWarningColor);
     }
 
-    public static void chatWarning(PlayerEntity sender, String msg)
+    public static void chatWarning(Player sender, String msg)
     {
         sendMessage(sender, msg, chatWarningColor);
     }
@@ -333,22 +335,22 @@ public final class ChatOutputHandler
      *            CommandSource to chat to.
      * @param msg
      */
-    public static void chatNotification(CommandSource sender, String msg, Object... args)
+    public static void chatNotification(CommandSourceStack sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatNotificationColor);
     }
 
-    public static void chatNotification(CommandSource sender, String msg)
+    public static void chatNotification(CommandSourceStack sender, String msg)
     {
         sendMessage(sender, msg, chatNotificationColor);
     }
 
-    public static void chatNotification(PlayerEntity sender, String msg, Object... args)
+    public static void chatNotification(Player sender, String msg, Object... args)
     {
         sendMessage(sender, Translator.format(msg, args), chatNotificationColor);
     }
 
-    public static void chatNotification(PlayerEntity sender, String msg)
+    public static void chatNotification(Player sender, String msg)
     {
         sendMessage(sender, msg, chatNotificationColor);
     }
@@ -381,11 +383,11 @@ public final class ChatOutputHandler
 
     public static final Pattern FORMAT_CODE_PATTERN;
 
-    public static final char[] FORMAT_CHARACTERS = new char[TextFormatting.values().length];
+    public static final char[] FORMAT_CHARACTERS = new char[ChatFormatting.values().length];
 
     static
     {
-        for (TextFormatting code : TextFormatting.values())
+        for (ChatFormatting code : ChatFormatting.values())
             FORMAT_CHARACTERS[code.ordinal()] = code.toString().charAt(1);
         FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + new String(FORMAT_CHARACTERS) + "])");
     }
@@ -406,9 +408,9 @@ public final class ChatOutputHandler
      * 
      * @return {@Link TextComponent}
      */
-    public static TextComponent clickChatComponent(String text, Action action, String uri)
+    public static BaseComponent clickChatComponent(String text, Action action, String uri)
     {
-        TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
+        BaseComponent component = new TextComponent(ChatOutputHandler.formatColors(text));
         ClickEvent click = new ClickEvent(action, uri);
         component.withStyle((style) -> style.withClickEvent(click));
         return component;
@@ -420,9 +422,9 @@ public final class ChatOutputHandler
      * @param chatStyle
      * @param formattings
      */
-    public static void applyFormatting(Style chatStyle, Collection<TextFormatting> formattings)
+    public static void applyFormatting(Style chatStyle, Collection<ChatFormatting> formattings)
     {
-        for (TextFormatting format : formattings)
+        for (ChatFormatting format : formattings)
             applyFormatting(chatStyle, format);
     }
 
@@ -432,7 +434,7 @@ public final class ChatOutputHandler
      * @param chatStyle
      * @param formatting
      */
-    public static void applyFormatting(Style chatStyle, TextFormatting formatting)
+    public static void applyFormatting(Style chatStyle, ChatFormatting formatting)
     {
         switch (formatting)
         {
@@ -465,13 +467,13 @@ public final class ChatOutputHandler
      * @param textFormats
      * @return
      */
-    public static Collection<TextFormatting> enumChatFormattings(String textFormats)
+    public static Collection<ChatFormatting> enumChatFormattings(String textFormats)
     {
-        List<TextFormatting> result = new ArrayList<>();
+        List<ChatFormatting> result = new ArrayList<>();
         for (int i = 0; i < textFormats.length(); i++)
         {
             char formatChar = textFormats.charAt(i);
-            for (TextFormatting format : TextFormatting.values())
+            for (ChatFormatting format : ChatFormatting.values())
                 if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
                 {
                     result.add(format);
@@ -483,12 +485,12 @@ public final class ChatOutputHandler
 
     /* ------------------------------------------------------------ */
 
-    public static String getUnformattedMessage(TextComponent message)
+    public static String getUnformattedMessage(BaseComponent message)
     {
         return message.plainCopy().toString();
     }
 
-    public static String getFormattedMessage(TextComponent message)
+    public static String getFormattedMessage(BaseComponent message)
     {
         return message.copy().toString();
     }
@@ -531,7 +533,7 @@ public final class ChatOutputHandler
 
         PLAINTEXT/* , HTML */, MINECRAFT, DETAIL;
 
-        public Object format(TextComponent message)
+        public Object format(BaseComponent message)
         {
             switch (this)
             {
@@ -620,12 +622,12 @@ public final class ChatOutputHandler
      *            in milliseconds
      * @return Time in string format
      */
-    public static TextComponent filterChatLinks(String text)
+    public static BaseComponent filterChatLinks(String text)
     {
         // Includes ipv4 and domain pattern
         // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
         // without a protocol or path.
-        TextComponent ichat = new StringTextComponent("");
+        BaseComponent ichat = new TextComponent("");
         Matcher matcher = URL_PATTERN.matcher(text);
         int lastEnd = 0;
 
@@ -639,8 +641,8 @@ public final class ChatOutputHandler
             ichat.append(text.substring(lastEnd, start));
             lastEnd = end;
             String url = text.substring(start, end);
-            TextComponent link = new StringTextComponent(url);
-            link.withStyle(TextFormatting.UNDERLINE);
+            BaseComponent link = new TextComponent(url);
+            link.withStyle(ChatFormatting.UNDERLINE);
 
             try
             {
@@ -684,30 +686,30 @@ public final class ChatOutputHandler
 
     public static void setConfirmationColor(String color)
     {
-        chatConfirmationColor = TextFormatting.getByName(color);
+        chatConfirmationColor = ChatFormatting.getByName(color);
         if (chatConfirmationColor == null)
-            chatConfirmationColor = TextFormatting.GREEN;
+            chatConfirmationColor = ChatFormatting.GREEN;
     }
 
     public static void setErrorColor(String color)
     {
-        chatErrorColor = TextFormatting.getByName(color);
+        chatErrorColor = ChatFormatting.getByName(color);
         if (chatErrorColor == null)
-            chatErrorColor = TextFormatting.RED;
+            chatErrorColor = ChatFormatting.RED;
     }
 
     public static void setNotificationColor(String color)
     {
-        chatNotificationColor = TextFormatting.getByName(color);
+        chatNotificationColor = ChatFormatting.getByName(color);
         if (chatNotificationColor == null)
-            chatNotificationColor = TextFormatting.AQUA;
+            chatNotificationColor = ChatFormatting.AQUA;
     }
 
     public static void setWarningColor(String color)
     {
-        chatWarningColor = TextFormatting.getByName(color);
+        chatWarningColor = ChatFormatting.getByName(color);
         if (chatWarningColor == null)
-            chatWarningColor = TextFormatting.YELLOW;
+            chatWarningColor = ChatFormatting.YELLOW;
     }
 
     static ForgeConfigSpec.ConfigValue<String> FEchatConfirmationColor;

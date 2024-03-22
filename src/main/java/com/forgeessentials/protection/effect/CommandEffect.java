@@ -6,9 +6,9 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class CommandEffect extends ZoneEffect
@@ -16,7 +16,7 @@ public class CommandEffect extends ZoneEffect
 
     protected String command;
 
-    public CommandEffect(ServerPlayerEntity player, int interval, String command)
+    public CommandEffect(ServerPlayer player, int interval, String command)
     {
         super(player, interval, false);
         this.command = command;
@@ -38,9 +38,9 @@ public class CommandEffect extends ZoneEffect
 
             boolean cmdExists = false;
             // check if command exists
-            CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
+            CommandDispatcher<CommandSourceStack> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
                     .getDispatcher();
-            for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren())
+            for (CommandNode<CommandSourceStack> commandNode : dispatcher.getRoot().getChildren())
             {
                 if (cmdName.equals(commandNode.getUsageText().substring(1)))
                 {
@@ -59,7 +59,7 @@ public class CommandEffect extends ZoneEffect
                     .performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack())
                             .createCommandSourceStack(), String.join(" ", args));
         }
-        catch (CommandException e)
+        catch (CommandRuntimeException e)
         {
             LoggingHandler.felog.error(String.format("Error executing zone command: %s", e.getMessage()));
         }

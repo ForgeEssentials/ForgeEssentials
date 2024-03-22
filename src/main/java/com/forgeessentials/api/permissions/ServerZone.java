@@ -12,11 +12,11 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
@@ -155,14 +155,14 @@ public class ServerZone extends Zone implements Loadable
         return zone;
     }
 
-    public WorldZone getWorldZone(World world)
+    public WorldZone getWorldZone(Level world)
     {
         return getWorldZone(world.dimension().location().toString());
     }
 
-    public WorldZone getWorldZone(IWorld world)
+    public WorldZone getWorldZone(LevelAccessor world)
     {
-        return getWorldZone((ServerWorld) world);
+        return getWorldZone((ServerLevel) world);
 
     }
     // ------------------------------------------------------------
@@ -329,8 +329,8 @@ public class ServerZone extends Zone implements Loadable
             if (ident.isNpc())
                 result.add(new GroupEntry(GROUP_NPC, 1, 1));
 
-            ServerPlayerEntity player = ident.getPlayerMP();
-            if (player != null && player.abilities != null)
+            ServerPlayer player = ident.getPlayerMP();
+            if (player != null && player.getAbilities() != null)
                 switch (player.gameMode.getGameModeForPlayer())
                 {
                 case ADVENTURE:

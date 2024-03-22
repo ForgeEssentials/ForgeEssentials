@@ -12,9 +12,9 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.PlayerInfo;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -26,7 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class RespawnHandler
 {
 
-    protected Set<ServerPlayerEntity> respawnPlayers = Collections
+    protected Set<ServerPlayer> respawnPlayers = Collections
             .newSetFromMap(new WeakHashMap<>());
 
     public RespawnHandler()
@@ -34,7 +34,7 @@ public class RespawnHandler
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static WarpPoint getSpawn(PlayerEntity player, WarpPoint location, boolean doDefaultSpawn)
+    public static WarpPoint getSpawn(Player player, WarpPoint location, boolean doDefaultSpawn)
     {
         UserIdent ident = UserIdent.get(player);
         String spawnProperty = APIRegistry.perms.getPermission(ident, location == null ? null : location.toWorldPoint(),
@@ -54,23 +54,23 @@ public class RespawnHandler
         if (doDefaultSpawn)
             return null;
         else
-            return new WarpPoint(((ServerPlayerEntity) player).getRespawnDimension().location().toString(),
-                    ((ServerPlayerEntity) player).getRespawnPosition(), player.xRot, player.yRot);
+            return new WarpPoint(((ServerPlayer) player).getRespawnDimension().location().toString(),
+                    ((ServerPlayer) player).getRespawnPosition(), player.xRot, player.yRot);
     }
 
-    public static WarpPoint getSpawn(PlayerEntity player, WarpPoint location)
+    public static WarpPoint getSpawn(Player player, WarpPoint location)
     {
         return getSpawn(player, location, true);
     }
 
-    public static WarpPoint getPlayerSpawn(PlayerEntity player, WarpPoint location, boolean doDefaultSpawn)
+    public static WarpPoint getPlayerSpawn(Player player, WarpPoint location, boolean doDefaultSpawn)
     {
         UserIdent ident = UserIdent.get(player);
 
         boolean bedEnabled = APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED);
         if (bedEnabled)
         {
-            ServerPlayerEntity entity = (ServerPlayerEntity) player;
+            ServerPlayer entity = (ServerPlayer) player;
             BlockPos spawn = entity.getRespawnPosition();
             if (spawn != null)
             {
@@ -87,9 +87,9 @@ public class RespawnHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerDeath(LivingDeathEvent e)
     {
-        if (e.getEntityLiving() instanceof ServerPlayerEntity)
+        if (e.getEntityLiving() instanceof ServerPlayer)
         {
-            ServerPlayerEntity player = (ServerPlayerEntity) e.getEntityLiving();
+            ServerPlayer player = (ServerPlayer) e.getEntityLiving();
             PlayerInfo pi = PlayerInfo.get(player.getGameProfile().getId());
             pi.setLastDeathLocation(new WarpPoint(player));
             pi.setLastTeleportOrigin(pi.getLastDeathLocation());
@@ -99,9 +99,9 @@ public class RespawnHandler
     @SubscribeEvent
     public void doFirstRespawn(EntityJoinWorldEvent e)
     {
-        if (!e.getEntity().getClass().equals(ServerPlayerEntity.class))
+        if (!e.getEntity().getClass().equals(ServerPlayer.class))
             return;
-        ServerPlayerEntity player = (ServerPlayerEntity) e.getEntity();
+        ServerPlayer player = (ServerPlayer) e.getEntity();
         if (respawnPlayers.remove(player))
         {
             WarpPoint p = getPlayerSpawn(player, null, true);
@@ -113,7 +113,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void playerLoadFromFile(PlayerEvent.LoadFromFile event)
     {
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
+        ServerPlayer player = (ServerPlayer) event.getEntityLiving();
         File f = new File(event.getPlayerDirectory(), event.getPlayerUUID() + ".dat");
         if (!f.exists())
         {
@@ -131,7 +131,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void doRespawn(PlayerRespawnEvent event)
     {
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         player.connection.player = player;
 
         WarpPoint lastDeathLocation = PlayerInfo.get(player.getGameProfile().getId()).getLastDeathLocation();

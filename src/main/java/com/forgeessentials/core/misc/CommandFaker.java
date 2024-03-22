@@ -6,23 +6,23 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandFaker implements ICommandSource
+public class CommandFaker implements CommandSource
 {
 
     @Override
-    public void sendMessage(ITextComponent p_145747_1_, @NotNull UUID p_145747_2_)
+    public void sendMessage(Component p_145747_1_, @NotNull UUID p_145747_2_)
     {
         LoggingHandler.felog.info("CommandFaker: " + p_145747_1_.getString());
     }
@@ -45,7 +45,7 @@ public class CommandFaker implements ICommandSource
         return false;
     }
 
-    public CommandSource createCommandSourceStack(int level)
+    public CommandSourceStack createCommandSourceStack(int level)
     {
         if (level < 0)
         {
@@ -56,9 +56,9 @@ public class CommandFaker implements ICommandSource
             level = 4;
         }
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ServerWorld serverworld = server.overworld();
-        return new CommandSource(this, Vector3d.ZERO, Vector2f.ZERO,
+        ServerLevel serverworld = server.overworld();
+        return new CommandSourceStack(this, Vec3.ZERO, Vec2.ZERO,
                 serverworld, level, APIRegistry.IDENT_COMMANDFAKER.getUsername(),
-                new StringTextComponent(APIRegistry.IDENT_COMMANDFAKER.getUsername()), server, new FakePlayer(serverworld, new GameProfile(APIRegistry.IDENT_COMMANDFAKER.getUuid(), APIRegistry.IDENT_COMMANDFAKER.getUsername())));
+                new TextComponent(APIRegistry.IDENT_COMMANDFAKER.getUsername()), server, new FakePlayer(serverworld, new GameProfile(APIRegistry.IDENT_COMMANDFAKER.getUuid(), APIRegistry.IDENT_COMMANDFAKER.getUsername())));
     }
 }

@@ -7,12 +7,12 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Expected syntax: <interval>
@@ -23,20 +23,20 @@ public class EffectSmite extends WorldBorderEffect
     public int interval;
 
     @Override
-    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
         interval = IntegerArgumentType.getInteger(ctx, "interval");
     }
 
     @Override
-    public void activate(WorldBorder border, ServerPlayerEntity player)
+    public void activate(WorldBorder border, ServerPlayer player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, ServerPlayerEntity player)
+    public void tick(WorldBorder border, ServerPlayer player)
     {
         if (interval <= 0)
             return;
@@ -48,12 +48,12 @@ public class EffectSmite extends WorldBorderEffect
         }
     }
 
-    public void doEffect(ServerPlayerEntity player)
+    public void doEffect(ServerPlayer player)
     {
 
-        LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+        LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
         lightningboltentity.moveTo(
-                Vector3d.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
+                Vec3.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
         lightningboltentity.setVisualOnly(true);
         player.getLevel().addFreshEntity(lightningboltentity);
     }

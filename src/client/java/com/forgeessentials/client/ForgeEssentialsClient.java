@@ -30,15 +30,14 @@ import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.forgeessentials.commons.network.packets.Packet08AuthReply;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.screen.ConnectingScreen;
-import net.minecraft.client.gui.screen.DirtMessageScreen;
-import net.minecraft.client.gui.screen.DisconnectedScreen;
-import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.gui.screen.MultiplayerScreen;
+import net.minecraft.client.gui.screens.DisconnectedScreen;
+import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -49,18 +48,19 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 
 @Mod(ForgeEssentialsClient.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD, value = Dist.CLIENT)
@@ -128,8 +128,8 @@ public class ForgeEssentialsClient
     {
         // Set mod as client side only
         MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
-        MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> "anything. i don't care",
-                (remoteversionstring, networkbool) -> networkbool));
+        MOD_CONTAINER.registerExtensionPoint(IExtensionPoint.DisplayTest.class, 
+        		()->new IExtensionPoint.DisplayTest(()->"anything. i don't care", (remote, isServer)-> isServer));
         // Get EventBus
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register Listeners
@@ -148,12 +148,12 @@ public class ForgeEssentialsClient
     @SubscribeEvent
     public void login(EntityJoinWorldEvent event)
     {
-        if (event.getEntity() instanceof ClientPlayerEntity)
+        if (event.getEntity() instanceof LocalPlayer)
         {
         	BuildInfo.startVersionChecks(MODID);
             if (BuildInfo.isOutdated())
             {
-                event.getEntity().sendMessage(new StringTextComponent("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found"), event.getEntity().getUUID());
+                event.getEntity().sendMessage(new TextComponent("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found"), event.getEntity().getUUID());
             }
         }
     }
@@ -173,8 +173,8 @@ public class ForgeEssentialsClient
         {
             registerNetworkMessages();
 
-            List<ModInfo> mods = ModList.get().getMods();
-            for (ModInfo mod : mods)
+            List<IModInfo> mods = ModList.get().getMods();
+            for (IModInfo mod : mods)
             {
                 if (mod.getModId().equals("forgeessentialsclient"))
                 {
@@ -263,33 +263,33 @@ public class ForgeEssentialsClient
         if (event.getOriginalMessage().equals("feclient"))
         {
             Minecraft instance = Minecraft.getInstance();
-            instance.gui.getChat().addMessage(new StringTextComponent("/feclient info: Get FE client info"));
-            instance.gui.getChat().addMessage(new StringTextComponent("/feclient reinit: Redo server handshake"));
+            instance.gui.getChat().addMessage(new TextComponent("/feclient info: Get FE client info"));
+            instance.gui.getChat().addMessage(new TextComponent("/feclient reinit: Redo server handshake"));
             instance.gui.getChat()
-                    .addMessage(new StringTextComponent("/feclient reinit force: Force send server handshake"));
+                    .addMessage(new TextComponent("/feclient reinit force: Force send server handshake"));
             event.setCanceled(true);
         }
         if (event.getOriginalMessage().equals("feclient reinit"))
         {
             Minecraft instance = Minecraft.getInstance();
             ForgeEssentialsClient.resendHandshake();
-            instance.gui.getChat().addMessage(new StringTextComponent("Resent handshake packet to server."));
+            instance.gui.getChat().addMessage(new TextComponent("Resent handshake packet to server."));
             event.setCanceled(true);
         }
         if (event.getOriginalMessage().equals("feclient info"))
         {
             Minecraft instance = Minecraft.getInstance();
             instance.gui.getChat()
-                    .addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)-%s",
+                    .addMessage(new TextComponent(String.format("Running ForgeEssentials client %s (%s)-%s",
                             BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType())));
             if (BuildInfo.isOutdated()) {
-            	instance.gui.getChat().addMessage(new StringTextComponent(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion())));
+            	instance.gui.getChat().addMessage(new TextComponent(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion())));
             }
-            instance.gui.getChat().addMessage(new StringTextComponent(
+            instance.gui.getChat().addMessage(new TextComponent(
                     "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
-            instance.gui.getChat().addMessage(new StringTextComponent("Injected patches:"));
+            instance.gui.getChat().addMessage(new TextComponent("Injected patches:"));
             for (String patch : FEClientMixinConfig.getInjectedPatches())
-                instance.gui.getChat().addMessage(new StringTextComponent("- " + patch));
+                instance.gui.getChat().addMessage(new TextComponent("- " + patch));
             event.setCanceled(true);
         }
         if (event.getOriginalMessage().equals("feclient reinit force"))
@@ -297,7 +297,7 @@ public class ForgeEssentialsClient
             Minecraft instance = Minecraft.getInstance();
             sentHandshake = true;
             NetworkUtils.sendToServer(new Packet00Handshake());
-            instance.gui.getChat().addMessage(new StringTextComponent("Force Sent handshake packet to server."));
+            instance.gui.getChat().addMessage(new TextComponent("Force Sent handshake packet to server."));
             event.setCanceled(true);
         }
     }
@@ -326,7 +326,7 @@ public class ForgeEssentialsClient
                     fallback = "";
                     fallbackName = "";
                     transfer(fall, name);
-                } else if (mc.screen instanceof MainMenuScreen || mc.screen instanceof MultiplayerScreen) {
+                } else if (mc.screen instanceof TitleScreen || mc.screen instanceof JoinMultiplayerScreen) {
                     fallback = "";
                     fallbackName = "";
                 }
@@ -346,11 +346,11 @@ public class ForgeEssentialsClient
             mc.level.disconnect();
         }
         if (mc.isLocalServer()) {
-            mc.clearLevel(new DirtMessageScreen(new TranslationTextComponent("menu.savingLevel")));
+            mc.clearLevel(new GenericDirtMessageScreen(new TranslatableComponent("menu.savingLevel")));
         } else {
             mc.clearLevel();
         }
-        mc.setScreen(new MultiplayerScreen(new MainMenuScreen()));
+        mc.setScreen(new MultiplayerScreen(new TitleScreen()));
         mc.setScreen(new ConnectingScreen(mc.screen, mc, new ServerData(destinationName, destinationAddress, false)));
     }
     /* ------------------------------------------------------------ */

@@ -12,6 +12,8 @@ import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 
+import net.minecraftforge.fml.config.ModConfig.Type;
+
 public class FEModConfig extends ModConfig
 {
     private static final FEConfigFileTypeHandler FE_TOML = new FEConfigFileTypeHandler();

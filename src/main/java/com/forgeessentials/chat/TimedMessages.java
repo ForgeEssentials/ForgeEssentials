@@ -12,9 +12,9 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.JsonParseException;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
@@ -101,13 +101,13 @@ public class TimedMessages implements Runnable
             TaskRegistry.scheduleRepeated(this, interval * 1000L);
     }
 
-    public TextComponent formatMessage(String message)
+    public BaseComponent formatMessage(String message)
     {
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            TextComponent formatted = new StringTextComponent("");
-            formatted.append(ITextComponent.Serializer.fromJson(message));
+            BaseComponent formatted = new TextComponent("");
+            formatted.append(Component.Serializer.fromJson(message));
             return formatted;
         }
         catch (JsonParseException e)
@@ -117,7 +117,7 @@ public class TimedMessages implements Runnable
                 LoggingHandler.felog
                         .warn("Error in timedmessage format: " + ExceptionUtils.getRootCause(e).getMessage());
             }
-            return new StringTextComponent(message);
+            return new TextComponent(message);
         }
     }
 

@@ -20,7 +20,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_PLAYER)
@@ -57,7 +57,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
-            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
+            for (ServerPlayer player : ServerUtil.getPlayerList())
             {
                 UserIdent ident = UserIdent.get(player);
                 players.put(ident.getUuid(),

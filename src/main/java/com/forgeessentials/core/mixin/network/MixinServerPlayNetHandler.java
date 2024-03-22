@@ -12,23 +12,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.forgeessentials.util.events.world.SignEditEvent;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.ServerPlayNetHandler;
-import net.minecraft.network.play.client.CUpdateSignPacket;
-import net.minecraft.tileentity.SignTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mixin(ServerPlayNetHandler.class)
+@Mixin(ServerGamePacketListenerImpl.class)
 public class MixinServerPlayNetHandler
 {
 
     @Shadow
-    public ServerPlayerEntity player;
+    public ServerPlayer player;
     @Final
     @Shadow
     private static Logger LOGGER;
@@ -44,18 +44,18 @@ public class MixinServerPlayNetHandler
     @Inject(method = "updateSignText", 
     		at = @At("HEAD"),
     		cancellable = true)
-    public void updateSignText(CUpdateSignPacket p_244542_1_, List<String> p_244542_2_, CallbackInfo ci)
+    public void updateSignText(ServerboundSignUpdatePacket p_244542_1_, List<String> p_244542_2_, CallbackInfo ci)
     {
         this.player.resetLastActionTime();
-        ServerWorld serverworld = this.player.getLevel();
+        ServerLevel serverworld = this.player.getLevel();
         BlockPos blockpos = p_244542_1_.getPos();
         if (serverworld.hasChunkAt(blockpos)) {
             BlockState blockstate = serverworld.getBlockState(blockpos);
-            TileEntity tileentity = serverworld.getBlockEntity(blockpos);
-            if (!(tileentity instanceof SignTileEntity)) {
+            BlockEntity tileentity = serverworld.getBlockEntity(blockpos);
+            if (!(tileentity instanceof SignBlockEntity)) {
                 return;
             }
-            SignTileEntity signtileentity = (SignTileEntity)tileentity;
+            SignBlockEntity signtileentity = (SignBlockEntity)tileentity;
             if (signtileentity.getPlayerWhoMayEdit() != this.player)
             {
                 LOGGER.warn("Player {} just tried to change non-editable sign",
@@ -67,7 +67,7 @@ public class MixinServerPlayNetHandler
             if (MinecraftForge.EVENT_BUS.post(event)) {
             	for(int i = 0; i < p_244542_1_.getLines().length; ++i) {
                     if (event.formatted[i] == null) {
-                        signtileentity.setMessage(i, new StringTextComponent(p_244542_1_.getLines()[i]));
+                        signtileentity.setMessage(i, new TextComponent(p_244542_1_.getLines()[i]));
                     }
                     else {
                         signtileentity.setMessage(i, event.formatted[i]);
@@ -76,7 +76,7 @@ public class MixinServerPlayNetHandler
             }
             else {
             	for(int i = 0; i < p_244542_1_.getLines().length; ++i) {
-                    signtileentity.setMessage(i, new StringTextComponent(p_244542_1_.getLines()[i]));
+                    signtileentity.setMessage(i, new TextComponent(p_244542_1_.getLines()[i]));
                  }
             }
 

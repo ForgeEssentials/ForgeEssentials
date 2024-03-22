@@ -14,7 +14,7 @@ import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
@@ -68,7 +68,7 @@ public class MobTypeLoader
 
             // continue cuz its a tameable...
 
-            if (TameableEntity.class.isAssignableFrom(c))
+            if (TamableAnimal.class.isAssignableFrom(c))
             {
                 // do NOT add to the map.. its unnecessary...
                 continue;

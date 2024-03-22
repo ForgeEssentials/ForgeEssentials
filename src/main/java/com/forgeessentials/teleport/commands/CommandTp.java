@@ -16,12 +16,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +39,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     public static HashMap<Integer, Point> spawnPoints = new HashMap<>();
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("player", EntityArgument.player())
                 .then(Commands.literal("toPlayer")
@@ -52,12 +52,12 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
+        ServerPlayer sender = getServerPlayer(ctx.getSource());
         if (params.equals("to"))
         {
-            ServerPlayerEntity target = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
 
             if (target.hasDisconnected())
             {
@@ -71,10 +71,10 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
                 && APIRegistry.perms.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
         {
 
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
-                ServerPlayerEntity target = EntityArgument.getPlayer(ctx, "toplayer");
+                ServerPlayer target = EntityArgument.getPlayer(ctx, "toplayer");
 
                 if (!target.hasDisconnected())
                 {
@@ -99,7 +99,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         }
         else if (params.equals("pos"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
             PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -109,16 +109,16 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        CommandSource source = ctx.getSource();
+        CommandSourceStack source = ctx.getSource();
         if (params.equals("others"))
         {
 
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
-                ServerPlayerEntity target = EntityArgument.getPlayer(ctx, "toplayer");
+                ServerPlayer target = EntityArgument.getPlayer(ctx, "toplayer");
 
                 if (!target.hasDisconnected())
                 {
@@ -143,7 +143,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         }
         else if (params.equals("pos"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
             PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));

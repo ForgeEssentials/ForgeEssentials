@@ -5,19 +5,21 @@ import java.util.function.Supplier;
 import com.forgeessentials.multiworld.v2.provider.ChunkGeneratorHolderBase;
 import com.forgeessentials.multiworld.v2.provider.FEChunkGenProvider;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DebugChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.DebugLevelSource;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+
+import ChunkGenerator;
 
 @FEChunkGenProvider(providerName = "minecraft:debug")
 public class MinecraftDebugChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override
-	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeProvider biome,
-			Supplier<DimensionSettings> dimSettings) {
-		return new DebugChunkGenerator(biomes);
+	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeSource biome,
+			Supplier<NoiseGeneratorSettings> dimSettings) {
+		return new DebugLevelSource(biomes);
 	}
 
 	@Override

@@ -27,14 +27,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -160,7 +160,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")))
                 .then(Commands.literal("page")
@@ -184,10 +184,10 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         System.out.println("Found root node");
-        ServerPlayerEntity Splayer = getServerPlayer(ctx.getSource());
+        ServerPlayer Splayer = getServerPlayer(ctx.getSource());
         switch (params) {
             case "blank":
                 for (String rule : rules) {
@@ -195,23 +195,23 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
                 }
                 return Command.SINGLE_SUCCESS;
             case "book":
-                ListNBT pages = new ListNBT();
+                ListTag pages = new ListTag();
                 ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
 
                 HashMap<String, String> map = new HashMap<>();
 
                 for (int i = 0; i < rules.size(); i++) {
-                    map.put(TextFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n",
-                            TextFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
+                    map.put(ChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n",
+                            ChatFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
                 }
 
                 SortedSet<String> keys = new TreeSet<>(map.keySet());
                 for (String name : keys) {
-                    pages.add(StringNBT.valueOf(name + map.get(name)));
+                    pages.add(StringTag.valueOf(name + map.get(name)));
                 }
 
-                is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
-                is.addTagElement("title", StringNBT.valueOf("Rule Book"));
+                is.addTagElement("author", StringTag.valueOf("ForgeEssentials"));
+                is.addTagElement("title", StringTag.valueOf("Rule Book"));
 
                 is.addTagElement("pages", pages);
                 Splayer.inventory.add(is);
@@ -288,7 +288,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {

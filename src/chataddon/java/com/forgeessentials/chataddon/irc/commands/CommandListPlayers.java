@@ -7,7 +7,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import com.forgeessentials.chataddon.irc.IrcCommand;
 
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class CommandListPlayers implements IrcCommand
 {

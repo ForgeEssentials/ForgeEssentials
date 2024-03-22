@@ -12,17 +12,17 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.misc.CommandPermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.CommandBlockLogic;
+import net.minecraft.world.level.BaseCommandBlock;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 {
-    protected LiteralArgumentBuilder<CommandSource> baseBuilder;
+    protected LiteralArgumentBuilder<CommandSourceStack> baseBuilder;
 
     boolean enabled;
 
@@ -45,7 +45,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
 
     }
 
-    public LiteralArgumentBuilder<CommandSource> getMainBuilder()
+    public LiteralArgumentBuilder<CommandSourceStack> getMainBuilder()
     {
         return baseBuilder;
     }
@@ -55,18 +55,18 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor
         return enabled;
     }
 
-    abstract public LiteralArgumentBuilder<CommandSource> setExecution();
+    abstract public LiteralArgumentBuilder<CommandSourceStack> setExecution();
 
     // ------------------------------------------------------------
     // Permissions
-    public boolean hasPermission(CommandSource sender, String perm)
+    public boolean hasPermission(CommandSourceStack sender, String perm)
     {
-        if (!canConsoleUseCommand() && !(sender.getEntity() instanceof PlayerEntity))
+        if (!canConsoleUseCommand() && !(sender.getEntity() instanceof Player))
             return false;
-        if (sender.getEntity() != null && sender.getEntity() instanceof PlayerEntity)
+        if (sender.getEntity() != null && sender.getEntity() instanceof Player)
             return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
-        ICommandSource source = GetSource(sender);
-        return source instanceof MinecraftServer || source instanceof CommandBlockLogic;
+        CommandSource source = GetSource(sender);
+        return source instanceof MinecraftServer || source instanceof BaseCommandBlock;
     }
 
     public abstract boolean canConsoleUseCommand();

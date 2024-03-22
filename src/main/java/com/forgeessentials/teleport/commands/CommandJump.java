@@ -11,15 +11,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -52,22 +52,22 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         jump(getServerPlayer(ctx.getSource()));
         return Command.SINGLE_SUCCESS;
     }
 
-    public void jump(ServerPlayerEntity player) throws CommandException
+    public void jump(ServerPlayer player) throws CommandRuntimeException
     {
-        RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
-        if (mo.getType() == RayTraceResult.Type.MISS)
+        HitResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
+        if (mo.getType() == HitResult.Type.MISS)
         {
             ChatOutputHandler.chatError(player, "The spot you are looking at is too far away to teleport.");
             return;
@@ -81,7 +81,7 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getPlayer() instanceof ServerPlayerEntity))
+        if (!(event.getPlayer() instanceof ServerPlayer))
             return;
         if (!(event instanceof PlayerInteractEvent.RightClickItem)
                 && !(event instanceof PlayerInteractEvent.RightClickBlock))
@@ -94,13 +94,13 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
 
         try
         {
-            jump((ServerPlayerEntity) event.getPlayer());
+            jump((ServerPlayer) event.getPlayer());
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            StringTextComponent msg = new StringTextComponent(e.getCause() + e.getMessage());
-            msg.withStyle(TextFormatting.RED);
+            TextComponent msg = new TextComponent(e.getCause() + e.getMessage());
+            msg.withStyle(ChatFormatting.RED);
             event.getPlayer().sendMessage(msg, event.getPlayer().getGameProfile().getId());
         }
     }

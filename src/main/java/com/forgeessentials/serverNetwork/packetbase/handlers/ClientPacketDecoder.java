@@ -10,13 +10,13 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ClientPacketDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        PacketBuffer packetBuffer = new PacketBuffer(byteBuf);
+        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(byteBuf);
 
         if (packetBuffer.readableBytes() < 1) {
             return;

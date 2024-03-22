@@ -1,9 +1,11 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.item.DyeColor;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.item.DyeColor;
 
-public class JsSheepEntity<T extends SheepEntity> extends JsEntity<T>
+import Sheep;
+
+public class JsSheepEntity<T extends Sheep> extends JsEntity<T>
 {
 
     public JsSheepEntity(T that)

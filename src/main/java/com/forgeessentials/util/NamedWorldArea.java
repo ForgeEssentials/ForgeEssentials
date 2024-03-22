@@ -7,7 +7,7 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Keeps a WorldArea linked to a particular multiworld, even if the dim-id changes
@@ -71,7 +71,7 @@ public class NamedWorldArea extends WorldArea
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                ServerLevel world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
                     this.dim = world.dimension().location().toString();

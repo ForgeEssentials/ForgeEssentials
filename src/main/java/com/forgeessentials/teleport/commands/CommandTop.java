@@ -12,13 +12,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
@@ -58,7 +58,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("me"))
         {
@@ -67,7 +67,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
         }
         else if (params.equals("player") && hasPermission(ctx.getSource(), TeleportModule.PERM_TOP_OTHERS))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
                 top(player);
@@ -83,14 +83,14 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("me"))
         {
             ChatOutputHandler.chatError(ctx.getSource(), "You are not a player.");
             return Command.SINGLE_SUCCESS;
         }
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if (!player.hasDisconnected())
         {
             top(player);
@@ -104,11 +104,11 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public void top(ServerPlayerEntity player) throws CommandException
+    public void top(ServerPlayer player) throws CommandRuntimeException
     {
         WarpPoint point = new WarpPoint(player);
         int oldY = point.getBlockY();
-        int precY = player.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, player.blockPosition()).getY();
+        int precY = player.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, player.blockPosition()).getY();
 
         if (oldY != precY)
         {

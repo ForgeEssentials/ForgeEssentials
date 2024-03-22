@@ -16,10 +16,10 @@ import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -33,7 +33,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class AuthEventHandler extends ServerEventHandler
 {
@@ -64,7 +64,7 @@ public class AuthEventHandler extends ServerEventHandler
 
     private static boolean notPlayer(Object player)
     {
-        return !(player instanceof PlayerEntity) || player instanceof FakePlayer;
+        return !(player instanceof Player) || player instanceof FakePlayer;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -107,7 +107,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (event.getParseResults().getContext().getNodes().isEmpty())
             return;
         CommandInfo info = CommandUtils.getCommandInfo(event);
-        PlayerEntity player = (PlayerEntity) info.getSource().getEntity();
+        Player player = (Player) info.getSource().getEntity();
         if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(info))
         {
             event.setCanceled(true);
@@ -165,7 +165,7 @@ public class AuthEventHandler extends ServerEventHandler
                     "Login required9. Try /auth help.");
             // add the item back to the inventory
             ItemStack stack = event.getEntityItem().getItem();
-            event.getPlayer().inventory.add(stack);
+            event.getPlayer().getInventory().add(stack);
             event.setCanceled(true);
         }
     }
@@ -188,7 +188,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityLiving()))
             return;
-        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+        Player player = (Player) event.getEntityLiving();
         if (!ModuleAuth.isAuthenticated(player))
         {
             event.setCanceled(true);
@@ -241,8 +241,8 @@ public class AuthEventHandler extends ServerEventHandler
                     - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {
-                ((ServerPlayerEntity) event.getPlayer()).connection
-                        .disconnect(new StringTextComponent(nonVipKickMessage));
+                ((ServerPlayer) event.getPlayer()).connection
+                        .disconnect(new TextComponent(nonVipKickMessage));
             }
         }
     }
@@ -262,7 +262,7 @@ public class AuthEventHandler extends ServerEventHandler
             return;
         if (ModuleAuth.isRegistered(e.getPlayer().getGameProfile().getId()) && !ModuleAuth.isAuthenticated(e.getPlayer()))
         {
-            NetworkUtils.sendTo(new Packet06AuthLogin(), (ServerPlayerEntity) e.getPlayer());
+            NetworkUtils.sendTo(new Packet06AuthLogin(), (ServerPlayer) e.getPlayer());
         }
     }
 
@@ -272,7 +272,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (e.source == Source.COMMAND && ModuleAuth.allowAutoLogin)
         {
             UUID token = UUID.randomUUID();
-            NetworkUtils.sendTo(new Packet09AuthRequest(token.toString()), (ServerPlayerEntity) e.getPlayer());
+            NetworkUtils.sendTo(new Packet09AuthRequest(token.toString()), (ServerPlayer) e.getPlayer());
             PasswordManager.addSession(e.getPlayer().getGameProfile().getId(), token);
             ChatOutputHandler.chatConfirmation(e.getPlayer(), "AutoAuth Login Successful.");
         }

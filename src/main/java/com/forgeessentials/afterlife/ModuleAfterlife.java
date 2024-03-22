@@ -16,10 +16,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -57,9 +57,9 @@ public class ModuleAfterlife extends ServerEventHandler
     public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
 
     @SubscribeEvent
-    public static void registerTE(RegistryEvent.Register<TileEntityType<?>> evt)
+    public static void registerTE(RegistryEvent.Register<BlockEntityType<?>> evt)
     {
-        TileEntityType<?> type = TileEntityType.Builder.of(TileEntitySkullGrave::new, Blocks.SKELETON_SKULL)
+        BlockEntityType<?> type = BlockEntityType.Builder.of(TileEntitySkullGrave::new, Blocks.SKELETON_SKULL)
                 .build(null);
         type.setRegistryName("ForgeEssentials", "FESkull");
         evt.getRegistry().register(type);
@@ -129,9 +129,9 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathDropEvent(LivingDropsEvent event)
     {
-        if (event.getEntity() instanceof PlayerEntity)
+        if (event.getEntity() instanceof Player)
         {
-            Grave grave = Grave.createGrave((PlayerEntity) event.getEntity(), event.getDrops());
+            Grave grave = Grave.createGrave((Player) event.getEntity(), event.getDrops());
             if (grave != null)
                 event.setCanceled(true);
         }
@@ -140,7 +140,7 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void exDropEvent(LivingExperienceDropEvent event)
     {
-        if (event.getEntity() instanceof PlayerEntity)
+        if (event.getEntity() instanceof Player)
         {
             //Test for the event where xp is set to zero because of keep inventory or spectator
             if(event.getOriginalExperience()!=0) {
@@ -172,7 +172,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (grave == null)
             return;
 
-        grave.interact((ServerPlayerEntity) event.getPlayer());
+        grave.interact((ServerPlayer) event.getPlayer());
         event.setCanceled(true);
     }
 

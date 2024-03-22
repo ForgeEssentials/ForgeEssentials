@@ -9,8 +9,8 @@ import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Strings;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
@@ -102,7 +102,7 @@ public class Censor
         return filter(message, null);
     }
 
-    public String filter(String message, PlayerEntity player)
+    public String filter(String message, Player player)
     {
         if (!enabled)
             return message;

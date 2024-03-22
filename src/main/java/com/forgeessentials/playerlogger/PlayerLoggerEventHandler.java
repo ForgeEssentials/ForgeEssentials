@@ -8,8 +8,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.EventPriority;

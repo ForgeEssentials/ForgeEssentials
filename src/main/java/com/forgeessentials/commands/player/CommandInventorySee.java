@@ -9,18 +9,18 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +55,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("player", EntityArgument.player())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
@@ -63,15 +63,15 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity source = getServerPlayer(ctx.getSource());
+        ServerPlayer source = getServerPlayer(ctx.getSource());
 
         if (!FMLEnvironment.dist.isDedicatedServer())
         {
             return Command.SINGLE_SUCCESS;
         }
-        ServerPlayerEntity victim = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer victim = EntityArgument.getPlayer(ctx, "player");
         if (victim.hasDisconnected())
         {
             ChatOutputHandler.chatError(ctx.getSource(),
@@ -89,19 +89,19 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
         }
         source.nextContainerCounter();
 
-        source.openMenu(new INamedContainerProvider() {
+        source.openMenu(new MenuProvider() {
 
             @Override
-            public Container createMenu(int id, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity player)
+            public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player)
             {
-            	return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory,
+            	return new ChestMenu(MenuType.GENERIC_9x5, id, playerInventory,
                         new SeeablePlayerInventory(victim), 5);
             }
 
             @Override
-            public @NotNull ITextComponent getDisplayName()
+            public @NotNull Component getDisplayName()
             {
-                return new StringTextComponent(victim.getDisplayName().getString() + "'s inventory");
+                return new TextComponent(victim.getDisplayName().getString() + "'s inventory");
             }
         });
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Does the other player deserve this?");

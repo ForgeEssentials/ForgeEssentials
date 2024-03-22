@@ -13,9 +13,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("selectChatToDiscordChannel").then(Commands.argument("channel", StringArgumentType.string())
@@ -43,9 +43,9 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("disconnect").executes(CommandContext -> execute(CommandContext, "disconnect")));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_CHANNELS = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_CHANNELS = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>(ModuleDiscordBridge.instance.channels);
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
 
     @Override
@@ -61,7 +61,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if ("channel".equals(params))
         {

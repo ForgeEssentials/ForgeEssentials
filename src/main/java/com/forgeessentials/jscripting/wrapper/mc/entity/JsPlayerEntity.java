@@ -12,20 +12,20 @@ import com.forgeessentials.jscripting.wrapper.mc.item.JsPlayerInventory;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.GameType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.GameType;
 
-public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
+public class JsPlayerEntity extends JsLivingEntityBase<Player>
 {
     protected JsPlayerInventory<?> inventory;
 
@@ -34,7 +34,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
     /**
      * @tsd.ignore
      */
-    public static JsPlayerEntity get(PlayerEntity player)
+    public static JsPlayerEntity get(Player player)
     {
         return player == null ? null : new JsPlayerEntity(player);
     }
@@ -42,7 +42,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
     /**
      * @tsd.ignore
      */
-    private JsPlayerEntity(PlayerEntity that)
+    private JsPlayerEntity(Player that)
     {
         super(that);
     }
@@ -50,7 +50,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
     /**
      * @tsd.ignore
      */
-    public JsPlayerEntity(PlayerEntity that, JsCommandSource commandSender)
+    public JsPlayerEntity(Player that, JsCommandSource commandSender)
     {
         super(that);
         this.commandSender = commandSender;
@@ -59,18 +59,18 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
     public void setPosition(double x, double y, double z)
     {
         that.setPos(x, x, z);
-        ((ServerPlayerEntity) that).connection.teleport(x, y, z, that.yRot, that.xRot);
+        ((ServerPlayer) that).connection.teleport(x, y, z, that.yRot, that.xRot);
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
     {
         that.setPos(x, x, z);
-        ((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
+        ((ServerPlayer) that).connection.teleport(x, y, z, yaw, pitch);
     }
 
     public JsCommandSource asCommandSender()
     {
-        if (commandSender != null || !(that instanceof PlayerEntity))
+        if (commandSender != null || !(that instanceof Player))
             return commandSender;
         return commandSender = new JsCommandSource(that.createCommandSourceStack(), this);
     }
@@ -84,8 +84,8 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
 
     public JsPoint<?> getBedLocation(String dimension)
     {
-        BlockPos coord = ((ServerPlayerEntity) that).getRespawnPosition();
-        if (((ServerPlayerEntity) that).getRespawnDimension().location().toString().equals(dimension))
+        BlockPos coord = ((ServerPlayer) that).getRespawnPosition();
+        if (((ServerPlayer) that).getRespawnDimension().location().toString().equals(dimension))
         {
             return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
         }
@@ -94,9 +94,9 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
 
     public GameType getGameType()
     {
-        if (that instanceof ServerPlayerEntity)
+        if (that instanceof ServerPlayer)
         {
-            return ((ServerPlayerEntity) that).gameMode.getGameModeForPlayer();
+            return ((ServerPlayer) that).gameMode.getGameModeForPlayer();
         }
         return GameType.NOT_SET;
     }
@@ -193,7 +193,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
 
     public boolean interactWith(JsEntity<?> entity)
     {
-        switch (that.interactOn(entity.getThat(), Hand.MAIN_HAND))
+        switch (that.interactOn(entity.getThat(), InteractionHand.MAIN_HAND))
         {
         case SUCCESS:
         case PASS:
@@ -221,7 +221,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
      */
     public void destroyCurrentEquippedItem()
     {
-        that.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+        that.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
     }
 
     /**
@@ -251,20 +251,20 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
 
     public JsItemStack getCurrentArmor(int slot)
     {
-        EquipmentSlotType eeslot = EquipmentSlotType.MAINHAND;
+        EquipmentSlot eeslot = EquipmentSlot.MAINHAND;
         switch (slot)
         {
         case 0:
-            eeslot = EquipmentSlotType.FEET;
+            eeslot = EquipmentSlot.FEET;
             break;
         case 1:
-            eeslot = EquipmentSlotType.LEGS;
+            eeslot = EquipmentSlot.LEGS;
             break;
         case 2:
-            eeslot = EquipmentSlotType.CHEST;
+            eeslot = EquipmentSlot.CHEST;
             break;
         case 3:
-            eeslot = EquipmentSlotType.HEAD;
+            eeslot = EquipmentSlot.HEAD;
             break;
 
         }
@@ -337,13 +337,13 @@ public class JsPlayerEntity extends JsLivingEntityBase<PlayerEntity>
         return JsInventory.get(that.getEnderChestInventory());
     }
 
-    public void displayGUIChest(JsInventory<IInventory> inventory)
+    public void displayGUIChest(JsInventory<Container> inventory)
     {
-        that.openMenu(new SimpleNamedContainerProvider(
-                (syncId, inv, player) -> new ChestContainer(
+        that.openMenu(new SimpleMenuProvider(
+                (syncId, inv, player) -> new ChestMenu(
                         CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
                         Objects.requireNonNull(inventory.getThat()), CommandVirtualchest.rowCount),
-                new StringTextComponent(CommandVirtualchest.name)));
+                new TextComponent(CommandVirtualchest.name)));
     }
 
     public void closeScreen()

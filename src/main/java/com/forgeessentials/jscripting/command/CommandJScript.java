@@ -13,8 +13,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +51,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("list").executes(CommandContext -> execute(CommandContext, "list")))
                 .then(Commands.literal("reload").executes(CommandContext -> execute(CommandContext, "reload")))
@@ -59,7 +59,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         switch (params)
         {
@@ -80,14 +80,14 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    private static void parseReload(CommandContext<CommandSource> ctx)
+    private static void parseReload(CommandContext<CommandSourceStack> ctx)
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Reloading scripts...");
         ModuleJScripting.instance().reloadScripts(ctx.getSource());
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Done!");
     }
 
-    private static void parseList(CommandContext<CommandSource> ctx)
+    private static void parseList(CommandContext<CommandSourceStack> ctx)
     {
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Loaded scripts:");
         for (ScriptInstance script : ModuleJScripting.getScripts())

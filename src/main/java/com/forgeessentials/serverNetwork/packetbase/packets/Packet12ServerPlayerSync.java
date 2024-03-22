@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class Packet12ServerPlayerSync extends FEPacket
 {
@@ -24,7 +24,7 @@ public class Packet12ServerPlayerSync extends FEPacket
         }
     }
     @Override
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         if (uuids != null)
         {
@@ -37,7 +37,7 @@ public class Packet12ServerPlayerSync extends FEPacket
     }
 
     @Override
-    public void decode(PacketBuffer buf)
+    public void decode(FriendlyByteBuf buf)
     {
         uuids = new HashSet<>();
         int count = buf.readShort();

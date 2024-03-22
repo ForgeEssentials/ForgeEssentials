@@ -11,12 +11,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EnchantmentArgument;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.ItemStack;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ItemEnchantmentArgument;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,17 +46,17 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
-                .then(Commands.argument("name", EnchantmentArgument.enchantment()).then(
+                .then(Commands.argument("name", ItemEnchantmentArgument.enchantment()).then(
                         Commands.literal("maxlevel").executes(CommandContext -> execute(CommandContext, "maxlevel"))))
                 .then(Commands.argument("level", IntegerArgumentType.integer(1, Integer.MAX_VALUE))
                         .then(Commands.literal("custom").executes(CommandContext -> execute(CommandContext, "level"))));
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)
@@ -67,7 +67,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
 
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
-        Enchantment enchantment = EnchantmentArgument.getEnchantment(ctx, "name");
+        Enchantment enchantment = ItemEnchantmentArgument.getEnchantment(ctx, "name");
         if (enchantment == null | !enchantment.canApplyAtEnchantingTable(stack))
         {
             ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantment));

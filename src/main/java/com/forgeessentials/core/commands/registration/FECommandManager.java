@@ -16,7 +16,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FECommandManager
@@ -39,7 +39,7 @@ public class FECommandManager
         aliaseManager = new FEAliasesManager();
     }
 
-    public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
+    public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSourceStack> dispatcher)
     {
         final FECommandData command = new FECommandData(commandBuilder);
         loadedFEcommands.add(command);
@@ -70,7 +70,7 @@ public class FECommandManager
     /**
      * Registers this command and it's permission node
      */
-    public static void register(FECommandData commandData, CommandDispatcher<CommandSource> dispatcher)
+    public static void register(FECommandData commandData, CommandDispatcher<CommandSourceStack> dispatcher)
     {
         if (commandData.isRegistered())
         {
@@ -94,7 +94,7 @@ public class FECommandManager
                 LoggingHandler.felog.error(String.format("Command %s already registered as an alias!", commandData.getName()));
                 return;
             }
-            LiteralArgumentBuilder<CommandSource> builder = commandData.getBuilder().getMainBuilder();
+            LiteralArgumentBuilder<CommandSourceStack> builder = commandData.getBuilder().getMainBuilder();
 
             //Register alias under a redirect
 //            //don't change main name if not using aliases
@@ -166,11 +166,11 @@ public class FECommandManager
     	return FECommandManager.registeredFEcommands.size() + FECommandManager.registeredAiliases.size();
     }
 
-    public static boolean checkOverwritingCommands(String commandName, CommandDispatcher<CommandSource> dispatcher) {
+    public static boolean checkOverwritingCommands(String commandName, CommandDispatcher<CommandSourceStack> dispatcher) {
     	boolean commandRemoved=false;
-    	Map<String, CommandNode<CommandSource>> children = new LinkedHashMap<>(ObfuscationReflectionHelper.getPrivateValue(CommandNode.class, (CommandNode<CommandSource>) dispatcher.getRoot(), "children"));
-    	Map<String, CommandNode<CommandSource>> newChildren = new LinkedHashMap<>();
-    	for(Entry<String, CommandNode<CommandSource>> child : children.entrySet()) {
+    	Map<String, CommandNode<CommandSourceStack>> children = new LinkedHashMap<>(ObfuscationReflectionHelper.getPrivateValue(CommandNode.class, (CommandNode<CommandSourceStack>) dispatcher.getRoot(), "children"));
+    	Map<String, CommandNode<CommandSourceStack>> newChildren = new LinkedHashMap<>();
+    	for(Entry<String, CommandNode<CommandSourceStack>> child : children.entrySet()) {
     		if(child.getValue() instanceof LiteralCommandNode && child.getKey().equals(commandName)) {
     			if(FEConfig.overwriteConflictingCommands) {
     				LoggingHandler.felog.info("Removing conflicting command/alias:"+ commandName);
@@ -185,7 +185,7 @@ public class FECommandManager
     	}
 		if(commandRemoved && FEConfig.overwriteConflictingCommands) {
 			newChildren.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-			ObfuscationReflectionHelper.setPrivateValue(CommandNode.class, (CommandNode<CommandSource>) dispatcher.getRoot(), newChildren, "children");
+			ObfuscationReflectionHelper.setPrivateValue(CommandNode.class, (CommandNode<CommandSourceStack>) dispatcher.getRoot(), newChildren, "children");
 			return false;
 		}
 		else if(commandRemoved && !FEConfig.overwriteConflictingCommands){

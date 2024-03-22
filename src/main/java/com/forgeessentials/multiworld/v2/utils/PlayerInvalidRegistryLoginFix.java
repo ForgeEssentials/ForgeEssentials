@@ -7,8 +7,8 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -29,15 +29,15 @@ public class PlayerInvalidRegistryLoginFix extends ServerEventHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void playerLoggedOut(PlayerLoggedOutEvent event) {
-		if (event.getPlayer() instanceof ServerPlayerEntity
-				&& ModuleMultiworldV2.isMultiWorld(((ServerPlayerEntity) event.getPlayer()).getLevel())) {
+		if (event.getPlayer() instanceof ServerPlayer
+				&& ModuleMultiworldV2.isMultiWorld(((ServerPlayer) event.getPlayer()).getLevel())) {
 			if (!ModuleMultiworldV2.getMultiworldManager().getProviderHandler().getVanillaDimensionTypes()
-					.containsValue(((ServerPlayerEntity) event.getPlayer()).getLevel().dimensionType())) {
+					.containsValue(((ServerPlayer) event.getPlayer()).getLevel().dimensionType())) {
 				System.out.println("!vanillaDimensionTypes.contains(dimensionType())");
 				PlayerInfo player = PlayerInfo.get(event.getPlayer().getUUID());
 				player.setActualLogOutPoint(new WarpPoint(event.getPlayer()));
-				((ServerPlayerEntity) event.getPlayer()).teleportTo(
-						ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD), 0, 1000, 0, 0, 0);
+				((ServerPlayer) event.getPlayer()).teleportTo(
+						ServerLifecycleHooks.getCurrentServer().getLevel(ServerLevel.OVERWORLD), 0, 1000, 0, 0, 0);
 			}
 		}
 	}

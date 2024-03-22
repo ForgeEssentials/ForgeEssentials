@@ -16,10 +16,10 @@ import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -67,7 +67,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (player.checkPermission(CommandAFK.PERM_AUTOKICK))
         {
             player.getPlayerMP().connection
-                    .disconnect(new StringTextComponent(Translator.translate("You have been kicked for being AFK")));
+                    .disconnect(new TextComponent(Translator.translate("You have been kicked for being AFK")));
             return;
         }
 
@@ -113,19 +113,19 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         afkPlayers.remove(player);
     }
 
-    public void playerActive(ServerPlayerEntity player)
+    public void playerActive(ServerPlayer player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setActive();
         clearAfk(pi.ident);
     }
 
-    public static void checkAfkMessage(CommandSource target, TextComponent message) throws CommandSyntaxException
+    public static void checkAfkMessage(CommandSourceStack target, BaseComponent message) throws CommandSyntaxException
     {
-        if (!(target.getEntity() instanceof ServerPlayerEntity))
+        if (!(target.getEntity() instanceof ServerPlayer))
             return;
-        UserIdent targetIdent = UserIdent.get((ServerPlayerEntity) target.getEntity());
-        if (target.getEntity() instanceof ServerPlayerEntity && isAfk(targetIdent))
+        UserIdent targetIdent = UserIdent.get((ServerPlayer) target.getEntity());
+        if (target.getEntity() instanceof ServerPlayer && isAfk(targetIdent))
         {
             ChatOutputHandler
                     .notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
@@ -145,7 +145,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        playerActive((ServerPlayerEntity) event.getPlayer());
+        playerActive((ServerPlayer) event.getPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -153,7 +153,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        playerActive((ServerPlayerEntity) event.getPlayer());
+        playerActive((ServerPlayer) event.getPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -171,8 +171,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     public void commandEvent(CommandEvent event)
     {
         if (event.getParseResults().getContext().getSource().getEntity() != null
-                && event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
-            playerActive((ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity());
+                && event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer)
+            playerActive((ServerPlayer) event.getParseResults().getContext().getSource().getEntity());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -183,7 +183,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerInfo pi = PlayerInfo.get(event.getPlayer());
         if (!pi.checkTimeout("tempban"))
         {
-            pi.ident.getPlayerMP().connection.disconnect(new StringTextComponent(Translator.format(
+            pi.ident.getPlayerMP().connection.disconnect(new TextComponent(Translator.format(
                     "You are still banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true))));
         }

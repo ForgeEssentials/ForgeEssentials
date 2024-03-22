@@ -21,8 +21,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,7 +65,7 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
     	try {
     		if(options.listsSubNodes==null) {
@@ -99,8 +99,8 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
         return null;
     }
 
-    private boolean recursiveBuilding(ArgumentBuilder<CommandSource, ?> parentNode, JsCommandNodeWrapper node) throws ScriptException, FECommandParsingException{
-		ArgumentBuilder<CommandSource, ?> newNode;
+    private boolean recursiveBuilding(ArgumentBuilder<CommandSourceStack, ?> parentNode, JsCommandNodeWrapper node) throws ScriptException, FECommandParsingException{
+		ArgumentBuilder<CommandSourceStack, ?> newNode;
 		boolean execution;
 		String params;
 		boolean type;
@@ -155,7 +155,7 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         try
         {

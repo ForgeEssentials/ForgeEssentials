@@ -9,7 +9,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -32,13 +32,13 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
         ChatOutputHandler.chatNotification(ctx.getSource(),
@@ -52,7 +52,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         ChatOutputHandler.chatNotification(ctx.getSource(),
-                "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
+                "Average tick time: " + formatNumbers.format(this.getAverage(server.tickTimes) * 1.0E-6D) + " ms");
         ChatOutputHandler.chatNotification(ctx.getSource(), "For Better TPS information, run /forge tps.");
         return Command.SINGLE_SUCCESS;
     }
@@ -69,7 +69,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
         return DefaultPermissionLevel.OP;
     }
 
-    private double func_120035_a(long[] p_120035_1_)
+    private double getAverage(long[] p_120035_1_)
     {
         long i = 0L;
 

@@ -15,11 +15,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,21 +31,21 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public static Map<PlayerEntity, WeakReference<PlayerEntity>> targetMap = new WeakHashMap<>();
+    public static Map<Player, WeakReference<Player>> targetMap = new WeakHashMap<>();
 
-    public static void setTarget(PlayerEntity sender, PlayerEntity target)
+    public static void setTarget(Player sender, Player target)
     {
         targetMap.put(sender, new WeakReference<>(target));
     }
 
-    public static void clearTarget(PlayerEntity sender)
+    public static void clearTarget(Player sender)
     {
         targetMap.remove(sender);
     }
 
-    public static PlayerEntity getTarget(PlayerEntity sender)
+    public static Player getTarget(Player sender)
     {
-        WeakReference<PlayerEntity> target = targetMap.get(sender);
+        WeakReference<Player> target = targetMap.get(sender);
         if (target == null)
             return null;
         return target.get();
@@ -72,7 +72,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("message-or-target", StringArgumentType.greedyString())
@@ -82,7 +82,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("clear"))
         {
@@ -90,7 +90,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared PM target");
             return Command.SINGLE_SUCCESS;
         }
-        PlayerEntity target = getTarget(getServerPlayer(ctx.getSource()));
+        Player target = getTarget(getServerPlayer(ctx.getSource()));
         if (params.equals("get"))
         {
             if (target != null)
@@ -130,7 +130,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message-or-target"));
+            BaseComponent message = new TextComponent(StringArgumentType.getString(ctx, "message-or-target"));
             ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
         }
         return Command.SINGLE_SUCCESS;

@@ -9,9 +9,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
         return DefaultPermissionLevel.OP;
     }
 
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
@@ -49,12 +49,12 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+        ServerPlayer player = (ServerPlayer) ctx.getSource().getEntity();
         if (params.equals("toggle"))
         {
-            player.abilities.mayfly = !player.abilities.mayfly;
+            player.getAbilities().mayfly = !player.getAbilities().mayfly;
         }
         else
         {

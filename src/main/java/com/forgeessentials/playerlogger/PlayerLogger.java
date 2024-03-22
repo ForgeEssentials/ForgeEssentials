@@ -64,8 +64,8 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BedItem;
 import net.minecraft.item.BlockItem;
@@ -294,7 +294,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     // ============================================================
 
-    public synchronized void purgeOldData(Date startTime, PlayerEntity player)
+    public synchronized void purgeOldData(Date startTime, Player player)
     {
         purging = true;
         Thread purgeData = new Thread(new Runnable() {

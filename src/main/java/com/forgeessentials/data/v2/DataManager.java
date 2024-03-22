@@ -35,7 +35,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
 
 public class DataManager
 {
@@ -69,7 +69,7 @@ public class DataManager
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
         addDataType(new BlockType());
-        addDataType(TextComponent.class, new TextComponent.Serializer());
+        addDataType(BaseComponent.class, new BaseComponent.Serializer());
     }
 
     public DataManager(File basePath)

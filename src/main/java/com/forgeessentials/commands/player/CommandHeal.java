@@ -9,11 +9,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,9 +31,9 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
         return "heal";
     }
 
-    public String getUsage(ServerPlayerEntity sender)
+    public String getUsage(ServerPlayer sender)
     {
-        if (sender instanceof PlayerEntity)
+        if (sender instanceof Player)
         {
             return "/heal <player> Heal yourself or other players (if you have permission).";
         }
@@ -62,7 +62,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
@@ -71,7 +71,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {
@@ -79,7 +79,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
         }
         else if (params.equals("others"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
                 heal(player);
@@ -100,11 +100,11 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("others"))
         {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
                 heal(player);
@@ -124,7 +124,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public void heal(PlayerEntity target)
+    public void heal(Player target)
     {
         float toHealBy = target.getMaxHealth() - target.getHealth();
         target.heal(toHealBy);

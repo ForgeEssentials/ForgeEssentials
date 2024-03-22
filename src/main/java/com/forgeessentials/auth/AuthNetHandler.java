@@ -9,8 +9,8 @@ import com.forgeessentials.util.events.player.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.player.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class AuthNetHandler extends Packet08AuthReply
 {
@@ -19,7 +19,7 @@ public class AuthNetHandler extends Packet08AuthReply
         super(hash);
     }
 
-    public static AuthNetHandler decode(PacketBuffer buf)
+    public static AuthNetHandler decode(FriendlyByteBuf buf)
     {
         return new AuthNetHandler(buf.readUtf());
     }

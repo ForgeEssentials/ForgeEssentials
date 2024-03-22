@@ -7,7 +7,7 @@ import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
@@ -30,21 +30,21 @@ public class CUIComms
     public static final String[] worldEditSelectionCommands = new String[] { "pos1", "pos2", "sel", "desel", "hpos1",
             "hpos2", "/hunk", "expand", "contract", "outset", "inset", "shift" };
 
-    protected List<ServerPlayerEntity> updatedSelectionPlayers = new ArrayList<>();
+    protected List<ServerPlayer> updatedSelectionPlayers = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void checkWECommands(CommandEvent e)
     {
     	if (e.getParseResults().getContext().getNodes().isEmpty())
             return;
-        if (e.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
+        if (e.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer)
         {
             CommandInfo info = CommandUtils.getCommandInfo(e);
             for (String weCmd : worldEditSelectionCommands)
             {
                 if (info.getCommandName().equals(weCmd) && !(info.getSource().getEntity() instanceof FakePlayer))
                 {
-                    updatedSelectionPlayers.add((ServerPlayerEntity) info.getSource().getEntity());
+                    updatedSelectionPlayers.add((ServerPlayer) info.getSource().getEntity());
                     return;
                 }
             }
@@ -54,7 +54,7 @@ public class CUIComms
     @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent e)
     {
-        for (ServerPlayerEntity player : updatedSelectionPlayers)
+        for (ServerPlayer player : updatedSelectionPlayers)
             SelectionHandler.sendUpdate(player);
         updatedSelectionPlayers.clear();
     }
@@ -62,8 +62,8 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.getPlayer() instanceof ServerPlayerEntity)
-            updatedSelectionPlayers.add((ServerPlayerEntity) event.getPlayer());
+        if (event.getPlayer() instanceof ServerPlayer)
+            updatedSelectionPlayers.add((ServerPlayer) event.getPlayer());
     }
 
 }

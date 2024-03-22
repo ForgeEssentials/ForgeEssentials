@@ -11,8 +11,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Expected syntax: <interval> <message>
@@ -25,21 +25,21 @@ public class EffectMessage extends WorldBorderEffect
     public int interval = 6000;
 
     @Override
-    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
         interval = IntegerArgumentType.getInteger(ctx, "interval");
         message = StringArgumentType.getString(ctx, "message");
     }
 
     @Override
-    public void activate(WorldBorder border, ServerPlayerEntity player)
+    public void activate(WorldBorder border, ServerPlayer player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, ServerPlayerEntity player)
+    public void tick(WorldBorder border, ServerPlayer player)
     {
         if (interval <= 0)
             return;
@@ -51,7 +51,7 @@ public class EffectMessage extends WorldBorderEffect
         }
     }
 
-    public void doEffect(ServerPlayerEntity player)
+    public void doEffect(ServerPlayer player)
     {
     	if(ModuleLauncher.getModuleList().contains("Chat")) {
     		ChatOutputHandler.chatError(player,

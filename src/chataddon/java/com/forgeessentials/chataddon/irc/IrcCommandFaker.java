@@ -2,34 +2,32 @@ package com.forgeessentials.chataddon.irc;
 
 import java.util.UUID;
 
-import org.jetbrains.annotations.NotNull;
 import org.pircbotx.hooks.events.MessageEvent;
 
-
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.Entity;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
-public class IrcCommandFaker implements ICommandSource
+public class IrcCommandFaker implements CommandSource
 {
 	private MessageEvent event;
-    @Override
-    public void sendMessage(ITextComponent p_145747_1_, @NotNull UUID p_145747_2_)
-    {
-    	if(p_145747_1_.getString().startsWith("/")) {
-    		event.respond("!"+p_145747_1_.getString().substring(1));
+
+	@Override
+	public void sendMessage(Component p_80166_, UUID p_80167_) {
+		if(p_80166_.getString().startsWith("/")) {
+    		event.respond("!"+p_80166_.getString().substring(1));
     		return;
     	}
-    	event.respond(p_145747_1_.getString());
-    }
-
+    	event.respond(p_80166_.getString());
+		
+	}
     @Override
     public boolean acceptsSuccess()
     {
@@ -48,7 +46,7 @@ public class IrcCommandFaker implements ICommandSource
         return false;
     }
 
-    public CommandSource createCommandSourceStack(int level, MessageEvent event)
+    public CommandSourceStack createCommandSourceStack(int level, MessageEvent event)
     {
     	this.event = event;
     	String name = event.getUser().getNick();
@@ -61,10 +59,10 @@ public class IrcCommandFaker implements ICommandSource
             level = 4;
         }
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ServerWorld serverworld = server.overworld();
-        return new CommandSource(this, Vector3d.ZERO, Vector2f.ZERO,
+        ServerLevel serverworld = server.overworld();
+        return new CommandSourceStack(this, Vec3.ZERO, Vec2.ZERO,
                 serverworld, level, name,
-                new StringTextComponent(name), server, (Entity)null);
+                new TextComponent(name), server, (Entity)null);
     }
 }
 

@@ -6,19 +6,21 @@ import com.forgeessentials.multiworld.v2.provider.ChunkGeneratorHolderBase;
 import com.forgeessentials.multiworld.v2.provider.FEChunkGenProvider;
 import com.forgeessentials.multiworld.v2.provider.ProvidersReflection;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+
+import ChunkGenerator;
 
 @FEChunkGenProvider(providerName = "twilightforest:sky_noise")
 public class TwilightForestSkyChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override
-	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeProvider biome,
-			Supplier<DimensionSettings> dimSettings) {
+	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeSource biome,
+			Supplier<NoiseGeneratorSettings> dimSettings) {
 		return ProvidersReflection.getChunkProvider(getClassName(),
-				new Class<?>[] { BiomeProvider.class, long.class, Supplier.class },
+				new Class<?>[] { BiomeSource.class, long.class, Supplier.class },
 				new Object[] { biome, seed, dimSettings });
 	}
 

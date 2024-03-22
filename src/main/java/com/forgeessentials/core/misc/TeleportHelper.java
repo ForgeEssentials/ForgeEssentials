@@ -19,22 +19,24 @@ import com.forgeessentials.util.events.player.PlayerChangedZone;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.server.TicketType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.portal.PortalForcer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import Player;
 
 public class TeleportHelper extends ServerEventHandler
 {
@@ -53,7 +55,7 @@ public class TeleportHelper extends ServerEventHandler
     public static class TeleportInfo
     {
 
-        private PlayerEntity player;
+        private Player player;
 
         private long start;
 
@@ -63,7 +65,7 @@ public class TeleportHelper extends ServerEventHandler
 
         private WarpPoint playerPos;
 
-        public TeleportInfo(PlayerEntity player, WarpPoint point, int timeout)
+        public TeleportInfo(Player player, WarpPoint point, int timeout)
         {
             this.point = point;
             this.timeout = timeout;
@@ -103,7 +105,7 @@ public class TeleportHelper extends ServerEventHandler
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
-    public static void teleport(PlayerEntity player, WarpPoint point) throws CommandException
+    public static void teleport(Player player, WarpPoint point) throws CommandRuntimeException
     {
         if (point.getWorld() == null)
         {
@@ -197,7 +199,7 @@ public class TeleportHelper extends ServerEventHandler
         return block1Free && block2Free;
     }
 
-    public static void checkedTeleport(PlayerEntity player, WarpPoint point)
+    public static void checkedTeleport(Player player, WarpPoint point)
     {
         if (!canTeleportTo(point))
         {
@@ -218,7 +220,7 @@ public class TeleportHelper extends ServerEventHandler
         MinecraftForge.EVENT_BUS.post(new PlayerChangedZone(player, before, after, old, point));
     }
 
-    public static void doTeleport(PlayerEntity player, WarpPoint point)
+    public static void doTeleport(Player player, WarpPoint point)
     {
         if (point.getWorld() == null)
         {
@@ -233,20 +235,20 @@ public class TeleportHelper extends ServerEventHandler
         {
             // SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
             // player.changeDimension(point.getWorld());//, teleporter);
-            ((ServerPlayerEntity) player).teleportTo(point.getWorld(), point.getX(), point.getY(), point.getZ(),
+            ((ServerPlayer) player).teleportTo(point.getWorld(), point.getX(), point.getY(), point.getZ(),
                     point.getYaw(), point.getPitch());
 
         }else {
-            ((ServerPlayerEntity) player).connection.teleport(point.getX(), point.getY(), point.getZ(), point.getYaw(),
+            ((ServerPlayer) player).connection.teleport(point.getX(), point.getY(), point.getZ(), point.getYaw(),
                     point.getPitch());
         }
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)
     {
-        if (entity instanceof PlayerEntity)
+        if (entity instanceof Player)
         {
-            doTeleport((PlayerEntity) entity, point);
+            doTeleport((Player) entity, point);
             return;
         }
         if (!entity.level.dimension().location().toString().equals(point.getDimension()))
@@ -274,8 +276,8 @@ public class TeleportHelper extends ServerEventHandler
     public void entityPortalEvent(EntityPortalEvent e)
     {
         UserIdent ident = null;
-        if (e.getEntity() instanceof PlayerEntity)
-            ident = UserIdent.get((PlayerEntity) e.getEntity());
+        if (e.getEntity() instanceof Player)
+            ident = UserIdent.get((Player) e.getEntity());
         else if (e.getEntity() instanceof LivingEntity)
             ident = APIRegistry.IDENT_NPC;
         WorldPoint pointFrom = new WorldPoint(e.worldFrom, e.posFrom);
@@ -293,13 +295,13 @@ public class TeleportHelper extends ServerEventHandler
         }
     }
 
-    public static void transferEntityToWorld(Entity entity, int oldDim, ServerWorld oldWorld, ServerWorld newWorld,
-            Teleporter teleporter)
+    public static void transferEntityToWorld(Entity entity, int oldDim, ServerLevel oldWorld, ServerLevel newWorld,
+            PortalForcer teleporter)
     {
         double d0 = entity.position().x;
         double d1 = entity.position().z;
-        d0 = MathHelper.clamp((int) d0, -29999872, 29999872);
-        d1 = MathHelper.clamp((int) d1, -29999872, 29999872);
+        d0 = Mth.clamp((int) d0, -29999872, 29999872);
+        d1 = Mth.clamp((int) d1, -29999872, 29999872);
         if (entity.isAlive())
         {
             entity.absMoveTo(d0, entity.position().y, d1, entity.yRotO, entity.xRotO);

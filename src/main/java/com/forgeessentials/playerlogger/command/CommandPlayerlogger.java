@@ -32,13 +32,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +70,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.literal("stats").executes(CommandContext -> execute(CommandContext, "stats")))
                 .then(Commands.literal("filter")
@@ -172,7 +172,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("help").executes(CommandContext -> execute(CommandContext, "help")));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_actiontabs = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_actiontabs = (ctx, builder) -> {
         List<String> actiontabs = new ArrayList<>();
         ActionEnum[] enums = ActionEnum.values();
         for (ActionEnum ae : enums)
@@ -180,17 +180,17 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             actiontabs.add(ae.name());
         }
         actiontabs.add("reset");
-        return ISuggestionProvider.suggest(actiontabs, builder);
+        return SharedSuggestionProvider.suggest(actiontabs, builder);
     };
-    public static final SuggestionProvider<CommandSource> SUGGEST_filters = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_filters = (ctx, builder) -> {
         List<String> filters = new ArrayList<>();
         filters.add("GlobalFilter");
         filters.add("PersonalFilter");
-        return ISuggestionProvider.suggest(filters, builder);
+        return SharedSuggestionProvider.suggest(filters, builder);
     };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
@@ -261,7 +261,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             else if (subCmds[0].toLowerCase().equals("player"))
             {
-                PlayerEntity pl;
+                Player pl;
                 try
                 {
                     pl = parsePlayer(StringArgumentType.getString(ctx, "name"), true, true)

@@ -4,14 +4,16 @@ import com.forgeessentials.multiworld.v2.provider.BiomeProviderHolderBase;
 import com.forgeessentials.multiworld.v2.provider.FEBiomeProvider;
 import com.forgeessentials.multiworld.v2.provider.ProvidersReflection;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+
+import BiomeSource;
 
 @FEBiomeProvider(providerName = "the_bumblezone:biome_source")
 public class BumbleZoneBiomeProviderHelper extends BiomeProviderHolderBase {
 	@Override
-	public BiomeProvider createBiomeProvider(Registry<Biome> biomes, long seed) {
+	public BiomeSource createBiomeProvider(Registry<Biome> biomes, long seed) {
 		return ProvidersReflection.getBiomeProvider(getClassName(),
 				new Class<?>[] { long.class, Registry.class }, new Object[] { seed, biomes });
 	}

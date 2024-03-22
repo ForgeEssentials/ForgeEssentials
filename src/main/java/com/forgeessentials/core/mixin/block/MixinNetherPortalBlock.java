@@ -7,13 +7,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.forgeessentials.util.events.entity.EntityPortalEvent;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.NetherPortalBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.NetherPortalBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(NetherPortalBlock.class)
@@ -29,10 +29,10 @@ public class MixinNetherPortalBlock
     @Inject(method = "entityInside",
             at = @At(value = "HEAD"),
             cancellable=true)
-	public void runFEEntityPortalEVENT(BlockState state, World worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
+	public void runFEEntityPortalEVENT(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
 		if (!entityIn.isPassenger() && !entityIn.isVehicle() && entityIn.canChangeDimensions()) {
-			RegistryKey<World> registrykey = worldIn.dimension() == World.OVERWORLD ? World.NETHER : World.OVERWORLD;
-            ServerWorld serverworld = ((ServerWorld)worldIn).getServer().getLevel(registrykey);
+			ResourceKey<Level> registrykey = worldIn.dimension() == Level.OVERWORLD ? Level.NETHER : Level.OVERWORLD;
+            ServerLevel serverworld = ((ServerLevel)worldIn).getServer().getLevel(registrykey);
             if (serverworld == null) {
             	ci.cancel();
                return;

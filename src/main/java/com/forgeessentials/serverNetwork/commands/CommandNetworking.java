@@ -16,9 +16,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +37,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("start")
@@ -93,7 +93,7 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
                                 )
                         );
     }
-    public static final SuggestionProvider<CommandSource> SUGGEST_clients = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_clients = (ctx, builder) -> {
         List<String> listArgs = new ArrayList<>();
         for (Entry<String, ConnectedClientData> arg : ModuleNetworking.getClients().entrySet())
         {
@@ -101,10 +101,10 @@ public class CommandNetworking extends ForgeEssentialsCommandBuilder
                 listArgs.add(arg.getKey());
             }
         }
-        return ISuggestionProvider.suggest(listArgs, builder);
+        return SharedSuggestionProvider.suggest(listArgs, builder);
     };
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if(params.equals("startboth")){
             if(ModuleNetworking.getInstance().startServer()!=0){

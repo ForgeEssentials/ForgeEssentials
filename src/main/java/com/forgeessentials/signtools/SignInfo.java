@@ -2,21 +2,24 @@ package com.forgeessentials.signtools;
 
 import com.forgeessentials.util.StringUtil;
 
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event;
+
+import BlockHitResult;
+import InteractionHand;
 
 public class SignInfo
 {
     int x, y, z;
     String dim;
     String[] text;
-    Hand hand;
-    BlockRayTraceResult hitVec;
+    InteractionHand hand;
+    BlockHitResult hitVec;
 
     public SignInfo(String dim, BlockPos pos, String[] text, Event event)
     {

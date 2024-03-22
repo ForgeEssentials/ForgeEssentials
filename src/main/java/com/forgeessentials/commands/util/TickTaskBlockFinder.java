@@ -8,19 +8,25 @@ import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+
+import Block;
+import BlockState;
+import ItemStack;
+import Level;
+import Player;
 
 public class TickTaskBlockFinder implements TickTask
 {
 
-    private World world;
-    private PlayerEntity player;
+    private Level world;
+    private Player player;
     private Block block;
     private BlockState blockState;
     private String blockName;
@@ -44,7 +50,7 @@ public class TickTaskBlockFinder implements TickTask
 
     ArrayList<Point> results = new ArrayList<>();
 
-    public TickTaskBlockFinder(PlayerEntity player, BlockState blockstateT, int range, int amount, int speed)
+    public TickTaskBlockFinder(Player player, BlockState blockstateT, int range, int amount, int speed)
     {
         this.player = player;
         this.targetRange = range;

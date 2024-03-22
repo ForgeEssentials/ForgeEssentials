@@ -16,28 +16,30 @@ import java.util.Set;
 import com.forgeessentials.core.environment.Environment;
 
 import cpw.mods.modlauncher.api.INameMappingService;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerPropertiesProvider;
+import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import DedicatedServerSettings;
+
 public abstract class ServerUtil
 {
 
-    public static ServerPropertiesProvider getServerPropProvider(DedicatedServer currentServer)
+    public static DedicatedServerSettings getServerPropProvider(DedicatedServer currentServer)
     {
-        return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "field_71340_o");
+        return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "settings");
     }
 
     public static void changeFinalFieldStaticField(Field field, Object newValue) throws Exception
@@ -229,7 +231,7 @@ public abstract class ServerUtil
      * 
      * @return
      */
-    public static List<ServerPlayerEntity> getPlayerList()
+    public static List<ServerPlayer> getPlayerList()
     {
         MinecraftServer mc = ServerLifecycleHooks.getCurrentServer();
         return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayers();
@@ -241,7 +243,7 @@ public abstract class ServerUtil
      * @param World
      * @return -1 if error
      */
-    public static double getWorldTPS(RegistryKey<World> World)
+    public static double getWorldTPS(ResourceKey<Level> World)
     {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
@@ -278,14 +280,14 @@ public abstract class ServerUtil
         return sum / values.length;
     }
 
-    public static ServerWorld getOverworld()
+    public static ServerLevel getOverworld()
     {
-        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
+        return ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD);
     }
 
     public static long getOverworldTime()
     {
-        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getDayTime();
+        return ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD).getDayTime();
     }
 
     public static boolean isServerRunning()
@@ -321,7 +323,7 @@ public abstract class ServerUtil
         }
     }
 
-    public static void copyNbt(CompoundNBT nbt, CompoundNBT data)
+    public static void copyNbt(CompoundTag nbt, CompoundTag data)
     {
         // Clear old data
         for (String key : new HashSet<>(nbt.getAllKeys()))
@@ -360,14 +362,14 @@ public abstract class ServerUtil
         return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
-    public static ServerWorld getWorldFromString(String dim)
+    public static ServerLevel getWorldFromString(String dim)
     {
         return ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKeyFromString(dim));
     }
 
-    public static RegistryKey<World> getWorldKeyFromString(String dim)
+    public static ResourceKey<Level> getWorldKeyFromString(String dim)
     {
-        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim));
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim));
     }
 
     /* ------------------------------------------------------------ */

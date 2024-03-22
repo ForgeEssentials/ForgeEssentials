@@ -14,13 +14,13 @@ import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class ShopData
 {
@@ -45,7 +45,7 @@ public class ShopData
     protected final UUID itemFrameId;
 
     @Expose(serialize = false, deserialize = false)
-    protected WeakReference<ItemFrameEntity> itemFrame;
+    protected WeakReference<ItemFrame> itemFrame;
 
     @Expose(serialize = false, deserialize = false)
     protected boolean isValid;
@@ -69,7 +69,7 @@ public class ShopData
 
     /* ------------------------------------------------------------ */
 
-    public ShopData(WorldPoint point, ItemFrameEntity frame)
+    public ShopData(WorldPoint point, ItemFrame frame)
     {
         this.pos = point;
         this.itemFrameId = frame.getUUID();
@@ -84,14 +84,14 @@ public class ShopData
         item = null;
 
         // if (!ItemUtil.isSign(signPosition.getBlock())) return;
-        ITextComponent[] text = ItemUtil.getSignText(pos);
+        Component[] text = ItemUtil.getSignText(pos);
         if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0].plainCopy().getContents()))
         {
             error = Translator.translate("Sign header missing");
             return;
         }
 
-        ItemFrameEntity frame = getItemFrame();
+        ItemFrame frame = getItemFrame();
         if (frame == null)
         {
             error = Translator.translate("Item frame missing");
@@ -177,14 +177,14 @@ public class ShopData
         return error;
     }
 
-    public ItemFrameEntity getItemFrame()
+    public ItemFrame getItemFrame()
     {
-        ItemFrameEntity frame = itemFrame == null ? null : itemFrame.get();
+        ItemFrame frame = itemFrame == null ? null : itemFrame.get();
         if (frame == null)
         {
-            List<ItemFrameEntity> entities = getEntitiesWithinAABB(pos.getWorld(), ItemFrameEntity.class,
+            List<ItemFrame> entities = getEntitiesWithinAABB(pos.getWorld(), ItemFrame.class,
                     getSignAABB(pos));
-            for (ItemFrameEntity entityItemFrame : entities)
+            for (ItemFrame entityItemFrame : entities)
             {
                 if (entityItemFrame.getUUID().equals(itemFrameId))
                 {
@@ -197,26 +197,26 @@ public class ShopData
         return frame;
     }
 
-    public static ItemFrameEntity findFrame(WorldPoint p)
+    public static ItemFrame findFrame(WorldPoint p)
     {
-        AxisAlignedBB aabb = getSignAABB(p);
-        List<ItemFrameEntity> entities = getEntitiesWithinAABB(p.getWorld(), ItemFrameEntity.class, aabb);
+        AABB aabb = getSignAABB(p);
+        List<ItemFrame> entities = getEntitiesWithinAABB(p.getWorld(), ItemFrame.class, aabb);
         if (entities.isEmpty())
             return null;
         if (entities.size() == 1)
             return entities.get(0);
 
-        final Vector3d offset = new Vector3d(p.getX(), p.getY() + 0.5, p.getZ());
-        entities.sort(new Comparator<ItemFrameEntity>() {
+        final Vec3 offset = new Vec3(p.getX(), p.getY() + 0.5, p.getZ());
+        entities.sort(new Comparator<ItemFrame>() {
             @Override
-            public int compare(ItemFrameEntity o1, ItemFrameEntity o2) {
-                Vector3d v1 = new Vector3d(o1.position().x, o1.position().y, o1.position().z);
-                Vector3d v2 = new Vector3d(o2.position().x, o2.position().y, o2.position().z);
+            public int compare(ItemFrame o1, ItemFrame o2) {
+                Vec3 v1 = new Vec3(o1.position().x, o1.position().y, o1.position().z);
+                Vec3 v2 = new Vec3(o2.position().x, o2.position().y, o2.position().z);
                 return (int) Math.signum(offset.distanceTo(v1) - offset.distanceTo(v2));
             }
         });
 
-        for (Iterator<ItemFrameEntity> it = entities.iterator(); it.hasNext();)
+        for (Iterator<ItemFrame> it = entities.iterator(); it.hasNext();)
         {
             if (entities.size() == 1)
                 break;
@@ -226,19 +226,19 @@ public class ShopData
         return entities.get(0);
     }
 
-    public static <T extends Entity> List<T> getEntitiesWithinAABB(World world, Class<? extends T> clazz,
-            AxisAlignedBB aabb)
+    public static <T extends Entity> List<T> getEntitiesWithinAABB(Level world, Class<? extends T> clazz,
+            AABB aabb)
     {
         return world.getEntitiesOfClass(clazz, aabb);
     }
 
-    public static AxisAlignedBB getSignAABB(WorldPoint p)
+    public static AABB getSignAABB(WorldPoint p)
     {
         double x = p.getX();
         double y = p.getY() + 0.5;
         double z = p.getZ();
         double D = 1.4;
-        return new AxisAlignedBB(x - D, y - D, z - D, x + D, y + D, z + D);
+        return new AABB(x - D, y - D, z - D, x + D, y + D, z + D);
     }
 
     public int getStock()

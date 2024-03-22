@@ -3,7 +3,7 @@ package com.forgeessentials.serverNetwork.packetbase.packets;
 import com.forgeessentials.serverNetwork.packetbase.FEPacket;
 import com.forgeessentials.serverNetwork.packetbase.PacketHandler;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class Packet03ClientConnectionData extends FEPacket {
 
@@ -32,14 +32,14 @@ public class Packet03ClientConnectionData extends FEPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(clientId);
         buf.writeUtf(encryptedPassword);
         buf.writeUtf(address);
     }
 
     @Override
-    public void decode(PacketBuffer buf) {
+    public void decode(FriendlyByteBuf buf) {
         clientId = buf.readUtf();
         encryptedPassword = buf.readUtf();
         address = buf.readUtf();

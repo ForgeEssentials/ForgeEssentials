@@ -17,12 +17,12 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.ParseResults;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -82,7 +82,7 @@ public class JsServer
         cmd = cmd + cmdLine;
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
+        final ParseResults<CommandSourceStack> command = (ParseResults<CommandSourceStack>) server.getCommands().getDispatcher()
                 .parse(cmd, server.createCommandSourceStack());
         if (!command.getReader().canRead())
         {
@@ -94,7 +94,7 @@ public class JsServer
         {
             server.getCommands().performCommand(sender.getThat(), cmd);
         }
-        catch (CommandException e)
+        catch (CommandRuntimeException e)
         {
             if (!ignoreErrors)
                 script.chatError(e.getMessage());
@@ -224,9 +224,9 @@ public class JsServer
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         try
         {
-            ITextComponent component = ITextComponent.Serializer.fromJson(msg);
+            Component component = Component.Serializer.fromJson(msg);
 
-            for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
                 server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getGameProfile().getId());
             }

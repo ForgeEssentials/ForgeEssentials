@@ -2,24 +2,24 @@ package com.forgeessentials.jscripting.wrapper.mc.util;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 
-public class JsAxisAlignedBB extends JsWrapper<AxisAlignedBB>
+public class JsAxisAlignedBB extends JsWrapper<AABB>
 {
 
-    public JsAxisAlignedBB(AxisAlignedBB that)
+    public JsAxisAlignedBB(AABB that)
     {
         super(that);
     }
 
     public JsAxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
     {
-        this(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+        this(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
     public JsAxisAlignedBB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
     {
-        that = new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        that = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
         return this;
     }
 

@@ -13,11 +13,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -38,7 +38,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("player")
@@ -50,17 +50,17 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "all"));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_mods = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_mods = (ctx, builder) -> {
         List<String> modList = new ArrayList<>();
         for (String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList()))
         {
             modList.add(id);
         }
-        return ISuggestionProvider.suggest(modList, builder);
+        return SharedSuggestionProvider.suggest(modList, builder);
     };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         String key = "*";
         if (!params.equals("all"))
@@ -80,16 +80,16 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         list(ctx, "*");
         return Command.SINGLE_SUCCESS;
     }
 
-    private void list(CommandContext<CommandSource> ctx, String key)
+    private void list(CommandContext<CommandSourceStack> ctx, String key)
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Key= " + key);
-        for (ServerWorld i : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+        for (ServerLevel i : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), "Dimension: " + i.dimension().location().toString());
             // list(ctx, i.dimension().location().toString(), key);

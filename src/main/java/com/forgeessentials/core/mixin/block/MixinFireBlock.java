@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.forgeessentials.util.events.world.FireEvent;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FireBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.FireBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(FireBlock.class)
@@ -31,7 +31,7 @@ public class MixinFireBlock
      */
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/server/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"),
             cancellable = true)
-    public void handleBlockDestroyOnTick(BlockState p_225534_1_, ServerWorld world, BlockPos pos, Random random,
+    public void handleBlockDestroyOnTick(BlockState p_225534_1_, ServerLevel world, BlockPos pos, Random random,
             CallbackInfo ci)
     {
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))

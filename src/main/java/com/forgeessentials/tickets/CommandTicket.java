@@ -18,12 +18,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +47,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("list")
@@ -73,12 +73,12 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_category = (ctx, builder) -> ISuggestionProvider.suggest(ModuleTickets.categories, builder);
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_category = (ctx, builder) -> SharedSuggestionProvider.suggest(ModuleTickets.categories, builder);
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        String c = TextFormatting.DARK_AQUA.toString();
+        String c = ChatFormatting.DARK_AQUA.toString();
         if (params.equals("blank"))
         {
             String usage = "list|new|view|tp <id>|del <id>";
@@ -151,10 +151,10 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                     c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            TextComponent messageComponent = ChatOutputHandler.notification(
+            BaseComponent messageComponent = ChatOutputHandler.notification(
                     Translator.format("Player %s has filed a ticket.", ctx.getSource().getDisplayName().getString()));
             if (!ctx.getSource().getServer().isStopped())
-                for (ServerPlayerEntity player : ServerUtil.getPlayerList())
+                for (ServerPlayer player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
                         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
             ChatOutputHandler.sendMessage(ctx.getSource().getServer().createCommandSourceStack(), messageComponent);
@@ -171,7 +171,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("No such ticket with ID %d!", id));
                 return Command.SINGLE_SUCCESS;
             }
-            TeleportHelper.teleport((ServerPlayerEntity) ctx.getSource().getEntity(), t.point);
+            TeleportHelper.teleport((ServerPlayer) ctx.getSource().getEntity(), t.point);
             return Command.SINGLE_SUCCESS;
         }
 

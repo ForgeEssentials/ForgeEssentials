@@ -12,15 +12,15 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.world.SignEditEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.SignTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -77,7 +77,7 @@ public class SignToolsModule extends ConfigLoaderBase
                 if (e.text[i].contains("&"))
                 {
                 	e.setCanceled(true);
-                    StringTextComponent text = new StringTextComponent(ChatOutputHandler.formatColors(e.text[i]));
+                    TextComponent text = new TextComponent(ChatOutputHandler.formatColors(e.text[i]));
                     e.formatted[i] = text;
                 }
             }
@@ -91,15 +91,15 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        World w = event.getWorld();
+        Level w = event.getWorld();
         if (w.isClientSide)
         {
             return;
         }
-        TileEntity te = w.getBlockEntity(event.getPos());
-        if (te instanceof SignTileEntity)
+        BlockEntity te = w.getBlockEntity(event.getPos());
+        if (te instanceof SignBlockEntity)
         {
-            SignTileEntity sign = ((SignTileEntity) te);
+            SignBlockEntity sign = ((SignBlockEntity) te);
             if (allowSignEdit && event.getPlayer().isCrouching() && event instanceof RightClickBlock)
             {
                 if (event.getPlayer().getMainHandItem() == ItemStack.EMPTY)
@@ -108,25 +108,25 @@ public class SignToolsModule extends ConfigLoaderBase
                             && APIRegistry.perms.checkPermission(event.getPlayer(), "fe.protection.use.minecraft.sign"))
                     {
                         // Convert Formatting back into FE format for easy use
-                        ITextComponent[] imessage = ItemUtil.getText(sign);
+                        Component[] imessage = ItemUtil.getText(sign);
                         String[] signText = getFormatted(imessage);
-                        ITextComponent[] newMessage = new ITextComponent[4];
+                        Component[] newMessage = new Component[4];
                         for (int i = 0; i < signText.length; i++)
                         {
-                        	newMessage[i] = new StringTextComponent(signText[i]);
+                        	newMessage[i] = new TextComponent(signText[i]);
                         }
                         ItemUtil.setText(sign, newMessage);
                         sign.setChanged();
                         w.sendBlockUpdated(event.getPos(), w.getBlockState(event.getPos()), w.getBlockState(event.getPos()), 3);
 
-                        ((ServerPlayerEntity) event.getPlayer()).connection.send(sign.getUpdatePacket());
-                        ((ServerPlayerEntity) event.getPlayer()).openTextEdit(sign);
+                        ((ServerPlayer) event.getPlayer()).connection.send(sign.getUpdatePacket());
+                        ((ServerPlayer) event.getPlayer()).openTextEdit(sign);
                         event.setCanceled(true);
                     }
                 }
                 return;
             }
-            ITextComponent[] imessage = ItemUtil.getText(sign);
+            Component[] imessage = ItemUtil.getText(sign);
             String[] signText = getFormatted(imessage);
 
             if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
@@ -153,7 +153,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
     }
 
-    private String[] getFormatted(ITextComponent[] text)
+    private String[] getFormatted(Component[] text)
     {
         String[] out = new String[text.length];
         for (int i = 0; i < text.length; i++)

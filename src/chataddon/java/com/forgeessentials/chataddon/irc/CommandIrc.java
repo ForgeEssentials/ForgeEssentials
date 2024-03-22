@@ -8,9 +8,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,14 +41,14 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.then(Commands.argument("message", StringArgumentType.greedyString())
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (!ModuleIRCBridge.getInstance().isConnected())
         {
@@ -56,7 +56,7 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         ModuleIRCBridge.getInstance().sendPlayerMessage(ctx.getSource(),
-                new StringTextComponent(StringArgumentType.getString(ctx, "message")));
+                new TextComponent(StringArgumentType.getString(ctx, "message")));
         return Command.SINGLE_SUCCESS;
     }
 }

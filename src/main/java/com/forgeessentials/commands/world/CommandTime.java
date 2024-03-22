@@ -16,12 +16,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -60,7 +60,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         return td;
     }
 
-    protected static TimeData getTimeData(RegistryKey<World> dimension)
+    protected static TimeData getTimeData(ResourceKey<Level> dimension)
     {
         return getTimeData(dimension.location().toString());
     }
@@ -85,7 +85,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("set")
@@ -133,7 +133,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {
@@ -160,13 +160,13 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseFreeze(CommandContext<CommandSource> ctx, String arg) throws CommandSyntaxException
+    public static void parseFreeze(CommandContext<CommandSourceStack> ctx, String arg) throws CommandSyntaxException
     {
 
         if (arg.equals("all"))
         {
-            boolean freeze = getTimeData(ServerWorld.OVERWORLD).frozenTime == null;
-            for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+            boolean freeze = getTimeData(ServerLevel.OVERWORLD).frozenTime == null;
+            for (ServerLevel w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
             {
                 TimeData td = getTimeData(w.dimension());
                 td.frozenTime = freeze ? w.getLevelData().getDayTime() : null;
@@ -178,7 +178,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         }
         else
         {
-            ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
+            ServerLevel world = DimensionArgument.getDimension(ctx, "dim");
             TimeData td = getTimeData(world.dimension());
             td.frozenTime = (td.frozenTime == null) ? world.getLevelData().getDayTime() : null;
             if (td.frozenTime != null)
@@ -189,7 +189,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         save();
     }
 
-    public static void parseTime(CommandContext<CommandSource> ctx, boolean addTime, String[] arg)
+    public static void parseTime(CommandContext<CommandSourceStack> ctx, boolean addTime, String[] arg)
             throws CommandSyntaxException
     {
         long time;
@@ -238,7 +238,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
 
         if (arg[2].equals("all"))
         {
-            for (ServerWorld w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+            for (ServerLevel w : ServerLifecycleHooks.getCurrentServer().getAllLevels())
             {
                 if (addTime)
                     w.setDayTime(w.getDayTime() + time);
@@ -252,7 +252,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         }
         else
         {
-            ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
+            ServerLevel world = DimensionArgument.getDimension(ctx, "dim");
             if (addTime)
                 world.setDayTime(world.getDayTime() + time);
             else
@@ -271,12 +271,12 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     {
         if (event.phase == Phase.START)
             return;
-        ServerWorld world = (ServerWorld) event.world;
+        ServerLevel world = (ServerLevel) event.world;
         if (world.getGameTime() % 10 == 0)
             updateWorld(world);
     }
 
-    public static void updateWorld(ServerWorld world)
+    public static void updateWorld(ServerLevel world)
     {
         TimeData td = getTimeData(world.dimension());
         if (td.frozenTime != null)

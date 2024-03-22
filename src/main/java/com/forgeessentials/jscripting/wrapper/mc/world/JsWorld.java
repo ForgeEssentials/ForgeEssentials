@@ -13,28 +13,30 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntityList;
 import com.forgeessentials.jscripting.wrapper.mc.util.JsAxisAlignedBB;
 import com.forgeessentials.util.ServerUtil;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import Level;
 
 /**
  * @tsd.static World
  */
-public class JsWorld<T extends World> extends JsWrapper<T>
+public class JsWorld<T extends Level> extends JsWrapper<T>
 {
 
-    private static Map<World, JsWorld<?>> worldCache = new WeakHashMap<>();
+    private static Map<Level, JsWorld<?>> worldCache = new WeakHashMap<>();
 
     /**
      * @tsd.ignore
      */
-    public static JsWorld<?> get(World world)
+    public static JsWorld<?> get(Level world)
     {
         if (worldCache.containsKey(world))
             return worldCache.get(world);
@@ -46,11 +48,11 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public static JsServerWorld get(String dim)
     {
-        ServerWorld world = ServerUtil.getWorldFromString(dim);
+        ServerLevel world = ServerUtil.getWorldFromString(dim);
         return world == null ? null : new JsServerWorld(world);
     }
 
-    protected Map<TileEntity, JsTileEntity<?>> tileEntityCache = new WeakHashMap<>();
+    protected Map<BlockEntity, JsTileEntity<?>> tileEntityCache = new WeakHashMap<>();
 
     protected JsWorld(T that)
     {
@@ -69,10 +71,10 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public JsPlayerEntityList getPlayerEntities()
     {
-        List<PlayerEntity> players = new ArrayList<>();
-        for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        List<Player> players = new ArrayList<>();
+        for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
-            players.add((PlayerEntity) player);
+            players.add((Player) player);
         }
         return new JsPlayerEntityList(players);
     }
@@ -105,7 +107,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public JsTileEntity<?> getTileEntity(int x, int y, int z)
     {
-        TileEntity tileEntity = that.getBlockEntity(new BlockPos(x, y, z));
+        BlockEntity tileEntity = that.getBlockEntity(new BlockPos(x, y, z));
         if (tileEntityCache.containsKey(tileEntity))
             return tileEntityCache.get(tileEntity);
         JsTileEntity<?> jsTileEntity = new JsTileEntity<>(tileEntity);
@@ -115,7 +117,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public JsServerWorld asWorldServer()
     {
-        return that instanceof ServerWorld ? new JsServerWorld((ServerWorld) that) : null;
+        return that instanceof ServerLevel ? new JsServerWorld((ServerLevel) that) : null;
     }
 
     public long getWorldTime()
@@ -237,7 +239,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public int getHeightValue(int x, int z)
     {
-        return that.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x, z);
+        return that.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
     }
 
     /**

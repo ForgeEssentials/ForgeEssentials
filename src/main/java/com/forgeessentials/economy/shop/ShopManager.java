@@ -31,18 +31,18 @@ import com.forgeessentials.util.events.entity.EntityAttackedEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.reflect.TypeToken;
 
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -147,9 +147,9 @@ public class ShopManager extends ServerEventHandler
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
                     Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
-            TileEntity te = event.getWorld().getBlockEntity(event.getPos());
+            BlockEntity te = event.getWorld().getBlockEntity(event.getPos());
             if (te != null)
-                ProtectionEventHandler.updateBrokenTileEntity((ServerPlayerEntity) event.getPlayer(), te);
+                ProtectionEventHandler.updateBrokenTileEntity((ServerPlayer) event.getPlayer(), te);
             return;
         }
 
@@ -161,7 +161,7 @@ public class ShopManager extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityAttackedEvent(EntityAttackedEvent event)
     {
-        if (FMLEnvironment.dist.isClient() || !(event.getEntity() instanceof ItemFrameEntity))
+        if (FMLEnvironment.dist.isClient() || !(event.getEntity() instanceof ItemFrame))
             return;
         final ShopData shop = shopFrameMap.get(event.getEntity().getUUID());
         if (shop == null)
@@ -172,7 +172,7 @@ public class ShopManager extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(final AttackEntityEvent event)
     {
-        if (FMLEnvironment.dist.isClient() || !(event.getTarget() instanceof ItemFrameEntity))
+        if (FMLEnvironment.dist.isClient() || !(event.getTarget() instanceof ItemFrame))
             return;
         final ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
@@ -224,7 +224,7 @@ public class ShopManager extends ServerEventHandler
         if (event instanceof LeftClickBlock || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
             return;
         if(ModuleLauncher.getModuleList().contains("Commands")) {
-        	ModuleCommands.eventHandler.playerActive((ServerPlayerEntity) event.getPlayer());
+        	ModuleCommands.eventHandler.playerActive((ServerPlayer) event.getPlayer());
         }
         ItemStack equippedStack = event.getPlayer().getMainHandItem();
         Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
@@ -234,8 +234,8 @@ public class ShopManager extends ServerEventHandler
         {
             if (!(equippedItem instanceof BlockItem))
                 return;
-            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
-            if (mop.getType() == RayTraceResult.Type.MISS)
+            HitResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
+            if (mop.getType() == HitResult.Type.MISS)
                 return;
             point = new WorldPoint(event.getWorld(), new BlockPos(mop.getLocation()));
         }
@@ -250,7 +250,7 @@ public class ShopManager extends ServerEventHandler
             Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
             if (!ItemUtil.isSign(block))
                 return;
-            ITextComponent[] text = ItemUtil.getSignText(point);
+            Component[] text = ItemUtil.getSignText(point);
             if (text == null || text.length < 1 || !shopTags.contains(text[0].getString()))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
@@ -259,7 +259,7 @@ public class ShopManager extends ServerEventHandler
                         Translator.translate("You are not allowed to create shops!"));
                 return;
             }
-            ItemFrameEntity frame = ShopData.findFrame(point);
+            ItemFrame frame = ShopData.findFrame(point);
             if (frame == null)
             {
                 ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
@@ -304,15 +304,15 @@ public class ShopManager extends ServerEventHandler
         ItemStack transactionStack = shop.getItemStack();
         boolean sameItem = transactionStack.getItem() == equippedItem;
         transactionStack.setCount(shop.amount);
-        ITextComponent itemName = transactionStack.getDisplayName();
+        Component itemName = transactionStack.getDisplayName();
 
-        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayerEntity) event.getPlayer()));
+        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayer) event.getPlayer()));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {
             if (ModuleEconomy.countInventoryItems(event.getPlayer(), transactionStack) < transactionStack.getCount())
             {
-                TranslationTextComponent msg = new TranslationTextComponent("You do not have enough %s", itemName);
+                TranslatableComponent msg = new TranslatableComponent("You do not have enough %s", itemName);
                 msg.withStyle(ChatOutputHandler.chatConfirmationColor);
                 ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
                 return;
@@ -332,7 +332,7 @@ public class ShopManager extends ServerEventHandler
             shop.setStock(shop.getStock() + 1);
 
             String price = APIRegistry.economy.toString(shop.sellPrice);
-            TranslationTextComponent msg = new TranslationTextComponent("Sold %s x %s for %s (wallet: %s)", shop.amount,
+            TranslatableComponent msg = new TranslatableComponent("Sold %s x %s for %s (wallet: %s)", shop.amount,
                     itemName, price, wallet.toString());
             msg.withStyle(ChatOutputHandler.chatConfirmationColor);
             ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
@@ -355,14 +355,14 @@ public class ShopManager extends ServerEventHandler
                 shop.setStock(shop.getStock() - 1);
             PlayerUtil.give(event.getPlayer(), transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
-            TranslationTextComponent msg = new TranslationTextComponent("Bought %s x %s for %s (wallet: %s)",
+            TranslatableComponent msg = new TranslatableComponent("Bought %s x %s for %s (wallet: %s)",
                     shop.amount, itemName, price, wallet.toString());
             msg.withStyle(ChatOutputHandler.chatConfirmationColor);
             ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
         }
     }
 
-    public static ShopData getShop(WorldPoint point, CommandSource sender)
+    public static ShopData getShop(WorldPoint point, CommandSourceStack sender)
     {
         ShopData shop = shopSignMap.get(point);
         if (shop == null)

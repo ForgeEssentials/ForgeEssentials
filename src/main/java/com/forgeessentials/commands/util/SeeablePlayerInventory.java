@@ -1,14 +1,14 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 
-public class SeeablePlayerInventory implements IInventory
+public class SeeablePlayerInventory implements Container
 {
-    public final PlayerEntity victim;
+    public final Player victim;
 
-    public SeeablePlayerInventory(PlayerEntity player)
+    public SeeablePlayerInventory(Player player)
     {
         victim = player;
     }
@@ -63,7 +63,7 @@ public class SeeablePlayerInventory implements IInventory
     }
 
     @Override
-    public boolean stillValid(PlayerEntity p_70300_1_)
+    public boolean stillValid(Player p_70300_1_)
     {
         return true;
     }

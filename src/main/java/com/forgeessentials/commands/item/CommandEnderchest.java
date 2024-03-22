@@ -6,11 +6,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,15 +37,15 @@ public class CommandEnderchest extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+        ServerPlayer player = (ServerPlayer) ctx.getSource().getEntity();
         if (player.containerMenu != player.inventoryMenu)
         {
             player.closeContainer();
@@ -53,9 +53,9 @@ public class CommandEnderchest extends ForgeEssentialsCommandBuilder
         player.nextContainerCounter();
 
         // player.getEnderChestInventory().startOpen(player);
-        player.openMenu(new SimpleNamedContainerProvider(
-                (i, inv, p) -> ChestContainer.threeRows(i, inv, player.getEnderChestInventory()),
-                new TranslationTextComponent("container.enderchest")));
+        player.openMenu(new SimpleMenuProvider(
+                (i, inv, p) -> ChestMenu.threeRows(i, inv, player.getEnderChestInventory()),
+                new TranslatableComponent("container.enderchest")));
         return Command.SINGLE_SUCCESS;
     }
 

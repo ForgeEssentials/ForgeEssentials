@@ -11,10 +11,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemStackType implements DataType<ItemStack>
@@ -69,11 +69,11 @@ public class ItemStackType implements DataType<ItemStack>
                 return null;
 
             // Create item-stack and parse NBT data if the is any
-            CompoundNBT c = new CompoundNBT();
+            CompoundTag c = new CompoundTag();
             c.putInt("Damage", Math.max(0, damage));
             ItemStack stack = new ItemStack(item, stackSize, c);
             if (obj.has("compound"))
-                stack.setTag((CompoundNBT) context.deserialize(obj.get("compound"), CompoundNBT.class));
+                stack.setTag((CompoundTag) context.deserialize(obj.get("compound"), CompoundTag.class));
 
             return stack;
         }

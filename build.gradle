@@ -36,6 +36,8 @@ plugins {
 }
 apply plugin: 'jacoco'
 apply plugin: 'org.spongepowered.mixin'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+
 
 sonarqube {
     properties {
@@ -117,9 +119,7 @@ ext.gitCommitHash = repo.log().find().abbreviatedId
 version = "$mod_base.$mod_major.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
-sourceCompatibility = 1.16
-targetCompatibility = 1.16
-//java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Running Tasks: ' +project.gradle.startParameter.taskNames)
 
@@ -326,7 +326,8 @@ dependencies {
 	//compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
 
 	// TOOLS.jar from jdk for javadoc support
-	implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+	// Copied Into libs folder
+	//implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 	
 	//dependicies for chat addon
 	chataddonCompile sourceSets.main.output

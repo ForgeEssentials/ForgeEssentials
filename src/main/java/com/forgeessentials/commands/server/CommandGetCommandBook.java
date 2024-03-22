@@ -13,12 +13,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -75,15 +75,15 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder.executes(CommandContext -> execute(CommandContext, "blank"));
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
-        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
+        ServerPlayer sender = getServerPlayer(ctx.getSource());
         if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK)))
         {
             for (int i = 0; i < sender.inventory.items.size(); i++)
@@ -99,9 +99,9 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
         }
 
         Set<String> pages = new TreeSet<>();
-        CommandDispatcher<CommandSource> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
-        Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(), ctx.getSource());
-        for (CommandNode<CommandSource> cmdObj : map.keySet())
+        CommandDispatcher<CommandSourceStack> dis = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+        Map<CommandNode<CommandSourceStack>, String> map = dis.getSmartUsage(dis.getRoot(), ctx.getSource());
+        for (CommandNode<CommandSourceStack> cmdObj : map.keySet())
         {
             if (!cmdObj.canUse(sender.createCommandSourceStack()))
                 continue;
@@ -114,12 +114,12 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
 
-        ListNBT pagesNbt = new ListNBT();
+        ListTag pagesNbt = new ListTag();
         for (String page : pages)
-            pagesNbt.add(StringNBT.valueOf(page));
+            pagesNbt.add(StringTag.valueOf(page));
 
-        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
-        is.addTagElement("title", StringNBT.valueOf("CommandBook"));
+        is.addTagElement("author", StringTag.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringTag.valueOf("CommandBook"));
         is.addTagElement("pages", pagesNbt);
 
         sender.inventory.add(is);

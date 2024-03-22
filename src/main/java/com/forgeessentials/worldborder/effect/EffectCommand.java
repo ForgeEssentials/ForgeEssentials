@@ -9,8 +9,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
@@ -24,21 +24,21 @@ public class EffectCommand extends WorldBorderEffect
     public int interval = 0;
 
     @Override
-    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
         interval = IntegerArgumentType.getInteger(ctx, "interval");
         command = StringArgumentType.getString(ctx, "command");
     }
 
     @Override
-    public void activate(WorldBorder border, ServerPlayerEntity player)
+    public void activate(WorldBorder border, ServerPlayer player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, ServerPlayerEntity player)
+    public void tick(WorldBorder border, ServerPlayer player)
     {
         if (interval <= 0)
             return;
@@ -50,7 +50,7 @@ public class EffectCommand extends WorldBorderEffect
         }
     }
 
-    public void doEffect(ServerPlayerEntity player)
+    public void doEffect(ServerPlayer player)
     {
         String cmd = ScriptArguments.processSafe(command, player.createCommandSourceStack());
         ServerLifecycleHooks.getCurrentServer().getCommands()

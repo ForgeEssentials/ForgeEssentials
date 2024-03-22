@@ -20,88 +20,88 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
-import net.minecraft.entity.monster.BlazeEntity;
-import net.minecraft.entity.monster.CaveSpiderEntity;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.DrownedEntity;
-import net.minecraft.entity.monster.ElderGuardianEntity;
-import net.minecraft.entity.monster.EndermanEntity;
-import net.minecraft.entity.monster.EndermiteEntity;
-import net.minecraft.entity.monster.EvokerEntity;
-import net.minecraft.entity.monster.GhastEntity;
-import net.minecraft.entity.monster.GiantEntity;
-import net.minecraft.entity.monster.GuardianEntity;
-import net.minecraft.entity.monster.HoglinEntity;
-import net.minecraft.entity.monster.HuskEntity;
-import net.minecraft.entity.monster.IllusionerEntity;
-import net.minecraft.entity.monster.MagmaCubeEntity;
-import net.minecraft.entity.monster.PhantomEntity;
-import net.minecraft.entity.monster.PillagerEntity;
-import net.minecraft.entity.monster.RavagerEntity;
-import net.minecraft.entity.monster.ShulkerEntity;
-import net.minecraft.entity.monster.SilverfishEntity;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.monster.SpiderEntity;
-import net.minecraft.entity.monster.StrayEntity;
-import net.minecraft.entity.monster.VexEntity;
-import net.minecraft.entity.monster.VindicatorEntity;
-import net.minecraft.entity.monster.WitchEntity;
-import net.minecraft.entity.monster.ZoglinEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.monster.ZombieVillagerEntity;
-import net.minecraft.entity.monster.ZombifiedPiglinEntity;
-import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.entity.passive.BeeEntity;
-import net.minecraft.entity.passive.CatEntity;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.entity.passive.DolphinEntity;
-import net.minecraft.entity.passive.FoxEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MooshroomEntity;
-import net.minecraft.entity.passive.OcelotEntity;
-import net.minecraft.entity.passive.PandaEntity;
-import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.passive.PolarBearEntity;
-import net.minecraft.entity.passive.RabbitEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.passive.SnowGolemEntity;
-import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.entity.passive.StriderEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.passive.fish.CodEntity;
-import net.minecraft.entity.passive.fish.PufferfishEntity;
-import net.minecraft.entity.passive.fish.SalmonEntity;
-import net.minecraft.entity.passive.fish.TropicalFishEntity;
-import net.minecraft.entity.passive.horse.DonkeyEntity;
-import net.minecraft.entity.passive.horse.HorseEntity;
-import net.minecraft.entity.passive.horse.LlamaEntity;
-import net.minecraft.entity.passive.horse.MuleEntity;
-import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
-import net.minecraft.entity.passive.horse.ZombieHorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.monster.Blaze;
+import net.minecraft.world.entity.monster.CaveSpider;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.ElderGuardian;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Endermite;
+import net.minecraft.world.entity.monster.Evoker;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Giant;
+import net.minecraft.world.entity.monster.Guardian;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.monster.Illusioner;
+import net.minecraft.world.entity.monster.MagmaCube;
+import net.minecraft.world.entity.monster.Phantom;
+import net.minecraft.world.entity.monster.Pillager;
+import net.minecraft.world.entity.monster.Ravager;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.entity.monster.Silverfish;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.Stray;
+import net.minecraft.world.entity.monster.Vex;
+import net.minecraft.world.entity.monster.Vindicator;
+import net.minecraft.world.entity.monster.Witch;
+import net.minecraft.world.entity.monster.Zoglin;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.ZombieVillager;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
+import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.MushroomCow;
+import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.Panda;
+import net.minecraft.world.entity.animal.Parrot;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.PolarBear;
+import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.SnowGolem;
+import net.minecraft.world.entity.animal.Squid;
+import net.minecraft.world.entity.monster.Strider;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.Cod;
+import net.minecraft.world.entity.animal.Pufferfish;
+import net.minecraft.world.entity.animal.Salmon;
+import net.minecraft.world.entity.animal.TropicalFish;
+import net.minecraft.world.entity.animal.horse.Donkey;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.animal.horse.Mule;
+import net.minecraft.world.entity.animal.horse.SkeletonHorse;
+import net.minecraft.world.entity.animal.horse.ZombieHorse;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -157,32 +157,32 @@ public class ModuleProtection
 
     private static final Class<?>[] damageEntityClasses = new Class<?>[] {
             // EntityTradable
-            VillagerEntity.class, WanderingTraderEntity.class,
+            Villager.class, WanderingTrader.class,
             // EntityAnimal
-            ChickenEntity.class, CowEntity.class, MooshroomEntity.class, PigEntity.class, SheepEntity.class,
-            RabbitEntity.class, PolarBearEntity.class, PandaEntity.class, FoxEntity.class, BeeEntity.class,
-            BatEntity.class,
+            Chicken.class, Cow.class, MushroomCow.class, Pig.class, Sheep.class,
+            Rabbit.class, PolarBear.class, Panda.class, Fox.class, Bee.class,
+            Bat.class,
             // EntityRidable
-            StriderEntity.class, HorseEntity.class, DonkeyEntity.class, LlamaEntity.class, MuleEntity.class,
-            SkeletonHorseEntity.class, ZombieHorseEntity.class,
+            Strider.class, Horse.class, Donkey.class, Llama.class, Mule.class,
+            SkeletonHorse.class, ZombieHorse.class,
             // EntityTameable
-            OcelotEntity.class, WolfEntity.class, ParrotEntity.class, CatEntity.class,
+            Ocelot.class, Wolf.class, Parrot.class, Cat.class,
             // EntityMob
-            BlazeEntity.class, CreeperEntity.class, EndermanEntity.class, GiantEntity.class, SilverfishEntity.class,
-            SkeletonEntity.class, SpiderEntity.class, WitchEntity.class, WitherEntity.class, ZombieEntity.class,
-            PiglinEntity.class, PiglinBruteEntity.class, CaveSpiderEntity.class, DrownedEntity.class,
-            ElderGuardianEntity.class, EndermiteEntity.class, EvokerEntity.class, GhastEntity.class,
-            GuardianEntity.class, HoglinEntity.class, HuskEntity.class, IllusionerEntity.class, MagmaCubeEntity.class,
-            PhantomEntity.class, PillagerEntity.class, RavagerEntity.class, ShulkerEntity.class, SlimeEntity.class,
-            StrayEntity.class, VexEntity.class, VindicatorEntity.class, ZoglinEntity.class, ZombieEntity.class,
-            ZombieVillagerEntity.class, ZombifiedPiglinEntity.class,
+            Blaze.class, Creeper.class, EnderMan.class, Giant.class, Silverfish.class,
+            Skeleton.class, Spider.class, Witch.class, WitherBoss.class, Zombie.class,
+            Piglin.class, PiglinBrute.class, CaveSpider.class, Drowned.class,
+            ElderGuardian.class, Endermite.class, Evoker.class, Ghast.class,
+            Guardian.class, Hoglin.class, Husk.class, Illusioner.class, MagmaCube.class,
+            Phantom.class, Pillager.class, Ravager.class, Shulker.class, Slime.class,
+            Stray.class, Vex.class, Vindicator.class, Zoglin.class, Zombie.class,
+            ZombieVillager.class, ZombifiedPiglin.class,
             // EntityGolem
-            IronGolemEntity.class, SnowGolemEntity.class,
+            IronGolem.class, SnowGolem.class,
             // EntityWaterMob
-            SquidEntity.class, SalmonEntity.class, TropicalFishEntity.class, CodEntity.class, TurtleEntity.class,
-            DolphinEntity.class, PufferfishEntity.class,
+            Squid.class, Salmon.class, TropicalFish.class, Cod.class, Turtle.class,
+            Dolphin.class, Pufferfish.class,
             // BossEntity
-            WitherEntity.class, EnderDragonEntity.class,
+            WitherBoss.class, EnderDragon.class,
             /* -- end of list -- */
     };
 
@@ -237,7 +237,7 @@ public class ModuleProtection
                 "Allow damaging entities");
         APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow getting hurt by entities");
-        for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + e.getValue().getRegistryName().getPath(),
                     DefaultPermissionLevel.ALL, "");
@@ -259,7 +259,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
         {
             APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getValue().getRegistryName().getPath(),
                     DefaultPermissionLevel.ALL, "");
@@ -369,7 +369,7 @@ public class ModuleProtection
             @Override
             public void run()
             {
-                for (ServerPlayerEntity p : ServerUtil.getPlayerList())
+                for (ServerPlayer p : ServerUtil.getPlayerList())
                     if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
                         p.getFoodData().eat(20, 1.0F);
             }
@@ -378,7 +378,7 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static void setDebugMode(PlayerEntity player, String commandBase)
+    public static void setDebugMode(Player player, String commandBase)
     {
         if (commandBase != null)
             debugModePlayers.put(player.getGameProfile().getId(), commandBase);
@@ -386,12 +386,12 @@ public class ModuleProtection
             debugModePlayers.remove(player.getGameProfile().getId());
     }
 
-    public static boolean isDebugMode(PlayerEntity player)
+    public static boolean isDebugMode(Player player)
     {
         return debugModePlayers.containsKey(player.getGameProfile().getId());
     }
 
-    public static void debugPermission(PlayerEntity player, String permission)
+    public static void debugPermission(Player player, String permission)
     {
         if (player == null)
             return;
@@ -399,10 +399,10 @@ public class ModuleProtection
         if (cmdBase == null)
             return;
 
-        TextComponent msg = new StringTextComponent(permission);
+        BaseComponent msg = new TextComponent(permission);
         ClickEvent click = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission);
         msg.withStyle((style) -> style.withClickEvent(click));
-        msg.withStyle(TextFormatting.UNDERLINE);
+        msg.withStyle(ChatFormatting.UNDERLINE);
         msg.withStyle(ChatOutputHandler.chatNotificationColor);
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), msg);
     }
@@ -522,7 +522,7 @@ public class ModuleProtection
         return PERM_CRAFT + "." + getItemPermission(stack);
     }
 
-    public static boolean canCraft(PlayerEntity player, ItemStack result)
+    public static boolean canCraft(Player player, ItemStack result)
     {
         if (player == null || result == null)
             return true;

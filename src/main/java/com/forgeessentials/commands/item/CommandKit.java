@@ -28,10 +28,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +81,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
         APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, DefaultPermissionLevel.OP, "Bypass kit cooldown");
     }
 
-    public List<String> getAvailableKits(CommandSource source)
+    public List<String> getAvailableKits(CommandSourceStack source)
     {
         List<String> availableKits = new ArrayList<>();
         for (Kit kit : kits.values())
@@ -90,17 +90,17 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
         return availableKits;
     }
 
-    public final SuggestionProvider<CommandSource> SUGGEST_KITS = (ctx, builder) -> {
+    public final SuggestionProvider<CommandSourceStack> SUGGEST_KITS = (ctx, builder) -> {
         List<String> availableKits = new ArrayList<>();
         for (Kit kit : CommandKit.kits.values())
             if (hasPermission(ctx.getSource(),
                     CommandKit.PERM + "." + kit.getName()))
                 availableKits.add(kit.getName());
-        return ISuggestionProvider.suggest(availableKits, builder);
+        return SharedSuggestionProvider.suggest(availableKits, builder);
     };
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("select")
@@ -119,7 +119,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("listAvaiable"))
         {
@@ -138,17 +138,17 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Kit %s does not exist", kitName));
                 return Command.SINGLE_SUCCESS;
             }
-            if (!APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),
+            if (!APIRegistry.perms.checkPermission((Player) ctx.getSource().getEntity(),
                     PERM + "." + kit.getName()))
             {
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not allowed to use this kit"));
                 return Command.SINGLE_SUCCESS;
             }
-            kit.giveKit((PlayerEntity) ctx.getSource().getEntity());
+            kit.giveKit((Player) ctx.getSource().getEntity());
             return Command.SINGLE_SUCCESS;
         }
 
-        APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(), PERM_ADMIN);
+        APIRegistry.perms.checkPermission((Player) ctx.getSource().getEntity(), PERM_ADMIN);
 
         switch (params)
         {
@@ -169,7 +169,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
                         cooldown = IntegerArgumentType.getInteger(ctx, "cooldown");
                     }
 
-                    addKit(new Kit((PlayerEntity) ctx.getSource().getEntity(), kitName, cooldown));
+                    addKit(new Kit((Player) ctx.getSource().getEntity(), kitName, cooldown));
                     if (cooldown < 0)
                         ChatOutputHandler.chatConfirmation(ctx.getSource(),
                                 Translator.format("Kit %s saved for one-time-use", kitName));

@@ -12,13 +12,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.IllegalReferenceCountException;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ServerPacketDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        PacketBuffer packetBuffer = new PacketBuffer(byteBuf);
+        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(byteBuf);
 
         if (packetBuffer.readableBytes() < 1) {
             return;

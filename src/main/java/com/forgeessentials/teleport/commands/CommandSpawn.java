@@ -14,10 +14,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +48,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
@@ -57,7 +57,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("player"))
         {
@@ -66,7 +66,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
                 return Command.SINGLE_SUCCESS;
             }
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (player.hasDisconnected())
             {
                 ChatOutputHandler.chatError(ctx.getSource(), Translator
@@ -85,7 +85,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("me"))
         {
-            ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+            ServerPlayer player = getServerPlayer(ctx.getSource());
 
             WarpPoint point = RespawnHandler.getSpawn(player, null);
             if (point == null)
@@ -102,14 +102,14 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("me"))
         {
             ChatOutputHandler.chatError(ctx.getSource(), "You need to specify a player");
             return Command.SINGLE_SUCCESS;
         }
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if (player.hasDisconnected())
         {
             ChatOutputHandler.chatError(ctx.getSource(), Translator

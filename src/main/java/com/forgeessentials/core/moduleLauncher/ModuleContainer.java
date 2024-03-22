@@ -18,7 +18,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.command.ICommandSource;
+import net.minecraft.commands.CommandSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -243,7 +243,7 @@ public class ModuleContainer implements Comparable<Object>
         }
     }
 
-    public void runReload(ICommandSource user)
+    public void runReload(CommandSource user)
     {
         if (!isLoadable || reload == null)
         {
@@ -253,7 +253,7 @@ public class ModuleContainer implements Comparable<Object>
         try
         {
             Class<?> c = Class.forName(className);
-            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSource.class });
+            Method m = c.getDeclaredMethod(reload, new Class<?>[] { CommandSource.class });
             m.invoke(module, user);
         }
         catch (Exception e)

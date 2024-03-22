@@ -9,29 +9,31 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import CommandSourceStack;
 
 public class DoAsCommandSender extends FakePlayer
 {
     private static final UUID DOAS_UUID = UUID.fromString("35763490-CD67-428C-9A29-4DED4429A487");
 
-    protected CommandSource sender;
+    protected CommandSourceStack sender;
 
     protected UserIdent ident;
 
     protected boolean hideChatMessages;
 
-    public DoAsCommandSender(ServerWorld world, GameProfile name, UserIdent ident)
+    public DoAsCommandSender(ServerLevel world, GameProfile name, UserIdent ident)
     {
         super(world, name);
         this.ident = ident;
@@ -39,7 +41,7 @@ public class DoAsCommandSender extends FakePlayer
 
     public DoAsCommandSender()
     {
-        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD),
+        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerLevel.OVERWORLD),
                 new GameProfile(DOAS_UUID, "@SERVER"), APIRegistry.IDENT_SERVER);
         this.sender = getServer().createCommandSourceStack();
     }
@@ -50,13 +52,13 @@ public class DoAsCommandSender extends FakePlayer
         this.sender = ident.getPlayerMP().createCommandSourceStack();
     }
 
-    public DoAsCommandSender(UserIdent ident, CommandSource sender)
+    public DoAsCommandSender(UserIdent ident, CommandSourceStack sender)
     {
         this(sender.getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
         this.sender = sender;
     }
 
-    public CommandSource getOriginalSender()
+    public CommandSourceStack getOriginalSender()
     {
         return sender;
     }
@@ -67,13 +69,13 @@ public class DoAsCommandSender extends FakePlayer
     }
 
     @Override
-    public ITextComponent getDisplayName()
+    public Component getDisplayName()
     {
-        return new StringTextComponent(ident.getUsername());
+        return new TextComponent(ident.getUsername());
     }
 
     @Override
-    public void sendMessage(ITextComponent message, UUID p_145747_2_)
+    public void sendMessage(Component message, UUID p_145747_2_)
     {
         if (!hideChatMessages)
             ChatOutputHandler.sendMessageI(sender, message);
@@ -81,7 +83,7 @@ public class DoAsCommandSender extends FakePlayer
     }
 
     @Override
-    public ServerWorld getLevel()
+    public ServerLevel getLevel()
     {
         return sender.getLevel();
     }
@@ -93,7 +95,7 @@ public class DoAsCommandSender extends FakePlayer
     }
 
     @Override
-    public Vector3d position()
+    public Vec3 position()
     {
         return sender.getPosition();
     }

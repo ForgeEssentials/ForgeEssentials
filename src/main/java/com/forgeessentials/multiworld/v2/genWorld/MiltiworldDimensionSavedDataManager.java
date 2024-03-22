@@ -4,9 +4,9 @@ import java.io.File;
 
 import com.mojang.datafixers.DataFixer;
 
-import net.minecraft.world.storage.DimensionSavedDataManager;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 //not used rn
-public class MiltiworldDimensionSavedDataManager extends DimensionSavedDataManager {
+public class MiltiworldDimensionSavedDataManager extends DimensionDataStorage {
 
 	public MiltiworldDimensionSavedDataManager(File dataFolder, DataFixer dataFixer) {
 		super(dataFolder,  dataFixer);

@@ -4,8 +4,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Keeps a WorldPoint linked to a particular multiworld, even if the dim-id changes
@@ -66,7 +66,7 @@ public class NamedWorldPoint extends WorldPoint
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                ServerLevel world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
                     this.dim = world.dimension().location().toString();

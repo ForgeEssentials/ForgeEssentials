@@ -44,13 +44,13 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.ParseResults;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.event.ClickEvent.Action;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,7 +62,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 @FEModule(name = "IrcBridge", parentMod = FEChatAddons.class, defaultModule = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
@@ -358,7 +358,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
                 bot.sendIRC().message(channel, message);
     }
 
-    public void sendPlayerMessage(CommandSource sender, TextComponent message)
+    public void sendPlayerMessage(CommandSourceStack sender, BaseComponent message)
     {
         if (isConnected())
             ircSendMessage(String.format(mcHeader, sender.getTextName(),
@@ -369,17 +369,17 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
     {
         //String filteredMessage = ModuleChat.censor.filterIRC(message);
         String headerText = String.format(ircHeader, user.getNick());
-        TextComponent header = ChatOutputHandler.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
+        BaseComponent header = ChatOutputHandler.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
                 "/ircpm " + user.getNick() + " ");
-        TextComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
+        BaseComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
         //String filteredMessage = ModuleChat.censor.filterIRC(message);
-        TextComponent header =ChatOutputHandler.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        TextComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
+    	BaseComponent header =ChatOutputHandler.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+    	BaseComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
@@ -400,7 +400,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
         {
             command.processCommand(event, args);
         }
-        catch (CommandException e)
+        catch (CommandRuntimeException e)
         {
             event.respondWith("Error: " + e.getMessage());
         }
@@ -417,8 +417,8 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
         String commandRaw = cmdLine.substring(1);
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
-        CommandSource sender= new IrcCommandFaker().createCommandSourceStack(4, event);
-        ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher()
+        CommandSourceStack sender= new IrcCommandFaker().createCommandSourceStack(4, event);
+        ParseResults<CommandSourceStack> command = (ParseResults<CommandSourceStack>) server.getCommands().getDispatcher()
                 .parse(commandRaw, sender);
         if (command.getContext().getNodes().isEmpty())
         {
@@ -430,7 +430,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
         {
             server.getCommands().performCommand(sender, commandRaw);
         }
-        catch (CommandException e)
+        catch (CommandRuntimeException e)
         {
         	event.respondWith("Error: " + e.getMessage());
         }
@@ -442,7 +442,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendPlayerMessage(event.getPlayer().createCommandSourceStack(), new StringTextComponent(ChatOutputHandler.stripFormatting(event.getMessage())));
+            sendPlayerMessage(event.getPlayer().createCommandSourceStack(), new TextComponent(ChatOutputHandler.stripFormatting(event.getMessage())));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -462,7 +462,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathEvent(LivingDeathEvent event)
     {
-        if (!(event.getEntityLiving() instanceof PlayerEntity))
+        if (!(event.getEntityLiving() instanceof Player))
             return;
         if (showGameEvents)
             ircSendMessage(Translator.format("%s died", event.getEntityLiving().getDisplayName().getString()));

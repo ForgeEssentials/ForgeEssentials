@@ -7,11 +7,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.forgeessentials.util.events.entity.EntityAttackedEvent;
 
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mixin(ItemFrameEntity.class)
+@Mixin(ItemFrame.class)
 public class MixinItemFrameEntity
 {
     /**
@@ -23,7 +23,7 @@ public class MixinItemFrameEntity
     @Inject(at = @At("HEAD"), method = "hurt(Lnet/minecraft/util/DamageSource;F)Z", cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback)
     {
-        EntityAttackedEvent event = new EntityAttackedEvent((ItemFrameEntity) (Object) this, source, amount);
+        EntityAttackedEvent event = new EntityAttackedEvent((ItemFrame) (Object) this, source, amount);
         if (MinecraftForge.EVENT_BUS.post(event))
         {
             callback.setReturnValue(event.result);

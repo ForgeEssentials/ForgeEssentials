@@ -11,10 +11,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +45,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.literal("me")
@@ -60,7 +60,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("me"))
         {
@@ -74,7 +74,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("others"))
         {
-        	ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        	ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
@@ -89,7 +89,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("othersT"))
         {
-        	ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        	ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
                 player.setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));
@@ -106,7 +106,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         int time = 15;
         if (params.equals("othersT"))
@@ -120,7 +120,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
         if (!player.hasDisconnected())
         {
             player.setSecondsOnFire(time);

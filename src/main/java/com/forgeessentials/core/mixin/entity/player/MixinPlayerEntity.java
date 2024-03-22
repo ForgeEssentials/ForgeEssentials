@@ -10,9 +10,9 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.PlayerInfo;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public abstract class MixinPlayerEntity
 {
 
@@ -25,8 +25,8 @@ public abstract class MixinPlayerEntity
     @Inject(method = "canUseGameMasterBlocks", at = @At("HEAD"), cancellable = true)
     public void canUseGameMasterBlocks2(CallbackInfoReturnable<Boolean> cir)
     {
-        cir.setReturnValue(((PlayerEntity) (Object) this).isCreative()
-                && APIRegistry.perms.checkPermission((PlayerEntity) (Object) this, ModuleProtection.COMMANDBLOCK_PERM));
+        cir.setReturnValue(((Player) (Object) this).isCreative()
+                && APIRegistry.perms.checkPermission((Player) (Object) this, ModuleProtection.COMMANDBLOCK_PERM));
     }
 
     /**
@@ -36,7 +36,7 @@ public abstract class MixinPlayerEntity
      * @reason stuff
      */
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
-    public boolean onUpdate_NoClip(PlayerEntity _this)
+    public boolean onUpdate_NoClip(Player _this)
     {
         return _this.isSpectator() || PlayerInfo.get(_this).isNoClip();
     }

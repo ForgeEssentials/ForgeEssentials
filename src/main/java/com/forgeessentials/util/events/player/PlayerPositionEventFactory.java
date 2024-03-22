@@ -7,7 +7,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -24,7 +24,7 @@ public class PlayerPositionEventFactory extends ServerEventHandler
     {
         if (e.side != LogicalSide.SERVER || e.phase == ServerTickEvent.Phase.START)
             return;
-        PlayerEntity player = (PlayerEntity) e.player;
+        Player player = (Player) e.player;
         WarpPoint before = lastPlayerPosition.get(player.getGameProfile().getId());
         WarpPoint current = new WarpPoint(e.player);
 

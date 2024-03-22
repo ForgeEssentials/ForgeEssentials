@@ -7,9 +7,9 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 
 /**
  * Expected syntax: <interval> <damage>
@@ -24,14 +24,14 @@ public class EffectDamage extends WorldBorderEffect
     private int damage = 1;
 
     @Override
-    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
         interval = IntegerArgumentType.getInteger(ctx, "interval");
         damage = IntegerArgumentType.getInteger(ctx, "damage");
     }
 
     @Override
-    public void tick(WorldBorder border, ServerPlayerEntity player)
+    public void tick(WorldBorder border, ServerPlayer player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))

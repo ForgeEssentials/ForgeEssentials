@@ -4,7 +4,8 @@ import java.util.Collection;
 
 import org.pircbotx.hooks.events.MessageEvent;
 
-import net.minecraft.command.CommandException;
+
+import net.minecraft.commands.CommandRuntimeException;
 
 public interface IrcCommand
 {
@@ -19,6 +20,6 @@ public interface IrcCommand
 
     public boolean isAdminCommand();
 
-    public void processCommand(MessageEvent event, String[] args) throws CommandException;
+    public void processCommand(MessageEvent event, String[] args) throws CommandRuntimeException;
 
 }

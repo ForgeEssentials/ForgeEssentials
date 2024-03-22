@@ -2,7 +2,7 @@ package com.forgeessentials.api.remote.data;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 /**
  *

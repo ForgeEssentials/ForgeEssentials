@@ -11,7 +11,7 @@ import com.forgeessentials.api.UserIdent.UserIdentInvalidatedEvent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Zones are used to store permissions in a tree-like hierarchy. Each zone has it's own set of group- and player-permissions. Zones are stored in a tree structure with fixed
@@ -177,7 +177,7 @@ public abstract class Zone
      * 
      * @param player
      */
-    public boolean isPlayerInZone(PlayerEntity player)
+    public boolean isPlayerInZone(Player player)
     {
         return isInZone(new WorldPoint(player));
     }
@@ -300,7 +300,7 @@ public abstract class Zone
      * @param permissionNode
      * @return permission value or null, if not set
      */
-    public String getPlayerPermission(PlayerEntity player, String permissionNode)
+    public String getPlayerPermission(Player player, String permissionNode)
     {
         return getPlayerPermission(UserIdent.get(player), permissionNode);
     }

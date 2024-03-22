@@ -9,8 +9,8 @@ import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.event.world.ExplosionEvent;
 
 public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>

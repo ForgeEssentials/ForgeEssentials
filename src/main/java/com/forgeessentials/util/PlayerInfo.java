@@ -21,8 +21,8 @@ import com.forgeessentials.util.events.player.FEPlayerEvent.InventoryGroupChange
 import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.gson.annotations.Expose;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 
 public class PlayerInfo implements Loadable
@@ -185,7 +185,7 @@ public class PlayerInfo implements Loadable
         }
 
         // Create new player info data
-        PlayerEntity player = UserIdent.get(uuid, username).getPlayerMP();
+        Player player = UserIdent.get(uuid, username).getPlayerMP();
         info = new PlayerInfo(uuid);
         playerInfoMap.put(uuid, info);
         if (player != null)
@@ -193,7 +193,7 @@ public class PlayerInfo implements Loadable
         return info;
     }
 
-    public static PlayerInfo get(PlayerEntity player)
+    public static PlayerInfo get(Player player)
     {
         return get(player.getGameProfile().getId(), player.getDisplayName().getString());
     }

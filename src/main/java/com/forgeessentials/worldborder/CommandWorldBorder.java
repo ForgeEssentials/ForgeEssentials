@@ -15,12 +15,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.DimensionArgument;
-import net.minecraft.command.arguments.PotionArgument;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.MobEffectArgument;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +57,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
                 .then(Commands.argument("world", DimensionArgument.dimension())
@@ -126,7 +126,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                                                                                 "effect-add-message")))))
                                                 .then(Commands.literal("potion").then(Commands
                                                         .argument("interval", IntegerArgumentType.integer())
-                                                        .then(Commands.argument("effect", PotionArgument.effect())
+                                                        .then(Commands.argument("effect", MobEffectArgument.effect())
                                                                 .then(Commands
                                                                         .argument("seconds",
                                                                                 IntegerArgumentType.integer())
@@ -148,7 +148,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
@@ -159,7 +159,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerWorld worldToUse = DimensionArgument.getDimension(ctx, "world");
+        ServerLevel worldToUse = DimensionArgument.getDimension(ctx, "world");
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder(worldToUse);
 
@@ -226,7 +226,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
         return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseCenter(CommandContext<CommandSource> ctx, WorldBorder border, String params)
+    public static void parseCenter(CommandContext<CommandSourceStack> ctx, WorldBorder border, String params)
             throws CommandSyntaxException
     {
         if (params.equals("center-info"))
@@ -248,7 +248,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                 Translator.format("Worldborder center set to [%d, %d]", x, z));
     }
 
-    public static void parseRadius(CommandContext<CommandSource> ctx, WorldBorder border, String params)
+    public static void parseRadius(CommandContext<CommandSourceStack> ctx, WorldBorder border, String params)
             throws CommandSyntaxException
     {
         if (params.equals("size-info"))
@@ -278,7 +278,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                 Translator.format("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ()));
     }
 
-    public static void parseShape(CommandContext<CommandSource> ctx, WorldBorder border, String params)
+    public static void parseShape(CommandContext<CommandSourceStack> ctx, WorldBorder border, String params)
             throws CommandSyntaxException
     {
         if (params.equals("shape-info"))
@@ -305,7 +305,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseEffect(CommandContext<CommandSource> ctx, WorldBorder border, String params)
+    public static void parseEffect(CommandContext<CommandSourceStack> ctx, WorldBorder border, String params)
             throws CommandSyntaxException
     {
         if (params.equals("effect-info"))
@@ -349,7 +349,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
         return;
     }
 
-    public static void addEffect(CommandContext<CommandSource> ctx, WorldBorder border, String params)
+    public static void addEffect(CommandContext<CommandSourceStack> ctx, WorldBorder border, String params)
             throws CommandSyntaxException
     {
         // Get effect type argument

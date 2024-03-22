@@ -9,34 +9,36 @@ import com.forgeessentials.multiworld.v2.provider.ChunkGeneratorHolderBase;
 import com.forgeessentials.multiworld.v2.provider.FEChunkGenProvider;
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.DimensionSettings;
-import net.minecraft.world.gen.FlatChunkGenerator;
-import net.minecraft.world.gen.FlatGenerationSettings;
-import net.minecraft.world.gen.FlatLayerInfo;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
+import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+
+import ChunkGenerator;
 
 @FEChunkGenProvider(providerName = "minecraft:flat")
 public class MinecraftFlatChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override
-	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeProvider biome,
-			Supplier<DimensionSettings> dimSettings) {
+	public ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeSource biome,
+			Supplier<NoiseGeneratorSettings> dimSettings) {
 		List<FlatLayerInfo> defaultLayers = new ArrayList<>();
 		defaultLayers.add(new FlatLayerInfo(1, Blocks.BEDROCK));
 		defaultLayers.add(new FlatLayerInfo(3, Blocks.DIRT));
 		defaultLayers.add(new FlatLayerInfo(1, Blocks.GRASS_BLOCK));
-		ImmutableMap<Structure<?>, StructureSeparationSettings> villages = ImmutableMap
-				.<Structure<?>, StructureSeparationSettings>builder()
-				.put(Structure.VILLAGE, new StructureSeparationSettings(32, 8, 10387312)).build();
-		return new FlatChunkGenerator(new FlatGenerationSettings(biomes,
-				new DimensionStructuresSettings(Optional.empty(), villages), defaultLayers, false, false, Optional.of(() -> {
+		ImmutableMap<StructureFeature<?>, StructureFeatureConfiguration> villages = ImmutableMap
+				.<StructureFeature<?>, StructureFeatureConfiguration>builder()
+				.put(StructureFeature.VILLAGE, new StructureFeatureConfiguration(32, 8, 10387312)).build();
+		return new FlatLevelSource(new FlatLevelGeneratorSettings(biomes,
+				new StructureSettings(Optional.empty(), villages), defaultLayers, false, false, Optional.of(() -> {
 					return biomes.getOrThrow(Biomes.PLAINS);
 				})));
 	}

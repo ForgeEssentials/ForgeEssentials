@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class PacketPrepender extends ByteToMessageDecoder {
 
@@ -23,7 +23,7 @@ public class PacketPrepender extends ByteToMessageDecoder {
             a[i] = buffer.readByte();
 
             if (a[i] >= 0) {
-                PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(a));
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(a));
 
                 try {
                     int varInt = buf.readVarInt();

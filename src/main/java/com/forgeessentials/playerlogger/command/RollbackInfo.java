@@ -15,19 +15,21 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.Lists;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SChangeBlockPacket;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import ServerPlayer;
 
 public class RollbackInfo
 {
 
-    ServerPlayerEntity player;
+    ServerPlayer player;
 
     private Selection area;
 
@@ -37,7 +39,7 @@ public class RollbackInfo
 
     public PlaybackTask task;
 
-    public RollbackInfo(ServerPlayerEntity player, Selection area)
+    public RollbackInfo(ServerPlayer player, Selection area)
     {
         this.player = player;
         this.area = area;
@@ -106,14 +108,14 @@ public class RollbackInfo
         {
             if (change.type == ActionBlockType.PLACE)
             {
-                ServerWorld world = ServerUtil.getWorldFromString(change.world);
+                ServerLevel world = ServerUtil.getWorldFromString(change.world);
                 world.setBlock(change.getBlockPos(), Blocks.AIR.defaultBlockState(), 11);
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE
                     || change.type == ActionBlockType.BURN)
             {
-                ServerWorld world = ServerUtil.getWorldFromString(change.world);
+                ServerLevel world = ServerUtil.getWorldFromString(change.world);
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                 world.setBlock(change.getBlockPos(), block.defaultBlockState(), 3);
                 world.setBlockEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
@@ -128,7 +130,7 @@ public class RollbackInfo
             task.cancel();
         for (Action01Block change : Lists.reverse(changes))
             player.connection
-                    .send(new SChangeBlockPacket(ServerUtil.getWorldFromString(change.world), change.getBlockPos()));
+                    .send(new ClientboundBlockUpdatePacket(ServerUtil.getWorldFromString(change.world), change.getBlockPos()));
     }
 
     public Date getTime()
@@ -148,9 +150,9 @@ public class RollbackInfo
      * @param change
      * @param newState
      */
-    public static void sendBlockChange(ServerPlayerEntity player, Action01Block change, BlockState newState)
+    public static void sendBlockChange(ServerPlayer player, Action01Block change, BlockState newState)
     {
-        SChangeBlockPacket packet = new SChangeBlockPacket(change.getBlockPos(), newState);
+        ClientboundBlockUpdatePacket packet = new ClientboundBlockUpdatePacket(change.getBlockPos(), newState);
         player.connection.send(packet);
     }
 
