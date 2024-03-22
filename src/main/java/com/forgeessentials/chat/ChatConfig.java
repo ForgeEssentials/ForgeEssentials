@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.IllegalFormatException;
 import java.util.Set;
 
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
@@ -42,6 +43,10 @@ public class ChatConfig extends ConfigLoaderBase
 
     public static Set<String> mutedCommands = new HashSet<>();
 
+    public static String CAT_SB = CATEGORY + ".Scoreboard";
+
+    public static boolean coloredTabMenuEnabled;
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -70,6 +75,7 @@ public class ChatConfig extends ConfigLoaderBase
         for (String cmd : config.get("Chat.mute", "mutedCommands", new String[] { "me" }, MUTEDCMD_HELP).getStringList())
             mutedCommands.add(cmd);
 
+        coloredTabMenuEnabled = config.getBoolean(CAT_SB, "Enabled", false, "Whether or not to enable the tab menu colors");
         ModuleChat.instance.setChatLogging(config.get(CATEGORY, "LogChat", true, "Log all chat messages").getBoolean(true));
     }
 
