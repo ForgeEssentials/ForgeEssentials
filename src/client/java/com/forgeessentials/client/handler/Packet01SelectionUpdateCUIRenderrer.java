@@ -125,7 +125,7 @@ public class Packet01SelectionUpdateCUIRenderrer
         tessellator.end();
     }
 
-    private static void renderBigBox(Matrix4f matrix, BufferBuilder buffer, Tessellator tessellator, Vector3d v, Vector3d v2, Double offsetX, Double offsetY, Double offsetZ, float r, float g, float b, float alpha)
+    private static void renderBigBox(Matrix4f matrix, BufferBuilder buffer, Tesselator tessellator, Vec3 v, Vec3 v2, Double offsetX, Double offsetY, Double offsetZ, float r, float g, float b, float alpha)
     {
     	Double x1;
     	Double y1;

@@ -312,15 +312,15 @@ dependencies {
 	clientannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	
 	// WorldEdit
-	implementation 'com.sk89q.worldedit:worldedit-core:7.2.6-SNAPSHOT'
-	implementation 'com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.6-SNAPSHOT'
+	implementation 'com.sk89q.worldedit:worldedit-core:7.2.7-SNAPSHOT'
+	implementation 'com.sk89q.worldedit:worldedit-forge-mc1.17.1:7.2.7-SNAPSHOT'
 
 	implementation "baubles:baubles:1.8.7.1:1.16.5"
 
 	implementation 'org.spongepowered:spongeapi:8.0.0'
-	compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
-		exclude group: "org.spongepowered", module: "mixin"
-	}
+	//compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
+	//	exclude group: "org.spongepowered", module: "mixin"
+	//}
 	//compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
 	//compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
 
