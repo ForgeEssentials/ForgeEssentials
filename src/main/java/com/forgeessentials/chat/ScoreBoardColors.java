@@ -37,7 +37,7 @@ public class ScoreBoardColors
 
     public void registerPerms()
     {
-        APIRegistry.perms.registerPermissionProperty(PERM_SCOREBOARD_COLOR, "",
+        APIRegistry.perms.registerPermissionProperty(PERM_SCOREBOARD_COLOR, "f",
                 "Format colors for tab menu/scoreboard. USE ONLY CHARACTERS AND NO &");
     }
 
@@ -70,13 +70,6 @@ public class ScoreBoardColors
         {
             // User has permissions set as part of group
             setPlayerColor(userIdent, APIRegistry.perms.getUserPermissionProperty(userIdent, PERM_SCOREBOARD_COLOR));
-        } else
-        {
-            // User has no color permissions set
-            // For some reason in testing, the username would have the character at the start of their name intepreted
-            // as formatting whenever scoreboard.removePlayerFromTeams was called.
-            // To fix this, we add the player to another team/prefix 'r' after the call, which has no formatting.
-            resetColor(userIdent);
         }
 
     }
@@ -100,21 +93,4 @@ public class ScoreBoardColors
             }
         }
     }
-
-    public void resetColor(UserIdent userIdent)
-    {
-        Scoreboard scoreboard = DimensionManager.getWorld(DimensionType.OVERWORLD.getId()).getScoreboard();
-        if (scoreboard.getTeam("f") == null)
-        {
-            scoreboard.createTeam("f").setPrefix("\u00A7f");
-        }
-        if (scoreboard.getPlayersTeam(userIdent.getUsername()) == null ||
-                !Objects.equals(scoreboard.getPlayersTeam(userIdent.getUsername()).getName(), "f"))
-        {
-            // By the looks of it, white is the default color for the scoreboard text.
-            // If the player is not added to this team, weirdness and lingering values occur in the scoreboard
-            scoreboard.addPlayerToTeam(userIdent.getUsername(), "f");
-        }
-    }
-
 }
