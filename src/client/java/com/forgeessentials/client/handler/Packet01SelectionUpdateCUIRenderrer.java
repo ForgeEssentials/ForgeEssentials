@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Matrix4f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,7 +24,7 @@ public class Packet01SelectionUpdateCUIRenderrer
     public void render(RenderWorldLastEvent event)
     {
         Minecraft instance = Minecraft.getInstance();
-        Player player = instance.player;
+        LocalPlayer player = instance.player;
         if (player == null)
             return;
 

@@ -26,13 +26,13 @@ public abstract class PlayerUtil
     public static List<ItemStack> swapInventory(Player player, List<ItemStack> newItems)
     {
         List<ItemStack> oldItems = new ArrayList<>();
-        for (int slotIdx = 0; slotIdx < player.inventory.getContainerSize(); slotIdx++)
+        for (int slotIdx = 0; slotIdx < player.getInventory().getContainerSize(); slotIdx++)
         {
-            oldItems.add(player.inventory.getItem(slotIdx));
+            oldItems.add(player.getInventory().getItem(slotIdx));
             if (newItems != null && slotIdx < newItems.size())
-                player.inventory.setItem(slotIdx, newItems.get(slotIdx));
+                player.getInventory().setItem(slotIdx, newItems.get(slotIdx));
             else
-                player.inventory.setItem(slotIdx, ItemStack.EMPTY);
+                player.getInventory().setItem(slotIdx, ItemStack.EMPTY);
         }
         return oldItems;
     }

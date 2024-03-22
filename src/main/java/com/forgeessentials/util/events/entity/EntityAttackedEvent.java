@@ -5,8 +5,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
-import DamageSource;
-
 @Cancelable
 public class EntityAttackedEvent extends EntityEvent
 {

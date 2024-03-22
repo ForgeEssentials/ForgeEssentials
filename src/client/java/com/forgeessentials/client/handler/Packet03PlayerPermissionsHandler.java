@@ -6,8 +6,9 @@ import java.util.Set;
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet03PlayerPermissions;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+
 
 public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
 {
@@ -17,7 +18,7 @@ public class Packet03PlayerPermissionsHandler extends Packet03PlayerPermissions
         super(reset, placeIds, breakeIds);
     }
 
-    public static Packet03PlayerPermissionsHandler decode(PacketBuffer buf)
+    public static Packet03PlayerPermissionsHandler decode(FriendlyByteBuf buf)
     {
         boolean reset1 = buf.readBoolean();
         Set<String> placeIds1 = new HashSet<>();

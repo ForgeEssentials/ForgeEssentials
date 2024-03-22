@@ -28,9 +28,7 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import ChatFormatting;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public final class ChatOutputHandler
 {

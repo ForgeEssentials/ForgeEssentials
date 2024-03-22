@@ -18,12 +18,9 @@ import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.BaseComponent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import CommandSourceStack;
-import ServerPlayer;
 
 public class CommandContextParcer {
     public final CommandSourceStack sender;

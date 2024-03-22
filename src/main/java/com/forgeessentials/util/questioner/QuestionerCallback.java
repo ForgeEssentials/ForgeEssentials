@@ -2,8 +2,6 @@ package com.forgeessentials.util.questioner;
 
 import net.minecraft.commands.CommandRuntimeException;
 
-import CommandRuntimeException;
-
 public interface QuestionerCallback
 {
 

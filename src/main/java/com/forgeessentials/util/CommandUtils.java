@@ -16,9 +16,7 @@ import net.minecraft.commands.CommandSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-
-import CommandSource;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class CommandUtils
 {

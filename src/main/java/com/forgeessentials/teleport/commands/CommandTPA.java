@@ -147,7 +147,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
             point = new WarpPoint(getServerPlayer(ctx.getSource()).getLevel().dimension(),
-                    BlockPosArgument.getLoadedBlockPos(ctx, "pos"), player.getPlayer().xRot, player.getPlayer().yRot);
+                    BlockPosArgument.getLoadedBlockPos(ctx, "pos"), player.getPlayer().getXRot(), player.getPlayer().getYRot());
             locationName = point.toReadableString();
         }
 

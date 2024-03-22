@@ -4,8 +4,8 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet09AuthRequest;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class Packet09AuthRequestHandler extends Packet09AuthRequest
 {
@@ -14,7 +14,7 @@ public class Packet09AuthRequestHandler extends Packet09AuthRequest
         super(hash);
     }
 
-    public static Packet09AuthRequestHandler decode(PacketBuffer buf)
+    public static Packet09AuthRequestHandler decode(FriendlyByteBuf buf)
     {
         return new Packet09AuthRequestHandler(buf.readUtf());
     }

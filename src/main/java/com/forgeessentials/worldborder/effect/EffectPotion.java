@@ -6,7 +6,6 @@ import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.MobEffectArgument;
@@ -32,14 +31,7 @@ public class EffectPotion extends WorldBorderEffect
     public void provideArguments(CommandContext<CommandSourceStack> ctx) throws FECommandParsingException
     {
         interval = IntegerArgumentType.getInteger(ctx, "interval");
-        try
-        {
-            id = MobEffect.getId(MobEffectArgument.getEffect(ctx, "effect"));
-        }
-        catch (CommandSyntaxException e)
-        {
-            throw new FECommandParsingException("Bad effect argument");
-        }
+        id = MobEffect.getId(MobEffectArgument.getEffect(ctx, "effect"));
         duration = IntegerArgumentType.getInteger(ctx, "seconds");
         modifier = IntegerArgumentType.getInteger(ctx, "amplifier");
     }

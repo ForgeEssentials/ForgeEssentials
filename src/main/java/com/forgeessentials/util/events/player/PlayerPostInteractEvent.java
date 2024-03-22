@@ -8,11 +8,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.b3d.B3DModel.Face;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import BlockPos;
-import BlockState;
-import ItemStack;
-import Level;
-
 /**
  * NB: Forge PlayerInteractEvent should be re-implemented to include Post stage
  */

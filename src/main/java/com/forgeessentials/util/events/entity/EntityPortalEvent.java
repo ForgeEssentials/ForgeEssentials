@@ -6,9 +6,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
-import BlockPos;
-import Level;
-
 @Cancelable
 public class EntityPortalEvent extends EntityEvent
 {

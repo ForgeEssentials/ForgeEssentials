@@ -6,8 +6,8 @@ import com.forgeessentials.commons.network.packets.Packet06AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet08AuthReply;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class Packet06AuthLoginHandler extends Packet06AuthLogin
 {
@@ -16,7 +16,7 @@ public class Packet06AuthLoginHandler extends Packet06AuthLogin
         super();
     }
 
-    public static Packet06AuthLoginHandler decode(PacketBuffer buf)
+    public static Packet06AuthLoginHandler decode(FriendlyByteBuf buf)
     {
         return new Packet06AuthLoginHandler();
     }

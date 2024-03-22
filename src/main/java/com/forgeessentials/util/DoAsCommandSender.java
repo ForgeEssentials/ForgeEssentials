@@ -2,7 +2,6 @@ package com.forgeessentials.util;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -10,7 +9,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
@@ -19,9 +17,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import CommandSourceStack;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class DoAsCommandSender extends FakePlayer
 {
@@ -98,13 +94,6 @@ public class DoAsCommandSender extends FakePlayer
     public Vec3 position()
     {
         return sender.getPosition();
-    }
-
-    @Override
-    @Nullable
-    public Entity getEntity()
-    {
-        return sender.getEntity();
     }
 
     public MinecraftServer getServer()

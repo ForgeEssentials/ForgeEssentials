@@ -5,8 +5,8 @@ import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class Packet01SelectionUpdateHandler extends Packet01SelectionUpdate
 {
@@ -16,7 +16,7 @@ public class Packet01SelectionUpdateHandler extends Packet01SelectionUpdate
         super(sel);
     }
 
-    public static Packet01SelectionUpdateHandler decode(PacketBuffer byteBuf)
+    public static Packet01SelectionUpdateHandler decode(FriendlyByteBuf byteBuf)
     {
         Selection selection = new Selection(byteBuf.readUtf(),
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble())

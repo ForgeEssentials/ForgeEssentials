@@ -24,8 +24,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import Block;
-
 public class PortalManager extends ServerEventHandler
 {
 
@@ -86,7 +84,7 @@ public class PortalManager extends ServerEventHandler
                         after.getBlockPos(), portal.target.getWorld(), portal.target.getBlockPos())))
                 {
                     TeleportHelper.doTeleport((ServerPlayer) e.getPlayer(),
-                            portal.target.toWarpPoint(e.getPlayer().xRot, e.getPlayer().yRot));
+                            portal.target.toWarpPoint(e.getPlayer().getXRot(), e.getPlayer().getYRot()));
                 }
             }
         }

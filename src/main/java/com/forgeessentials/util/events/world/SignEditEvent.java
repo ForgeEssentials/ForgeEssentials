@@ -6,10 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-import BlockPos;
-import Component;
-import ServerPlayer;
-
 /**
  * Forge PR 1459
  **/

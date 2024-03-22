@@ -41,9 +41,9 @@ public class EffectKnockback extends WorldBorderEffect
             p.setY(WorldUtil.placeInWorld(p.getWorld(), p.getBlockX(), p.getBlockY(), p.getBlockZ()));
 
         if (player.getVehicle() != null)
-            player.getVehicle().absMoveTo(p.getX(), p.getY(), p.getZ(), player.getVehicle().xRot,
-                    player.getVehicle().yRot);
-        player.connection.teleport(p.getX(), p.getY(), p.getZ(), player.xRot, player.yRot);
+            player.getVehicle().absMoveTo(p.getX(), p.getY(), p.getZ(), player.getVehicle().getXRot(),
+                    player.getVehicle().getYRot());
+        player.connection.teleport(p.getX(), p.getY(), p.getZ(), player.getXRot(), player.getYRot());
     }
 
     public String toString()

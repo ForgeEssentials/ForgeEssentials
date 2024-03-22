@@ -69,6 +69,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BedItem;
@@ -511,14 +512,14 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     public static void writeTag(ByteBuf to, CompoundTag tag)
     {
-        PacketBuffer pb = new PacketBuffer(to);
+    	FriendlyByteBuf pb = new FriendlyByteBuf(to);
         pb.writeNbt(tag);
     }
 
     @Nullable
     public static CompoundTag readTag(ByteBuf from)
     {
-        PacketBuffer pb = new PacketBuffer(from);
+    	FriendlyByteBuf pb = new FriendlyByteBuf(from);
         return pb.readNbt();
     }
     /* ------------------------------------------------------------ */

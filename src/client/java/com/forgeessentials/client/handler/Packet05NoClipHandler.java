@@ -4,8 +4,8 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet05Noclip;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class Packet05NoClipHandler extends Packet05Noclip
 {
@@ -14,7 +14,7 @@ public class Packet05NoClipHandler extends Packet05Noclip
         super(noclip);
     }
 
-    public static Packet05NoClipHandler decode(PacketBuffer buf)
+    public static Packet05NoClipHandler decode(FriendlyByteBuf buf)
     {
         return new Packet05NoClipHandler(buf.readBoolean());
     }

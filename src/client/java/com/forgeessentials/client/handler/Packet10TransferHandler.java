@@ -3,8 +3,8 @@ package com.forgeessentials.client.handler;
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.packets.Packet10ClientTransfer;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class Packet10TransferHandler extends Packet10ClientTransfer
 {
@@ -13,7 +13,7 @@ public class Packet10TransferHandler extends Packet10ClientTransfer
         super(destinationAddress, destinationAddressName, fallbackAddress, fallbackAddressName, sendNow);
     }
 
-    public static Packet10TransferHandler decode(PacketBuffer buf)
+    public static Packet10TransferHandler decode(FriendlyByteBuf buf)
     {
         return new Packet10TransferHandler(buf.readUtf(), buf.readUtf(), buf.readUtf(), buf.readUtf(), buf.readBoolean());
     }

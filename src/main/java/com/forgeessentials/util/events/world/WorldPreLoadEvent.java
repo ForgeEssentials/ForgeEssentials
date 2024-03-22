@@ -5,8 +5,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-import ResourceKey;
-
 @Cancelable
 public class WorldPreLoadEvent extends Event
 {

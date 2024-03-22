@@ -139,7 +139,7 @@ public abstract class BookUtil
 
         is.addTagElement("pages", pages);
 
-        player.inventory.add(is);
+        player.getInventory().add(is);
     }
 
     public static void getBookFromFile(Player player, File file, String title)
@@ -212,7 +212,7 @@ public abstract class BookUtil
 
         is.addTagElement("pages", pages);
 
-        player.inventory.add(is);
+        player.getInventory().add(is);
     }
 
     public static void getBookFromFileUnformatted(Player player, File file)
@@ -266,7 +266,7 @@ public abstract class BookUtil
 
         is.addTagElement("pages", pages);
 
-        player.inventory.add(is);
+        player.getInventory().add(is);
     }
 
     public static void getBookFromFileUnformatted(Player player, File file, String title)
@@ -320,7 +320,7 @@ public abstract class BookUtil
 
         is.addTagElement("pages", pages);
 
-        player.inventory.add(is);
+        player.getInventory().add(is);
     }
 
     public static void getBookFromFolder(Player player, File folder)
@@ -401,7 +401,7 @@ public abstract class BookUtil
 
         is.addTagElement("pages", pages);
 
-        player.inventory.add(is);
+        player.getInventory().add(is);
     }
 
     public static void getBookFromFolder(Player player, File folder, String title)
@@ -482,7 +482,7 @@ public abstract class BookUtil
 
         is.addTagElement("pages", pages);
 
-        player.inventory.add(is);
+        player.getInventory().add(is);
     }
 
 }

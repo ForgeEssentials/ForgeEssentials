@@ -10,8 +10,6 @@ import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 
-import Player;
-
 public class QuestionData
 {
 
