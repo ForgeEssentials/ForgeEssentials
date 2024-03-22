@@ -5,12 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 
-import net.minecraftforge.fml.common.ICrashCallable;
+import net.minecraftforge.fml.ISystemReportExtender;
 
 /**
  * Adds FE debug info to crash reports
  */
-public class FECrashCallable implements ICrashCallable
+public class FECrashCallable implements ISystemReportExtender
 {
     @Override
     public String getLabel()
@@ -19,7 +19,7 @@ public class FECrashCallable implements ICrashCallable
     }
 
     @Override
-    public String call() throws Exception
+    public String get()
     {
         String modules = StringUtils.join(ModuleLauncher.getModuleList(), ", ");
         String n = System.getProperty("line.separator");
@@ -34,5 +34,4 @@ public class FECrashCallable implements ICrashCallable
 
         return returned;
     }
-
 }
