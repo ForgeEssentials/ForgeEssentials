@@ -40,12 +40,12 @@ public class ModuleLauncher
 
         final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-                .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
+                .filter(a -> MOD.equals(a.annotationType())).collect(Collectors.toList());
 
         LoggingHandler.felog.info("Found {} FEModule annotations", data.size());
         for (ModFileScanData.AnnotationData asm : data)
         {
-            LoggingHandler.felog.debug("Found FEModule {}", asm.getMemberName());
+            LoggingHandler.felog.debug("Found FEModule {}", asm.memberName());
         }
 
         // Create THE MODULES!

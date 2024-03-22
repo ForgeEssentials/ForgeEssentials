@@ -8,8 +8,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "minecraft:nether")
 public class MinecraftNetherBiomeProviderHolder extends BiomeProviderHolderBase {
 	@Override

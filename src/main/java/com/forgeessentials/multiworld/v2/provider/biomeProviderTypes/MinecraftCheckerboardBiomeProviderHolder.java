@@ -13,9 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import BiomeSource;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 @FEBiomeProvider(providerName = "minecraft:checkerboard")
 public class MinecraftCheckerboardBiomeProviderHolder extends BiomeProviderHolderBase {

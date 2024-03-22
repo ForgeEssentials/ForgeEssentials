@@ -13,8 +13,6 @@ import com.forgeessentials.util.ServerUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 
-import Entity;
-
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
 
@@ -131,17 +129,12 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
 
     public int getChunkCoordX()
     {
-        return that.xChunk;
-    }
-
-    public int getChunkCoordY()
-    {
-        return that.yChunk;
+        return that.chunkPosition().x;
     }
 
     public int getChunkCoordZ()
     {
-        return that.zChunk;
+        return that.chunkPosition().z;
     }
 
     public float getWidth()
@@ -167,7 +160,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public JsEntity<?> getRidingEntity()
     {
         if (ridingEntity == null)
-            ridingEntity = get(that.getEntity().getVehicle());
+            ridingEntity = get(that.getVehicle());
         return ridingEntity;
     }
 

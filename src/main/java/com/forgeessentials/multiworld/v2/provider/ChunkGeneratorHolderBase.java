@@ -8,8 +8,6 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-import ChunkGenerator;
-
 public abstract class ChunkGeneratorHolderBase {
 	public abstract ChunkGenerator createChunkGenerator(Registry<Biome> biomes, long seed, BiomeSource biome, Supplier<NoiseGeneratorSettings> dimSettings);
 	public abstract String getClassName();

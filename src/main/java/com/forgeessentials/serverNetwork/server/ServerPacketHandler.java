@@ -22,7 +22,7 @@ import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.CharsetUtil;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class ServerPacketHandler implements PacketHandler
 {

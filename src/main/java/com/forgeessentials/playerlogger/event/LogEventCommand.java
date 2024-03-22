@@ -13,7 +13,7 @@ import net.minecraft.world.level.BaseCommandBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
 {

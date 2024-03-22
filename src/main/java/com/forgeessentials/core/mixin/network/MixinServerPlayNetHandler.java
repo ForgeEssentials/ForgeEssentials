@@ -15,6 +15,7 @@ import com.forgeessentials.util.events.world.SignEditEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.network.TextFilter;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,7 +45,7 @@ public class MixinServerPlayNetHandler
     @Inject(method = "updateSignText", 
     		at = @At("HEAD"),
     		cancellable = true)
-    public void updateSignText(ServerboundSignUpdatePacket p_244542_1_, List<String> p_244542_2_, CallbackInfo ci)
+    public void updateSignText(ServerboundSignUpdatePacket p_244542_1_, List<TextFilter.FilteredText> p_244542_2_, CallbackInfo ci)
     {
         this.player.resetLastActionTime();
         ServerLevel serverworld = this.player.getLevel();
@@ -56,7 +57,7 @@ public class MixinServerPlayNetHandler
                 return;
             }
             SignBlockEntity signtileentity = (SignBlockEntity)tileentity;
-            if (signtileentity.getPlayerWhoMayEdit() != this.player)
+            if (signtileentity.getPlayerWhoMayEdit() != this.player.getUUID())
             {
                 LOGGER.warn("Player {} just tried to change non-editable sign",
                         (Object) this.player.getDisplayName().getString());

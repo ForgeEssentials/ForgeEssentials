@@ -20,8 +20,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
-import ServerPlayer;
-
 public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
 {
 

@@ -128,8 +128,8 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
                         removedAmount = Math.min(currentItemStack.getCount(), amount);
                         currentItemStack.setCount(currentItemStack.getCount() - removedAmount);
                         if (currentItemStack.getCount() <= 0)
-                            getServerPlayer(ctx.getSource()).inventory.items
-                                    .set(getServerPlayer(ctx.getSource()).inventory.selected, ItemStack.EMPTY);
+                            getServerPlayer(ctx.getSource()).getInventory().items
+                                    .set(getServerPlayer(ctx.getSource()).getInventory().selected, ItemStack.EMPTY);
                     }
                 }
                 if (removedAmount < amount)

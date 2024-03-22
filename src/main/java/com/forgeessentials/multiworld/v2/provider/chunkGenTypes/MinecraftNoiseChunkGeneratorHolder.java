@@ -12,8 +12,6 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 
-import ChunkGenerator;
-
 @FEChunkGenProvider(providerName = "minecraft:noise")
 public class MinecraftNoiseChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override

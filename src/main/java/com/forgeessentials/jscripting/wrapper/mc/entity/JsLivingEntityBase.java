@@ -3,8 +3,6 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-import LivingEntity;
-
 public class JsLivingEntityBase<T extends LivingEntity> extends JsEntity<T>
 {
 

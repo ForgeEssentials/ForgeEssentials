@@ -35,8 +35,8 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PermissionCommandParser extends CommandUtils
 {

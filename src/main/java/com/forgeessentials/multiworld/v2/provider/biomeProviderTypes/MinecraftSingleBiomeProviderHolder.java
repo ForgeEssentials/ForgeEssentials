@@ -9,8 +9,6 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "minecraft:single")
 public class MinecraftSingleBiomeProviderHolder extends BiomeProviderHolderBase {
 	@Override

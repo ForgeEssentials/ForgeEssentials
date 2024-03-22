@@ -20,10 +20,10 @@ import com.mojang.brigadier.ParseResults;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * @tsd.interface Server

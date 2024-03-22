@@ -5,7 +5,7 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class Packet0HandshakeHandler extends Packet00Handshake
 {

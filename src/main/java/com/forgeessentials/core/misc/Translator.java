@@ -18,8 +18,6 @@ import com.google.common.base.Charsets;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.BaseComponent;
 
-import BaseComponent;
-
 public final class Translator
 {
 

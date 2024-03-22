@@ -1,5 +1,8 @@
 package com.forgeessentials.multiworld.v2.genWorld;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import com.mojang.serialization.Codec;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -7,8 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryLookupCodec;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.FixedBiomeSource;
@@ -63,18 +65,18 @@ public class MultiworldChunkGenerator extends ChunkGenerator
 	}
 
 	@Override
-	public void fillFromNoise(LevelAccessor p_230352_1_, StructureFeatureManager p_230352_2_, ChunkAccess p_230352_3_) {
+	public CompletableFuture<ChunkAccess> fillFromNoise(Executor p_156171_, StructureFeatureManager p_156172_, ChunkAccess p_156173_) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public int getBaseHeight(int p_222529_1_, int p_222529_2_, Types p_222529_3_) {
+	public int getBaseHeight(int p_156153_, int p_156154_, Types p_156155_, LevelHeightAccessor p_156156_) {
 		return 0;
 	}
 
 	@Override
-	public BlockGetter getBaseColumn(int p_230348_1_, int p_230348_2_) {
-		return new NoiseColumn(new BlockState[0]);
+	public NoiseColumn getBaseColumn(int p_156150_, int p_156151_, LevelHeightAccessor p_156152_) {
+		return new NoiseColumn(1, new BlockState[0]);
 	}
 }

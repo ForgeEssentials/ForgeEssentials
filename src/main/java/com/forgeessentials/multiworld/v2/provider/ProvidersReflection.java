@@ -8,8 +8,6 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
-import ChunkGenerator;
-
 public class ProvidersReflection {
 	public static ChunkGenerator getChunkProvider(String className, Class<?>[] classes, Object[] initargs){
 		try {

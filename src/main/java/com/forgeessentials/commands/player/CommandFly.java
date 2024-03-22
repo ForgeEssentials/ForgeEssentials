@@ -58,15 +58,15 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            player.abilities.mayfly = BoolArgumentType.getBool(ctx, "toggle");
+            player.getAbilities().mayfly = BoolArgumentType.getBool(ctx, "toggle");
         }
 
         if (!player.isOnGround())
-            player.abilities.flying = player.abilities.mayfly;
-        if (!player.abilities.mayfly)
+            player.getAbilities().flying = player.getAbilities().mayfly;
+        if (!player.getAbilities().mayfly)
             WorldUtil.placeInWorld(player);
         player.onUpdateAbilities();
-        ChatOutputHandler.chatNotification(player, "Flying " + (player.abilities.mayfly ? "enabled" : "disabled"));
+        ChatOutputHandler.chatNotification(player, "Flying " + (player.getAbilities().mayfly ? "enabled" : "disabled"));
         return Command.SINGLE_SUCCESS;
     }
 }

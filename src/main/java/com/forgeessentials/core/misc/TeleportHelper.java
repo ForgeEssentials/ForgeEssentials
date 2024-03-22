@@ -36,8 +36,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import Player;
-
 public class TeleportHelper extends ServerEventHandler
 {
     /*

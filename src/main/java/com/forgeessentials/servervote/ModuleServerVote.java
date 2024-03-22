@@ -28,7 +28,7 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false, version = ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleServerVote extends ConfigLoaderBase

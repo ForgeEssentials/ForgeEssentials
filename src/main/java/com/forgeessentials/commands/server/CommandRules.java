@@ -214,7 +214,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder
                 is.addTagElement("title", StringTag.valueOf("Rule Book"));
 
                 is.addTagElement("pages", pages);
-                Splayer.inventory.add(is);
+                Splayer.getInventory().add(is);
                 return Command.SINGLE_SUCCESS;
             case "help":
                 ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");

@@ -16,12 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import Block;
-import BlockState;
-import ItemStack;
-import Level;
-import Player;
-
 public class TickTaskBlockFinder implements TickTask
 {
 

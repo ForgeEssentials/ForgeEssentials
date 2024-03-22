@@ -6,8 +6,6 @@ import com.forgeessentials.jscripting.wrapper.mc.event.entity.JsLivingEvent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import CommandSourceStack;
-
 public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent<T>
 {
 

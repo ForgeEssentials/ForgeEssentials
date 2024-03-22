@@ -6,8 +6,6 @@ import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import BlockEntity;
-
 public class JsTileEntity<T extends BlockEntity> extends JsWrapper<T>
 {
     protected JsInventory<?> inventory;

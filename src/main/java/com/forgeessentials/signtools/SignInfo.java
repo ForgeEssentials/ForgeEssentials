@@ -10,9 +10,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event;
 
-import BlockHitResult;
-import InteractionHand;
-
 public class SignInfo
 {
     int x, y, z;

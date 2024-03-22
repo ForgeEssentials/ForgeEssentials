@@ -16,7 +16,8 @@ import com.forgeessentials.serverNetwork.utils.ConnectionData.LocalClientData;
 import com.forgeessentials.serverNetwork.utils.EncryptionUtils;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+
 
 public class ClientPacketHandler implements PacketHandler
 {

@@ -30,7 +30,7 @@ public class MobTypeLoader
 
         final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-                .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
+                .filter(a -> MOD.equals(a.annotationType())).collect(Collectors.toList());
 
         LoggingHandler.felog.info("Found {} FEMob annotations", data.size());
 
@@ -39,7 +39,7 @@ public class MobTypeLoader
         for (ModFileScanData.AnnotationData asm : data)
         {
             Class<?> c = null;
-            className = asm.getMemberName();
+            className = asm.memberName();
 
             try
             {
@@ -47,7 +47,7 @@ public class MobTypeLoader
             }
             catch (Exception e)
             {
-                LoggingHandler.felog.info("Error trying to load " + asm.getMemberName() + " as a FEMob!");
+                LoggingHandler.felog.info("Error trying to load " + asm.memberName() + " as a FEMob!");
                 e.printStackTrace();
                 return;
             }

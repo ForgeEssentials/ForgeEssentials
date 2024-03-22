@@ -32,10 +32,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.util.Mth;
 import net.minecraft.server.level.ServerLevel;
 
-import AABB;
-import CommandSourceStack;
-import ServerLevel;
-
 public class CommandButcherTickTask implements TickTask
 {
 
@@ -204,7 +200,7 @@ public class CommandButcherTickTask implements TickTask
         if (entity instanceof EnderDragon)
         {
             for (EnderDragonPart part : ((EnderDragon) entity).getSubEntities())
-                part.remove();
+                part.kill();;
         }
         entity.kill();
     }

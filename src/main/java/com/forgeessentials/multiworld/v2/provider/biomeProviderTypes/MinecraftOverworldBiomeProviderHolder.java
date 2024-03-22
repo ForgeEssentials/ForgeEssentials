@@ -8,8 +8,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.OverworldBiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "minecraft:overworld")
 public class MinecraftOverworldBiomeProviderHolder extends BiomeProviderHolderBase {
 	@Override

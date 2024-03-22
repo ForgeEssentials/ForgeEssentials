@@ -8,8 +8,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "twilightforest:grid")
 public class TwilightForestBiomeProviderHelper extends BiomeProviderHolderBase {
 	@Override

@@ -14,11 +14,11 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ItemPermissionManager extends ServerEventHandler
@@ -60,7 +60,7 @@ public class ItemPermissionManager extends ServerEventHandler
     {
         if (!enabled || event.ident == null || !event.ident.hasPlayer())
             return;
-        Inventory inventory = event.ident.getPlayer().inventory;
+        Inventory inventory = event.ident.getPlayer().getInventory();
         for (int slotIdx = 0; slotIdx < inventory.getContainerSize(); slotIdx++)
         {
             ItemStack stack = inventory.getItem(slotIdx);
@@ -76,7 +76,7 @@ public class ItemPermissionManager extends ServerEventHandler
         List<String> groups = GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident));
         if (!enabled || ident == null || !ident.hasPlayer())
             return groups;
-        Inventory inventory = ident.getPlayer().inventory;
+        Inventory inventory = ident.getPlayer().getInventory();
         for (int slotIdx = 0; slotIdx < inventory.getContainerSize(); slotIdx++)
         {
             ItemStack stack = inventory.getItem(slotIdx);
@@ -131,7 +131,7 @@ public class ItemPermissionManager extends ServerEventHandler
 
     public static ListTag getSettingsTag(CompoundTag tag)
     {
-        return tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
+        return tag.getList(TAG_SETTINGS, EndTag.TAG_STRING);
     }
 
     public static void check(PermissionCheckEvent event, ItemStack stack, boolean isEquipped)

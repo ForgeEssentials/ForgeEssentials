@@ -53,7 +53,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class ShopManager extends ServerEventHandler
@@ -323,7 +323,7 @@ public class ShopManager extends ServerEventHandler
                 removedAmount = Math.min(equippedStack.getCount(), transactionStack.getCount());
                 equippedStack.setCount(equippedStack.getCount() - removedAmount);
                 if (equippedStack.getCount() <= 0)
-                    event.getPlayer().inventory.items.set(event.getPlayer().inventory.selected, ItemStack.EMPTY);
+                    event.getPlayer().getInventory().items.set(event.getPlayer().getInventory().selected, ItemStack.EMPTY);
             }
             if (removedAmount < transactionStack.getCount())
                 removedAmount += ModuleEconomy.tryRemoveItems(event.getPlayer(), transactionStack,

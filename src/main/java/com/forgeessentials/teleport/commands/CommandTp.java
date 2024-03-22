@@ -100,10 +100,10 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         else if (params.equals("pos"))
         {
             ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
-            BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
+            BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "position");
             PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-            TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
+            TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.getXRot(), player.getYRot()));
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -144,10 +144,10 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
         else if (params.equals("pos"))
         {
             ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
-            BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "position");
+            BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "position");
             PlayerInfo playerInfo = PlayerInfo.get(player.getGameProfile().getId());
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-            TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
+            TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.getXRot(), player.getYRot()));
         }
         else
         {

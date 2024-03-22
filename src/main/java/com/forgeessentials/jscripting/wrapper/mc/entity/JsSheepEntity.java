@@ -3,8 +3,6 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
 
-import Sheep;
-
 public class JsSheepEntity<T extends Sheep> extends JsEntity<T>
 {
 

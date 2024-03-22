@@ -9,10 +9,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import Block;
-import BlockPos;
-import BlockState;
-
 public class CachedBlockData
 {
 

@@ -13,8 +13,6 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-import ChunkGenerator;
-
 @FEChunkGenProvider(providerName = "lotr:middle_earth")
 public class MiddleEarthChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override

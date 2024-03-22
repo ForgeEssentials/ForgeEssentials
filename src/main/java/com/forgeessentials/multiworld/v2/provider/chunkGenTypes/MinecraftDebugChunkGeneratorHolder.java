@@ -12,8 +12,6 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.DebugLevelSource;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-import ChunkGenerator;
-
 @FEChunkGenProvider(providerName = "minecraft:debug")
 public class MinecraftDebugChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override

@@ -4,8 +4,6 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 import net.minecraft.world.Container;
 
-import Container;
-
 public class JsInventory<T extends Container> extends JsWrapper<T>
 {
 

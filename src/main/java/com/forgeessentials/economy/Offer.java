@@ -2,8 +2,6 @@ package com.forgeessentials.economy;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import ServerPlayer;
-
 /**
  * Represents an offer to transact an object.
  * 

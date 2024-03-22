@@ -8,8 +8,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.TheEndBiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "minecraft:end")
 public class MinecraftEndBiomeProviderHolder extends BiomeProviderHolderBase {
 	@Override

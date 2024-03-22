@@ -13,7 +13,7 @@ import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,14 +68,14 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
 
         ChatOutputHandler.chatNotification(ctx.getSource(),
                 String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
-        List<ModInfo> mods = ModList.get().getMods();
+        List<IModInfo> mods = ModList.get().getMods();
         for (int i = page * perPage; i < min + perPage; i++)
         {
             if (i >= size)
             {
                 break;
             }
-            ModInfo mod = mods.get(i);
+            IModInfo mod = mods.get(i);
             ChatOutputHandler.chatNotification(ctx.getSource(), mod.getDisplayName() + " - " + mod.getVersion());
         }
         return Command.SINGLE_SUCCESS;

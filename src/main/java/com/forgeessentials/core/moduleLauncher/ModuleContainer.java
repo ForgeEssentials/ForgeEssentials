@@ -50,7 +50,7 @@ public class ModuleContainer implements Comparable<Object>
     {
         // get the class....
         Class<?> c = null;
-        className = data.getMemberName();
+        className = data.memberName();
 
         try
         {
@@ -58,7 +58,7 @@ public class ModuleContainer implements Comparable<Object>
         }
         catch (Throwable e)
         {
-            LoggingHandler.felog.info("Error trying to load " + data.getMemberName() + " as a FEModule!");
+            LoggingHandler.felog.info("Error trying to load " + data.memberName() + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;

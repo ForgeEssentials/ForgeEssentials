@@ -129,7 +129,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
             for (ServerPlayer playerO : players)
             {
                 player.stopSeenByPlayer(playerO);
-                playerO.sendRemoveEntity(player);
+                //playerO.sendRemoveEntity(player);
             }
         }
         else
@@ -140,7 +140,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
             {
                 sendPairingData(player, playerO.connection::send);
                 player.startSeenByPlayer(playerO);
-                playerO.cancelRemoveEntity(player);
+                //playerO.cancelRemoveEntity(player);
             }
         }
     }

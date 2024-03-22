@@ -24,8 +24,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import ServerPlayer;
-
 public class RollbackInfo
 {
 
@@ -118,7 +116,7 @@ public class RollbackInfo
                 ServerLevel world = ServerUtil.getWorldFromString(change.world);
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                 world.setBlock(change.getBlockPos(), block.defaultBlockState(), 3);
-                world.setBlockEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
+                world.setBlockEntity(PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name);
             }
         }

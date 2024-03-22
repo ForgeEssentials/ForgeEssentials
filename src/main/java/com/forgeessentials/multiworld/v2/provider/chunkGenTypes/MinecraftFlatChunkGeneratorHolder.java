@@ -23,8 +23,6 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 
-import ChunkGenerator;
-
 @FEChunkGenProvider(providerName = "minecraft:flat")
 public class MinecraftFlatChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override

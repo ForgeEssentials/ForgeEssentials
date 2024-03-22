@@ -2,8 +2,6 @@ package com.forgeessentials.jscripting.wrapper.mc.item;
 
 import net.minecraft.world.entity.player.Inventory;
 
-import Inventory;
-
 public class JsPlayerInventory<T extends Inventory> extends JsInventory<T>
 {
 

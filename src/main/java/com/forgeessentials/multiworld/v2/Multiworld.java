@@ -20,10 +20,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import GameType;
 
 public class Multiworld
 {
@@ -248,7 +246,7 @@ public class Multiworld
 
 		y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
 		WarpPoint target = new WarpPoint(world.dimension().location().toString(), x, y, z,
-				player.yRot, player.xRot);
+				player.getYRot(), player.getXRot());
 		if (instant)
 			TeleportHelper.checkedTeleport(player, target);
 		else

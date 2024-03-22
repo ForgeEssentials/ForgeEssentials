@@ -14,7 +14,7 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockModListFile
@@ -41,8 +41,8 @@ public class BlockModListFile
                         + ForgeEssentials.getConfigManager().getMainConfigName() + ".toml");
                 out.println();
 
-                List<ModInfo> mods = ModList.get().getMods();
-                for (ModInfo mod : mods)
+                List<IModInfo> mods = ModList.get().getMods();
+                for (IModInfo mod : mods)
                 {
                     out.println(
                             "#######################################################################################");
@@ -54,7 +54,6 @@ public class BlockModListFile
                     out.println("Properties:  " + mod.getModProperties().toString());
                     out.println("License:     " + mod.getOwningFile().getLicense());
                     out.println("Modfile:     " + mod.getOwningFile().getFile());
-                    out.println("IssueURL:    " + mod.getOwningFile().getIssueURL());
                     out.println("UpdateURL:   " + mod.getUpdateURL());
                 }
             }

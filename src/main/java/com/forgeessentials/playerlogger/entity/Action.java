@@ -25,8 +25,6 @@ import javax.persistence.Transient;
 
 import net.minecraft.core.BlockPos;
 
-import BlockPos;
-
 /**
  *
  */

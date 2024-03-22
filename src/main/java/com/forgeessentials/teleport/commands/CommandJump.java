@@ -75,7 +75,7 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
 
         BlockPos pos = new BlockPos(mo.getLocation().x, mo.getLocation().y, mo.getLocation().z);
         pos.offset(0, 1, 0);
-        TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
+        TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.getXRot(), player.getYRot()));
     }
 
     @SubscribeEvent

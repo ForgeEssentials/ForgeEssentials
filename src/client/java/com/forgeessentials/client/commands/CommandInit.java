@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 
 public class CommandInit
@@ -13,7 +13,7 @@ public class CommandInit
 
     public static void registerCommands(final RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
 
         commands.add(new FEClientCommand(true));
 

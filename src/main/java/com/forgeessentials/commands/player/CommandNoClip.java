@@ -68,7 +68,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!player.abilities.flying && !player.noPhysics)
+        if (!player.getAbilities().flying && !player.noPhysics)
         {
             ChatOutputHandler.chatError(ctx.getSource(), "You must be flying.");
             return Command.SINGLE_SUCCESS;
@@ -106,7 +106,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.isNoClip() && APIRegistry.perms.checkPermission(player, ModuleCommands.PERM + ".noclip"))
         {
-            if (!player.abilities.flying)
+            if (!player.getAbilities().flying)
             {
                 pi.setNoClip(false);
                 player.noPhysics = false;

@@ -89,9 +89,9 @@ import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper.UnableToAccessFieldException;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ProtectionEventHandler extends ServerEventHandler
@@ -593,8 +593,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             if (world.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT))
             {
-                long time = world.getWorldServer().getDayTime() + 24000L;
-                world.getWorldServer().setDayTime(time - time % 24000L);
+                long time = world.getDayTime() + 24000L;
+                world.setDayTime(time - time % 24000L);
             }
             for (ServerPlayer player : ServerUtil.getPlayerList())
                 if (player.isSleeping())
@@ -739,7 +739,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                     || anyCreativeModeAtPoint(event.getPlayer(), new WorldPoint(event.getEntity())))
             {
                 // event.entity.world.removeEntity(event.getTarget());
-                event.getEntity().remove();
+                event.getEntity().kill();
                 return;
             }
         }
@@ -824,7 +824,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
 
-        NonNullList<ItemStack> inventory = ident.getPlayer().inventory.items;
+        NonNullList<ItemStack> inventory = ident.getPlayer().getInventory().items;
         for (int i = 0; i < (reset ? inventory.size() : 9); ++i)
         {
             ItemStack stack = inventory.get(i);
@@ -833,7 +833,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             Block block = ((BlockItem) stack.getItem()).getBlock();
             String permission = ModuleProtection.getBlockPlacePermission(block);
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
-                placeIds.add(ForgeRegistries.BLOCKS.getKey(block.getBlock()).toString());
+                placeIds.add(ForgeRegistries.BLOCKS.getKey(block).toString());
         }
 
         ModulePermissions.permissionHelper.disableDebugMode(false);
@@ -928,7 +928,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (checkMajoritySleep)
             checkMajoritySleep();
 
-        if (ServerUtil.getOverworld().getWorldServer().getGameTime() % (20 * 4) == 0)
+        if (ServerUtil.getOverworld().getGameTime() % (20 * 4) == 0)
         {
             for (ServerPlayer player : ServerUtil.getPlayerList())
                 sendPermissionUpdate(UserIdent.get(player), false);
@@ -1070,14 +1070,14 @@ public class ProtectionEventHandler extends ServerEventHandler
     public static void checkPlayerInventory(Player player)
     {
         UserIdent ident = UserIdent.get(player);
-        for (int slotIdx = 0; slotIdx < player.inventory.getContainerSize(); slotIdx++)
+        for (int slotIdx = 0; slotIdx < player.getInventory().getContainerSize(); slotIdx++)
         {
-            ItemStack stack = player.inventory.getItem(slotIdx);
+            ItemStack stack = player.getInventory().getItem(slotIdx);
             if (stack != ItemStack.EMPTY)
             {
                 if (isItemBanned(ident, stack))
                 {
-                    player.inventory.setItem(slotIdx, ItemStack.EMPTY);
+                    player.getInventory().setItem(slotIdx, ItemStack.EMPTY);
                     continue;
                 }
                 if (isInventoryItemBanned(ident, stack))
@@ -1086,7 +1086,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                     if (droppedItem != null)
                     {
                         droppedItem.setDeltaMovement(0, 0, 0);
-                        player.inventory.setItem(slotIdx, ItemStack.EMPTY);
+                        player.getInventory().setItem(slotIdx, ItemStack.EMPTY);
                     }
                 }
             }

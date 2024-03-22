@@ -64,19 +64,17 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BedItem;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.SkullItem;
-import net.minecraft.item.TallBlockItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameType;
+import net.minecraft.world.item.BedItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PlayerHeadItem;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -452,13 +450,13 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /* ------------------------------------------------------------ */
 
-    public static SerialBlob tileEntityToBlob(TileEntity tileEntity)
+    public static SerialBlob tileEntityToBlob(BlockEntity tileEntity)
     {
         try
         {
             if (tileEntity == null)
                 return null;
-            CompoundNBT nbt = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
             tileEntity.save(nbt);
             nbt.putString("ENTITY_CLASS", tileEntity.getClass().getName());
             ByteBuf buf = Unpooled.buffer();
@@ -474,7 +472,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SuppressWarnings("unchecked")
-    public static TileEntity blobToTileEntity(Blob blob)
+    public static BlockEntity blobToTileEntity(Blob blob)
     {
         try
         {
@@ -482,7 +480,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return null;
 
             ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
-            CompoundNBT nbt = readTag(buf);
+            CompoundTag nbt = readTag(buf);
             if (nbt == null)
                 return null;
 
@@ -491,11 +489,11 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return null;
 
             Class<?> clazz = Class.forName(className);
-            if (!TileEntity.class.isAssignableFrom(clazz))
+            if (!BlockEntity.class.isAssignableFrom(clazz))
                 return null;
-            Class<TileEntity> teClazz = (Class<TileEntity>) clazz;
+            Class<BlockEntity> teClazz = (Class<BlockEntity>) clazz;
 
-            TileEntity entity = teClazz.newInstance();
+            BlockEntity entity = teClazz.newInstance();
             entity.deserializeNBT(nbt);
             return entity;
         }
@@ -511,14 +509,14 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return null;
     }
 
-    public static void writeTag(ByteBuf to, CompoundNBT tag)
+    public static void writeTag(ByteBuf to, CompoundTag tag)
     {
         PacketBuffer pb = new PacketBuffer(to);
         pb.writeNbt(tag);
     }
 
     @Nullable
-    public static CompoundNBT readTag(ByteBuf from)
+    public static CompoundTag readTag(ByteBuf from)
     {
         PacketBuffer pb = new PacketBuffer(from);
         return pb.readNbt();
@@ -747,7 +745,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLEnvironment.dist.isClient() || em == null)
             return;
-        if (!(event.getEntity() instanceof PlayerEntity))
+        if (!(event.getEntity() instanceof Player))
             return;
         if (event instanceof EntityMultiPlaceEvent)
         {
@@ -767,7 +765,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void breakEvent(BlockEvent.BreakEvent event)
     {
-        if (!(event.getPlayer() instanceof PlayerEntity))
+        if (!(event.getPlayer() instanceof Player))
             return;
         logEvent(new LogEventBreak(event));
     }
@@ -783,7 +781,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLEnvironment.dist.isClient() || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        if (((ServerPlayerEntity) event.getEntity()).gameMode.getGameModeForPlayer() != GameType.CREATIVE)
+        if (((ServerPlayer) event.getEntity()).gameMode.getGameModeForPlayer() != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
         }
@@ -803,7 +801,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         {
             Item item = event.stack.getItem();
             if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem
-                    || item instanceof TallBlockItem || item instanceof SkullItem)
+                    || item instanceof TallBlockItem || item instanceof PlayerHeadItem)
                 return;
         }
         logEvent(new LogEventPostInteract(event));

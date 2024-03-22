@@ -19,7 +19,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,7 +97,7 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
         }
 
         PlayerInfo.get(player.getGameProfile().getId()).setLastTeleportOrigin(new WarpPoint(player));
-        WarpPoint spawnPoint = new WarpPoint(world.dimension(), spawn, player.xRot, player.yRot);
+        WarpPoint spawnPoint = new WarpPoint(world.dimension(), spawn, player.getXRot(), player.getYRot());
         TeleportHelper.teleport(player, spawnPoint);
     }
 

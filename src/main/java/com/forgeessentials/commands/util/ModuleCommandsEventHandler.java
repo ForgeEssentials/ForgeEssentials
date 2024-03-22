@@ -74,7 +74,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), true);
         APIRegistry.getFEEventBus().post(event);
 
-        player.getPlayer().abilities.invulnerable = true;
+        player.getPlayer().getAbilities().invulnerable = true;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
             ChatOutputHandler.broadcast(ChatOutputHandler
                     .confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
@@ -94,10 +94,9 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         switch (player.getPlayerMP().gameMode.getGameModeForPlayer())
         {
-        case NOT_SET:
         case SURVIVAL:
         case ADVENTURE:
-            player.getPlayerMP().abilities.invulnerable = false;
+            player.getPlayerMP().getAbilities().invulnerable = false;
             break;
         default:
             break;

@@ -9,7 +9,7 @@ import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action04PlayerPosition;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
 {

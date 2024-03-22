@@ -24,7 +24,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 public class ProviderHelper {
@@ -127,18 +127,18 @@ public class ProviderHelper {
     	
 		final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
 				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-				.filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
+				.filter(a -> MOD.equals(a.annotationType())).collect(Collectors.toList());
 
 		for (ModFileScanData.AnnotationData asm : data) {
 			try {
-				Class<?> clazz = Class.forName(asm.getMemberName());
+				Class<?> clazz = Class.forName(asm.memberName());
 				if (BiomeProviderHolderBase.class.isAssignableFrom(clazz)) {
 					BiomeProviderHolderBase handler = (BiomeProviderHolderBase) clazz.getDeclaredConstructor().newInstance();
 					FEBiomeProvider annot = handler.getClass().getAnnotation(FEBiomeProvider.class);
 					biomeProviderUntested.put(annot.providerName(), handler);
 				}
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-				LoggingHandler.felog.debug("Could not load FEBiomeProvider: " + asm.getMemberName());
+				LoggingHandler.felog.debug("Could not load FEBiomeProvider: " + asm.memberName());
 			} catch (IllegalArgumentException | SecurityException | NoSuchMethodException
 					| InvocationTargetException e) {
 				e.printStackTrace();
@@ -197,18 +197,18 @@ public class ProviderHelper {
     	
 		final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
 				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-				.filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
+				.filter(a -> MOD.equals(a.annotationType())).collect(Collectors.toList());
 
 		for (ModFileScanData.AnnotationData asm : data) {
 			try {
-				Class<?> clazz = Class.forName(asm.getMemberName());
+				Class<?> clazz = Class.forName(asm.memberName());
 				if (ChunkGeneratorHolderBase.class.isAssignableFrom(clazz)) {
 					ChunkGeneratorHolderBase handler = (ChunkGeneratorHolderBase) clazz.getDeclaredConstructor().newInstance();
 					FEChunkGenProvider annot = handler.getClass().getAnnotation(FEChunkGenProvider.class);
 					chunkGeneratorUntested.put(annot.providerName(), handler);
 				}
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-				LoggingHandler.felog.debug("Could not load FEChunkGenProvider: " + asm.getMemberName());
+				LoggingHandler.felog.debug("Could not load FEChunkGenProvider: " + asm.memberName());
 			} catch (IllegalArgumentException | SecurityException | NoSuchMethodException
 					| InvocationTargetException e) {
 				e.printStackTrace();

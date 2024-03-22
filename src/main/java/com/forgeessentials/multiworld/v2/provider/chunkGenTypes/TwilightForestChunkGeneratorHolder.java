@@ -12,8 +12,6 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-import ChunkGenerator;
-
 @FEChunkGenProvider(providerName = "twilightforest:featured_noise")
 public class TwilightForestChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override

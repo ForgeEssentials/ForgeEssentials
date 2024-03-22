@@ -8,8 +8,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "lotr:middle_earth")
 public class MiddleEarthBiomeProviderHelper extends BiomeProviderHolderBase {
 	@Override

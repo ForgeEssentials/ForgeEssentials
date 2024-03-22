@@ -17,6 +17,7 @@ import com.google.gson.JsonSerializationContext;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.IntArrayTag;
@@ -24,7 +25,6 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public class NBTTagCompoundType implements DataType<CompoundTag>
 {
@@ -53,27 +53,27 @@ public class NBTTagCompoundType implements DataType<CompoundTag>
 
             switch (tag.getId())
             {
-            case NBT.TAG_END:
+            case EndTag.TAG_END:
                 break;
-            case NBT.TAG_BYTE:
+            case EndTag.TAG_BYTE:
                 result.add(JSON_BYTE + ":" + tagName, new JsonPrimitive(tagPrimitive.getAsByte()));
                 break;
-            case NBT.TAG_SHORT:
+            case EndTag.TAG_SHORT:
                 result.add(JSON_SHORT + ":" + tagName, new JsonPrimitive(tagPrimitive.getAsShort()));
                 break;
-            case NBT.TAG_INT:
+            case EndTag.TAG_INT:
                 result.add(JSON_INT + ":" + tagName, new JsonPrimitive(tagPrimitive.getAsInt()));
                 break;
-            case NBT.TAG_LONG:
+            case EndTag.TAG_LONG:
                 result.add(JSON_LONG + ":" + tagName, new JsonPrimitive(tagPrimitive.getAsLong()));
                 break;
-            case NBT.TAG_FLOAT:
+            case EndTag.TAG_FLOAT:
                 result.add(JSON_FLOAT + ":" + tagName, new JsonPrimitive(tagPrimitive.getAsFloat()));
                 break;
-            case NBT.TAG_DOUBLE:
+            case EndTag.TAG_DOUBLE:
                 result.add(JSON_DOUBLE + ":" + tagName, new JsonPrimitive(tagPrimitive.getAsDouble()));
                 break;
-            case NBT.TAG_BYTE_ARRAY:
+            case EndTag.TAG_BYTE_ARRAY:
             {
                 JsonArray jsonArray = new JsonArray();
                 ByteArrayTag tagByteArray = (ByteArrayTag) tag;
@@ -84,10 +84,10 @@ public class NBTTagCompoundType implements DataType<CompoundTag>
                 result.add(JSON_BYTE_ARRAY + ":" + tagName, jsonArray);
                 break;
             }
-            case NBT.TAG_STRING:
+            case EndTag.TAG_STRING:
                 result.add(JSON_STRING + ":" + tagName, new JsonPrimitive(((StringTag) tag).getAsString()));
                 break;
-            case NBT.TAG_LIST:
+            case EndTag.TAG_LIST:
             {
                 ListTag tagList = (ListTag) tag;
                 JsonArray jsonArray = new JsonArray();
@@ -97,27 +97,27 @@ public class NBTTagCompoundType implements DataType<CompoundTag>
                 case 0:
                     typeId = "S";
                     break;
-                case NBT.TAG_FLOAT:
+                case EndTag.TAG_FLOAT:
                     typeId = "f";
                     for (int i = 0; i < tagList.size(); i++)
                         jsonArray.add(new JsonPrimitive(tagList.getFloat(i)));
                     break;
-                case NBT.TAG_DOUBLE:
+                case EndTag.TAG_DOUBLE:
                     typeId = "d";
                     for (int i = 0; i < tagList.size(); i++)
                         jsonArray.add(new JsonPrimitive(tagList.getDouble(i)));
                     break;
-                case NBT.TAG_STRING:
+                case EndTag.TAG_STRING:
                     typeId = "S";
                     for (int i = 0; i < tagList.size(); i++)
                         jsonArray.add(context.serialize(tagList.getString(i)));
                     break;
-                case NBT.TAG_COMPOUND:
+                case EndTag.TAG_COMPOUND:
                     typeId = "c";
                     for (int i = 0; i < tagList.size(); i++)
                         jsonArray.add(context.serialize(tagList.getCompound(i)));
                     break;
-                case NBT.TAG_INT_ARRAY:
+                case EndTag.TAG_INT_ARRAY:
                     typeId = "i";
                     for (int i = 0; i < tagList.size(); i++)
                     {
@@ -134,10 +134,10 @@ public class NBTTagCompoundType implements DataType<CompoundTag>
                 result.add(typeId + ":" + tagName, jsonArray);
                 break;
             }
-            case NBT.TAG_COMPOUND:
+            case EndTag.TAG_COMPOUND:
                 result.add(JSON_COMPOUND + ":" + tagName, context.serialize(tag, CompoundTag.class));
                 break;
-            case NBT.TAG_INT_ARRAY:
+            case EndTag.TAG_INT_ARRAY:
             {
                 JsonArray jsonArray = new JsonArray();
                 IntArrayTag tagIntArray = (IntArrayTag) tag;

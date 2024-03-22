@@ -30,7 +30,7 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
     {
         for (CachedBlockData blockData : blocks)
         {
-            if (blockData.block.getBlock() != Blocks.AIR)
+            if (blockData.block != Blocks.AIR)
             {
                 Action01Block action = new Action01Block();
                 action.time = date;

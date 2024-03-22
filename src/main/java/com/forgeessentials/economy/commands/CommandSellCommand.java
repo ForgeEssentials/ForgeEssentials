@@ -21,7 +21,7 @@ import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,9 +83,9 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
         ItemStack itemStack = new ItemStack(item, amount);
 
         int foundStacks = 0;
-        for (int slot = 0; slot < player.inventory.items.size(); slot++)
+        for (int slot = 0; slot < player.getInventory().items.size(); slot++)
         {
-            ItemStack stack = player.inventory.items.get(slot);
+            ItemStack stack = player.getInventory().items.get(slot);
             if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
                     && (itemStack.getDamageValue() == -1 || stack.getDamageValue() == itemStack.getDamageValue()))
                 foundStacks += stack.getCount();
@@ -106,14 +106,14 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
                 .performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack())
                         .createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
 
-        for (int slot = 0; slot < player.inventory.items.size(); slot++)
+        for (int slot = 0; slot < player.getInventory().items.size(); slot++)
         {
-            ItemStack stack = player.inventory.items.get(slot);
+            ItemStack stack = player.getInventory().items.get(slot);
             if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
                     && (itemStack.getDamageValue() == -1 || stack.getDamageValue() == itemStack.getDamageValue()))
             {
                 int removeCount = Math.min(stack.getCount(), amount);
-                player.inventory.removeItem(slot, removeCount);
+                player.getInventory().removeItem(slot, removeCount);
                 foundStacks -= removeCount;
                 amount -= removeCount;
                 if (amount <= 0)

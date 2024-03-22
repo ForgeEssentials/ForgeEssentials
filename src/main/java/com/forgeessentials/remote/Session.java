@@ -20,7 +20,7 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 /**
  *

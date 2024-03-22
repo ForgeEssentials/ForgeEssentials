@@ -155,7 +155,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                         }
                         sellerWallet.add(price * itemStack.getCount());
 
-                        Inventory inventory = getServerPlayer(ctx.getSource()).inventory;
+                        Inventory inventory = getServerPlayer(ctx.getSource()).getInventory();
                         inventory.items.set(inventory.selected, ItemStack.EMPTY);
                         PlayerUtil.give(buyer.getPlayerMP(), currentItemStack);
 

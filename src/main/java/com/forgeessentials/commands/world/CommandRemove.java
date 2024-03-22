@@ -84,7 +84,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
         int counter = 0;
         for (ItemEntity entity : entityList) {
             counter += entity.getItem().getCount();
-            entity.remove();
+            entity.kill();
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
         return Command.SINGLE_SUCCESS;
@@ -114,7 +114,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
         int counter = 0;
         for (ItemEntity entity : entityList) {
             counter += entity.getItem().getCount();
-            entity.remove();
+            entity.kill();
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
         return Command.SINGLE_SUCCESS;

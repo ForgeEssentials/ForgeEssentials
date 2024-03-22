@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
@@ -84,16 +84,16 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
     public int processCommandPlayer(CommandContext<CommandSourceStack> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayer sender = getServerPlayer(ctx.getSource());
-        if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK)))
+        if (sender.getInventory().contains(new ItemStack(Items.WRITTEN_BOOK)))
         {
-            for (int i = 0; i < sender.inventory.items.size(); i++)
+            for (int i = 0; i < sender.getInventory().items.size(); i++)
             {
-                ItemStack e = sender.inventory.items.get(i);
+                ItemStack e = sender.getInventory().items.get(i);
                 if (e != ItemStack.EMPTY && e.hasTag() && e.getTag().contains("title") && e.getTag().contains("author")
                         && e.getTag().getString("title").equals("CommandBook")
                         && e.getTag().getString("author").equals("ForgeEssentials"))
                 {
-                    sender.inventory.setItem(i, ItemStack.EMPTY);
+                    sender.getInventory().setItem(i, ItemStack.EMPTY);
                 }
             }
         }
@@ -122,7 +122,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
         is.addTagElement("title", StringTag.valueOf("CommandBook"));
         is.addTagElement("pages", pagesNbt);
 
-        sender.inventory.add(is);
+        sender.getInventory().add(is);
         return Command.SINGLE_SUCCESS;
     }
 

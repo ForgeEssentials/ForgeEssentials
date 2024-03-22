@@ -51,7 +51,7 @@ import com.google.gson.GsonBuilder;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 /**
  * Like 90% copied from Votifier github: <a href="https://github.com/vexsoftware/votifier">...</a> I only changed the init code and the event stuff.

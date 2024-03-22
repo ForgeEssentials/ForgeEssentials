@@ -28,7 +28,7 @@ public class MixinServerLoginNetHandler
 
     @Inject(method = "handleAcceptedLogin()V",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/server/management/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/util/text/ITextComponent;",
+                    target = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;",
                     shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD, 
             cancellable = true)

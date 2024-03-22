@@ -155,13 +155,13 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
         final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-                .filter(a -> MOD.equals(a.getAnnotationType())).collect(Collectors.toList());
+                .filter(a -> MOD.equals(a.annotationType())).collect(Collectors.toList());
 
         for (ModFileScanData.AnnotationData asm : data)
         {
             try
             {
-                Class<?> clazz = Class.forName(asm.getMemberName());
+                Class<?> clazz = Class.forName(asm.memberName());
                 if (RemoteHandler.class.isAssignableFrom(clazz))
                 {
                     RemoteHandler handler = (RemoteHandler) clazz.getDeclaredConstructor().newInstance();

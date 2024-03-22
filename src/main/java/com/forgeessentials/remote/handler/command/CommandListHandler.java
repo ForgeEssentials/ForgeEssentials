@@ -14,7 +14,7 @@ import com.mojang.brigadier.tree.CommandNode;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 @FERemoteHandler(id = RemoteMessageID.COMMAND_LIST)
 public class CommandListHandler extends GenericRemoteHandler<String>

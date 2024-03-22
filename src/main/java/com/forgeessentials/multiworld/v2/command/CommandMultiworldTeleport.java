@@ -65,7 +65,7 @@ public class CommandMultiworldTeleport extends ForgeEssentialsCommandBuilder
     {
     	ServerPlayer player = EntityArgument.getPlayer(ctx, "target");
     	ServerLevel dim = DimensionArgument.getDimension(ctx, "dim");
-    	BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "pos");
+    	BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
 
     	Multiworld multiworld = ModuleMultiworldV2.getMultiworldManager()
 				.getMultiworld(dim.dimension().location().toString());

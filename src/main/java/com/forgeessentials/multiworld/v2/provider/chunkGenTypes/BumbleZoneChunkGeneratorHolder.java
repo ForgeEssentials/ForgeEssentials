@@ -19,8 +19,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatur
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.resources.ResourceLocation;
 
-import ChunkGenerator;
-
 @FEChunkGenProvider(providerName = "the_bumblezone:chunk_generator")
 public class BumbleZoneChunkGeneratorHolder extends ChunkGeneratorHolderBase {
 	@Override

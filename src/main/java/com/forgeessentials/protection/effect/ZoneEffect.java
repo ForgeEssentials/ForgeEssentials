@@ -2,8 +2,6 @@ package com.forgeessentials.protection.effect;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import ServerPlayer;
-
 public abstract class ZoneEffect
 {
 

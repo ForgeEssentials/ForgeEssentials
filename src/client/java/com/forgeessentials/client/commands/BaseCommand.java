@@ -2,12 +2,12 @@ package com.forgeessentials.client.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.CommandSourceStack;
 
 public abstract class BaseCommand
 {
-    protected LiteralArgumentBuilder<CommandSource> builder;
+    protected LiteralArgumentBuilder<CommandSourceStack> builder;
     boolean enabled;
     String name;
     int permissionLevel;
@@ -19,7 +19,7 @@ public abstract class BaseCommand
         this.enabled = enabled;
     }
 
-    public LiteralArgumentBuilder<CommandSource> getBuilder()
+    public LiteralArgumentBuilder<CommandSourceStack> getBuilder()
     {
         return builder;
     }
@@ -29,7 +29,7 @@ public abstract class BaseCommand
         return enabled;
     }
 
-    public LiteralArgumentBuilder<CommandSource> setExecution()
+    public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return null;
     }

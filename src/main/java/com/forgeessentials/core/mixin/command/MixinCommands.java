@@ -5,8 +5,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Map;
 
@@ -31,14 +31,14 @@ public class MixinCommands
      * @author maximuslotro
      * @reason Need to use custom permission handling to give players usable commands Overwrite method to Check if the sender has permission for the commands
      */
-	@Inject(method = "sendCommands(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", at = @At("HEAD"), cancellable = true, require = 1)
+	@Inject(method = "sendCommands(Lnet/minecraft/server/level/ServerPlayer;)V", at = @At("HEAD"), cancellable = true, require = 1)
     public void sendCommands(ServerPlayer p_197051_1_, CallbackInfo callback)
     {
         final Map<CommandNode<CommandSourceStack>, CommandNode<SharedSuggestionProvider>> map = Maps.newHashMap();
         final RootCommandNode<SharedSuggestionProvider> rootcommandnode = new RootCommandNode<>();
         map.put(ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher().getRoot(), rootcommandnode);
         fillUsableCommandsNodesFE(ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher().getRoot(), rootcommandnode,
-                p_197051_1_.createCommandSourceStack(), map, "", new Boolean(false));
+                p_197051_1_.createCommandSourceStack(), map, "", false);
         p_197051_1_.connection.send(new ClientboundCommandsPacket(rootcommandnode));
         callback.cancel();
     }
@@ -83,7 +83,7 @@ public class MixinCommands
                 p_197052_2_.addChild(commandnode1);
                 if (!commandnode.getChildren().isEmpty())
                 {
-                    fillUsableCommandsNodesFE(commandnode, commandnode1, p_197052_3_, p_197052_4_, newNode, new Boolean(dontChangeNode));
+                    fillUsableCommandsNodesFE(commandnode, commandnode1, p_197052_3_, p_197052_4_, newNode, dontChangeNode);
                 }
             }
             else {

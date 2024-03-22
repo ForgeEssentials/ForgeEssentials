@@ -35,7 +35,7 @@ public abstract class MixinPlayerEntity
      * @author Maximuslotro
      * @reason stuff
      */
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z"))
     public boolean onUpdate_NoClip(Player _this)
     {
         return _this.isSpectator() || PlayerInfo.get(_this).isNoClip();

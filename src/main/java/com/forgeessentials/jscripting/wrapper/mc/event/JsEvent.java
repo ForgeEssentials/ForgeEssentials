@@ -12,8 +12,6 @@ import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import CommandSourceStack;
-
 public abstract class JsEvent<T extends Event>
 {
 

@@ -8,8 +8,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 
-import BiomeSource;
-
 @FEBiomeProvider(providerName = "the_bumblezone:biome_source")
 public class BumbleZoneBiomeProviderHelper extends BiomeProviderHolderBase {
 	@Override

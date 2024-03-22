@@ -10,7 +10,7 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 /**
  * Warns those with permission when the memory usage passes a certain percentage threshold

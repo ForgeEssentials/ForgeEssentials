@@ -59,7 +59,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<Player>
     public void setPosition(double x, double y, double z)
     {
         that.setPos(x, x, z);
-        ((ServerPlayer) that).connection.teleport(x, y, z, that.yRot, that.xRot);
+        ((ServerPlayer) that).connection.teleport(x, y, z, that.getYRot(), that.getXRot());
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
@@ -78,7 +78,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<Player>
     public JsPlayerInventory<?> getInventory()
     {
         if (inventory == null)
-            inventory = JsPlayerInventory.get(that.inventory);
+            inventory = JsPlayerInventory.get(that.getInventory());
         return inventory;
     }
 

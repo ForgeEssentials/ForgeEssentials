@@ -182,22 +182,22 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemStack);
-        for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++)
         {
-            ItemStack stack = player.inventory.getItem(slot);
+            ItemStack stack = player.getInventory().getItem(slot);
             if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
                     && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
                 foundStacks += stack.getCount();
         }
         foundStacks = amount = Math.min(foundStacks, amount);
-        for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++)
         {
-            ItemStack stack = player.inventory.getItem(slot);
+            ItemStack stack = player.getInventory().getItem(slot);
             if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
                     && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
             {
                 int removeCount = Math.min(stack.getCount(), foundStacks);
-                player.inventory.removeItem(slot, removeCount);
+                player.getInventory().removeItem(slot, removeCount);
                 foundStacks -= removeCount;
             }
         }
@@ -210,9 +210,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemType);
-        for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++)
         {
-            ItemStack stack = player.inventory.getItem(slot);
+            ItemStack stack = player.getInventory().getItem(slot);
             if (stack != ItemStack.EMPTY && stack.getItem() == itemType.getItem()
                     && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
                 foundStacks += stack.getCount();
