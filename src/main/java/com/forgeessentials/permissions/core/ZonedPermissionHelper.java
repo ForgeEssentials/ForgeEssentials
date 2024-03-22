@@ -131,6 +131,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         // permissionDebugFilters.add("fe.economy.cmdprice");
         permissionDebugFilters.add("worldedit.limit.unrestricted");
         permissionDebugFilters.add("fe.worldborder.bypass");
+        permissionDebugFilters.add("fe.chat.scoreboardcolor");
     }
 
     // ------------------------------------------------------------

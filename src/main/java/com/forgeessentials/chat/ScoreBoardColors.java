@@ -26,6 +26,8 @@ public class ScoreBoardColors
     // From https://stackoverflow.com/a/13667522
     public static final Pattern HEX_PATTERN = Pattern.compile("\\p{XDigit}+");
 
+    private int tickCount = 0;
+    private final int TICK_REFRESH = 40;
 
     public ScoreBoardColors()
     {
@@ -42,13 +44,18 @@ public class ScoreBoardColors
     @SubscribeEvent
     public void tick(TickEvent.ServerTickEvent e)
     {
-        for (EntityPlayerMP playerList : FMLCommonHandler.instance().
-                getMinecraftServerInstance().
-                getPlayerList().getPlayers())
+        if (tickCount % TICK_REFRESH == 0)
         {
-            UserIdent userIdent = UserIdent.get(playerList);
-            updatePlayerColor(userIdent);
+            tickCount = 0;
+            for (EntityPlayerMP playerList : FMLCommonHandler.instance().
+                    getMinecraftServerInstance().
+                    getPlayerList().getPlayers())
+            {
+                UserIdent userIdent = UserIdent.get(playerList);
+                updatePlayerColor(userIdent);
+            }
         }
+        tickCount++;
     }
 
     public void updatePlayerColor(UserIdent userIdent)
