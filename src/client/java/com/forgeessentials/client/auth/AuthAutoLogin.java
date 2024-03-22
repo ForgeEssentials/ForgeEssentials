@@ -3,11 +3,12 @@ package com.forgeessentials.client.auth;
 import java.io.File;
 import java.io.IOException;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.StringTag;
+
+import com.forgeessentials.client.ForgeEssentialsClient;
 
 public class AuthAutoLogin
 {
@@ -37,7 +38,7 @@ public class AuthAutoLogin
                 KEYSTORE_FILE.createNewFile();
                 KEYSTORE = new CompoundTag();
             }
-            KEYSTORE = CompressedStreamTools.read(KEYSTORE_FILE);
+            KEYSTORE = NbtIo.read(KEYSTORE_FILE);
         }
         catch (IOException ex)
         {
@@ -59,7 +60,7 @@ public class AuthAutoLogin
         KEYSTORE.put(serverIP, StringTag.valueOf(key));
         try
         {
-            CompressedStreamTools.write(KEYSTORE, KEYSTORE_FILE);
+            NbtIo.write(KEYSTORE, KEYSTORE_FILE);
         }
         catch (IOException e)
         {
