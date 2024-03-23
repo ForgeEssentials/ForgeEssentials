@@ -35,6 +35,6 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
    - Add `/misc/forgeessentials-1.16.5-annonations.jar` to your build path.
 
 # Notes
-1. Please consider squashing all commits before initially submitting pull requests
+1. We block unsigned commits in PRs.  [Please set up commit signing before making your PR.](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification)
 2. For a local `.gitignore` use `.git/info/exclude`
-3. If you have any questions, join us on IRC
+3. If you have any questions, join us on Discord
