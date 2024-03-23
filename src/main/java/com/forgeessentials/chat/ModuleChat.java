@@ -541,7 +541,7 @@ public class ModuleChat implements ConfigSaver
         // while still early enough to register to Minecraft's the event bus, so this is the best place to do it.
         if (ChatConfig.scoreboardEnabled)
         {
-            new ScoreBoardColors();
+            scoreBoardColors = new ScoreBoardColors();
         }
     }
 
