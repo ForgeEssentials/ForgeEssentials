@@ -2,20 +2,13 @@ package com.forgeessentials.chat;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.TabListNameFormat;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.Logging;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -26,9 +19,7 @@ public class ScoreBoardColors
     public static final String PERM_SCOREBOARD_COLOR = ModuleChat.PERM + ".scoreboardcolor";
     // From https://stackoverflow.com/a/13667522
     public static final Pattern HEX_PATTERN = Pattern.compile("\\p{XDigit}{6}");
-    private final int TICK_REFRESH = 40;
     private final String DEFAULT_COLOR = "FFFFFF";
-    private int tickCount = 0;
 
     public ScoreBoardColors()
     {
