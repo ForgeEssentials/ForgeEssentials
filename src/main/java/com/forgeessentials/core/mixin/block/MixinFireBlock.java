@@ -2,18 +2,18 @@ package com.forgeessentials.core.mixin.block;
 
 import java.util.Random;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.FireBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.MinecraftForge;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.forgeessentials.util.events.world.FireEvent;
-
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.FireBlock;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(FireBlock.class)
 public class MixinFireBlock
@@ -29,7 +29,7 @@ public class MixinFireBlock
      * cancellable = true, remap=false ) public void handleBlockDestroyOntryCatchFire(World world, BlockPos pos, int p_176536_3_, Random p_176536_4_, int p_176536_5_, Direction
      * face, CallbackInfo ci) { if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos))) { ci.cancel(); } }
      */
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/server/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"),
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"),
             cancellable = true)
     public void handleBlockDestroyOnTick(BlockState p_225534_1_, ServerLevel world, BlockPos pos, Random random,
             CallbackInfo ci)

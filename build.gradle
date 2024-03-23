@@ -371,6 +371,12 @@ task processSource(type: Sync) {
     into "$buildDir/src"
 }
 
+compileJava {
+    excludes = [
+            'com/forgeessentials/jscripting/TsdGenerator.java'
+    ]
+}
+
 project.compileUtilsJava {
 	source = processSource.outputs
 }
