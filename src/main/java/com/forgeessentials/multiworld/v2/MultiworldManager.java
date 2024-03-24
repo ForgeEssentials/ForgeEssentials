@@ -76,18 +76,17 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 		static <FIELDHOLDER,FIELDTYPE> Function<FIELDHOLDER,FIELDTYPE> getInstanceField(Class<FIELDHOLDER> fieldHolderClass, String fieldName)
 		{
 			// forge's ORH is needed to reflect into vanilla minecraft java
-			Field field = ObfuscationReflectionHelper.findField(fieldHolderClass, fieldName);
 
 			return instance -> {
 				try
 				{
-					return (FIELDTYPE)(field.get(instance));
+					return (FIELDTYPE)(fieldHolderClass.getField(fieldName));
 				}
-				catch (IllegalArgumentException | IllegalAccessException e)
+				catch (IllegalArgumentException | NoSuchFieldException e)
 				{
 					throw new RuntimeException(e);
 				}
-			};
+            };
 		}
 	
     public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";

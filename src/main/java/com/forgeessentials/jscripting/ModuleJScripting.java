@@ -16,6 +16,8 @@ import javax.script.ScriptException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openjdk.nashorn.api.scripting.NashornScriptEngine;
+import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
@@ -99,7 +101,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Preconditions
     public static boolean canLoad()
     {
-        ScriptEngine engine = SEM.getEngineByName("JavaScript");
+        // FIXME I'm to tired to work out the details of this issue fully right now
+        SEM.registerEngineName("nashorn", new NashornScriptEngineFactory());
+        ScriptEngine engine = SEM.getEngineByName("nashorn");
+        LoggingHandler.felog.debug(engine.toString());
         if (engine != null && (factory = engine.getFactory()) != null)
         {
             isNashorn = factory.getEngineName().toLowerCase().contains("nashorn");

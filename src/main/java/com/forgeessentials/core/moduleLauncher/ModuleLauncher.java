@@ -55,6 +55,7 @@ public class ModuleLauncher
             temp = new ModuleContainer(asm);
             if(temp.version<ForgeEssentials.CURRENT_MODULE_VERSION) {
             	temp.isLoadable=false;
+                LoggingHandler.felog.debug("Module Version " + temp.version + "FE module version " + ForgeEssentials.CURRENT_MODULE_VERSION);
             	LoggingHandler.felog.error("Module: [" + temp.name + "] is outdated! Please update this module to use the latest dev jar! Disabling Module!");
             }
             if(temp.version>ForgeEssentials.CURRENT_MODULE_VERSION) {
