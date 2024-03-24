@@ -511,7 +511,7 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
 	dependsOn shadowJar
-    dependsOn "tsd"
+    // dependsOn "tsd"
     archiveClassifier = "server"
 	archiveAppendix = project.minecraftVersion
 	

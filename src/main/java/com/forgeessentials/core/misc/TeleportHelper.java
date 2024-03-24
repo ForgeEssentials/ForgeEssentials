@@ -292,22 +292,22 @@ public class TeleportHelper extends ServerEventHandler
                 e.setCanceled(true);
         }
     }
-
-    public static void transferEntityToWorld(Entity entity, int oldDim, ServerLevel oldWorld, ServerLevel newWorld,
-            PortalForcer teleporter)
-    {
-        double d0 = entity.position().x;
-        double d1 = entity.position().z;
-        d0 = Mth.clamp((int) d0, -29999872, 29999872);
-        d1 = Mth.clamp((int) d1, -29999872, 29999872);
-        if (entity.isAlive())
-        {
-            entity.absMoveTo(d0, entity.position().y, d1, entity.yRotO, entity.xRotO);
-            // teleporter.placeInPortal(entity, f);
-            newWorld.addFreshEntity(entity);
-            newWorld.updateChunkPos(entity);
-        }
-        entity.setLevel(newWorld);
-    }
+    // FIXME This seems unused?
+//    public static void transferEntityToWorld(Entity entity, int oldDim, ServerLevel oldWorld, ServerLevel newWorld,
+//            PortalForcer teleporter)
+//    {
+//        double d0 = entity.position().x;
+//        double d1 = entity.position().z;
+//        d0 = Mth.clamp((int) d0, -29999872, 29999872);
+//        d1 = Mth.clamp((int) d1, -29999872, 29999872);
+//        if (entity.isAlive())
+//        {
+//            entity.absMoveTo(d0, entity.position().y, d1, entity.yRotO, entity.xRotO);
+//            // teleporter.placeInPortal(entity, f);
+//            newWorld.addFreshEntity(entity);
+//            newWorld.updateChunkPos(entity);
+//        }
+//        entity.setLevel(newWorld);
+//    }
 
 }

@@ -15,6 +15,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.util.Mth;
 import net.minecraft.server.level.ServerLevel;
@@ -121,19 +123,18 @@ public class CommandButcherTickTask implements TickTask
         }
         else
         {
-            for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX)
-                for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ)
-                    if (world.getChunk(chunkX, chunkZ) != null)
-                    {
-                        List<LivingEntity> list = new LinkedList<>();
-                        world.getChunk(chunkX, chunkZ).getEntitiesOfClass(LivingEntity.class, aabb, list, null);
-                        for (LivingEntity entity : list)
-                        {
-                            checkEntity(entity);
-                            if (tickKillCount >= MAX_TICK_KILLS)
-                                return false;
-                        }
-                    }
+//            for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX)
+//                for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ)
+//                    if (world.getChunk(chunkX, chunkZ) != null)
+//                    {
+            List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, aabb);
+            for (LivingEntity entity : list)
+            {
+                checkEntity(entity);
+                if (tickKillCount >= MAX_TICK_KILLS)
+                    return false;
+            }
+//                    }
             ChatOutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
         return true;

@@ -182,7 +182,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (event.getWorld().isClientSide())
             return;
 
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
         {

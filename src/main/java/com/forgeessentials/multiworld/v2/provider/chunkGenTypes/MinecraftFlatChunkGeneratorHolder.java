@@ -35,10 +35,8 @@ public class MinecraftFlatChunkGeneratorHolder extends ChunkGeneratorHolderBase 
 		ImmutableMap<StructureFeature<?>, StructureFeatureConfiguration> villages = ImmutableMap
 				.<StructureFeature<?>, StructureFeatureConfiguration>builder()
 				.put(StructureFeature.VILLAGE, new StructureFeatureConfiguration(32, 8, 10387312)).build();
-		return new FlatLevelSource(new FlatLevelGeneratorSettings(biomes,
-				new StructureSettings(Optional.empty(), villages), defaultLayers, false, false, Optional.of(() -> {
-					return biomes.getOrThrow(Biomes.PLAINS);
-				})));
+		return new FlatLevelSource(new FlatLevelGeneratorSettings(
+                new StructureSettings(Optional.empty(), villages), biomes));
 	}
 
 	@Override

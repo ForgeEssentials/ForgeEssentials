@@ -801,8 +801,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event.stack != null)
         {
             Item item = event.stack.getItem();
-            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem
-                    || item instanceof TallBlockItem || item instanceof PlayerHeadItem)
+            if (item instanceof BlockItem)
                 return;
         }
         logEvent(new LogEventPostInteract(event));

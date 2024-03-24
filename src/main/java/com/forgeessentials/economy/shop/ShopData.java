@@ -226,7 +226,7 @@ public class ShopData
         return entities.get(0);
     }
 
-    public static <T extends Entity> List<T> getEntitiesWithinAABB(Level world, Class<? extends T> clazz,
+    public static <T extends Entity> List<T> getEntitiesWithinAABB(Level world, Class<T> clazz,
             AABB aabb)
     {
         return world.getEntitiesOfClass(clazz, aabb);

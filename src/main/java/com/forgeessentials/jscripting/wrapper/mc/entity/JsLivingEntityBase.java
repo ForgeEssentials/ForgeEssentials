@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 
 public class JsLivingEntityBase<T extends LivingEntity> extends JsEntity<T>
 {
@@ -31,9 +32,9 @@ public class JsLivingEntityBase<T extends LivingEntity> extends JsEntity<T>
         return that.getArmorValue();
     }
 
-    public boolean canEntityBeSeen(JsEntity<Entity> other)
+    public boolean canEntityBeSeen(JsEntity<LivingEntity> other)
     {
-        return that.canSee(other.getThat());
+        return BehaviorUtils.canSee(that, other.getThat());
     }
 
 }
