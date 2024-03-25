@@ -193,18 +193,17 @@ public class ModuleAfterlife extends ServerEventHandler
                 return;
         }
 
-        if (grave.isProtected)
-        {
-            event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    Translator.translate("You may not defile the grave of a player"));
-            return;
-        }
+
         if (grave.canOpen(event.getPlayer()))
         {
             grave.remove(true);
         }
-        else
+        else if (grave.isProtected)
+        {
+            event.setCanceled(true);
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+                    Translator.translate("You may not defile the grave of a player"));
+        } else
         {
             event.setCanceled(true);
         }

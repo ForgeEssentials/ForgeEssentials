@@ -195,9 +195,9 @@ public class Grave implements Loadable
     {
         if (open)
             return false;
-        if (!isProtected)
-            return true;
         if (player.getGameProfile().getId().equals(owner))
+            return true;
+        if (!isProtected)
             return true;
         return APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS);
     }

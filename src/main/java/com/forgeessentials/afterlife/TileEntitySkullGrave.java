@@ -20,7 +20,7 @@ public class TileEntitySkullGrave extends SkullBlockEntity
     public void setOwner(GameProfile player)
     {
         if (player != null)
-            setOwner(player);
+            super.setOwner(player);
     }
 
     @Override
