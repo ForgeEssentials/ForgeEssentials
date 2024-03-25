@@ -42,7 +42,7 @@ public final class ScriptCompiler
     {
         try
         {
-            Class<?> cl = Class.forName("jdk.internal.dynalink.beans.StaticClass", true,
+            Class<?> cl = Class.forName("jdk.dynalink.beans.StaticClass", true,
                     ClassLoader.getSystemClassLoader());
             Constructor<?> constructor = cl.getDeclaredConstructor(Class.class);
             constructor.setAccessible(true);

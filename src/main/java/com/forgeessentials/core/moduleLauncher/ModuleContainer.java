@@ -92,7 +92,7 @@ public class ModuleContainer implements Comparable<Object>
             }
             else
             {
-                LoggingHandler.felog.debug("Requested to enable module: " + name);
+                //LoggingHandler.felog.debug("Requested to enable module: " + name);
             }
         }
 

@@ -71,9 +71,9 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
                                 + StringArgumentType.getString(CommandContext, "mob") + "&&"
                                 + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())
                                 + "&&"
-                                + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())
+                                + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())
                                 + "&&"
-                                + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())
+                                + Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())
                                 + "&&" + DimensionArgument.getDimension(CommandContext, "world").dimension().location()
                                         .toString()))))))
                 .executes(CommandContext -> execute(CommandContext, "help"));

@@ -42,7 +42,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
-@FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
+@FEModule(name = "JScripting", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
 {
 
@@ -101,7 +101,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Preconditions
     public static boolean canLoad()
     {
-        // FIXME I'm to tired to work out the details of this issue fully right now
         SEM.registerEngineName("nashorn", new NashornScriptEngineFactory());
         ScriptEngine engine = SEM.getEngineByName("nashorn");
         LoggingHandler.felog.debug(engine.toString());

@@ -49,7 +49,10 @@ public class ModuleServerVote extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent event)
     {
-        APIRegistry.scripts.addScriptType(scriptKey);
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.addScriptType(scriptKey);
+        }
         try
         {
             votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port, ConfigServerVote.token);
@@ -188,8 +191,10 @@ public class ModuleServerVote extends ConfigLoaderBase
                     ChatOutputHandler.formatColors(ConfigServerVote.msgVoter.replaceAll("%service", vote.serviceName)
                             .replaceAll("%player", vote.player)));
         }
-
-        APIRegistry.scripts.runEventScripts(scriptKey, player.createCommandSourceStack());
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.runEventScripts(scriptKey, player.createCommandSourceStack());
+        }
     }
 
     @Override

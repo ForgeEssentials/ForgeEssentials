@@ -23,7 +23,7 @@ public class CommandUtils
     public static CommandSource GetSource(CommandSourceStack source)
     {
         return ObfuscationReflectionHelper.getPrivateValue(CommandSourceStack.class, source,
-                "source");
+                "f_81288_"); // CommandSourceStack.source
     }
 
     public static UserIdent parsePlayer(String name, boolean mustExist, boolean mustBeOnline)
