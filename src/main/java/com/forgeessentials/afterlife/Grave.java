@@ -126,6 +126,7 @@ public class Grave implements Loadable
                     player.getDisplayName().getString(), point.getBlockPos()));
             point.setY(point.getY() + 1);
         }
+        player.level.setBlockAndUpdate(point.getBlockPos(), blockState);
         if (blockState.getBlock() == block)
         {
             TileEntitySkullGrave skull = new TileEntitySkullGrave(point.getBlockPos(), blockState);
