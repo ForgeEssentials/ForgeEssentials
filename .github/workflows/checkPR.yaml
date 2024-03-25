@@ -12,14 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.workflow_run.head_repository.full_name  }}
           ref: ${{ github.event.workflow_run.head_branch }}
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
           sleep 5
-          echo ${{ github.event.workflow_run.pull_requests[0] }}
-          echo ${{ github.event.workflow_run.pull_requests[0].number }}
+          echo ${{ toJson(github.event.workflow_run.pull_requests) }}
           FILES=$(gh pr view ${{ github.event.workflow_run.pull_requests[0].number }} --json files --jq '.files.[].path')
           if [[ $FILES =~ "gradle" ]]
           then
