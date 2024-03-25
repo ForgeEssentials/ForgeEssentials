@@ -93,6 +93,8 @@ public class ModuleChat implements ConfigSaver
 
     public static TimedMessages timedMessages = new TimedMessages();
 
+    private ScoreBoardColors scoreBoardColors;
+
     /* ------------------------------------------------------------ */
 
     public ModuleChat()
@@ -155,6 +157,9 @@ public class ModuleChat implements ConfigSaver
                 "Text to show in front of the player name in chat messages");
         APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "",
                 "Send chat messages only to players in this range of the sender");
+        if (ChatConfig.scoreboardEnabled) {
+            scoreBoardColors.registerPerms();
+        }
     }
 
     @SubscribeEvent
@@ -532,6 +537,12 @@ public class ModuleChat implements ConfigSaver
         censor.bakeConfig(reload);
         timedMessages.bakeConfig(reload);
         ChatConfig.bakeConfig(reload);
+        // This is a little ugly, but we need ScoreBoardColors run after ChatConfig is baked,
+        // while still early enough to register to Minecraft's the event bus, so this is the best place to do it.
+        if (ChatConfig.scoreboardEnabled)
+        {
+            scoreBoardColors = new ScoreBoardColors();
+        }
     }
 
     @Override

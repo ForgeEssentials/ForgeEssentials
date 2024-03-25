@@ -19,6 +19,8 @@ public class ChatConfig
 
     private static final String CAT_GM = "Gamemodes";
 
+    private static final String CAT_SB = "Scoreboard";
+
     public static final String CHAT_FORMAT_HELP = "Format for chat. Always needs to contain all 5 \"%s\" placeholders like the default!";
 
     private static final String MUTEDCMD_HELP = "All commands in here will be blocked if the player is muted.";
@@ -49,6 +51,7 @@ public class ChatConfig
     public static List<String> loginMessage;
 
     public static Set<String> mutedCommands = new HashSet<>();
+    public static boolean scoreboardEnabled;
 
     static ForgeConfigSpec.ConfigValue<String> FEchatFormat;
     static ForgeConfigSpec.ConfigValue<String> FEwelcomeMessage;
@@ -58,6 +61,7 @@ public class ChatConfig
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeAdventure;
     static ForgeConfigSpec.BooleanValue FELogChat;
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmutedCommands;
+    static ForgeConfigSpec.BooleanValue FEscoreboardEnabled;
 
     public static void load(Builder BUILDER, boolean isReload)
     {
@@ -84,6 +88,9 @@ public class ChatConfig
             }
         }, ConfigBase.stringValidator);
         BUILDER.pop();
+        BUILDER.comment("Scoreboard").push(CAT_SB);
+        FEscoreboardEnabled = BUILDER.define("Enabled", false);
+        BUILDER.pop();
     }
 
     public static void bakeConfig(boolean reload)
@@ -109,8 +116,9 @@ public class ChatConfig
         mutedCommands.clear();
         mutedCommands.addAll(FEmutedCommands.get());
 
-        ModuleChat.instance.setChatLogging(FELogChat.get());
+        scoreboardEnabled = FEscoreboardEnabled.get();
 
+        ModuleChat.instance.setChatLogging(FELogChat.get());
     }
 
 }
