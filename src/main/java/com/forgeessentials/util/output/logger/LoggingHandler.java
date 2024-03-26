@@ -89,7 +89,7 @@ public class LoggingHandler
 
     public static void setLevel(Level level)
     {
-        ((Logger) LoggingHandler.feloger).setLevel(level);
+        ((Logger) LoggingHandler.feloger).get().setLevel(level);
 
         logCache.stop();
         for (LoggerContext context : ((Log4jContextFactory) LogManager.getFactory()).getSelector()

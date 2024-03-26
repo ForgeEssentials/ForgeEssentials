@@ -23,6 +23,8 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import jdk.dynalink.beans.StaticClass;
+
 public final class ScriptCompiler
 {
 
