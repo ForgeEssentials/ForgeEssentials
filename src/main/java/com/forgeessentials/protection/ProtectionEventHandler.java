@@ -385,7 +385,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         float size;
 
         try {
-            size = (float) ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "radius");
+            size = (float) ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "f_46017_"); // radius
         } catch (UnableToAccessFieldException e) {
             e.printStackTrace();
             size = 4;
