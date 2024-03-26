@@ -42,19 +42,7 @@ public final class ScriptCompiler
 
     public static Object toNashornClass(Class<?> c)
     {
-        try
-        {
-            Class<?> cl = Class.forName("jdk.dynalink.beans.StaticClass", true,
-                    ClassLoader.getSystemClassLoader());
-            Constructor<?> constructor = cl.getDeclaredConstructor(Class.class);
-            constructor.setAccessible(true);
-            return constructor.newInstance(c);
-        }
-        catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-        {
-            throw new RuntimeException(e);
-        }
+            return StaticClass.forClass(c);
     }
 
     private static void registerPackageClasses(String packageBase)
