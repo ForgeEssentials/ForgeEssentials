@@ -25,6 +25,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
@@ -332,7 +333,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                     Object data = null;
                     if (additionalData != null)
                     {
-                        data = getEngine().eval("JSON.parse('" + additionalData.toString() + "')");
+                        data = getEngine().eval("JSON.parse('" + DataManager.toJson(additionalData).replaceAll("\n", "") + "')");
                     }
                     Object ret = script.tryCallGlobal(fnName, jsSender, data);
                     if (ret instanceof Boolean)
