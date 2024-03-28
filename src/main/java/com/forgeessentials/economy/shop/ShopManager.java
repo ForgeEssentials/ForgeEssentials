@@ -136,7 +136,7 @@ public class ShopManager extends ServerEventHandler
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         ShopData shop = getShop(point, event.getPlayer().createCommandSourceStack());
         if (shop == null)
             return;

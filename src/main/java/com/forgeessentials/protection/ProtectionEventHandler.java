@@ -41,6 +41,7 @@ import com.forgeessentials.util.events.world.FireEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;
@@ -329,7 +330,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         String permission = (event instanceof FireEvent.Spread) ? ModuleProtection.PERM_FIRE_SPREAD
                 : ModuleProtection.PERM_FIRE_DESTROY;
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.eventLevel, event.getPos());
         if (!APIRegistry.perms.checkUserPermission(null, point, permission))
         {
             event.setCanceled(true);
@@ -349,7 +350,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 ? (ServerPlayer) event.getEntity()
                 : null;
         UserIdent ident = player == null ? null : UserIdent.get(player);
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
 
         String permission = ModuleProtection.getBlockTramplePermission(event.getWorld().getBlockState(event.getPos()));
         ModuleProtection.debugPermission(player, permission);
@@ -384,7 +385,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         float size;
 
         try {
-            size = (float) ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "radius");
+            size = (float) ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "f_46017_"); // radius
         } catch (UnableToAccessFieldException e) {
             e.printStackTrace();
             size = 4;
@@ -664,7 +665,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (isItemBanned(ident, event.getItem().getItem()))
         {
             event.setCanceled(true);
-            event.getItem().remove();
+            event.getItem().remove(RemovalReason.KILLED);
             return;
         }
         if (isInventoryItemBanned(ident, event.getItem().getItem()))
@@ -691,7 +692,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 // destroyed, prevent drops
                 if (anyCreativeModeAtPoint(null, new WorldPoint(event.getEntity())))
                 {
-                    event.getEntity().remove();
+                    event.getEntity().remove(RemovalReason.KILLED);
                     return;
                 }
             }
@@ -704,7 +705,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
 
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
 
         // 1) Do nothing if the whole world is creative!
         WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld());
@@ -783,12 +784,12 @@ public class ProtectionEventHandler extends ServerEventHandler
                 event.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident,
                 event.afterPoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
-        if (gm != GameType.NOT_SET || lastGm != GameType.NOT_SET)
+        if (gm != GameType.DEFAULT_MODE || lastGm != GameType.DEFAULT_MODE)
         {
             // If leaving a creative zone and no other gamemode is set, revert to default
             // (survival)
-            if (lastGm != GameType.NOT_SET && gm == GameType.NOT_SET)
-                gm = GameType.SURVIVAL;
+            if (lastGm != GameType.DEFAULT_MODE && gm == GameType.DEFAULT_MODE)
+                gm = GameType.DEFAULT_MODE;
 
             GameType playerGm = player.gameMode.getGameModeForPlayer();
             if (playerGm != gm)
@@ -1006,7 +1007,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     public static GameType stringToGameType(String gm)
     {
         if (gm == null)
-            return GameType.NOT_SET;
+            return GameType.DEFAULT_MODE;
         switch (gm.toLowerCase())
         {
         case "0":
@@ -1022,7 +1023,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         case "adventure":
             return GameType.ADVENTURE;
         default:
-            return GameType.NOT_SET;
+            return GameType.DEFAULT_MODE;
         }
     }
 

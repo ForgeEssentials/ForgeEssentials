@@ -46,8 +46,11 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPerms(FEModuleServerStartingEvent e)
     {
-        APIRegistry.scripts.addScriptType(signinteractKey);
-        APIRegistry.scripts.addScriptType(signeditKey);
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.addScriptType(signinteractKey);
+            APIRegistry.scripts.addScriptType(signeditKey);
+        }
         APIRegistry.perms.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
         APIRegistry.perms.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
     }
@@ -60,7 +63,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor.createCommandSourceStack(),
+        if (APIRegistry.scripts != null && APIRegistry.scripts.runEventScripts(signeditKey, e.editor.createCommandSourceStack(),
                 new SignInfo(e.editor.getLevel().dimension().location().toString(), e.pos, e.text, e)))
         {
             e.setCanceled(true);
@@ -129,7 +132,7 @@ public class SignToolsModule extends ConfigLoaderBase
             Component[] imessage = ItemUtil.getText(sign);
             String[] signText = getFormatted(imessage);
 
-            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
+            if (APIRegistry.scripts != null && APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
                     new SignInfo(event.getPlayer().level.dimension().toString(), event.getPos(), signText, event)))
             {
                 event.setCanceled(true);

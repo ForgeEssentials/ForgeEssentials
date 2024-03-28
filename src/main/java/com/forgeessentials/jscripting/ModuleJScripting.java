@@ -16,6 +16,8 @@ import javax.script.ScriptException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openjdk.nashorn.api.scripting.NashornScriptEngine;
+import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
@@ -23,6 +25,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
@@ -40,7 +43,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
-@FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false, version=ForgeEssentials.CURRENT_MODULE_VERSION)
+@FEModule(name = "JScripting", parentMod = ForgeEssentials.class, version=ForgeEssentials.CURRENT_MODULE_VERSION)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
 {
 
@@ -99,7 +102,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Preconditions
     public static boolean canLoad()
     {
-        ScriptEngine engine = SEM.getEngineByName("JavaScript");
+        SEM.registerEngineName("nashorn", new NashornScriptEngineFactory());
+        ScriptEngine engine = SEM.getEngineByName("nashorn");
+        LoggingHandler.felog.debug(engine.toString());
         if (engine != null && (factory = engine.getFactory()) != null)
         {
             isNashorn = factory.getEngineName().toLowerCase().contains("nashorn");
@@ -328,7 +333,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                     Object data = null;
                     if (additionalData != null)
                     {
-                        data = getEngine().eval("JSON.parse('" + additionalData.toString() + "')");
+                        data = getEngine().eval("JSON.parse('" + DataManager.toJson(additionalData).replaceAll("\n", "") + "')");
                     }
                     Object ret = script.tryCallGlobal(fnName, jsSender, data);
                     if (ret instanceof Boolean)

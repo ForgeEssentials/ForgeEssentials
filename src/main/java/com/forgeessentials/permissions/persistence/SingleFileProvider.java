@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
+
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
@@ -20,6 +21,14 @@ public class SingleFileProvider extends ZonePersistenceProvider
     public SingleFileProvider()
     {
         file = new File(ServerUtil.getWorldPath(), "FEData/permissions.json");
+        try
+        {
+            file.createNewFile();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     public SingleFileProvider(File file)

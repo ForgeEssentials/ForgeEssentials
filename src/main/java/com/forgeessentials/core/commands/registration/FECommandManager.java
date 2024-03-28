@@ -179,7 +179,7 @@ public class FECommandManager
     		}
     		else {
     			if(FEConfig.overwriteConflictingCommands) {
-    				newChildren.putAll(newChildren);
+    				newChildren.put(child.getKey(), child.getValue());
     			}
     		}
     	}

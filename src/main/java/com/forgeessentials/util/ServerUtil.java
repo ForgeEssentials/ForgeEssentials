@@ -38,7 +38,7 @@ public abstract class ServerUtil
 
     public static DedicatedServerSettings getServerPropProvider(DedicatedServer currentServer)
     {
-        return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "settings");
+        return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "f_139604_");
     }
 
     public static void changeFinalFieldStaticField(Field field, Object newValue) throws Exception

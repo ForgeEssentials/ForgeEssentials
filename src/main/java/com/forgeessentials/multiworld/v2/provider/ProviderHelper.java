@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 
 import com.forgeessentials.multiworld.v2.utils.MultiworldException;
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.google.common.collect.Iterables;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -72,14 +74,13 @@ public class ProviderHelper {
      */
     public void loadDimensionTypes()
     {
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		RegistryAccess registries = server.registryAccess();
-		Registry<DimensionType> loadedProviders = registries.dimensionTypes();
-		LoggingHandler.felog.info("Found {} DimensionTypes", loadedProviders.entrySet().size());
-		for (Entry<ResourceKey<DimensionType>, DimensionType> provider : loadedProviders.entrySet()) {
-			dimensionTypes.put(provider.getKey().location().toString(), provider.getValue());
-			if(provider.getKey().location().getNamespace().equals("minecraft")) {
-				vanillaDimensionTypes.put(provider.getKey().location().toString(), provider.getValue());
+		Iterable<ServerLevel> serverLevels = ServerLifecycleHooks.getCurrentServer().getAllLevels();
+
+		LoggingHandler.felog.info("Found {} DimensionTypes", Iterables.size(serverLevels));
+		for (ServerLevel serverLevel : serverLevels) {
+			dimensionTypes.put(serverLevel.dimension().location().toString(), serverLevel.dimensionType());
+			if(serverLevel.dimension().location().getNamespace().equals("minecraft")) {
+				vanillaDimensionTypes.put(serverLevel.dimension().location().toString(), serverLevel.dimensionType());
 			}
 		}
 

@@ -23,12 +23,12 @@ public final class ItemUtil
     public static Component[] getText(SignBlockEntity sign)
     {
         return ObfuscationReflectionHelper.getPrivateValue(SignBlockEntity.class, sign,
-                "messages");
+                "f_59720_"); // messages
     }
 
     public static void setText(SignBlockEntity sign, Component[] text)
     {
-        ObfuscationReflectionHelper.setPrivateValue(SignBlockEntity.class, sign, text, "messages");
+        ObfuscationReflectionHelper.setPrivateValue(SignBlockEntity.class, sign, text, "f_59720_"); // messages
     }
 
     public static int getItemDamage(ItemStack stack)

@@ -7,10 +7,11 @@ import net.minecraftforge.eventbus.api.Cancelable;
 
 public class FireEvent extends BlockEvent
 {
-
+    public Level eventLevel;
     public FireEvent(Level world, BlockPos pos)
     {
         super(world, pos, world.getBlockState(pos));
+        eventLevel = world;
     }
 
     /**

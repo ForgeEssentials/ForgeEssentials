@@ -194,7 +194,7 @@ project.afterEvaluate {
 // Set up forge options
 minecraft {
 	mappings channel: 'official', version: '1.17.1'
-    //accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
+    accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
     runs {
 	    client {
 	            workingDirectory project.file('rundir')
@@ -327,7 +327,7 @@ dependencies {
 	// TOOLS.jar from jdk for javadoc support
 	// Copied Into libs folder
 	//implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
-	
+
 	//dependicies for chat addon
 	chataddonCompile sourceSets.main.output
 }
@@ -495,7 +495,8 @@ shadowJar {
 	relocate  'antlr','com.forgeessentials.thirdparty.antlr'
 	//relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
 	relocate  'com.mysql','com.forgeessentials.thirdparty.com.mysql'
-	configurations = [project.configurations.shadowLib]
+
+    configurations = [project.configurations.shadowLib]
 	archiveClassifier = "shadow"
 
 	from sourceSets.main.output
@@ -511,7 +512,7 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn clientJar
 	dependsOn shadowJar
-    dependsOn "tsd"
+    // dependsOn "tsd"
     archiveClassifier = "server"
 	archiveAppendix = project.minecraftVersion
 	

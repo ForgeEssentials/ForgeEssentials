@@ -276,13 +276,19 @@ public class AuthEventHandler extends ServerEventHandler
             PasswordManager.addSession(e.getPlayer().getGameProfile().getId(), token);
             ChatOutputHandler.chatConfirmation(e.getPlayer(), "AutoAuth Login Successful.");
         }
-        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer().createCommandSourceStack());
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer().createCommandSourceStack());
+        }
     }
 
     @SubscribeEvent
     public void onAuthLoginFail(PlayerAuthLoginEvent.Failure e)
     {
-        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer().createCommandSourceStack());
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer().createCommandSourceStack());
+        }
     }
 
 }

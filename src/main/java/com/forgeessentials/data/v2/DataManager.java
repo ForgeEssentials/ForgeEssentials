@@ -128,6 +128,7 @@ public class DataManager
         try (FileWriter out = new FileWriter(file))
         {
             toJson(src, out);
+            out.flush(); // required in java 16 in order for file to be created
         }
         catch (RuntimeException | Error | IOException e)
         {

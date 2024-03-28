@@ -129,8 +129,9 @@ public class Grave implements Loadable
         player.level.setBlockAndUpdate(point.getBlockPos(), blockState);
         if (blockState.getBlock() == block)
         {
-            TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-            player.level.setBlockEntity(point.getBlockPos(), skull);
+            TileEntitySkullGrave skull = new TileEntitySkullGrave(point.getBlockPos(), blockState);
+            skull.setOwner(UserIdent.getGameProfileByUuid(owner));
+            player.level.setBlockEntity(skull);
             LoggingHandler.felog.debug(String.format("Placing playerHead for player %s at %s",
                     player.getDisplayName().getString(), point.getBlockPos()));
         }
@@ -171,11 +172,11 @@ public class Grave implements Loadable
             // Grave is destroyed - repair if protection is still active
             if (isProtected)
             {
-                point.getWorld().setBlockAndUpdate(point.getBlockPos(), blockState);
                 if (blockState.getBlock() == block)
                 {
-                    TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-                    point.getWorld().setBlockEntity(point.getBlockPos(), skull);
+                    TileEntitySkullGrave skull = new TileEntitySkullGrave(point.getBlockPos(), blockState);
+                    skull.setOwner(UserIdent.getGameProfileByUuid(owner));
+                    point.getWorld().setBlockEntity(skull);
                 }
             }
             else
@@ -195,9 +196,9 @@ public class Grave implements Loadable
     {
         if (open)
             return false;
-        if (!isProtected)
-            return true;
         if (player.getGameProfile().getId().equals(owner))
+            return true;
+        if (!isProtected)
             return true;
         return APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS);
     }

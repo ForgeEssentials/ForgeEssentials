@@ -98,7 +98,7 @@ public class JsPlayerEntity extends JsLivingEntityBase<Player>
         {
             return ((ServerPlayer) that).gameMode.getGameModeForPlayer();
         }
-        return GameType.NOT_SET;
+        return GameType.DEFAULT_MODE;
     }
 
     /**
@@ -106,7 +106,8 @@ public class JsPlayerEntity extends JsLivingEntityBase<Player>
      */
     public void setGameType(GameType gameType)
     {
-        that.setGameMode(gameType);
+        //FIXME
+        //that.setGameMode(gameType);
     }
 
     // ----- CHECKED UNTIL HERE -----

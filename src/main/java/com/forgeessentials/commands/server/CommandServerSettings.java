@@ -155,12 +155,12 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("level-name").executes(CommandContext -> execute(CommandContext, "level-name")))
                 .then(Commands.literal("level-seed").executes(CommandContext -> execute(CommandContext, "level-seed")))
                 .then(Commands.literal("level-type").executes(CommandContext -> execute(CommandContext, "level-type")))
-                .then(Commands.literal("max-build-height")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("buildlimit", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                        .executes(CommandContext -> execute(CommandContext, "max-build-heightT"))))
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "max-build-heightV"))))
+//                .then(Commands.literal("max-build-height")
+//                        .then(Commands.literal("modify")
+//                                .then(Commands.argument("buildlimit", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+//                                        .executes(CommandContext -> execute(CommandContext, "max-build-heightT"))))
+//                        .then(Commands.literal("view")
+//                                .executes(CommandContext -> execute(CommandContext, "max-build-heightV"))))
                 .then(Commands.literal("max-players")
                         .executes(CommandContext -> execute(CommandContext, "max-players")))
                 .then(Commands.literal("max-tick-time")
@@ -401,11 +401,11 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 
             case "force-gamemodeV":
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        Translator.format("force-gamemode is set to: %s", Boolean.toString(server.getForceGameType())));
+                        Translator.format("force-gamemode is set to: %s", Boolean.toString(settings.getProperties().forceGameMode)));
                 return Command.SINGLE_SUCCESS;
             case "force-gamemodeT":
                 saveSettings("force-gamemode", "forceGameMode", BoolArgumentType.getBool(ctx, "toggle"));
-                server.setForceGameType(BoolArgumentType.getBool(ctx, "toggle"));
+//                server.setForceGameType(BoolArgumentType.getBool(ctx, "toggle"));
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set force-gamemode to %s",
                         Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
                 return Command.SINGLE_SUCCESS;
@@ -435,16 +435,16 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                         Translator.format("Set default gamemode to %s", gamemode.getName()));
                 return Command.SINGLE_SUCCESS;
 
-            case "max-build-heightV":
-                ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        Translator.format("build limit is set to: %d", server.getMaxBuildHeight()));
-                return Command.SINGLE_SUCCESS;
-            case "max-build-heightT":
-                server.setMaxBuildHeight(IntegerArgumentType.getInteger(ctx, "buildlimit"));
-                saveSettings("max-build-height", "maxBuildHeight", IntegerArgumentType.getInteger(ctx, "buildlimit"));
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d",
-                        IntegerArgumentType.getInteger(ctx, "buildlimit")));
-                return Command.SINGLE_SUCCESS;
+//            case "max-build-heightV":
+//                ChatOutputHandler.chatConfirmation(ctx.getSource(),
+//                        Translator.format("build limit is set to: %d", server.getMaxBuildHeight()));
+//                return Command.SINGLE_SUCCESS;
+//            case "max-build-heightT":
+//                server.setMaxBuildHeight(IntegerArgumentType.getInteger(ctx, "buildlimit"));
+//                saveSettings("max-build-height", "maxBuildHeight", IntegerArgumentType.getInteger(ctx, "buildlimit"));
+//                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d",
+//                        IntegerArgumentType.getInteger(ctx, "buildlimit")));
+//                return Command.SINGLE_SUCCESS;
 
             case "motdV":
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));

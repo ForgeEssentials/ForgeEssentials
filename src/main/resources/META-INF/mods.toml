@@ -23,6 +23,6 @@ issueTrackerURL="https://github.com/ForgeEssentials/ForgeEssentials/issues"
 [[dependencies.forgeessentials]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5,1.17)"
+    versionRange="[1.17,1.18)"
     ordering="NONE"
     side="SERVER"

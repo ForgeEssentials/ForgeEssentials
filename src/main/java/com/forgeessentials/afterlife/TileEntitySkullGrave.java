@@ -4,20 +4,23 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntitySkullGrave extends SkullBlockEntity
 {
-
-    public TileEntitySkullGrave()
+    public TileEntitySkullGrave(BlockPos p_155731_, BlockState p_155732_)
     {
+        super(p_155731_, p_155732_);
     }
 
-    public TileEntitySkullGrave(GameProfile player)
+    @Override
+    public void setOwner(GameProfile player)
     {
         if (player != null)
-            setOwner(player);
+            super.setOwner(player);
     }
 
     @Override

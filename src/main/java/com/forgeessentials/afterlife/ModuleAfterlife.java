@@ -182,7 +182,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (event.getWorld().isClientSide())
             return;
 
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
         {
@@ -193,18 +193,17 @@ public class ModuleAfterlife extends ServerEventHandler
                 return;
         }
 
-        if (grave.isProtected)
-        {
-            event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
-                    Translator.translate("You may not defile the grave of a player"));
-            return;
-        }
+
         if (grave.canOpen(event.getPlayer()))
         {
             grave.remove(true);
         }
-        else
+        else if (grave.isProtected)
+        {
+            event.setCanceled(true);
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+                    Translator.translate("You may not defile the grave of a player"));
+        } else
         {
             event.setCanceled(true);
         }
