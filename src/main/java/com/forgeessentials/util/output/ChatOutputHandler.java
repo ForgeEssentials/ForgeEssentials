@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -48,6 +49,23 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         sendMessage(recipient, new TextComponentString(message));
     }
 
+    public static void sendItemMessage(ICommandSender sender, TextFormatting color, String part0, ItemStack item) {
+        sendItemMessage(sender, color, part0, item, null);
+    }
+    public static void sendItemMessage(ICommandSender sender, TextFormatting color, ItemStack item, String part1) {
+        sendItemMessage(sender, color, "", item, part1);
+    }
+
+    public static void sendItemMessage(ICommandSender sender, TextFormatting color, String part0, ItemStack item, String part1) {
+        TextComponentString s1 = new TextComponentString(part0);
+        s1.getStyle().setColor(color);
+        s1.appendSibling(item.getTextComponent());
+        if (part1 != null)
+        {
+            s1.appendText(part1);
+        }
+        sender.sendMessage(s1);
+    }
     /**
      * Sends a message to a {@link ICommandSender} and performs some security checks
      * 

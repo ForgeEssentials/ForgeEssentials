@@ -18,4 +18,9 @@ public class PlayerMarketData
         public UUID sellerId;
         public int timeout;
     }
+
+    /**
+        maxSize of the market.  Set to -1 to disable, or 54 to limit market to a single page!
+     */
+    public int marketSize = -1;
 }
