@@ -162,7 +162,7 @@ public class PlayerMarketCommand extends ParserCommandBase
 
             if (!args.hasPermission(PERM_CMD_SELL_BASE + "." + getItemPermission(newStack.stack)))
             {
-                args.error("You don't have permission to sell %s", newStack.stack.getDisplayName());
+                args.error("You don't have permission to sell %s", newStack.stack);
                 break;
             }
             if (!args.isEmpty())
@@ -176,7 +176,7 @@ public class PlayerMarketCommand extends ParserCommandBase
                 if (price != null && newStack.price < price)
                 {
                     args.warn("Price for %s is lower than server price of %s.  If this is an error, you will need to remove your item!",
-                            newStack.stack.getDisplayName(), price);
+                            newStack.stack, price);
                 }
             }
             else
@@ -187,7 +187,7 @@ public class PlayerMarketCommand extends ParserCommandBase
                 }
                 else
                 {
-                    args.error("No default price set for %s!", newStack.stack.getDisplayName());
+                    args.error("No default price set for %s!", newStack.stack);
                     break;
                 }
             }

@@ -6,6 +6,7 @@ import static com.forgeessentials.util.ServerUtil.getItemPermission;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;
@@ -15,13 +16,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.text.ITextComponent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.chat.Mailer;
-import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.chat.Mailer.MailerSender;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playermarket.PlayerMarketData.AuctionStack;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -144,14 +144,14 @@ public class PlayerMarketContainer extends ContainerChest
             //Add Item to inventory here
             if (!ModulePlayerMarket.instance().data.itemsListed.contains(stack))
             {
-                args.error("%s already sold!", stack.stack.getDisplayName());
+                args.error("%s already sold!", stack.stack);
                 initItems();
                 return;
             }
 
-            if (!args.hasPermission(PERM_CMD_BUY_BASE + "." + getItemPermission(stack.stack)))
+            if (!remove && !args.hasPermission(PERM_CMD_BUY_BASE + "." + getItemPermission(stack.stack)))
             {
-                args.error("You don't have permission to buy %s", stack.stack.getDisplayName());
+                args.error("You don't have permission to buy %s", stack.stack);
                 return;
             }
 
@@ -161,24 +161,18 @@ public class PlayerMarketContainer extends ContainerChest
                 Wallet sellerWallet = APIRegistry.economy.getWallet(UserIdent.get(stack.sellerId));
                 if (!purchaseWallet.covers(stack.price))
                 {
-                    ChatOutputHandler.sendItemMessage(player,
-                            ChatOutputHandler.chatErrorColor,
-                            stack.stack, "Not enough %s to buy {itemStack}", APIRegistry.economy.currency(2));
+                    args.confirm("Not enough %s to buy %s", APIRegistry.economy.currency(2), stack.stack);
                     return;
                 }
 
                 purchaseWallet.withdraw(stack.price);
                 sellerWallet.add(stack.price);
 
-                ChatOutputHandler.sendItemMessage(player,
-                        ChatOutputHandler.chatConfirmationColor, stack.stack,
-                        "{itemStack} purchased for %s", APIRegistry.economy.toString(stack.price));
+                args.confirm("%s purchased for %s", stack.stack, APIRegistry.economy.toString(stack.price));
             }
             else
             {
-                ChatOutputHandler.sendItemMessage(player,
-                        ChatOutputHandler.chatConfirmationColor, stack.stack,
-                        "{itemStack} removed from market");
+                args.confirm("%s removed from market", stack.stack);
             }
             ModulePlayerMarket.instance().data.itemsListed.remove(stack);
             if (!remove)
@@ -188,17 +182,16 @@ public class PlayerMarketContainer extends ContainerChest
             else
             {
                 UserIdent removedUser = UserIdent.get(stack.sellerId);
-
-                ITextComponent component = ChatOutputHandler.getItemMessage(ChatOutputHandler.chatConfirmationColor, stack.stack,
-                        "Your Item {itemStack} was removed by an Admin!");
+                ICommandSender sender;
                 if (removedUser.hasPlayer())
                 {
-                    ChatOutputHandler.sendMessage(removedUser.getPlayer(), component);
+                    sender = removedUser.getPlayer();
                 }
-                else if (ModuleChat.instance != null)
+                else
                 {
-                    Mailer.sendMail(APIRegistry.IDENT_SERVER, removedUser, component.getFormattedText());
+                    sender = new MailerSender(APIRegistry.IDENT_SERVER, removedUser);
                 }
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Your Item %s was removed by an Admin!", stack.stack));
             }
             initItems();
         }

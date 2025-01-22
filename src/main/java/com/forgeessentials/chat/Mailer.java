@@ -8,6 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.command.CommandMail;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -17,9 +26,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-
 public class Mailer extends ServerEventHandler
 {
 
@@ -27,6 +33,45 @@ public class Mailer extends ServerEventHandler
     {
         super();
         FECommandManager.registerCommand(new CommandMail());
+    }
+
+    public static class MailerSender implements ICommandSender
+    {
+
+        private final UserIdent sender;
+        private final UserIdent ident;
+
+        public MailerSender(UserIdent sender, UserIdent ident)
+        {
+            this.sender = sender;
+
+            this.ident = ident;
+        }
+
+        @Override public String getName()
+        {
+            return ident.getUsername();
+        }
+
+        @Override public boolean canUseCommand(int i, String s)
+        {
+            return false;
+        }
+
+        @Override public World getEntityWorld()
+        {
+            return null;
+        }
+
+        @Nullable @Override public MinecraftServer getServer()
+        {
+            return null;
+        }
+
+        @Override public void sendMessage(ITextComponent component)
+        {
+            Mailer.sendMail(sender, ident, component.getFormattedText());
+        }
     }
 
     public static class Mail

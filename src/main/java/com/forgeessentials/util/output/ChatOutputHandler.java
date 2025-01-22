@@ -50,28 +50,6 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         sendMessage(recipient, new TextComponentString(message));
     }
 
-    public static void sendItemMessage(ICommandSender sender, TextFormatting color, ItemStack item, String msg, Object... format) {
-        ITextComponent s1 = getItemMessage(color, item, msg, format);
-        sendMessage(sender, s1);
-    }
-
-    public static ITextComponent getItemMessage(TextFormatting color, ItemStack item, String msg, Object... format) {
-        if (format.length > 0) {
-            msg = Translator.format(msg, format);
-        } else {
-            msg = Translator.translate(msg);
-        }
-        String[] parts = msg.split("\\{itemStack}", 2);
-        TextComponentString s1 = new TextComponentString(parts[0]);
-        s1.getStyle().setColor(color);
-        s1.appendSibling(item.getTextComponent());
-        if (parts.length > 1)
-        {
-            s1.appendText(parts[1]);
-        }
-        return s1;
-    }
-
     /**
      * Sends a message to a {@link ICommandSender} and performs some security checks
      * 
@@ -99,14 +77,48 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, String message, TextFormatting color)
     {
         message = formatColors(message);
+        Pattern itemStack = Pattern.compile("\\{itemStack@([0123456789abcdef]+)}");
+        Matcher matcher = itemStack.matcher(message);
+        TextComponentString component;
+        if (matcher.find())
+        {
+            String[] parts = itemStack.split(message);
+            component = new TextComponentString(parts[0]);
+            component.getStyle().setColor(color);
+
+            for (int i = 0; i < parts.length; i++)
+            {
+                ItemStack stack = Translator.stacks.get(matcher.group(1)).get();
+                if (stack != null)
+                {
+                    component.appendSibling(stack.getTextComponent());
+                }
+                else
+                {
+                    component.appendText(matcher.group());
+                }
+                if (i + 1 < parts.length)
+                {
+                    component.appendText(parts[i + 1]);
+                }
+                if (!matcher.find())
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            component = new TextComponentString(message);
+        }
         if (recipient instanceof EntityPlayer)
         {
-            TextComponentString component = new TextComponentString(message);
-            component.getStyle().setColor(color);
             sendMessage(recipient, component);
         }
         else
-            sendMessage(recipient, stripFormatting(message));
+        {
+            sendMessage(recipient, component.getUnformattedText());
+        }
     }
 
     /**
