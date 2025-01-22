@@ -35,7 +35,8 @@ public class PlayerMarketContainer extends ContainerChest
     CommandParserArgs args;
 
     public PlayerMarketContainer(IInventory playerInventory, IInventory chestInventory,
-            EntityPlayer player, boolean multiPage, boolean remove, List<AuctionStack> _itemsListed, CommandParserArgs args) {
+            EntityPlayer player, boolean multiPage, boolean remove, List<AuctionStack> _itemsListed, CommandParserArgs args)
+    {
         super(playerInventory, chestInventory, player);
         this.multiPage = multiPage;
         this.remove = remove;
@@ -43,12 +44,15 @@ public class PlayerMarketContainer extends ContainerChest
         this.args = args;
     }
 
-    public static void initItems(IInventory source, int offset, int amount,  List<AuctionStack> _itemsListed, CommandParserArgs args) {
+    public static void initItems(IInventory source, int offset, int amount, List<AuctionStack> _itemsListed, CommandParserArgs args)
+    {
         int size = offset + amount;
         int invSize = source.getSizeInventory();
-        for (int i = offset; i < size; i++) {
-            if (i >= _itemsListed.size()) {
-                if (i-offset < invSize)
+        for (int i = offset; i < size; i++)
+        {
+            if (i >= _itemsListed.size())
+            {
+                if (i - offset < invSize)
                 {
                     source.setInventorySlotContents(i - offset, ItemStack.EMPTY);
                 }
@@ -59,7 +63,8 @@ public class PlayerMarketContainer extends ContainerChest
             ItemStack stack = auctionStack.stack.copy();
 
             NBTTagCompound tag = stack.getTagCompound();
-            if (tag == null) {
+            if (tag == null)
+            {
                 tag = new NBTTagCompound();
             }
 
@@ -74,7 +79,7 @@ public class PlayerMarketContainer extends ContainerChest
             tag.setTag("display", display);
             stack.setTagCompound(tag);
 
-            source.setInventorySlotContents(i-offset, stack);
+            source.setInventorySlotContents(i - offset, stack);
         }
         source.markDirty();
     }
@@ -85,36 +90,47 @@ public class PlayerMarketContainer extends ContainerChest
         LoggingHandler.felog.debug("SlotId: {}, dragType: {}, clickType: {}, player: {}", slotId, dragType, clickTypeIn, player);
 
         if (clickTypeIn == ClickType.PICKUP &&
-                !(new Exception()).getStackTrace()[1].getClassName().equals("invtweaks.network.packets.ITPacketClick")) {
+                !(new Exception()).getStackTrace()[1].getClassName().equals("invtweaks.network.packets.ITPacketClick"))
+        {
             slotPickup(slotId, dragType, clickTypeIn, player);
         }
 
-        if (clickTypeIn.equals(ClickType.QUICK_MOVE)) {
+        if (clickTypeIn.equals(ClickType.QUICK_MOVE))
+        {
             return inventorySlots.get(slotId).getStack();
-        } else {
+        }
+        else
+        {
             return ItemStack.EMPTY;
         }
     }
+
     public synchronized void slotPickup(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
 
         if (inventorySlots.get(slotId).inventory.equals(getLowerChestInventory()))
         {
-            if (multiPage && slotId >= 45) {
-                if (slotId == 48) {
-                    if (currentPage > 0) {
+            if (multiPage && slotId >= 45)
+            {
+                if (slotId == 48)
+                {
+                    if (currentPage > 0)
+                    {
                         currentPage--;
                     }
                     initItems(getLowerChestInventory(), currentPage * 45, 45, _itemsListed, args);
-                } else if (slotId == 50) {
-                    if (currentPage < (_itemsListed.size()-1) / 45) {
+                }
+                else if (slotId == 50)
+                {
+                    if (currentPage < (_itemsListed.size() - 1) / 45)
+                    {
                         currentPage++;
                     }
                     initItems(getLowerChestInventory(), currentPage * 45, 45, _itemsListed, args);
                 }
                 return;
             }
-            AuctionStack stack = _itemsListed.get(slotId + currentPage*45);
+            AuctionStack stack = _itemsListed.get(slotId + currentPage * 45);
 
             //Add Item to inventory here
             if (!ModulePlayerMarket.instance().data.itemsListed.contains(stack))
@@ -125,8 +141,8 @@ public class PlayerMarketContainer extends ContainerChest
                 return;
             }
 
-
-            if (!args.hasPermission(PERM_CMD_BUY_BASE + "." + getItemPermission(stack.stack))) {
+            if (!args.hasPermission(PERM_CMD_BUY_BASE + "." + getItemPermission(stack.stack)))
+            {
                 args.error("You don't have permission to buy %s", stack.stack.getDisplayName());
                 return;
             }
@@ -159,14 +175,19 @@ public class PlayerMarketContainer extends ContainerChest
             if (!remove)
             {
                 player.inventory.addItemStackToInventory(stack.stack);
-            } else {
+            }
+            else
+            {
                 UserIdent removedUser = UserIdent.get(stack.sellerId);
 
                 String[] msg = Translator.format("Your Item | was removed by an Admin!").split("\\|");
 
-                if (removedUser.hasPlayer()) {
+                if (removedUser.hasPlayer())
+                {
                     ChatOutputHandler.sendItemMessage(player, ChatOutputHandler.chatConfirmationColor, msg[0], stack.stack, msg[1]);
-                } else if (ModuleChat.instance != null){
+                }
+                else if (ModuleChat.instance != null)
+                {
                     Mailer.sendMail(APIRegistry.IDENT_SERVER, removedUser, msg[0] + stack.stack.getDisplayName() + msg[1]);
                 }
             }

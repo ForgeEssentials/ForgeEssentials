@@ -64,11 +64,13 @@ public class PlayerMarketCommand extends ParserCommandBase
 
     @Override public List<String> getAliases()
     {
-        return Arrays.asList("pshop","playershop", "auctionhouse", "ah");
+        return Arrays.asList("pshop", "playershop", "auctionhouse", "ah");
     }
 
-    protected void ShowPlayerMarket(CommandParserArgs args, boolean remove) {
-        if (args.isTabCompletion) {
+    protected void ShowPlayerMarket(CommandParserArgs args, boolean remove)
+    {
+        if (args.isTabCompletion)
+        {
             return;
         }
         EntityPlayerMP player = args.senderPlayer;
@@ -78,12 +80,15 @@ public class PlayerMarketCommand extends ParserCommandBase
         final int[] currentPage = new int[1];
         InventoryBasic source = new InventoryBasic("Chest", false, multiPage ? 54 : _itemsListed.size());
 
-        if (multiPage) {
+        if (multiPage)
+        {
             initItems(source, 0, 45, _itemsListed, args);
             //Init Menu
             source.setInventorySlotContents(48, new ItemStack(Items.ARROW));
             source.setInventorySlotContents(50, new ItemStack(Items.TIPPED_ARROW));
-        } else {
+        }
+        else
+        {
             initItems(source, 0, 54, _itemsListed, args);
         }
         BasicInteraction menuChest = new BasicInteraction("Player Market", true, source)
@@ -102,9 +107,11 @@ public class PlayerMarketCommand extends ParserCommandBase
 
         player.displayGUIChest(menuChest);
     }
+
     @Override public void parse(CommandParserArgs args) throws CommandException
     {
-        if (args.senderPlayer == null) {
+        if (args.senderPlayer == null)
+        {
             args.error("Must be a player to use command!");
             return;
         }
@@ -117,7 +124,8 @@ public class PlayerMarketCommand extends ParserCommandBase
         args.tabComplete("buy", "remove", "server", "sell");
         String arg = args.remove();
         AuctionStack newStack = new AuctionStack();
-        switch (arg) {
+        switch (arg)
+        {
         case "buy":
             ShowPlayerMarket(args, false);
             break;
@@ -138,7 +146,9 @@ public class PlayerMarketCommand extends ParserCommandBase
             newStack.sellerId = APIRegistry.IDENT_SERVER.getUuid();
             newStack.sellerName = APIRegistry.IDENT_SERVER.getUsername();
         case "sell":
-            if (ModulePlayerMarket.instance().data.marketSize >= 0 && ModulePlayerMarket.instance().data.itemsListed.size() >= ModulePlayerMarket.instance().data.marketSize) {
+            if (ModulePlayerMarket.instance().data.marketSize >= 0
+                    && ModulePlayerMarket.instance().data.itemsListed.size() >= ModulePlayerMarket.instance().data.marketSize)
+            {
                 args.error("The market is currently full!");
                 break;
             }
@@ -150,24 +160,33 @@ public class PlayerMarketCommand extends ParserCommandBase
                 break;
             }
 
-            if (!args.hasPermission(PERM_CMD_SELL_BASE + "." + getItemPermission(newStack.stack))) {
+            if (!args.hasPermission(PERM_CMD_SELL_BASE + "." + getItemPermission(newStack.stack)))
+            {
                 args.error("You don't have permission to sell %s", newStack.stack.getDisplayName());
                 break;
             }
             if (!args.isEmpty())
             {
                 newStack.price = args.parseInt();
-                if (newStack.price < 0) {
+                if (newStack.price < 0)
+                {
                     args.error("Price can not be negative!");
                     break;
                 }
-                if (price != null && newStack.price < price) {
-                    args.warn("Price for %s is lower than server price of %s.  If this is an error, you will need to remove your item!", newStack.stack.getDisplayName(), price);
+                if (price != null && newStack.price < price)
+                {
+                    args.warn("Price for %s is lower than server price of %s.  If this is an error, you will need to remove your item!",
+                            newStack.stack.getDisplayName(), price);
                 }
-            } else {
-                if (price != null) {
+            }
+            else
+            {
+                if (price != null)
+                {
                     newStack.price = price;
-                } else {
+                }
+                else
+                {
                     args.error("No default price set for %s!", newStack.stack.getDisplayName());
                     break;
                 }

@@ -11,7 +11,8 @@ public class PlayerMarketData
 
     public List<AuctionStack> itemsListed = new ArrayList<>();
 
-    public static class AuctionStack {
+    public static class AuctionStack
+    {
         public ItemStack stack;
         public long price;
         public String sellerName;
@@ -20,7 +21,7 @@ public class PlayerMarketData
     }
 
     /**
-        maxSize of the market.  Set to -1 to disable, or 54 to limit market to a single page!
+     * maxSize of the market.  Set to -1 to disable, or 54 to limit market to a single page!
      */
     public int marketSize = -1;
 }

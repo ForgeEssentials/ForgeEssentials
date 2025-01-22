@@ -36,38 +36,49 @@ public class ModulePlayerMarket extends ServerEventHandler
     static File moduleDir;
 
     public PlayerMarketData data = new PlayerMarketData();
+
     public static ModulePlayerMarket instance()
     {
         return instance;
     }
+
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         if (ModuleLauncher.getModuleList().contains("Economy"))
         {
             FECommandManager.registerCommand(new PlayerMarketCommand());
-            APIRegistry.perms.registerPermission(PERM+".*", DefaultPermissionLevel.OP, "Auction House base node");
-            APIRegistry.perms.registerPermission(PERM_CMD+".*", DefaultPermissionLevel.OP, "Auction House Commands");
-            APIRegistry.perms.registerPermission(PERM_CMD_SERVER+".*", DefaultPermissionLevel.OP, "Allows Listing an item as the server!");
-            APIRegistry.perms.registerPermission(PERM_CMD_REMOVE+".*", DefaultPermissionLevel.OP, "Allows removing any item!");
+            APIRegistry.perms.registerPermission(PERM + ".*", DefaultPermissionLevel.OP, "Auction House base node");
+            APIRegistry.perms.registerPermission(PERM_CMD + ".*", DefaultPermissionLevel.OP, "Auction House Commands");
+            APIRegistry.perms.registerPermission(PERM_CMD_SERVER + ".*", DefaultPermissionLevel.OP, "Allows Listing an item as the server!");
+            APIRegistry.perms.registerPermission(PERM_CMD_REMOVE + ".*", DefaultPermissionLevel.OP, "Allows removing any item!");
 
-            APIRegistry.perms.registerPermission(PERM_CMD_SELL_BASE + ".*", DefaultPermissionLevel.ALL, "Allows selling a specific item! ex: fe.playermarket.sell.minecraft.iron_block");
-            APIRegistry.perms.registerPermission(PERM_CMD_BUY_BASE + ".*", DefaultPermissionLevel.ALL, "Allows buying a specific item! ex: fe.playermarket.buy.minecraft.iron_block");
-        } else {
+            APIRegistry.perms.registerPermission(PERM_CMD_SELL_BASE + ".*", DefaultPermissionLevel.ALL,
+                    "Allows selling a specific item! ex: fe.playermarket.sell.minecraft.iron_block");
+            APIRegistry.perms.registerPermission(PERM_CMD_BUY_BASE + ".*", DefaultPermissionLevel.ALL,
+                    "Allows buying a specific item! ex: fe.playermarket.buy.minecraft.iron_block");
+        }
+        else
+        {
             LoggingHandler.felog.fatal("PlayerMarket requires the economy module to be enabled!  It has been soft disabled!");
         }
     }
 
     @SubscribeEvent
-    public void serverPreInit(FEModuleServerPreInitEvent e) {
+    public void serverPreInit(FEModuleServerPreInitEvent e)
+    {
         PlayerMarketData data = DataManager.getInstance().load(PlayerMarketData.class, "PlayerMarket");
-        if (data != null) {
+        if (data != null)
+        {
             this.data = data;
         }
     }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void save(WorldEvent.Save event) {
-        if (event.getWorld() == FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld()) {
+    public void save(WorldEvent.Save event)
+    {
+        if (event.getWorld() == FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld())
+        {
             DataManager.getInstance().save(data, "PlayerMarket");
         }
     }
