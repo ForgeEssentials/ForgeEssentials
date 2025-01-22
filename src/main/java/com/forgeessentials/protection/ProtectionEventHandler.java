@@ -387,7 +387,6 @@ public class ProtectionEventHandler extends ServerEventHandler
         // }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void explosionDetonateEvent(ExplosionEvent.Detonate event)
     {
@@ -912,7 +911,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (player == null || player.playerNetServerHandler == null)
             return;
-        final Packet packet = te.getDescriptionPacket();
+        final Packet<?> packet = te.getDescriptionPacket();
         if (packet == null)
             return;
         TaskRegistry.runLater(new Runnable() {
