@@ -206,6 +206,7 @@ dependencies {
 	shadowLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
 	implementation 'javax.persistence:javax.persistence-api:2.2'
 	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
+	annotationProcessor group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
@@ -247,11 +248,9 @@ sourceSets {
 	}
 	main {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
-		ext.refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
-		ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 
 	test {
