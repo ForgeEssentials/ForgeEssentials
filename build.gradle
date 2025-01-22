@@ -205,8 +205,7 @@ dependencies {
     shadowLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	shadowLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
 	implementation 'javax.persistence:javax.persistence-api:2.2'
-	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.14.Final'
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
