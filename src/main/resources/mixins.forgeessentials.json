@@ -4,7 +4,7 @@
     "refmap": "mixins.forgeessentials.refmap.json",
     "mixins": [
       "MixinDimensionManager",
-      "block.MixinBlock",
+      //"block.MixinBlock",
       "block.MixinBlockEndPortal",
       "block.MixinBlockFire",
       "block.MixinBlockPortal",
