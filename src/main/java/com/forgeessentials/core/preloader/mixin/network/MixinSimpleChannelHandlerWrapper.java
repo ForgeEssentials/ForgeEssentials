@@ -34,6 +34,9 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
     private REPLY redirectNetworkHandler(IMessageHandler<?, ?> iMessageHandler, REQ message, MessageContext ctx) {
 
         EntityPlayer player = ctx.netHandler instanceof NetHandlerPlayServer ? ctx.getServerHandler().playerEntity : null;
+        if (player == null && FMLLaunchHandler.side() != Side.CLIENT) {
+            LoggingHandler.felog.fatal("This should never happen! nethandler is instance of client but side is Server!");
+        }
         if (ctx.side == Side.CLIENT || !ModuleAuth.isEnabled() || player == null || ModuleAuth.isAuthenticated(player) || ModuleAuth.isAllowedMethod(message)) {
             return messageHandler.onMessage(message, ctx);
         }
