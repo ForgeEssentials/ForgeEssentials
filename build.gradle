@@ -31,7 +31,7 @@ buildscript {
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 		//classpath("com.modrinth.minotaur:Minotaur:2.8.3")
 	}
 
