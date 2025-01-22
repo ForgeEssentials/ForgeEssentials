@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
@@ -49,23 +50,28 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         sendMessage(recipient, new TextComponentString(message));
     }
 
-    public static void sendItemMessage(ICommandSender sender, TextFormatting color, String part0, ItemStack item) {
-        sendItemMessage(sender, color, part0, item, null);
-    }
-    public static void sendItemMessage(ICommandSender sender, TextFormatting color, ItemStack item, String part1) {
-        sendItemMessage(sender, color, "", item, part1);
+    public static void sendItemMessage(ICommandSender sender, TextFormatting color, ItemStack item, String msg, Object... format) {
+        ITextComponent s1 = getItemMessage(color, item, msg, format);
+        sendMessage(sender, s1);
     }
 
-    public static void sendItemMessage(ICommandSender sender, TextFormatting color, String part0, ItemStack item, String part1) {
-        TextComponentString s1 = new TextComponentString(part0);
+    public static ITextComponent getItemMessage(TextFormatting color, ItemStack item, String msg, Object... format) {
+        if (format.length > 0) {
+            msg = Translator.format(msg, format);
+        } else {
+            msg = Translator.translate(msg);
+        }
+        String[] parts = msg.split("\\{itemStack}", 1);
+        TextComponentString s1 = new TextComponentString(parts[0]);
         s1.getStyle().setColor(color);
         s1.appendSibling(item.getTextComponent());
-        if (part1 != null)
+        if (parts.length > 1)
         {
-            s1.appendText(part1);
+            s1.appendText(parts[1]);
         }
-        sender.sendMessage(s1);
+        return s1;
     }
+
     /**
      * Sends a message to a {@link ICommandSender} and performs some security checks
      * 

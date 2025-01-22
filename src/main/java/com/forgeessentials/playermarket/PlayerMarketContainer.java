@@ -15,13 +15,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.text.ITextComponent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.chat.Mailer;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playermarket.PlayerMarketData.AuctionStack;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -86,11 +86,13 @@ public class PlayerMarketContainer extends ContainerChest
         source.markDirty();
     }
 
-    public void initItems() {
+    public void initItems()
+    {
         _itemsListed.clear();
         _itemsListed.addAll(ModulePlayerMarket.instance().data.itemsListed);
         initItems(getLowerChestInventory(), multiPage ? currentPage * 45 : 0, multiPage ? 45 : 54, _itemsListed, args);
     }
+
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
@@ -161,8 +163,7 @@ public class PlayerMarketContainer extends ContainerChest
                 {
                     ChatOutputHandler.sendItemMessage(player,
                             ChatOutputHandler.chatErrorColor,
-                            Translator.format("Not enough %s to buy ", APIRegistry.economy.currency(2)),
-                            stack.stack);
+                            stack.stack, "Not enough %s to buy {itemStack}", APIRegistry.economy.currency(2));
                     return;
                 }
 
@@ -171,11 +172,13 @@ public class PlayerMarketContainer extends ContainerChest
 
                 ChatOutputHandler.sendItemMessage(player,
                         ChatOutputHandler.chatConfirmationColor, stack.stack,
-                        Translator.format(" purchased for %s", APIRegistry.economy.toString(stack.price)));
+                        "{itemStack} purchased for %s", APIRegistry.economy.toString(stack.price));
             }
             else
             {
-                ChatOutputHandler.sendItemMessage(player, ChatOutputHandler.chatConfirmationColor, stack.stack, Translator.translate(" removed from market"));
+                ChatOutputHandler.sendItemMessage(player,
+                        ChatOutputHandler.chatConfirmationColor, stack.stack,
+                        "{itemStack} removed from market");
             }
             ModulePlayerMarket.instance().data.itemsListed.remove(stack);
             if (!remove)
@@ -186,15 +189,15 @@ public class PlayerMarketContainer extends ContainerChest
             {
                 UserIdent removedUser = UserIdent.get(stack.sellerId);
 
-                String[] msg = Translator.format("Your Item | was removed by an Admin!").split("\\|");
-
+                ITextComponent component = ChatOutputHandler.getItemMessage(ChatOutputHandler.chatConfirmationColor, stack.stack,
+                        "Your Item {itemStack} was removed by an Admin!");
                 if (removedUser.hasPlayer())
                 {
-                    ChatOutputHandler.sendItemMessage(player, ChatOutputHandler.chatConfirmationColor, msg[0], stack.stack, msg[1]);
+                    ChatOutputHandler.sendMessage(removedUser.getPlayer(), component);
                 }
                 else if (ModuleChat.instance != null)
                 {
-                    Mailer.sendMail(APIRegistry.IDENT_SERVER, removedUser, msg[0] + stack.stack.getDisplayName() + msg[1]);
+                    Mailer.sendMail(APIRegistry.IDENT_SERVER, removedUser, component.getFormattedText());
                 }
             }
             initItems();
