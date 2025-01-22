@@ -129,11 +129,13 @@ jobs:
             });
             fs.writeFileSync('${{github.workspace}}/jscripting.zip', Buffer.from(download.data));
             
-            return await github.rest.repos.getReleaseByTag({
+            var release = await github.rest.repos.getReleaseByTag({
                owner: context.repo.owner,
                repo: context.repo.repo, 
                tag: '${{ github.event.workflow_run.head_branch }}'
-            }).body;
+            });
+
+            return release.body;
           result-encoding: string
       - env:
           CF_APIKEY: ${{ secrets.CF_APIKEY }}
