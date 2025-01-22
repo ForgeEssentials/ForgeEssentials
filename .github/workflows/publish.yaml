@@ -135,7 +135,7 @@ jobs:
                tag: '${{ github.event.workflow_run.head_branch }}'
             });
 
-            return release.body;
+            return release.data.body;
           result-encoding: string
       - env:
           CF_APIKEY: ${{ secrets.CF_APIKEY }}
