@@ -61,7 +61,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         } else {
             msg = Translator.translate(msg);
         }
-        String[] parts = msg.split("\\{itemStack}", 1);
+        String[] parts = msg.split("\\{itemStack}", 2);
         TextComponentString s1 = new TextComponentString(parts[0]);
         s1.getStyle().setColor(color);
         s1.appendSibling(item.getTextComponent());
