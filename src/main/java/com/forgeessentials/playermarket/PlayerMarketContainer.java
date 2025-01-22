@@ -3,6 +3,7 @@ package com.forgeessentials.playermarket;
 import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_BUY_BASE;
 import static com.forgeessentials.util.ServerUtil.getItemPermission;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,17 +32,18 @@ public class PlayerMarketContainer extends ContainerChest
     boolean multiPage;
     boolean remove;
     int currentPage;
-    List<AuctionStack> _itemsListed;
+    ArrayList<AuctionStack> _itemsListed;
     CommandParserArgs args;
 
     public PlayerMarketContainer(IInventory playerInventory, IInventory chestInventory,
-            EntityPlayer player, boolean multiPage, boolean remove, List<AuctionStack> _itemsListed, CommandParserArgs args)
+            EntityPlayer player, boolean multiPage, boolean remove, ArrayList<AuctionStack> _itemsListed, CommandParserArgs args)
     {
         super(playerInventory, chestInventory, player);
         this.multiPage = multiPage;
         this.remove = remove;
         this._itemsListed = _itemsListed;
         this.args = args;
+
     }
 
     public static void initItems(IInventory source, int offset, int amount, List<AuctionStack> _itemsListed, CommandParserArgs args)
@@ -84,6 +86,11 @@ public class PlayerMarketContainer extends ContainerChest
         source.markDirty();
     }
 
+    public void initItems() {
+        _itemsListed.clear();
+        _itemsListed.addAll(ModulePlayerMarket.instance().data.itemsListed);
+        initItems(getLowerChestInventory(), multiPage ? currentPage * 45 : 0, multiPage ? 45 : 54, _itemsListed, args);
+    }
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
@@ -118,7 +125,7 @@ public class PlayerMarketContainer extends ContainerChest
                     {
                         currentPage--;
                     }
-                    initItems(getLowerChestInventory(), currentPage * 45, 45, _itemsListed, args);
+                    initItems();
                 }
                 else if (slotId == 50)
                 {
@@ -126,7 +133,7 @@ public class PlayerMarketContainer extends ContainerChest
                     {
                         currentPage++;
                     }
-                    initItems(getLowerChestInventory(), currentPage * 45, 45, _itemsListed, args);
+                    initItems();
                 }
                 return;
             }
@@ -136,8 +143,7 @@ public class PlayerMarketContainer extends ContainerChest
             if (!ModulePlayerMarket.instance().data.itemsListed.contains(stack))
             {
                 args.error("%s already sold!", stack.stack.getDisplayName());
-                _itemsListed.remove(stack);
-                initItems(getLowerChestInventory(), currentPage * 45, 45, _itemsListed, args);
+                initItems();
                 return;
             }
 
@@ -191,8 +197,7 @@ public class PlayerMarketContainer extends ContainerChest
                     Mailer.sendMail(APIRegistry.IDENT_SERVER, removedUser, msg[0] + stack.stack.getDisplayName() + msg[1]);
                 }
             }
-            _itemsListed.remove(stack);
-            initItems(getLowerChestInventory(), currentPage * 45, 45, _itemsListed, args);
+            initItems();
         }
     }
 

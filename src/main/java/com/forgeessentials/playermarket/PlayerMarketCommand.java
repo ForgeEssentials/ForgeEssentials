@@ -75,7 +75,7 @@ public class PlayerMarketCommand extends ParserCommandBase
         }
         EntityPlayerMP player = args.senderPlayer;
         //Take a local copy of itemsListed for basic concurrency.
-        List<AuctionStack> _itemsListed = new ArrayList<>(ModulePlayerMarket.instance().data.itemsListed);
+        ArrayList<AuctionStack> _itemsListed = new ArrayList<>(ModulePlayerMarket.instance().data.itemsListed);
         final boolean multiPage = _itemsListed.size() > 54;
         final int[] currentPage = new int[1];
         InventoryBasic source = new InventoryBasic("Chest", false, multiPage ? 54 : _itemsListed.size());
