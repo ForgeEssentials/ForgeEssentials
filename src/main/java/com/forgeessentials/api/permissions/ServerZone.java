@@ -165,7 +165,7 @@ public class ServerZone extends Zone implements Loadable
 
     public WorldZone getWorldZone(World world)
     {
-        return getWorldZone(world.provider.dimensionId);
+        return getWorldZone(world.provider.getDimensionId());
     }
 
     // ------------------------------------------------------------
@@ -322,7 +322,7 @@ public class ServerZone extends Zone implements Loadable
         if (ident != null)
         {
             // Include special groups
-            if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
+            if (MinecraftServer.getServer().getConfigurationManager().canSendCommands(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,12 +16,17 @@ import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -36,11 +42,6 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-
 public class TeleportHelper extends ServerEventHandler
 {
 
@@ -53,9 +54,12 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public boolean placeInExistingPortal(Entity entity, double x, double y, double z, float rotationYaw)
+        public boolean placeInExistingPortal(Entity entity, float yaw)
         {
-            entity.setLocationAndAngles(x, y, z, rotationYaw, entity.rotationPitch);
+            int i = MathHelper.floor_double(entity.posX);
+            int j = MathHelper.floor_double(entity.posY) - 1;
+            int k = MathHelper.floor_double(entity.posZ);
+            entity.setLocationAndAngles(i, j, k, entity.rotationYaw, 0.0F);
             return true;
         }
 
@@ -66,9 +70,9 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw)
+        public void placeInPortal(Entity entity, float rotationYaw)
         {
-            placeInExistingPortal(entity, x, y, z, rotationYaw);
+            placeInExistingPortal(entity, rotationYaw);
         }
 
     }
@@ -126,7 +130,7 @@ public class TeleportHelper extends ServerEventHandler
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
-    public static void teleport(EntityPlayerMP player, WarpPoint point)
+    public static void teleport(EntityPlayerMP player, WarpPoint point) throws CommandException
     {
         if (point.getWorld() == null)
         {
@@ -188,8 +192,8 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getY() < 0)
             return false;
-        Block block1 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY(), point.getBlockZ());
-        Block block2 = point.getWorld().getBlock(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
+        Block block1 = point.getWorld().getBlockState(point.getBlockPos()).getBlock();
+        Block block2 = point.getWorld().getBlockState(new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ())).getBlock();
         boolean block1Free = !block1.getMaterial().isSolid() || block1.getBlockBoundsMaxX() < 1 || block1.getBlockBoundsMaxY() > 0;
         boolean block2Free = !block2.getMaterial().isSolid() || block2.getBlockBoundsMaxX() < 1 || block2.getBlockBoundsMaxY() > 0;
         return block1Free && block2Free;
@@ -274,13 +278,13 @@ public class TeleportHelper extends ServerEventHandler
             ident = UserIdent.get((EntityPlayer) e.entity);
         else if (e.entity instanceof EntityLiving)
             ident = APIRegistry.IDENT_NPC;
-        WorldPoint pointFrom = new WorldPoint(e.world, e.x, e.y, e.z);
-        WorldPoint pointTo = new WorldPoint(e.targetDimension, e.targetX, e.targetY, e.targetZ);
+        WorldPoint pointFrom = new WorldPoint(e.world, e.pos);
+        WorldPoint pointTo = new WorldPoint(e.targetDimension, e.pos);
         if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_PORTALFROM))
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.provider.dimensionId != e.targetDimension) {
+        if (e.world.provider.getDimensionId() != e.targetDimension) {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
             if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
@@ -296,14 +300,14 @@ public class TeleportHelper extends ServerEventHandler
         WorldServer oldWorld = mcServer.worldServerForDimension(player.dimension);
         player.dimension = dimension;
         WorldServer newWorld = mcServer.worldServerForDimension(player.dimension);
-        player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, newWorld.difficultySetting,
+        player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, newWorld.getDifficulty(),
                 newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType())); // Forge: Use new dimensions information
         oldWorld.removePlayerEntityDangerously(player);
         player.isDead = false;
 
         transferEntityToWorld(player, oldDim, oldWorld, newWorld, teleporter);
 
-        mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
+        mcServer.getConfigurationManager().preparePlayer(player, oldWorld);
         player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
                 player.rotationPitch);
         player.theItemInWorldManager.setWorld(newWorld);
@@ -336,7 +340,7 @@ public class TeleportHelper extends ServerEventHandler
         if (entity.isEntityAlive())
         {
             entity.setLocationAndAngles(d0, entity.posY, d1, entity.rotationYaw, entity.rotationPitch);
-            teleporter.placeInPortal(entity, d3, d4, d5, f);
+            teleporter.placeInPortal(entity, f);
             newWorld.spawnEntityInWorld(entity);
             newWorld.updateEntityWithOptionalForce(entity, false);
         }

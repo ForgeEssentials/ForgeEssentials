@@ -1,10 +1,10 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 
 public abstract class WorldBorderEffect
 {

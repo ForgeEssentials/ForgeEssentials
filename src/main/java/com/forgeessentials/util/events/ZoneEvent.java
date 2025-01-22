@@ -2,7 +2,7 @@ package com.forgeessentials.util.events;
 
 import com.forgeessentials.api.permissions.Zone;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class ZoneEvent extends Event
 {

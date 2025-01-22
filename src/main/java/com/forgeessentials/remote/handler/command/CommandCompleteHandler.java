@@ -1,10 +1,8 @@
 package com.forgeessentials.remote.handler.command;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
@@ -43,19 +41,7 @@ public class CommandCompleteHandler extends GenericRemoteHandler<String>
             error("Command not found");
 
         RemoteCommandSender sender = RemoteCommandSender.get(session);
-        try
-        {
-            return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, command.addTabCompletionOptions(sender, args));
-        }
-        catch (CommandException e)
-        {
-            return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, new ArrayList<String>());
-        }
-        catch (Exception e)
-        {
-            error("Exception: " + e.getMessage());
-        }
-        return null;
+        return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, command.addTabCompletionOptions(sender, args, sender.getPosition()));
     }
 
 }

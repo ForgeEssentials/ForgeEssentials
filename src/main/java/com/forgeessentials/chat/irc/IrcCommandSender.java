@@ -1,10 +1,13 @@
 package com.forgeessentials.chat.irc;
 
+import net.minecraft.command.CommandResultStats.Type;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import org.pircbotx.User;
@@ -27,15 +30,15 @@ public class IrcCommandSender implements ICommandSender
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return "IRC:" + user.getNick();
     }
 
     @Override
-    public IChatComponent func_145748_c_()
+    public IChatComponent getDisplayName()
     {
-        return new ChatComponentText(this.getCommandSenderName());
+        return new ChatComponentText(this.getName());
     }
 
     @Override
@@ -51,16 +54,43 @@ public class IrcCommandSender implements ICommandSender
         return true;
     }
 
+	@Override
+	public BlockPos getPosition() {
+		return getServer().getPosition();
+	}
+
     @Override
-    public ChunkCoordinates getPlayerCoordinates()
+    public Vec3 getPositionVector()
     {
-        return MinecraftServer.getServer().getPlayerCoordinates();
+        return getServer().getPositionVector();
     }
 
     @Override
     public World getEntityWorld()
     {
-        return MinecraftServer.getServer().getEntityWorld();
+        return getServer().getEntityWorld();
     }
 
+    @Override
+    public Entity getCommandSenderEntity()
+    {
+        return getServer().getCommandSenderEntity();
+    }
+
+    @Override
+    public boolean sendCommandFeedback()
+    {
+        return getServer().sendCommandFeedback();
+    }
+
+    @Override
+    public void setCommandStat(Type p_174794_1_, int p_174794_2_)
+    {
+        getServer().setCommandStat(p_174794_1_, p_174794_2_);
+    }
+
+    public MinecraftServer getServer()
+    {
+        return MinecraftServer.getServer();
+    }
 }

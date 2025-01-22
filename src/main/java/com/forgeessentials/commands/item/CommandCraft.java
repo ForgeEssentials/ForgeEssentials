@@ -1,9 +1,14 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.block.BlockWorkbench;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraftforge.permission.PermissionLevel;
+
+import java.lang.ref.WeakReference;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
@@ -11,7 +16,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandCraft extends ForgeEssentialsCommandBase
 {
-    
+ 
+    protected WeakReference<EntityPlayer> lastPlayer = new WeakReference<>(null);
+
     @Override
     public String getCommandName()
     {
@@ -51,12 +58,12 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        EntityPlayerMP player = sender;
-        player.getNextWindowId();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 1, "Crafting", 9, true));
-        player.openContainer = new ContainerCheatyWorkbench(player.inventory, player.worldObj);
-        player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+    	sender.displayGui(new BlockWorkbench.InterfaceCraftingTable(sender.worldObj, sender.getPosition()) {
+            @Override public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+            {
+                return new ContainerCheatyWorkbench(playerInventory, sender.worldObj);
+            }
+        });
     }
 
     @Override

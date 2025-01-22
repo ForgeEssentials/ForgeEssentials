@@ -1,7 +1,8 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.fml.common;
 
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class JsTickEvent<T extends TickEvent> extends JsEvent<T> {
 

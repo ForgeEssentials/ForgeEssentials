@@ -1,28 +1,8 @@
 package com.forgeessentials.permissions.ftbu_compat;
 
-import java.lang.reflect.Field;
-import java.util.Collection;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.server.MinecraftServer;
-import serverutils.events.RegisterRankConfigHandlerEvent;
-import serverutils.lib.config.ConfigNull;
-import serverutils.lib.config.ConfigValue;
-import serverutils.lib.config.DefaultRankConfigHandler;
-import serverutils.lib.config.IRankConfigHandler;
-import serverutils.lib.config.RankConfigValueInfo;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-public class FTBURankConfigHandler implements IRankConfigHandler
+public class FTBURankConfigHandler //implements IRankConfigHandler
 {
+	/*
     @SubscribeEvent
     public void registerRankConfigHandler(RegisterRankConfigHandlerEvent event)
     {
@@ -95,5 +75,5 @@ public class FTBURankConfigHandler implements IRankConfigHandler
     @Nullable @Override public RankConfigValueInfo getInfo(String node)
     {
         return DefaultRankConfigHandler.INSTANCE.getInfo(node);
-    }
+    }*/
 }

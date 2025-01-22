@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.forgeessentials.api.UserIdent;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class PermissionCheckEvent extends Event
 {

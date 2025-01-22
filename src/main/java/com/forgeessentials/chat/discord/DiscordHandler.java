@@ -34,6 +34,10 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AchievementEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,12 +52,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 public class DiscordHandler extends ConfigLoaderBase
 {
@@ -83,7 +81,6 @@ public class DiscordHandler extends ConfigLoaderBase
     public DiscordHandler()
     {
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
@@ -262,7 +259,7 @@ public class DiscordHandler extends ConfigLoaderBase
     HashMap<UUID, HashSet<String>> playerMap = new HashMap<>();
     @SubscribeEvent(priority =  EventPriority.LOWEST)
     public  void achievementEvent(AchievementEvent event) {
-        if (sendMessages && !(event.entityPlayer instanceof FakePlayer) && event.entityPlayer instanceof EntityPlayerMP && !((EntityPlayerMP) event.entityPlayer).func_147099_x().hasAchievementUnlocked(event.achievement))
+        if (sendMessages && !(event.entityPlayer instanceof FakePlayer) && event.entityPlayer instanceof EntityPlayerMP && !((EntityPlayerMP) event.entityPlayer).getStatFile().hasAchievementUnlocked(event.achievement))
         {
             if (!playerMap.containsKey(event.entityPlayer.getUniqueID()))
             {
@@ -270,22 +267,23 @@ public class DiscordHandler extends ConfigLoaderBase
             }
 
             if (playerMap.get(event.entityPlayer.getUniqueID()).contains(event.achievement.statId)) {
-                LoggingHandler.felog.debug("Duplicate Entry Detected for {}:{}! {}", event.entityPlayer.getUniqueID(),event.entityPlayer.getCommandSenderName(), event.achievement.statId);
+                LoggingHandler.felog.debug("Duplicate Entry Detected for {}:{}! {}", event.entityPlayer.getUniqueID(),event.entityPlayer.getName(), event.achievement.statId);
                 return;
             }
 
             playerMap.get(event.entityPlayer.getUniqueID()).add(event.achievement.statId);
             LoggingHandler.felog.debug(event.achievement.toString());
-            sendMessage(Translator.format("%s has just earned the achievement ***`%s`***", event.entityPlayer.getCommandSenderName(), event.achievement.func_150951_e().getUnformattedText()));
+            sendMessage(Translator.format("%s has just earned the achievement ***`%s`***", event.entityPlayer.getName(), event.achievement.getStatName().getUnformattedText()));
 
         }
     }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatEvent(ServerChatEvent event)
     {
         if (sendMessages&& !(event.player instanceof FakePlayer))
         {
-            sendMessage(ChatOutputHandler.stripFormatting(event.component.getUnformattedText()));
+            sendMessage(ChatOutputHandler.stripFormatting(event.getComponent().getUnformattedText()));
         }
     }
 
@@ -294,7 +292,7 @@ public class DiscordHandler extends ConfigLoaderBase
     {
         if (showGameEvents && !(event.player instanceof FakePlayer))
         {
-            sendMessage(Translator.format("%s joined the game", event.player.getCommandSenderName()));
+            sendMessage(Translator.format("%s joined the game", event.player.getName()));
         }
     }
 
@@ -303,7 +301,7 @@ public class DiscordHandler extends ConfigLoaderBase
     {
         if (showGameEvents && !(event.player instanceof FakePlayer))
         {
-            sendMessage(Translator.format("%s left the game", event.player.getCommandSenderName()));
+            sendMessage(Translator.format("%s left the game", event.player.getName()));
         }
     }
 
@@ -316,7 +314,7 @@ public class DiscordHandler extends ConfigLoaderBase
         }
         if (showGameEvents && !(event.entityLiving instanceof FakePlayer))
         {
-            sendMessage(Translator.format("_%s died_", event.entityLiving.getCommandSenderName()));
+            sendMessage(Translator.format("_%s died_", event.entityLiving.getName()));
         }
     }
 
@@ -325,11 +323,11 @@ public class DiscordHandler extends ConfigLoaderBase
     {
         if (event.command.getCommandName().equals("say"))
         {
-            sendMessage(Translator.format("[%s] %s", event.sender.getCommandSenderName(), StringUtils.join(event.parameters, " ")));
+            sendMessage(Translator.format("[%s] %s", event.sender.getName(), StringUtils.join(event.parameters, " ")));
         }
         else if (event.command.getCommandName().equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", event.sender.getCommandSenderName(), StringUtils.join(event.parameters, " ")));
+            sendMessage(Translator.format("* %s %s", event.sender.getName(), StringUtils.join(event.parameters, " ")));
         }
     }
 

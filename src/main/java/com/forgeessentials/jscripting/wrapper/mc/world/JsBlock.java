@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
-
-import cpw.mods.fml.common.registry.GameData;
 
 /**
  * @tsd.static Block
@@ -44,7 +43,7 @@ public class JsBlock extends JsWrapper<Block>
 
     public String getName()
     {
-        return GameData.getBlockRegistry().getNameForObject(that);
+        return GameData.getBlockRegistry().getNameForObject(that).toString();
     }
 
 }

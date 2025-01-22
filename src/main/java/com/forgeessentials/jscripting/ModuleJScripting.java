@@ -12,9 +12,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +38,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -185,7 +183,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             {
                 getScript(file);
             }
-            catch (CommandException | IOException | ScriptException e)
+            catch (IOException | ScriptException e)
             {
                 String scriptName = file.getName();
                 ChatOutputHandler.chatError(sender, String.format("FE Script error in %s:", scriptName));

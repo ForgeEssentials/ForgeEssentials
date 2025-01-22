@@ -47,13 +47,12 @@ import javax.crypto.spec.SecretKeySpec;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLLog;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.FMLLog;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -310,7 +309,7 @@ public class VoteReceiver extends Thread
 
                 if (vote != null)
                 {
-                    EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(vote.player);
+                    EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(vote.player);
                     if (player == null)
                     {
                         if (!ConfigServerVote.allowOfflineVotes)

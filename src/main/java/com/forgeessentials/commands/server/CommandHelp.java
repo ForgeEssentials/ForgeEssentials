@@ -8,11 +8,13 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -80,8 +82,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -103,7 +104,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
             {
                 if (arguments.isTabCompletion)
                 {
-                    arguments.tabCompletion = MinecraftServer.getServer().getCommandManager().getPossibleCommands(arguments.sender, name);
+                	arguments.tabCompletion = MinecraftServer.getServer().getCommandManager().getTabCompletionOptions(arguments.sender, name, BlockPos.ORIGIN);
                     return;
                 }
 
@@ -157,7 +158,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 
-    public void showHelpPage(ICommandSender sender)
+    public void showHelpPage(ICommandSender sender) throws CommandException
     {
         if (messages.length == 0)
             showHelpPage(sender, 1);
@@ -165,7 +166,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
             ChatOutputHandler.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
     }
 
-    public void showHelpPage(ICommandSender sender, int page)
+    public void showHelpPage(ICommandSender sender, int page) throws CommandException
     {
         fixer.processCommand(sender, new String[] { Integer.toString(page) });
     }

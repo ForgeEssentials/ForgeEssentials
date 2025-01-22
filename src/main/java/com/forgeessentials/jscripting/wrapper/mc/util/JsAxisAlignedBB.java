@@ -14,12 +14,12 @@ public class JsAxisAlignedBB extends JsWrapper<AxisAlignedBB>
 
     public JsAxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
     {
-        this(AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ));
+        this(AxisAlignedBB.fromBounds(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
     public JsAxisAlignedBB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
     {
-        that.setBounds(minX, minY, minZ, maxX, maxY, maxZ);
+        that =  new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
         return this;
     }
 

@@ -1,5 +1,6 @@
 package com.forgeessentials.permissions.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -65,7 +66,7 @@ public class CommandZone extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -125,7 +126,7 @@ public class CommandZone extends ParserCommandBase
         return worldZone.getAreaZone(arg);
     }
 
-    public static void parseList(CommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -190,7 +191,7 @@ public class CommandZone extends ParserCommandBase
         }
     }
 
-    public static void parseDefine(CommandParserArgs arguments, boolean redefine)
+    public static void parseDefine(CommandParserArgs arguments, boolean redefine) throws CommandException
     {
         arguments.checkPermission(PERM_DEFINE);
         if (arguments.isEmpty())
@@ -248,7 +249,7 @@ public class CommandZone extends ParserCommandBase
         }
     }
 
-    public static void parseDelete(CommandParserArgs arguments)
+    public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(PERM_DELETE);
         if (arguments.isEmpty())
@@ -268,7 +269,7 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("Area \"%s\" has been deleted.", areaZone.getName());
     }
 
-    public static void parseSelect(CommandParserArgs arguments)
+    public static void parseSelect(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(PERM_INFO);
         if (arguments.isEmpty())
@@ -290,7 +291,7 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("Area \"%s\" has been selected.", areaName);
     }
 
-    public static void parseInfo(CommandParserArgs arguments)
+    public static void parseInfo(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(PERM_INFO);
         if (arguments.isEmpty())
@@ -313,7 +314,7 @@ public class CommandZone extends ParserCommandBase
         arguments.notify("  end   = " + area.getHighPoint().toString());
     }
 
-    public static void parseEntryExitMessage(CommandParserArgs arguments, boolean isEntry)
+    public static void parseEntryExitMessage(CommandParserArgs arguments, boolean isEntry) throws CommandException
     {
         arguments.checkPermission(PERM_SETTINGS);
         if (arguments.isEmpty())
@@ -344,7 +345,7 @@ public class CommandZone extends ParserCommandBase
         areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
     }
 
-    public static void tabCompleteArea(CommandParserArgs arguments)
+    public static void tabCompleteArea(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion && arguments.size() == 1)
         {

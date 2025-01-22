@@ -43,6 +43,14 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -68,17 +76,10 @@ import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
 import com.forgeessentials.playerlogger.event.LogEventPlayerPositions;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -388,7 +389,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Integer id = blockTypeCache.get(block);
         if (id != null)
             return em.getReference(BlockData.class, id);
-        BlockData data = getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        BlockData data = getBlock(ServerUtil.getBlockName(block));
         blockTypeCache.put(block, data.id);
         return data;
     }
@@ -660,7 +661,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             // Get only last state of all changes
             Map<Point, BlockSnapshot> changes = new HashMap<>();
             for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
-                changes.put(new Point(snapshot.x, snapshot.y, snapshot.z), snapshot);
+                changes.put(new Point(snapshot.pos.getX(), snapshot.pos.getY(), snapshot.pos.getZ()), snapshot);
             for (BlockSnapshot snapshot : changes.values())
                 eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
             startThread();

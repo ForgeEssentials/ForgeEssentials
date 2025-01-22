@@ -18,10 +18,10 @@ public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
     @Override
     public void process(EntityManager em)
     {
-        if (em != null && em.find(WorldData.class, event.world.provider.dimensionId) == null)
+        if (em != null && em.find(WorldData.class, event.world.provider.getDimensionId()) == null)
         {
             WorldData world = new WorldData();
-            world.id = event.world.provider.dimensionId;
+            world.id = event.world.provider.getDimensionId();
             world.name = event.world.provider.getDimensionName();
             em.persist(world);
         }

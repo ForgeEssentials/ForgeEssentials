@@ -18,7 +18,7 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
     public LogEventBreak(BlockEvent.BreakEvent event)
     {
         super(event);
-        tileEntityBlob = getTileEntityBlob(event.world.getTileEntity(event.x, event.y, event.z));
+        tileEntityBlob = getTileEntityBlob(event.world.getTileEntity(event.pos));
     }
 
     @Override
@@ -27,14 +27,14 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
         Action01Block action = new Action01Block();
         action.time = date;
         action.player = getPlayer(event.getPlayer());
-        action.world = getWorld(event.world.provider.dimensionId);
-        action.block = getBlock(event.block);
-        action.metadata = event.blockMetadata;
+        action.world = getWorld(event.world.provider.getDimensionId());
+        action.block = getBlock(event.state.getBlock());
+        action.metadata = event.state.getBlock().getMetaFromState(event.state);
         action.entity = tileEntityBlob;
         action.type = ActionBlockType.BREAK;
-        action.x = event.x;
-        action.y = event.y;
-        action.z = event.z;
+        action.x = event.pos.getX();
+        action.y = event.pos.getY();
+        action.z = event.pos.getZ();
         em.persist(action);
     }
 

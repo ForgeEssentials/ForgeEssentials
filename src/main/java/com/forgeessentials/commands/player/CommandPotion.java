@@ -3,9 +3,12 @@ package com.forgeessentials.commands.player;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -15,7 +18,7 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+
 
 public class CommandPotion extends ForgeEssentialsCommandBase
 {
@@ -89,7 +92,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         int ID = 0;
         int dur = 0;
@@ -97,7 +100,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 
         if (args.length == 4)
         {
-            ampl = parseIntWithMin(sender, args[3], 0);
+            ampl = parseInt(args[3], 0);
         }
         else if (args.length != 3)
         {
@@ -108,7 +111,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("That potion effect was not found.");
 
         ID = names.get(args[1]);
-        dur = parseIntWithMin(sender, args[2], 0) * 20;
+        dur = parseInt(args[2], 0) * 20;
 
         PotionEffect eff = new PotionEffect(ID, dur, ampl);
         if (args[0].equalsIgnoreCase("me"))
@@ -129,7 +132,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         int ID = 0;
         int dur = 0;
@@ -137,12 +140,12 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 
         if (args.length == 4)
         {
-            ampl = parseIntWithMin(sender, args[3], 0);
+            ampl = parseInt(args[3], 0);
         }
         else if (args.length != 3)
             throw new TranslatedCommandException(getCommandUsage(sender));
 
-        dur = parseIntWithMin(sender, args[2], 0) * 20;
+        dur = parseInt(args[2], 0) * 20;
         PotionEffect eff = new PotionEffect(ID, dur, ampl);
 
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
@@ -156,7 +159,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

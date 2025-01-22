@@ -7,6 +7,7 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 
 import com.forgeessentials.core.misc.TeleportHelper.SimpleTeleporter;
 
@@ -15,11 +16,11 @@ public class WorldServerMultiworld extends WorldServer
 
     private SimpleTeleporter worldTeleporter;
 
-    public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, String worldname, int dimensionId, WorldSettings worldSettings,
+    public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, WorldInfo info, int dimensionId, WorldSettings worldSettings,
             WorldServer worldServer, Profiler profiler, Multiworld world)
     {
-        super(mcServer, saveHandler, worldname, dimensionId, worldSettings, profiler);
-        this.mapStorage = worldServer.mapStorage;
+        super(mcServer, saveHandler, info, dimensionId, profiler);
+        this.mapStorage = worldServer.getMapStorage();
         this.worldScoreboard = worldServer.getScoreboard();
         this.worldTeleporter = new SimpleTeleporter(this);
     }

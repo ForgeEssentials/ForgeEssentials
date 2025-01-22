@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
@@ -70,7 +71,7 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
             throw new WrongUsageException("commands.message.usage", new Object[0]);
@@ -82,7 +83,7 @@ public class CommandReply extends ForgeEssentialsCommandBase
         if (target == sender)
             throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
 
-        ModuleChat.tell(sender, func_147176_a(sender, args, 0, !(sender instanceof EntityPlayer)), target);
+        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
     }
 
 }

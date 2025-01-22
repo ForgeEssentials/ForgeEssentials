@@ -3,6 +3,7 @@ package com.forgeessentials.protection.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permission.PermissionLevel;
@@ -49,7 +50,7 @@ public class CommandItemPermission extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
 

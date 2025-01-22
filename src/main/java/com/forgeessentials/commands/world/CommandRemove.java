@@ -2,6 +2,7 @@ package com.forgeessentials.commands.world;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,9 +64,8 @@ public class CommandRemove extends ForgeEssentialsCommandBase
         return ModuleCommands.PERM + ".remove";
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         int radius = 10;
         double centerX;
@@ -74,14 +74,14 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
         if (args.length == 1)
         {
-            radius = parseIntWithMin(sender, args[0], 0);
+            radius = parseInt(sender, args[0], 0);
             centerX = sender.posX;
             centerY = sender.posY;
             centerZ = sender.posZ;
         }
         else if (args.length == 4)
         {
-            radius = parseIntWithMin(sender, args[0], 0);
+            radius = parseInt(sender, args[0], 0);
             centerX = parseDouble(sender, args[1], sender.posX);
             centerY = parseDouble(sender, args[2], sender.posY);
             centerZ = parseDouble(sender, args[3], sender.posZ);
@@ -93,7 +93,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
         List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(
                 EntityItem.class,
-                AxisAlignedBB.getBoundingBox(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius
+                AxisAlignedBB.fromBounds(centerX - radius, centerY - radius, centerZ - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius
                         + 1));
 
         int counter = 0;
@@ -106,22 +106,21 @@ public class CommandRemove extends ForgeEssentialsCommandBase
         ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         int radius = 0;
         WorldPoint center = new WorldPoint(0, 0, 0, 0);
 
         if (args.length >= 4)
         {
-            radius = parseIntWithMin(sender, args[0], 0);
-            center.setX(parseInt(sender, args[1]));
-            center.setY(parseInt(sender, args[2]));
-            center.setZ(parseInt(sender, args[3]));
+            radius = parseInt(sender, args[0], 0);
+            center.setX(parseInt(args[1]));
+            center.setY(parseInt(args[2]));
+            center.setZ(parseInt(args[3]));
             if (args.length >= 5)
             {
-                center.setDimension(parseInt(sender, args[3]));
+                center.setDimension(parseInt(args[3]));
             }
         }
         else
@@ -129,7 +128,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
         List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(
                 EntityItem.class,
-                AxisAlignedBB.getBoundingBox(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY()
+                AxisAlignedBB.fromBounds(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY()
                         + radius + 1, center.getZ() + radius + 1));
 
         int counter = 0;

@@ -4,10 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 
 public class Point {
+
+    protected BlockPos blockPos;
 
 	protected int x;
 
@@ -38,11 +40,6 @@ public class Point {
 		z = (int) Math.floor(entity.posZ);
 	}
 
-    public Point(ChunkCoordinates location)
-    {
-        this(location.posX, location.posY, location.posZ);
-    }
-
 	public Point(Vec3 vector)
 	{
 		this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
@@ -55,6 +52,13 @@ public class Point {
 
     // ------------------------------------------------------------
 
+    public BlockPos getBlockPos()
+    {
+        if (blockPos == null)
+            blockPos = new BlockPos(x, y, z);
+        return blockPos;
+    }
+ 
 	public int getX()
 	{
 		return x;
@@ -152,7 +156,7 @@ public class Point {
 
 	public Vec3 toVec3()
 	{
-		return Vec3.createVectorHelper(x, y, z);
+		return new Vec3(x, y, z);
 	}
 
     // ------------------------------------------------------------

@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,7 +73,7 @@ public class CommandPm extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         ICommandSender target = getTarget(arguments.sender);
         if (target == null)
@@ -98,7 +99,7 @@ public class CommandPm extends ParserCommandBase
             }
             else
             {
-                IChatComponent message = func_147176_a(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
+                IChatComponent message = getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
                 ModuleChat.tell(arguments.sender, message, target);
             }
         }

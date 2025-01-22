@@ -29,6 +29,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -48,12 +51,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.reflect.TypeToken;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ShopManager extends ServerEventHandler implements ConfigLoader
 {
@@ -146,7 +144,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         {
             ChatOutputHandler.chatError(event.getPlayer(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
-            TileEntity te = event.world.getTileEntity(event.x, event.y, event.z);
+            TileEntity te = event.world.getTileEntity(event.pos);
             if (te != null)
                 ProtectionEventHandler.updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
             return;
@@ -228,24 +226,21 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
             if (mop == null)
                 return;
-            point = new WorldPoint(event.world, mop.blockX, mop.blockY, mop.blockZ);
+            point = new WorldPoint(event.world, mop.getBlockPos());
         }
         else
-            point = new WorldPoint(event.world, event.x, event.y, event.z);
+            point = new WorldPoint(event.world, event.pos);
 
         UserIdent ident = UserIdent.get(event.entityPlayer);
         ShopData shop = shopSignMap.get(point);
         boolean newShop = shop == null;
         if (newShop)
         {
-            Block block = event.world.getBlock(event.x, event.y, event.z);
+            Block block = event.world.getBlockState(event.pos).getBlock();
             if (!ItemUtil.isSign(block))
                 return;
-            String[] text = ItemUtil.getSignText(point);
-            LoggingHandler.felog.info("DEBUG text = " + text + " / type of text = " + text[0].getClass().getName());
-            if (!shopTags.isEmpty())
-                LoggingHandler.felog.info("DEBUG shopTags(0) type = " + shopTags.iterator().next());
-            if (text == null || text.length < 1 || !shopTags.contains(text[0]))
+            IChatComponent[] text = ItemUtil.getSignText(point);
+            if (text == null || text.length < 1 || !shopTags.contains(text[0].getUnformattedText()))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {
@@ -292,7 +287,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         ItemStack transactionStack = shop.getItemStack();
         boolean sameItem = transactionStack.getItem() == equippedItem;
         transactionStack.stackSize = shop.amount;
-        IChatComponent itemName = transactionStack.func_151000_E();
+        IChatComponent itemName = transactionStack.getChatComponent();
 
         Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) event.entityPlayer));
 
@@ -305,9 +300,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 ChatOutputHandler.sendMessage(event.entityPlayer, msg);
                 return;
             }
-
             int removedAmount = 0;
-
             if (sameItem)
             {
                 removedAmount = Math.min(equippedStack.stackSize, transactionStack.stackSize);
@@ -315,11 +308,8 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 if (equippedStack.stackSize <= 0)
                     event.entityPlayer.inventory.mainInventory[event.entityPlayer.inventory.currentItem] = null;
             }
-
-            if (removedAmount < transactionStack.stackSize) {
-                ModuleEconomy.tryRemoveItems(event.entityPlayer, transactionStack, transactionStack.stackSize - removedAmount);
-            }
-
+            if (removedAmount < transactionStack.stackSize)
+                removedAmount += ModuleEconomy.tryRemoveItems(event.entityPlayer, transactionStack, transactionStack.stackSize - removedAmount);
             wallet.add(shop.sellPrice);
             shop.setStock(shop.getStock() + 1);
 

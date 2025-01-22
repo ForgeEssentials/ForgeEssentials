@@ -45,8 +45,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
     public JsonElement serialize(NBTTagCompound src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
-        @SuppressWarnings("unchecked")
-        Set<String> tags = src.func_150296_c();
+        Set<String> tags = src.getKeySet();
         for (String tagName : tags)
         {
             NBTBase tag = src.getTag(tagName);
@@ -57,28 +56,28 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
             case NBT.TAG_END:
                 break;
             case NBT.TAG_BYTE:
-                result.add(JSON_BYTE + ":" + tagName, new JsonPrimitive(tagPrimitive.func_150290_f()));
+                result.add(JSON_BYTE + ":" + tagName, new JsonPrimitive(tagPrimitive.getByte()));
                 break;
             case NBT.TAG_SHORT:
-                result.add(JSON_SHORT + ":" + tagName, new JsonPrimitive(tagPrimitive.func_150289_e()));
+                result.add(JSON_SHORT + ":" + tagName, new JsonPrimitive(tagPrimitive.getShort()));
                 break;
             case NBT.TAG_INT:
-                result.add(JSON_INT + ":" + tagName, new JsonPrimitive(tagPrimitive.func_150287_d()));
+                result.add(JSON_INT + ":" + tagName, new JsonPrimitive(tagPrimitive.getInt()));
                 break;
             case NBT.TAG_LONG:
-                result.add(JSON_LONG + ":" + tagName, new JsonPrimitive(tagPrimitive.func_150291_c()));
+                result.add(JSON_LONG + ":" + tagName, new JsonPrimitive(tagPrimitive.getLong()));
                 break;
             case NBT.TAG_FLOAT:
-                result.add(JSON_FLOAT + ":" + tagName, new JsonPrimitive(tagPrimitive.func_150288_h()));
+                result.add(JSON_FLOAT + ":" + tagName, new JsonPrimitive(tagPrimitive.getFloat()));
                 break;
             case NBT.TAG_DOUBLE:
-                result.add(JSON_DOUBLE + ":" + tagName, new JsonPrimitive(tagPrimitive.func_150286_g()));
+                result.add(JSON_DOUBLE + ":" + tagName, new JsonPrimitive(tagPrimitive.getDouble()));
                 break;
             case NBT.TAG_BYTE_ARRAY:
             {
                 JsonArray jsonArray = new JsonArray();
                 NBTTagByteArray tagByteArray = (NBTTagByteArray) tag;
-                for (byte value : tagByteArray.func_150292_c())
+                for (byte value : tagByteArray.getByteArray())
                 {
                     jsonArray.add(new JsonPrimitive(value));
                 }
@@ -86,14 +85,14 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                 break;
             }
             case NBT.TAG_STRING:
-                result.add(JSON_STRING + ":" + tagName, new JsonPrimitive(((NBTTagString) tag).func_150285_a_()));
+                result.add(JSON_STRING + ":" + tagName, new JsonPrimitive(((NBTTagString) tag).getString()));
                 break;
             case NBT.TAG_LIST:
             {
                 NBTTagList tagList = (NBTTagList) tag;
                 JsonArray jsonArray = new JsonArray();
                 String typeId;
-                switch (tagList.func_150303_d())
+                switch (tagList.getTagType())
                 {
                 case 0:
                     typeId = "S";
@@ -101,12 +100,12 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                 case NBT.TAG_FLOAT:
                     typeId = "f";
                     for (int i = 0; i < tagList.tagCount(); i++)
-                        jsonArray.add(new JsonPrimitive(tagList.func_150308_e(i)));
+                        jsonArray.add(new JsonPrimitive(tagList.getFloatAt(i)));
                     break;
                 case NBT.TAG_DOUBLE:
                     typeId = "d";
                     for (int i = 0; i < tagList.tagCount(); i++)
-                        jsonArray.add(new JsonPrimitive(tagList.func_150309_d(i)));
+                        jsonArray.add(new JsonPrimitive(tagList.getDoubleAt(i)));
                     break;
                 case NBT.TAG_STRING:
                     typeId = "S";
@@ -123,14 +122,14 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     for (int i = 0; i < tagList.tagCount(); i++)
                     {
                         JsonArray innerValues = new JsonArray();
-                        int[] values = tagList.func_150306_c(i);
+                        int[] values = tagList.getIntArrayAt(i);
                         for (int v : values)
                             innerValues.add(new JsonPrimitive(v));
                         jsonArray.add(innerValues);
                     }
                     break;
                 default:
-                    throw new RuntimeException(String.format("Unknown NBT data id %d", tagList.func_150303_d()));
+                    throw new RuntimeException(String.format("Unknown NBT data id %d", tagList.getTagType()));
                 }
                 result.add(typeId + ":" + tagName, jsonArray);
                 break;
@@ -142,7 +141,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
             {
                 JsonArray jsonArray = new JsonArray();
                 NBTTagIntArray tagByteArray = (NBTTagIntArray) tag;
-                for (int value : tagByteArray.func_150302_c())
+                for (int value : tagByteArray.getIntArray())
                 {
                     jsonArray.add(new JsonPrimitive(value));
                 }

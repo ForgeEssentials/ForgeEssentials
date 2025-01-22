@@ -1,6 +1,11 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleChannelHandlerWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,11 +17,6 @@ import com.forgeessentials.core.preloader.asminjector.annotation.Shadow;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.network.simpleimpl.SimpleChannelHandlerWrapper;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 @Mixin(SimpleChannelHandlerWrapper.class)
@@ -26,7 +26,9 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
     @Final
     private IMessageHandler<? super REQ, ? extends REPLY> messageHandler;
 
-    @Redirect(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lcpw/mods/fml/common/network/simpleimpl/IMessage;)V", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/network/simpleimpl/IMessageHandler;onMessage(Lcpw/mods/fml/common/network/simpleimpl/IMessage;Lcpw/mods/fml/common/network/simpleimpl/MessageContext;)Lcpw/mods/fml/common/network/simpleimpl/IMessage;", remap = false), remap = false)
+    @Redirect(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;)V", 
+    		at = @At(value = "INVOKE", 
+    		target = "Lnet/minecraftforge/fml/common/network/simpleimpl/IMessageHandler;onMessage(Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;Lnet/minecraftforge/fml/common/network/simpleimpl/MessageContext;)Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;", remap = false), remap = false)
     private REPLY redirectNetworkHandler(IMessageHandler<?, ?> iMessageHandler, REQ message, MessageContext ctx) {
 
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;

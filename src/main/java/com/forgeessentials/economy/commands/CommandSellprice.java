@@ -18,6 +18,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,7 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.permission.PermissionLevel;
@@ -41,8 +43,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class CommandSellprice extends ParserCommandBase
 {
@@ -87,11 +87,11 @@ public class CommandSellprice extends ParserCommandBase
 
     public static String getItemId(Item item)
     {
-        return GameData.getItemRegistry().getNameForObject(item);
+        return GameData.getItemRegistry().getNameForObject(item).toString();
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -114,7 +114,7 @@ public class CommandSellprice extends ParserCommandBase
         }
     }
 
-    public static void parseSetprice(CommandParserArgs arguments)
+    public static void parseSetprice(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -153,7 +153,6 @@ public class CommandSellprice extends ParserCommandBase
         {
             try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
             {
-                @SuppressWarnings("unchecked")
                 List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
                 for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
                 {
@@ -199,9 +198,7 @@ public class CommandSellprice extends ParserCommandBase
                 }
                 changedAnyPrice = false;
 
-                @SuppressWarnings("unchecked")
-                Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.smelting().getSmeltingList());
-                @SuppressWarnings("unchecked")
+                Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
                 List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
                 boolean changedPrice;

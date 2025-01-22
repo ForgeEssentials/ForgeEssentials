@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.launch.platform.container.ContainerHandleURI;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
@@ -98,7 +99,7 @@ public class FELaunchHandler implements ITweaker
         try {
             URI uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
             try {
-                MixinBootstrap.getPlatform().addContainer(uri);
+            	MixinBootstrap.getPlatform().addContainer(new ContainerHandleURI(uri));
             } catch (NoSuchMethodError e) {
                 launchLog.warn("Mixin 8.x detecting, applying counter-measures!", e);
                 Class<?> containerHandleURI = Class.forName("org.spongepowered.asm.launch.platform.container.ContainerHandleURI");

@@ -1,7 +1,7 @@
 package com.forgeessentials.commons.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class Packet5Noclip implements IMessage
 {

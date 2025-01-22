@@ -154,7 +154,7 @@ public final class ScriptArguments
         {
             if (sender == null)
                 throw new MissingPlayerException();
-            return sender.getCommandSenderName();
+            return sender.getName();
         }
 
         @Override
@@ -170,7 +170,7 @@ public final class ScriptArguments
         {
             if (sender == null)
                 throw new MissingPlayerException();
-            return sender.getCommandSenderName();
+            return sender.getName();
         }
 
         @Override

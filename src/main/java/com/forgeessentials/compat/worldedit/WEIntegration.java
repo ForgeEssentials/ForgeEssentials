@@ -8,7 +8,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
 @FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)

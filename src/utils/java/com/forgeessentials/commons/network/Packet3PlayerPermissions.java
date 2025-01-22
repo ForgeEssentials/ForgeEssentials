@@ -1,11 +1,10 @@
 package com.forgeessentials.commons.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class Packet3PlayerPermissions implements IMessage
 {

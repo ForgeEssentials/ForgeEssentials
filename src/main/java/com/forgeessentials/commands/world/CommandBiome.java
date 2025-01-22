@@ -1,6 +1,8 @@
 package com.forgeessentials.commands.world;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -50,7 +52,7 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         int x = (int) Math.floor(arguments.senderPlayer.posX);
         int z = (int) Math.floor(arguments.senderPlayer.posZ);
@@ -58,7 +60,7 @@ public class CommandBiome extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            BiomeGenBase biome = arguments.senderPlayer.worldObj.getBiomeGenForCoords(x, z);
+            BiomeGenBase biome = arguments.senderPlayer.worldObj.getBiomeGenForCoords(new BlockPos(x, 0, z));
             arguments.confirm("Current biome: " + biome.biomeName);
             arguments.confirm("  " + biome.getClass().getName());
             arguments.notify("/febiome list: Show all registered biomes");

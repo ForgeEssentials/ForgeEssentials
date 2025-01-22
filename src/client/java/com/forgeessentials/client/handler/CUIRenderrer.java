@@ -1,9 +1,19 @@
 package com.forgeessentials.client.handler;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -12,19 +22,9 @@ import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
 {
-
     private static final float ALPHA = .25f;
 
     private static Selection selection;
@@ -38,6 +38,12 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
 
         if (selection == null || selection.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
             return;
+
+        double renderPosX = TileEntityRendererDispatcher.staticPlayerX;
+        double renderPosY = TileEntityRendererDispatcher.staticPlayerY;
+        double renderPosZ = TileEntityRendererDispatcher.staticPlayerZ;
+        GL11.glPushMatrix();
+        GL11.glTranslated(-renderPosX + 0.5, -renderPosY + 0.5, -renderPosZ + 0.5);
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -64,8 +70,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
             {
                 Point p = selection.getStart();
                 GL11.glPushMatrix();
-                GL11.glTranslated(p.getX() - RenderManager.renderPosX + 0.5, p.getY() - RenderManager.renderPosY + 0.5, p.getZ() - RenderManager.renderPosZ
-                        + 0.5);
+                GL11.glTranslated(p.getX(), p.getY(), p.getZ());
                 GL11.glScalef(0.96F, 0.96F, 0.96F);
                 if (seeThrough)
                     GL11.glColor4f(1, 0, 0, ALPHA);
@@ -80,8 +85,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
             {
                 Point p = selection.getEnd();
                 GL11.glPushMatrix();
-                GL11.glTranslated(p.getX() - RenderManager.renderPosX + 0.5, p.getY() - RenderManager.renderPosY + 0.5, p.getZ() - RenderManager.renderPosZ
-                        + 0.5);
+                GL11.glTranslated(p.getX(), p.getY(), p.getZ());
                 GL11.glScalef(0.98F, 0.98F, 0.98F);
                 if (seeThrough)
                     GL11.glColor4f(0, 1, 0, ALPHA);
@@ -98,8 +102,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
                 Point p2 = selection.getEnd();
                 Point size = selection.getSize();
                 GL11.glPushMatrix();
-                GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2 - RenderManager.renderPosX + 0.5, (float) (p1.getY() + p2.getY()) / 2
-                        - RenderManager.renderPosY + 0.5, (float) (p1.getZ() + p2.getZ()) / 2 - RenderManager.renderPosZ + 0.5);
+                GL11.glTranslated((float) (p1.getX() + p2.getX()) / 2, (float) (p1.getY() + p2.getY()) / 2, (float) (p1.getZ() + p2.getZ()) / 2);
                 GL11.glScalef(1 + size.getX(), 1 + size.getY(), 1 + size.getZ());
                 if (seeThrough)
                     GL11.glColor4f(0, 0, 1, ALPHA);
@@ -114,6 +117,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
             seeThrough = false;
         }
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glPopMatrix();
     }
 
     /**
@@ -121,48 +125,50 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
      */
     private static void renderBox()
     {
-        Tessellator.instance.startDrawing(GL11.GL_LINES);
+    	WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+
+        wr.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
 
         // FRONT
-        Tessellator.instance.addVertex(-0.5, -0.5, -0.5);
-        Tessellator.instance.addVertex(-0.5, 0.5, -0.5);
+        wr.pos(-0.5, -0.5, -0.5).endVertex();
+        wr.pos(-0.5, 0.5, -0.5).endVertex();
 
-        Tessellator.instance.addVertex(-0.5, 0.5, -0.5);
-        Tessellator.instance.addVertex(0.5, 0.5, -0.5);
+        wr.pos(-0.5, 0.5, -0.5).endVertex();
+        wr.pos(0.5, 0.5, -0.5).endVertex();
 
-        Tessellator.instance.addVertex(0.5, 0.5, -0.5);
-        Tessellator.instance.addVertex(0.5, -0.5, -0.5);
+        wr.pos(0.5, 0.5, -0.5).endVertex();
+        wr.pos(0.5, -0.5, -0.5).endVertex();
 
-        Tessellator.instance.addVertex(0.5, -0.5, -0.5);
-        Tessellator.instance.addVertex(-0.5, -0.5, -0.5);
+        wr.pos(0.5, -0.5, -0.5).endVertex();
+        wr.pos(-0.5, -0.5, -0.5).endVertex();
 
         // BACK
-        Tessellator.instance.addVertex(-0.5, -0.5, 0.5);
-        Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
+        wr.pos(-0.5, -0.5, 0.5).endVertex();
+        wr.pos(-0.5, 0.5, 0.5).endVertex();
 
-        Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
-        Tessellator.instance.addVertex(0.5, 0.5, 0.5);
+        wr.pos(-0.5, 0.5, 0.5).endVertex();
+        wr.pos(0.5, 0.5, 0.5).endVertex();
 
-        Tessellator.instance.addVertex(0.5, 0.5, 0.5);
-        Tessellator.instance.addVertex(0.5, -0.5, 0.5);
+        wr.pos(0.5, 0.5, 0.5).endVertex();
+        wr.pos(0.5, -0.5, 0.5).endVertex();
 
-        Tessellator.instance.addVertex(0.5, -0.5, 0.5);
-        Tessellator.instance.addVertex(-0.5, -0.5, 0.5);
+        wr.pos(0.5, -0.5, 0.5).endVertex();
+        wr.pos(-0.5, -0.5, 0.5).endVertex();
 
         // betweens.
-        Tessellator.instance.addVertex(0.5, 0.5, -0.5);
-        Tessellator.instance.addVertex(0.5, 0.5, 0.5);
+        wr.pos(0.5, 0.5, -0.5).endVertex();
+        wr.pos(0.5, 0.5, 0.5).endVertex();
 
-        Tessellator.instance.addVertex(0.5, -0.5, -0.5);
-        Tessellator.instance.addVertex(0.5, -0.5, 0.5);
+        wr.pos(0.5, -0.5, -0.5).endVertex();
+        wr.pos(0.5, -0.5, 0.5).endVertex();
 
-        Tessellator.instance.addVertex(-0.5, -0.5, -0.5);
-        Tessellator.instance.addVertex(-0.5, -0.5, 0.5);
+        wr.pos(-0.5, -0.5, -0.5).endVertex();
+        wr.pos(-0.5, -0.5, 0.5).endVertex();
 
-        Tessellator.instance.addVertex(-0.5, 0.5, -0.5);
-        Tessellator.instance.addVertex(-0.5, 0.5, 0.5);
+        wr.pos(-0.5, 0.5, -0.5).endVertex();
+        wr.pos(-0.5, 0.5, 0.5).endVertex();
 
-        Tessellator.instance.draw();
+        Tessellator.getInstance().draw();
     }
 
     @Override

@@ -1,28 +1,29 @@
 package com.forgeessentials.client.handler;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import org.lwjgl.opengl.GL11;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.commons.network.Packet3PlayerPermissions;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.registry.GameData;
 
 public class PermissionOverlay extends Gui implements IMessageHandler<Packet3PlayerPermissions, IMessage>
 {
@@ -52,7 +53,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             permissions.placeIds.addAll(message.placeIds);
             permissions.breakIds.addAll(message.breakIds);
 
-            EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null)
             {
@@ -78,7 +79,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
 
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
@@ -97,15 +98,15 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
         }
         else if (event.isCancelable() && event.type == ElementType.CROSSHAIRS)
         {
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
             MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
             if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
             {
-                Block block = Minecraft.getMinecraft().theWorld.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-                int blockId = GameData.getBlockRegistry().getId(block);
+                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+                int blockId = GameData.getBlockRegistry().getId(block.getBlock());
                 if (permissions.breakIds.contains(blockId))
                 {
                     Minecraft.getMinecraft().renderEngine.bindTexture(deniedBreakTexture);
@@ -118,13 +119,13 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(xPos, yPos + height, zLevel, 0, 1);
-        tessellator.addVertexWithUV(xPos + width, yPos + height, zLevel, 1, 1);
-        tessellator.addVertexWithUV(xPos + width, yPos, zLevel, 1, 0);
-        tessellator.addVertexWithUV(xPos, yPos, zLevel, 0, 0);
-        tessellator.draw();
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        wr.pos(xPos, yPos + height, zLevel).tex(0, 1).endVertex();
+        wr.pos(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();
+        wr.pos(xPos + width, yPos, zLevel).tex(1, 0).endVertex();
+        wr.pos(xPos, yPos, zLevel).tex(0, 0).endVertex();
+        Tessellator.getInstance().draw();
     }
 
 }

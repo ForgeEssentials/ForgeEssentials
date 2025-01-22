@@ -1,7 +1,7 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.fml.common;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 public class JsPlayerLoggedOutEvent extends JsPlayerEvent<PlayerEvent.PlayerLoggedOutEvent>{
     @SubscribeEvent

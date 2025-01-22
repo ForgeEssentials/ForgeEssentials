@@ -23,7 +23,6 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
     @Override
     public void process(EntityManager em)
     {
-        @SuppressWarnings("unchecked")
         List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
         date = new Date();
         
@@ -36,7 +35,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
             Action04PlayerPosition action = new Action04PlayerPosition();
             action.time = date;
             action.player = getPlayer(player);
-            action.world = getWorld(player.worldObj.provider.dimensionId);
+            action.world = getWorld(player.worldObj.provider.getDimensionId());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;

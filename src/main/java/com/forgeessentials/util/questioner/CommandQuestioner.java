@@ -1,5 +1,6 @@
 package com.forgeessentials.util.questioner;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -60,7 +61,7 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         Questioner.answer(sender, type);
     }

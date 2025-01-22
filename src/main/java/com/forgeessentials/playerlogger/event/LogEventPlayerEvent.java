@@ -6,7 +6,9 @@ import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
 
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+
+
 
 public class LogEventPlayerEvent extends PlayerLoggerEvent<PlayerEvent>
 {
@@ -26,7 +28,7 @@ public class LogEventPlayerEvent extends PlayerLoggerEvent<PlayerEvent>
         action.type = type;
         action.time = date;
         action.player = getPlayer(event.player);
-        action.world = getWorld(event.player.worldObj.provider.dimensionId);
+        action.world = getWorld(event.player.worldObj.provider.getDimensionId());
         action.x = (int) event.player.posX;
         action.y = (int) event.player.posY;
         action.z = (int) event.player.posZ;

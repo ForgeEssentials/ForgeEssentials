@@ -15,7 +15,7 @@ public class CommandFEWorldInfo extends ParserCommandBase
         arguments.notify("Showing all world provider names:");
         for (World world : DimensionManager.getWorlds())
         {
-            arguments.notify("%s - %s", world.provider.dimensionId, world.provider.getClass().getName());
+            arguments.notify("%s - %s", world.provider.getDimensionId(), world.provider.getClass().getName());
         }
     }
 

@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -45,7 +46,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -63,10 +65,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -152,7 +150,6 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    @SuppressWarnings("unused")
     private ProtectionEventHandler protectionHandler;
 
     @SubscribeEvent
@@ -177,7 +174,6 @@ public class ModuleProtection
         }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void registerPermissions(FEModuleServerInitEvent event)
     {
@@ -262,7 +258,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
-            String blockPerm = "." + getBlockId(block) + Zone.ALL_PERMS;
+            String blockPerm = "." + ServerUtil.getBlockPermission(block) + Zone.ALL_PERMS;
             String blockName = block.getLocalizedName();
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
@@ -335,37 +331,42 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getBlockId(Block block)
-    {
-        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.').replace(' ', '_');
-    }
-
     public static String getBlockPermission(Block block, int meta)
     {
         if (meta == 0 || meta == 32767)
-            return getBlockId(block);
+            return ServerUtil.getBlockPermission(block);
         else
-            return getBlockId(block) + "." + meta;
+            return ServerUtil.getBlockPermission(block) + "." + meta;
     }
 
-    public static String getBlockPermission(Block block, World world, int x, int y, int z)
+    public static String getBlockPermission(IBlockState blockState)
     {
-        return getBlockPermission(block, block.getDamageValue(world, x, y, z));
+        return getBlockPermission(blockState.getBlock(), blockState.getBlock().getMetaFromState(blockState));
     }
 
-    public static String getBlockBreakPermission(Block block, World world, int x, int y, int z)
+    public static String getBlockBreakPermission(IBlockState blockState)
     {
-        return PERM_BREAK + "." + getBlockPermission(block, world, x, y, z);
+        return ModuleProtection.PERM_BREAK + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockPlacePermission(Block block, World world, int x, int y, int z)
+    public static String getBlockTramplePermission(IBlockState blockState)
     {
-        return PERM_PLACE + "." + getBlockPermission(block, world, x, y, z);
+        return PERM_TRAMPLE + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockInteractPermission(Block block, World world, int x, int y, int z)
+    public static String getBlockPlacePermission(IBlockState blockState)
     {
-        return PERM_INTERACT + "." + getBlockPermission(block, world, x, y, z);
+        return ModuleProtection.PERM_PLACE + "." + getBlockPermission(blockState);
+    }
+
+    public static String getBlockInteractPermission(IBlockState blockState)
+    {
+        return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(blockState);
+    }
+
+    public static String getBlockExplosionPermission(IBlockState blockState)
+    {
+        return ModuleProtection.PERM_EXPLODE + "." + getBlockPermission(blockState);
     }
 
     public static String getBlockBreakPermission(Block block, int meta)
@@ -444,16 +445,17 @@ public class ModuleProtection
 
     public static EntityPlayer getCraftingPlayer(InventoryCrafting inventory)
     {
-        Container abstractContainer = ReflectionHelper.getPrivateValue(InventoryCrafting.class, inventory, "field_70465_c", "eventHandler");
+
+        Container abstractContainer = inventory.eventHandler;
         if (abstractContainer instanceof ContainerPlayer)
         {
             ContainerPlayer container = (ContainerPlayer) abstractContainer;
-            return ReflectionHelper.getPrivateValue(ContainerPlayer.class, container, "field_82862_h", "thePlayer");
+            return container.thePlayer;
         }
         else if (abstractContainer instanceof ContainerWorkbench)
         {
             SlotCrafting slot = (SlotCrafting) abstractContainer.getSlot(0);
-            return ReflectionHelper.getPrivateValue(SlotCrafting.class, slot, "field_75238_b", "thePlayer");
+            return slot.thePlayer;
         }
         return null;
     }
@@ -465,7 +467,7 @@ public class ModuleProtection
 
     public static boolean canCraft(EntityPlayer player, ItemStack result)
     {
-        if (result == null)
+        if (player == null || result == null)
             return true;
         String permission = ModuleProtection.getCraftingPermission(result);
         debugPermission(player, permission);

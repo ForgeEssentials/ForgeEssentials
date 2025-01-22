@@ -5,12 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.misc.Translator;
@@ -20,8 +22,6 @@ import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class RollbackInfo
 {
@@ -65,13 +65,13 @@ public class RollbackInfo
                 Action01Block change = changes.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
-                    sendBlockChange(player, change, Blocks.air, 0);
+                    sendBlockChange(player, change, Blocks.air.getDefaultState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REMOVED " +
                     // change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
-                    sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
+                    sendBlockChange(player, change, GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name)).getStateFromMeta(change.metadata));
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " RESTORED " +
                     // change.block.name + ":" + change.metadata);
                 }
@@ -84,13 +84,13 @@ public class RollbackInfo
                 Action01Block change = lastChanges.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
-                    sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
+                    sendBlockChange(player, change, GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name)).getStateFromMeta(change.metadata));
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
                     // change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
-                    sendBlockChange(player, change, Blocks.air, 0);
+                    sendBlockChange(player, change, Blocks.air.getDefaultState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REBROKE " +
                     // change.block.name + ":" + change.metadata);
                 }
@@ -107,15 +107,14 @@ public class RollbackInfo
             if (change.type == ActionBlockType.PLACE)
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
-                world.setBlockToAir(change.x, change.y, change.z);
+                world.setBlockToAir(change.getBlockPos());
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
-                world.setBlock(change.x, change.y, change.z, GameData.getBlockRegistry().getObject(change.block.name), change.metadata, 3);
-                world.setBlockMetadataWithNotify(change.x, change.y, change.z, change.metadata, 3);
-                world.setTileEntity(change.x, change.y, change.z, PlayerLogger.blobToTileEntity(change.entity));
+                world.setBlockState(change.getBlockPos(), GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name)).getStateFromMeta(change.metadata), 3);
+                world.setTileEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
             }
         }
@@ -126,7 +125,7 @@ public class RollbackInfo
         if (task != null)
             task.cancel();
         for (Action01Block change : Lists.reverse(changes))
-            player.playerNetServerHandler.sendPacket(new S23PacketBlockChange(change.x, change.y, change.z, DimensionManager.getWorld(change.world.id)));
+            player.playerNetServerHandler.sendPacket(new S23PacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos()));
     }
 
     public Date getTime()
@@ -147,14 +146,12 @@ public class RollbackInfo
      * @param newBlock
      * @param newMeta
      */
-    public static void sendBlockChange(EntityPlayerMP player, Action01Block change, Block newBlock, int newMeta)
+    public static void sendBlockChange(EntityPlayerMP player, Action01Block change, IBlockState newState)
     {
-        S23PacketBlockChange packet = new S23PacketBlockChange(change.x, change.y, change.z, DimensionManager.getWorld(change.world.id));
-        packet.field_148883_d = newBlock;
-        packet.field_148884_e = newMeta;
+    	S23PacketBlockChange packet = new S23PacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
+        packet.blockState = newState;
         player.playerNetServerHandler.sendPacket(packet);
     }
-
     public static class PlaybackTask extends TimerTask
     {
         private RollbackInfo rb;

@@ -1,8 +1,10 @@
 package net.minecraftforge.fe.event.player;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
@@ -16,36 +18,36 @@ public class PlayerPostInteractEvent extends PlayerEvent
 
     public final ItemStack stack;
 
-    public final Block block;
+    public final IBlockState block;
 
-    public final int x, y, z, side;
+    public final BlockPos pos;
+
+    public final EnumFacing side;
 
     public final float hitX, hitY, hitZ;
 
-    protected PlayerPostInteractEvent(EntityPlayer player, World world, Block block, ItemStack stack, int x, int y, int z, int side, float hitX, float hitY,
+    protected PlayerPostInteractEvent(EntityPlayer player, World world, IBlockState block, ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY,
             float hitZ)
     {
         super(player);
         this.world = world;
         this.block = block;
         this.stack = stack;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
         this.side = side;
         this.hitX = hitX;
         this.hitY = hitY;
         this.hitZ = hitZ;
     }
 
-    public PlayerPostInteractEvent(EntityPlayer player, World world, ItemStack stack, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public PlayerPostInteractEvent(EntityPlayer player, World world, ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        this(player, world, null, stack, x, y, z, side, hitX, hitY, hitZ);
+        this(player, world, null, stack, pos, side, hitX, hitY, hitZ);
     }
 
-    public PlayerPostInteractEvent(EntityPlayer player, World world, Block block, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public PlayerPostInteractEvent(EntityPlayer player, World world, IBlockState block, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        this(player, world, block, null, x, y, z, side, hitX, hitY, hitZ);
+        this(player, world, block, null, pos, side, hitX, hitY, hitZ);
     }
 
 }

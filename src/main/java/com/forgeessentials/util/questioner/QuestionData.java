@@ -1,5 +1,6 @@
 package com.forgeessentials.util.questioner;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
@@ -61,24 +62,24 @@ public class QuestionData
         ChatOutputHandler.sendMessage(target, yesNoMessage);
     }
 
-    protected void doAnswer(Boolean answer)
+    protected void doAnswer(Boolean answer) throws CommandException
     {
         callback.respond(answer);
     }
 
-    public void confirm()
+    public void confirm() throws CommandException
     {
         Questioner.confirm(target);
         // TODO: Maybe send a message, because it was not confirmed through user interaction?
     }
 
-    public void deny()
+    public void deny() throws CommandException
     {
         Questioner.deny(target);
         // TODO: Maybe send a message, because it was not denied through user interaction?
     }
 
-    public void cancel()
+    public void cancel() throws CommandException
     {
         Questioner.cancel(target);
         // TODO: Maybe send a message, because it was not canceled through user interaction?

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
@@ -90,7 +91,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -155,7 +156,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             arguments.sendMessage(new ChatComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
     }
 
-    public void parseDelete(CommandParserArgs arguments)
+    public void parseDelete(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -172,7 +173,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseSend(CommandParserArgs arguments)
+    public void parseSend(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -187,7 +188,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         broadcastMessage(index);
     }
 
-    public void parseInterval(CommandParserArgs arguments)
+    public void parseInterval(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -200,7 +201,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseShuffle(CommandParserArgs arguments)
+    public void parseShuffle(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -273,7 +274,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            return IChatComponent.Serializer.func_150699_a(message);
+            return IChatComponent.Serializer.jsonToComponent(message);
         }
         catch (JsonParseException e)
         {

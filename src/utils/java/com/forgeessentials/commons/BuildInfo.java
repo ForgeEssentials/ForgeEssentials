@@ -10,9 +10,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.forgeessentials.commons.events.NewVersionEvent;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 public abstract class BuildInfo
 {

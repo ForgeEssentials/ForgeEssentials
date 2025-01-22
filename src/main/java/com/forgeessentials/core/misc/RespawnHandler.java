@@ -7,11 +7,14 @@ import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -19,11 +22,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.PlayerInfo;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class RespawnHandler
 {
@@ -33,7 +31,6 @@ public class RespawnHandler
     public RespawnHandler()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
     }
 
     public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
@@ -71,9 +68,9 @@ public class RespawnHandler
         boolean bedEnabled = APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED);
         if (bedEnabled)
         {
-            ChunkCoordinates spawn = player.getBedLocation(player.dimension);
+            BlockPos spawn = player.getBedLocation(player.dimension);
             if (spawn != null)
-                spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+                spawn = EntityPlayer.getBedSpawnLocation(player.worldObj, spawn, true);
             if (spawn != null)
             {
                 // Bed seems OK, so just return null to let default MC code handle respawn

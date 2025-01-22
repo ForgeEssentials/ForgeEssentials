@@ -1,7 +1,8 @@
 package com.forgeessentials.core.preloader;
 
 import java.util.Map;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 public class FELoadingPlugin implements IFMLLoadingPlugin
 {

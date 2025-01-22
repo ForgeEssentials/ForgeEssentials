@@ -2,6 +2,7 @@ package com.forgeessentials.multiworld.command;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
@@ -52,7 +53,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -92,7 +93,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
             throw new TranslatedCommandException("Could not find world " + worldName);
-        int dimId = world.provider.dimensionId;
+        int dimId = world.provider.getDimensionId();
 
         // if (dimId < 0 || dimId == 1)
         // throw new TranslatedCommandException("You are not allowed to teleport to that dimension");

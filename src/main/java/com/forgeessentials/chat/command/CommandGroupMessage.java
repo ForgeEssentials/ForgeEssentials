@@ -1,5 +1,6 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +49,7 @@ public class CommandGroupMessage extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -61,7 +62,7 @@ public class CommandGroupMessage extends ParserCommandBase
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing chat message");
 
-        IChatComponent msgComponent = func_147176_a(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
+        IChatComponent msgComponent = getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
         ModuleChat.tellGroup(arguments.sender, msgComponent.getUnformattedText(), group);
     }
 
