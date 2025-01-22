@@ -1,12 +1,12 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 

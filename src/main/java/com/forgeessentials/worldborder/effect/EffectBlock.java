@@ -3,9 +3,10 @@ package com.forgeessentials.worldborder.effect;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+
+import net.minecraft.command.CommandException;
 
 public class EffectBlock extends WorldBorderEffect
 {
