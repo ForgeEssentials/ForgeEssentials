@@ -1,6 +1,9 @@
 package com.forgeessentials.playermarket;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Date;
 
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -14,6 +17,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.playermarket.PlayerMarketData.AuctionStack;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -80,6 +84,43 @@ public class ModulePlayerMarket extends ServerEventHandler
         if (event.getWorld() == FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld())
         {
             DataManager.getInstance().save(data, "PlayerMarket");
+        }
+    }
+
+    private static PrintWriter logWriter;
+
+    public static void logTrade(String action, String user, AuctionStack stack)
+    {
+        if (logWriter == null)
+        {
+            File logFile = new File(moduleDir, String.format("Log/%1$tY-%1$tm-%1$te_%1$tH.%1$tM.log", new Date()));
+            try
+            {
+                File dir = logFile.getParentFile();
+                if (!dir.exists() && !dir.mkdirs())
+                {
+                    LoggingHandler.felog.warn(String.format("Could not create market log directory %s!", logFile.getPath()));
+                }
+                else
+                {
+                    logWriter = new PrintWriter(logFile);
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                LoggingHandler.felog.error(String.format("Could not create market log file %s.", logFile.getAbsolutePath()));
+            }
+        }
+
+        if (logWriter != null)
+        {
+            logWriter.println(
+                    String.format("Action: %s, User: %s, Seller: %s, Amount: %d, Item: %s", action, user, stack.sellerName, stack.price, stack.stack));
+            if (stack.stack.hasTagCompound())
+            {
+                logWriter.println(stack.stack.getTagCompound());
+            }
+            logWriter.flush();
         }
     }
 }

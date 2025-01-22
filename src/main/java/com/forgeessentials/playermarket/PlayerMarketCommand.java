@@ -20,7 +20,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +28,9 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.BasicInteraction;
 import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.playermarket.PlayerMarketData.AuctionStack;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class PlayerMarketCommand extends ParserCommandBase
 {
@@ -201,11 +198,8 @@ public class PlayerMarketCommand extends ParserCommandBase
 
             newStack.stack = newStack.stack.copy();
             ModulePlayerMarket.instance().data.itemsListed.add(newStack);
-            TextComponentString s1 = new TextComponentString("");
-            s1.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-            s1.appendSibling(newStack.stack.getTextComponent());
-            s1.appendText(Translator.format(" sold for %s", APIRegistry.economy.toString(newStack.price)));
-            args.senderPlayer.sendMessage(s1);
+            args.confirm("%s sold for %s", newStack.stack, APIRegistry.economy.toString(newStack.price));
+            ModulePlayerMarket.logTrade("SELL", args.senderPlayer.getName(), newStack);
             break;
         }
     }

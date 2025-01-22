@@ -177,10 +177,12 @@ public class PlayerMarketContainer extends ContainerChest
             ModulePlayerMarket.instance().data.itemsListed.remove(stack);
             if (!remove)
             {
+                ModulePlayerMarket.logTrade("BUY", player.getName(), stack);
                 player.inventory.addItemStackToInventory(stack.stack);
             }
             else
             {
+                ModulePlayerMarket.logTrade("REMOVE", player.getName(), stack);
                 UserIdent removedUser = UserIdent.get(stack.sellerId);
                 ICommandSender sender;
                 if (removedUser.hasPlayer())
