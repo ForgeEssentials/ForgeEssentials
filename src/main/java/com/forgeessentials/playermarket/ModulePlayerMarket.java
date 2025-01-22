@@ -89,7 +89,7 @@ public class ModulePlayerMarket extends ServerEventHandler
 
     private static PrintWriter logWriter;
 
-    public static void logTrade(String action, String user, AuctionStack stack)
+    public static synchronized void writeTrade(String msg)
     {
         if (logWriter == null)
         {
@@ -114,13 +114,22 @@ public class ModulePlayerMarket extends ServerEventHandler
 
         if (logWriter != null)
         {
-            logWriter.println(
-                    String.format("Action: %s, User: %s, Seller: %s, Amount: %d, Item: %s", action, user, stack.sellerName, stack.price, stack.stack));
-            if (stack.stack.hasTagCompound())
-            {
-                logWriter.println(stack.stack.getTagCompound());
-            }
+            logWriter.println(msg);
             logWriter.flush();
         }
+    }
+    public static void logTrade(String action, String user, AuctionStack stack)
+    {
+        AuctionStack _stack = stack.copy();
+        new Thread(() -> {
+            String msg = String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1$tS.%1$tL", new Date());
+            msg += String.format(" Action: %s, User: %s, Seller: %s, Amount: %d, Item: %s\n", action, user, _stack.sellerName, _stack.price,
+                    _stack.stack);
+            if (_stack.stack.hasTagCompound())
+            {
+                msg += _stack.stack.getTagCompound();
+            }
+            writeTrade(msg);
+        }).start();
     }
 }

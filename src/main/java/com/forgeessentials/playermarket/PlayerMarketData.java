@@ -18,6 +18,17 @@ public class PlayerMarketData
         public String sellerName;
         public UUID sellerId;
         public int timeout;
+
+        public AuctionStack copy()
+        {
+            AuctionStack newStack = new AuctionStack();
+            newStack.stack = stack.copy();
+            newStack.price = price;
+            newStack.sellerName = sellerName;
+            newStack.sellerId = sellerId;
+            newStack.timeout = timeout;
+            return newStack;
+        }
     }
 
     /**

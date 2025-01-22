@@ -139,8 +139,12 @@ public class PlayerMarketContainer extends ContainerChest
                 }
                 return;
             }
-            AuctionStack stack = _itemsListed.get(slotId + currentPage * 45);
-
+            int index = slotId + currentPage * 45;
+            AuctionStack stack = index < _itemsListed.size() ? _itemsListed.get(index) : null;
+            if (stack == null)
+            {
+                return;
+            }
             //Add Item to inventory here
             if (!ModulePlayerMarket.instance().data.itemsListed.contains(stack))
             {
