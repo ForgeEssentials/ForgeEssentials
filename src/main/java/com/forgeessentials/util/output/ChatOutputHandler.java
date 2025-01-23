@@ -84,7 +84,6 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         {
             String[] parts = itemStack.split(message);
             component = new TextComponentString(parts[0]);
-            component.getStyle().setColor(color);
 
             for (int i = 0; i < parts.length; i++)
             {
@@ -111,6 +110,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         {
             component = new TextComponentString(message);
         }
+        component.getStyle().setColor(color);
         if (recipient instanceof EntityPlayer)
         {
             sendMessage(recipient, component);
