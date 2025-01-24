@@ -15,7 +15,7 @@ public class MixinEntityTracker implements EntityTrackerHelper
 {
 
     @Shadow
-    private IntHashMap<EntityTrackerEntry> trackedEntityIDs = new IntHashMap<>();
+    private IntHashMap<EntityTrackerEntry> trackedEntityHashTable = new IntHashMap<>();
 
     /**
      * Provides support for vanish functionality.
@@ -26,7 +26,7 @@ public class MixinEntityTracker implements EntityTrackerHelper
     @Override
     public EntityTrackerEntry getEntityTrackerEntry(Entity entity)
     {
-        return trackedEntityIDs.lookup(entity.getEntityId());
+        return trackedEntityHashTable.lookup(entity.getEntityId());
     }
 
 }
