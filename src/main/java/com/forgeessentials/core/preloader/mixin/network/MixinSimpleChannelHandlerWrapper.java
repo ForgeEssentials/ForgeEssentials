@@ -34,7 +34,7 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
             return messageHandler.onMessage(message, ctx);
         }
         else {
-            LoggingHandler.felog.debug("Message '{}' from user '{}' ignored because player is not authenticated!", DataManager.getGson().toJson(message), player.getDisplayName());
+            LoggingHandler.felog.debug("Message '{}' from user '{}' ignored because player is not authenticated!", message.getClass().getCanonicalName(), player.getDisplayName());
             return null;
         }
     }
