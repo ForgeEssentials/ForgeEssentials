@@ -356,7 +356,7 @@ shadowJar {
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
 	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
 	relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
-	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
+	//relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
 	relocate  'javax.interceptor','com.forgeessentials.thirdparty.javax.interceptor'
 	relocate  'javax.inject','com.forgeessentials.thirdparty.javax.inject'
@@ -402,9 +402,9 @@ jar {
 		filter {
 			line -> line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate')
 		}
-		rename {
-			name -> "com.forgeessentials.thirdparty.$name"
-		}
+//		rename {
+//			name -> "com.forgeessentials.thirdparty.$name"
+//		}
 	}
 
     jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
