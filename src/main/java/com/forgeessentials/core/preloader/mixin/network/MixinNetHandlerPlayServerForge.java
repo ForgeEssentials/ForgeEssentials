@@ -15,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
 @Mixin(NetHandlerPlayServer.class)
 public class MixinNetHandlerPlayServerForge {
     @Shadow
@@ -35,6 +37,7 @@ public class MixinNetHandlerPlayServerForge {
                     target = "Lnet/minecraft/network/play/client/C12PacketUpdateSign;getLines()[Lnet/minecraft/util/IChatComponent;"
             ),
             require = 1,
+            locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
     private void getLines(C12PacketUpdateSign packet, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, TileEntity entity, TileEntitySign tileentitysign)
@@ -51,29 +54,5 @@ public class MixinNetHandlerPlayServerForge {
         tileentitysign.markDirty();
         worldserver.markBlockForUpdate(blockpos);
         ci.cancel();
-    }
-
-    /**
-     * Copy the {@link #signLines} to the {@link TileEntitySign}.
-     *
-     * @param src the source array
-     * @param srcPos starting position in the source array
-     * @param dest the destination array
-     * @param destPos starting position in the destination array
-     * @param length the number of array elements to be copied
-     */
-    @Redirect(
-            method = "processUpdateSign",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V"
-            ),
-            require = 1
-    )
-    private void copyLinesToBlockEntity(Object src, int srcPos, Object dest, int destPos, int length)
-    {
-        // You may get a warning that `dest` is not Object[] - don't change this, or Mixin will yell at you.
-        System.arraycopy(this.signLines, srcPos, dest, destPos, length);
-        this.signLines = null;
     }
 }
