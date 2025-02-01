@@ -6,10 +6,12 @@ import java.util.Random;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -247,6 +249,16 @@ public class Multiworld
 
         if (worldChange)
             displayWelcomeMessage(player);
+    }
+
+    public void sendPacketToAllPlayers(Packet packetIn)
+    {
+        MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayersInDimension(packetIn, dimensionId);
+    }
+
+    public List<EntityPlayerMP> getPlayerList()
+    {
+        return getWorldServer().getPlayers(EntityPlayerMP.class, input -> !(input instanceof FakePlayer) && input.playerNetServerHandler != null);
     }
 
     public static void displayDepartMessage(EntityPlayerMP player)
