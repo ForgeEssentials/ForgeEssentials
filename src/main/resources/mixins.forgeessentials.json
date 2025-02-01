@@ -4,11 +4,9 @@
     "refmap": "mixins.forgeessentials.refmap.json",
     "mixins": [
       "MixinDimensionManager",
-      //"block.MixinBlock",
       "block.MixinBlockEndPortal",
       "block.MixinBlockFire",
       "block.MixinBlockPortal",
-      //"block.MixinBlockFarmland",
       "command.MixinCommandHandler",
       "entity.MixinEntity",
       "entity.MixinEntityTracker",
@@ -16,6 +14,7 @@
       "item.crafting.MixinCraftingManager",
       "network.MixinNetHandlerPlayServer",
       "network.MixinSimpleChannelHandlerWrapper",
+      "scoreboard.MixinServerScoreboard",
       "server.management.MixinItemInWorldManager"
     ],
     "required": true

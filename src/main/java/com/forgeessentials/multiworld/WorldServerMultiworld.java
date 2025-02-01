@@ -45,7 +45,7 @@ public class WorldServerMultiworld extends WorldServer
     @Override public World init()
     {
         super.init();
-        this.worldScoreboard = new MultiworldScoreboard(this.multiworld);
+        this.worldScoreboard = new MultiworldScoreboard(MinecraftServer.getServer(), this.multiworld);
         ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData) this.mapStorage.loadData(ScoreboardSaveData.class, "scoreboard");
 
         if (scoreboardsavedata == null)
