@@ -38,7 +38,6 @@ public class WorldServerMultiworld extends WorldServer
     protected void saveLevel() throws MinecraftException
     {
         this.perWorldStorage.saveAllData();
-        i
         this.mapStorage.saveAllData();
         this.saveHandler.saveWorldInfo(this.worldInfo);
     }
