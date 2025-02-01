@@ -18,6 +18,7 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -28,16 +29,15 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public abstract class ServerUtil
 {
@@ -105,7 +105,7 @@ public abstract class ServerUtil
         }
     }
 
-    public static double parseYLocation(ICommandSender sender, double relative, String value)
+    public static double parseYLocation(ICommandSender sender, double relative, String value) throws CommandException
     {
         boolean isRelative = value.startsWith("~");
         if (isRelative && Double.isNaN(relative))
@@ -115,7 +115,7 @@ public abstract class ServerUtil
         {
             if (isRelative)
                 value = value.substring(1);
-            d1 += CommandBase.parseDouble(sender, value);
+            d1 += CommandBase.parseDouble(value);
         }
         return d1;
     }
@@ -252,7 +252,6 @@ public abstract class ServerUtil
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static List<EntityPlayerMP> getPlayerList()
     {
         MinecraftServer mc = MinecraftServer.getServer();
@@ -341,15 +340,14 @@ public abstract class ServerUtil
         }
     }
     
-    @SuppressWarnings("unchecked")
     public static void copyNbt(NBTTagCompound nbt, NBTTagCompound data)
     {
         // Clear old data
-        for (String key : new HashSet<String>(nbt.func_150296_c()))
+        for (String key : new HashSet<String>(nbt.getKeySet()))
             nbt.removeTag(key);
     
         // Write new data
-        for (String key : (Set<String>) data.func_150296_c())
+        for (String key : (Set<String>) data.getKeySet())
             nbt.setTag(key, data.getTag(key));
     }
 
@@ -362,17 +360,17 @@ public abstract class ServerUtil
 
     public static String getItemPermission(Item item)
     {
-        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.').replace(' ', '_');
+        return GameData.getItemRegistry().getNameForObject(item).toString().replace(':', '.').replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block);
+        return GameData.getBlockRegistry().getNameForObject(block).toString();
     }
 
     public static String getBlockPermission(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.').replace(' ', '_');
+        return GameData.getBlockRegistry().getNameForObject(block).toString().replace(':', '.').replace(' ', '_');
     }
 
     /* ------------------------------------------------------------ */

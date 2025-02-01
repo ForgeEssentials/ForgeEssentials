@@ -12,17 +12,17 @@ import javax.imageio.ImageIO;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.core.preloader.api.ServerBlock;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public final class MapperUtil
 {
@@ -51,11 +51,10 @@ public final class MapperUtil
                 int iy = chunk.getHeightValue(ix, iz);
                 for (; iy >= 0; iy--)
                 {
-                    Block block = chunk.getBlock(ix, iy, iz);
-                    int meta = chunk.getBlockMetadata(ix, iy, iz);
+                	Block block = chunk.getBlock(new BlockPos(ix, 0, iz));
                     if (block == Blocks.air)
                         continue;
-                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, meta).getRGB());
+                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, block.getMetaFromState(chunk.getBlockState(new BlockPos(ix, iy, iz)))).getRGB());
                     break;
                 }
                 if (iy < 0)
@@ -96,12 +95,12 @@ public final class MapperUtil
 
     public static Chunk loadChunk(WorldServer world, int cx, int cz)
     {
-        Chunk chunk = (Chunk) world.theChunkProviderServer.loadedChunkHashMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+        Chunk chunk = (Chunk) world.theChunkProviderServer.id2ChunkMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
         if (chunk != null)
             return chunk;
         try
         {
-            AnvilChunkLoader loader = (AnvilChunkLoader) world.theChunkProviderServer.currentChunkLoader;
+            AnvilChunkLoader loader = (AnvilChunkLoader) world.theChunkProviderServer.chunkLoader;
             Object[] data = loader.loadChunk__Async(world, cx, cz);
             return (Chunk) data[0];
         }

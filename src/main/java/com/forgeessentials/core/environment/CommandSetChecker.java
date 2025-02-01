@@ -7,13 +7,12 @@ import java.util.Set;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class CommandSetChecker
 {

@@ -2,9 +2,12 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -15,7 +18,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+
 
 public class CommandHeal extends ForgeEssentialsCommandBase
 {
@@ -70,7 +73,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -95,7 +98,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -121,7 +124,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

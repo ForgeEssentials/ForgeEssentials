@@ -8,11 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public final class ItemUtil
 {
@@ -35,7 +35,7 @@ public final class ItemUtil
 
     public static String getItemIdentifier(ItemStack itemStack)
     {
-        String id = GameData.getItemRegistry().getNameForObject(itemStack.getItem());
+        String id = GameData.getItemRegistry().getNameForObject(itemStack.getItem()).toString();
         int itemDamage = getItemDamage(itemStack);
         if (itemDamage == 0 || itemDamage == 32767)
             return id;
@@ -53,7 +53,7 @@ public final class ItemUtil
         return block == Blocks.wall_sign;
     }
 
-    public static String[] getSignText(WorldPoint point)
+    public static IChatComponent[] getSignText(WorldPoint point)
     {
         TileEntity te = point.getTileEntity();
         if (te instanceof TileEntitySign)

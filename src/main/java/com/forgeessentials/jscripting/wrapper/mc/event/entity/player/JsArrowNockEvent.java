@@ -1,8 +1,9 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
 
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 
 public class JsArrowNockEvent extends JsPlayerEvent<ArrowNockEvent>
 {

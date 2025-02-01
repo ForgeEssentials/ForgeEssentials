@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHelp;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommand;
@@ -30,7 +31,6 @@ public class HelpFixer extends CommandHelp
     public static boolean hideWorldEditCommands = true;
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<ICommand> getSortedPossibleCommands(ICommandSender sender)
     {
         List<ICommand> list = MinecraftServer.getServer().getCommandManager().getPossibleCommands(sender);
@@ -60,8 +60,7 @@ public class HelpFixer extends CommandHelp
      * Fix for retard mods who think they can just return null in {@link ICommand#getCommandUsage(ICommandSender)}
      */
     @Override
-    @SuppressWarnings("unchecked")
-    public void processCommand(ICommandSender sender, String[] args)
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         List<ICommand> commands = getSortedPossibleCommands(sender);
         byte cmdsPerPage = 7;
@@ -70,7 +69,7 @@ public class HelpFixer extends CommandHelp
         int startPage;
         try
         {
-            startPage = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, i + 1) - 1;
+        	startPage = args.length == 0 ? 0 : parseInt(args[0], 1, i + 1) - 1;
         }
         catch (NumberInvalidException e)
         {

@@ -1,5 +1,6 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
@@ -62,7 +63,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -101,7 +102,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 2)
         {

@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.util;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 
@@ -11,13 +12,13 @@ public class PlayerInvChest extends InventoryBasic
 
     public PlayerInvChest(EntityPlayerMP owner, EntityPlayerMP vieuwer)
     {
-        super(owner.getCommandSenderName() + "'s inventory", false, owner.inventory.mainInventory.length);
+        super(owner.getName() + "'s inventory", false, owner.inventory.mainInventory.length);
         this.owner = owner;
         this.vieuwer = vieuwer;
     }
 
     @Override
-    public void openInventory()
+    public void openInventory(EntityPlayer player)
     {
         CommandsEventHandler.register(this);
         allowUpdate = false;
@@ -26,11 +27,11 @@ public class PlayerInvChest extends InventoryBasic
             setInventorySlotContents(id, owner.inventory.mainInventory[id]);
         }
         allowUpdate = true;
-        super.openInventory();
+        super.openInventory(player);
     }
 
     @Override
-    public void closeInventory()
+    public void closeInventory(EntityPlayer player)
     {
         CommandsEventHandler.remove(this);
         if (allowUpdate)
@@ -41,7 +42,7 @@ public class PlayerInvChest extends InventoryBasic
             }
         }
         markDirty();
-        super.closeInventory();
+        super.closeInventory(player);
     }
 
     @Override

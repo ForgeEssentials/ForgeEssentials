@@ -125,6 +125,6 @@ public class GenLayerMultiworldBiome extends GenLayer
         int rand = nextInt(totalWeight / 10) * 10;
         int weight = rand + (BiomeManager.isTypeListModded(type) ? nextInt(Math.min(10, totalWeight - rand)) : 0);
 
-        return (BiomeEntry) WeightedRandom.getItem(biomeList, weight);
+        return (BiomeEntry) WeightedRandom.getRandomItem(biomeList, weight);
     }
 }

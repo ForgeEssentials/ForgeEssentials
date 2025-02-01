@@ -12,12 +12,9 @@ import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
 {
-    private int metadata;
-
     public LogEventPlace(BlockEvent.PlaceEvent event)
     {
         super(event);
-        metadata = event.world.getBlockMetadata(event.x, event.y, event.z);
     }
 
     @Override
@@ -26,13 +23,13 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
         Action01Block action = new Action01Block();
         action.time = new Date();
         action.player = getPlayer(event.player);
-        action.world = getWorld(event.world.provider.dimensionId);
-        action.block = getBlock(event.block);
-        action.metadata = metadata;
+        action.world = getWorld(event.world.provider.getDimensionId());
+        action.block = getBlock(event.state.getBlock());
+        action.metadata = event.state.getBlock().getMetaFromState(event.state);
         action.type = ActionBlockType.PLACE;
-        action.x = event.x;
-        action.y = event.y;
-        action.z = event.z;
+        action.x = event.pos.getX();
+        action.y = event.pos.getY();
+        action.z = event.pos.getZ();
         em.persist(action);
     }
 

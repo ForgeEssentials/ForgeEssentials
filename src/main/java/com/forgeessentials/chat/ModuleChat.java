@@ -26,6 +26,9 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -62,11 +65,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat
@@ -121,7 +119,6 @@ public class ModuleChat
     public void moduleLoad(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
 
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
 
@@ -237,7 +234,7 @@ public class ModuleChat
 
         if (CommandPm.getTarget(event.player) != null)
         {
-            tell(event.player, event.component, CommandPm.getTarget(event.player));
+            tell(event.player, event.getComponent(), CommandPm.getTarget(event.player));
             event.setCanceled(true);
             return;
         }
@@ -245,7 +242,7 @@ public class ModuleChat
         // Log chat message, if config is set
         if (ChatConfig.logChat)
         {
-            logChatMessage(event.player.getCommandSenderName(), event.message);
+            logChatMessage(event.player.getName(), event.message);
         }
 
         // Initialize parameters
@@ -272,7 +269,7 @@ public class ModuleChat
             ChatOutputHandler.applyFormatting(messageComponent.getChatStyle(), ChatOutputHandler.enumChatFormattings(textFormats));
 
         // Finish complete message
-        event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
+        event.setComponent(new ChatComponentTranslation("%s%s", header, messageComponent));
 
         // Handle chat range
         Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
@@ -282,7 +279,7 @@ public class ModuleChat
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
-                    ChatOutputHandler.sendMessage(player, event.component);
+                    ChatOutputHandler.sendMessage(player, event.getComponent());
             }
             event.setCanceled(true);
         }
@@ -518,7 +515,7 @@ public class ModuleChat
     {
         String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
         if (nickname == null || nickname.isEmpty())
-            nickname = player.getCommandSenderName();
+            nickname = player.getName();
         return nickname;
     }
 
@@ -526,13 +523,13 @@ public class ModuleChat
 
     public static void tell(ICommandSender sender, IChatComponent message, ICommandSender target)
     {
-        ChatComponentTranslation sentMsg = new ChatComponentTranslation("commands.message.display.incoming", new Object[] { sender.func_145748_c_(),
+        ChatComponentTranslation sentMsg = new ChatComponentTranslation("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
                 message.createCopy() });
         ChatComponentTranslation senderMsg = new ChatComponentTranslation("commands.message.display.outgoing",
-                new Object[] { target.func_145748_c_(), message });
+                new Object[] { target.getDisplayName(), message });
         sentMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
         senderMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        boolean isIRC = (sender.getCommandSenderName().matches("^IRC:(.*)") || target.getCommandSenderName().matches("^IRC:(.*)"));
+        boolean isIRC = (sender.getName().matches("^IRC:(.*)") || target.getName().matches("^IRC:(.*)"));
         if (ChatConfig.logTells)
         {
             // if IRC logging is disabled, and the tell message has an IRC user...
@@ -542,7 +539,7 @@ public class ModuleChat
             }
             else // otherwise, log this tell to file
             {
-                ModuleChat.instance.logChatMessage(sender.getCommandSenderName(), message.getUnformattedText(), target.getCommandSenderName());
+                ModuleChat.instance.logChatMessage(sender.getName(), message.getUnformattedText(), target.getName());
             }
         }
         ChatOutputHandler.sendMessage(target, sentMsg);
@@ -580,7 +577,7 @@ public class ModuleChat
 
         if (ChatConfig.logGroupChat)
         {
-            ModuleChat.instance.logChatMessage(sender.getCommandSenderName(), formatted, ("@" + groupName + "@ "));
+            ModuleChat.instance.logChatMessage(sender.getName(), formatted, ("@" + groupName + "@ "));
         }
 
         for (EntityPlayerMP p : ServerUtil.getPlayerList())

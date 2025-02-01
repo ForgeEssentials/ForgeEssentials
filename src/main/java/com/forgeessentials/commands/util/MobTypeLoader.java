@@ -6,14 +6,13 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import net.minecraft.entity.passive.EntityTameable;
+import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class MobTypeLoader
 {

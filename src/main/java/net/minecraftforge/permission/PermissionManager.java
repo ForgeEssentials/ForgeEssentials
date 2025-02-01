@@ -12,10 +12,9 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
-
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public final class PermissionManager
 {
@@ -147,7 +146,6 @@ public final class PermissionManager
      */
     public static void registerCommandPermissions()
     {
-        @SuppressWarnings("unchecked")
         Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
         for (ICommand command : commands.values())
             if (!commandPermissions.containsKey(command))

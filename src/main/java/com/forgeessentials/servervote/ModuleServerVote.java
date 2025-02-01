@@ -9,6 +9,10 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -22,10 +26,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+
+
+
+
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleServerVote
@@ -48,7 +52,7 @@ public class ModuleServerVote
     @SubscribeEvent
     public void init(FEModuleInitEvent e)
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }
@@ -153,7 +157,7 @@ public class ModuleServerVote
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverVoteEvent(VoteEvent vote)
     {
-        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(vote.player);
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerByUsername(vote.player);
         if (player != null)
         {
             doPlayer(player, vote);
@@ -167,9 +171,9 @@ public class ModuleServerVote
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (offlineList.containsKey(e.player.getCommandSenderName()))
+        if (offlineList.containsKey(e.player.getName()))
         {
-            doPlayer((EntityPlayerMP) e.player, offlineList.remove(e.player.getCommandSenderName()));
+            doPlayer((EntityPlayerMP) e.player, offlineList.remove(e.player.getName()));
         }
     }
 

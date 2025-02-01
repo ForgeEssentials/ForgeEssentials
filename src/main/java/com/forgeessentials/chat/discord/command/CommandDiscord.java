@@ -1,5 +1,6 @@
 package com.forgeessentials.chat.discord.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
@@ -45,7 +46,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBase
         return PermissionLevel.OP;
     }
 
-    @Override public void processCommandConsole(ICommandSender sender, String[] args)
+    @Override public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -66,7 +67,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBase
                         ChatOutputHandler.chatError(sender, Translator.format("Unknown Channel: %s", channel));
                     }
                 } else if (_args.isTabCompletion) {
-                    addTabCompletionOptions(sender, handler.channels.toArray(new String[0]));
+                    addTabCompletionOptions(sender, handler.channels.toArray(new String[0]), sender.getPosition());
                 } else {
                     ChatOutputHandler.chatError(sender, getCommandUsage(sender));
                 }
@@ -78,7 +79,7 @@ public class CommandDiscord extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    @Override public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         processCommandConsole(sender, args);
     }

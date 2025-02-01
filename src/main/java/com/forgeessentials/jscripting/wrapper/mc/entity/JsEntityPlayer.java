@@ -2,7 +2,7 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.WorldSettings.GameType;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -77,8 +77,8 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public JsPoint<?> getBedLocation(int dimension)
     {
-        ChunkCoordinates coord = EntityPlayer.verifyRespawnCoordinates(that.worldObj, that.getBedLocation(dimension), false);
-        return coord != null ? new JsWorldPoint<>(new WorldPoint(coord.posX, coord.posY, coord.posZ, dimension)) : null;
+        BlockPos coord = EntityPlayer.getBedSpawnLocation(that.worldObj, that.getBedLocation(dimension), false);
+        return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
     }
 
     public GameType getGameType()
@@ -142,7 +142,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public float getBreakSpeed(JsBlock block, boolean cannotHarvestBlock, int meta, int x, int y, int z)
     {
-        return that.getBreakSpeed(block.getThat(), cannotHarvestBlock, meta, x, y, z);
+        return that.getBreakSpeed(block.getThat().getStateFromMeta(meta), new BlockPos(x, y, z));
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.forgeessentials.util;
 
+import net.minecraft.command.CommandResultStats.Type;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.forgeessentials.api.APIRegistry;
@@ -47,15 +50,15 @@ public class DoAsCommandSender implements ICommandSender
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
-        return sender.getCommandSenderName();
+        return sender.getName();
     }
 
     @Override
-    public IChatComponent func_145748_c_()
+    public IChatComponent getDisplayName()
     {
-        return sender.func_145748_c_();
+        return sender.getDisplayName();
     }
 
     @Override
@@ -69,12 +72,6 @@ public class DoAsCommandSender implements ICommandSender
     public boolean canCommandSenderUseCommand(int level, String command)
     {
         return true;
-    }
-
-    @Override
-    public ChunkCoordinates getPlayerCoordinates()
-    {
-        return sender.getPlayerCoordinates();
     }
 
     @Override
@@ -102,5 +99,30 @@ public class DoAsCommandSender implements ICommandSender
     {
         return hideChatMessages;
     }
+
+	@Override
+	public BlockPos getPosition() {
+		return sender.getPosition();
+	}
+
+	@Override
+	public Vec3 getPositionVector() {
+		return sender.getPositionVector();
+	}
+
+	@Override
+	public Entity getCommandSenderEntity() {
+		return sender.getCommandSenderEntity();
+	}
+
+	@Override
+	public boolean sendCommandFeedback() {
+		return sender.sendCommandFeedback();
+	}
+
+	@Override
+	public void setCommandStat(Type type, int amount) {
+		sender.setCommandStat(type, amount);
+	}
 
 }

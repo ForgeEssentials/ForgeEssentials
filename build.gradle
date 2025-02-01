@@ -1,23 +1,25 @@
 // Build repositories
 buildscript {
 	repositories {
+		maven { url = "https://maven.minecraftforge.net/" }
 		maven {
 			name = "forge"
 			url = "https://files.minecraftforge.net/maven"
 		}
 		maven {
-			// GTNH ForgeGradle
-			name = "GTNH Maven"
-			url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
-		}
-		maven {
-			name = "sonatype"
+			name = "sonatype releases"
 			url = "https://oss.sonatype.org/content/repositories/releases/"
 		}
+
+        maven {
+            name = "sponge"
+            url = "https://repo.spongepowered.org/maven/"
+        }
+
 		mavenCentral()
 		mavenLocal()
 		maven {
-			name = "sonatype"
+			name = "sonatype snapshots"
 			url = "https://oss.sonatype.org/content/repositories/snapshots/"
 		}
 		maven {
@@ -27,15 +29,17 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:1.2.13"
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-		classpath("com.modrinth.minotaur:Minotaur:2.8.3")
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+		//classpath("com.modrinth.minotaur:Minotaur:2.8.3")
 	}
 
 }
 plugins {
-	id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id "com.matthewprenger.cursegradle" version "1.4.0"
+	id 'com.github.johnrengelman.shadow' version '4.0.4'
+	id "com.matthewprenger.cursegradle" version "1.4.0"
+	//id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 
 // Set up FE required repositories
@@ -50,7 +54,9 @@ repositories {
 	}
 }
 
-apply plugin: "forge"
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+
 import org.ajoberstar.grgit.Grgit
 import org.apache.tools.ant.filters.ReplaceTokens
 /************************************************************
@@ -80,6 +86,7 @@ targetCompatibility = 1.8
 
 ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-server.jar")
 ext.set 'clientSrcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber-client.jar")
+
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
@@ -136,21 +143,22 @@ project.afterEvaluate {
 minecraft {
 	version = "$project.minecraftVersion-$project.forgeVersion-$project.minecraftVersion"
 	runDir = "rundir"
+    mappings = "snapshot_20160115"
 }
 
-apply plugin: "com.modrinth.minotaur"
-
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = "forge-essentials"
-    versionNumber = "$mod_base.$mod_major.$buildNumber"
-    versionType = project.releaseType
-    versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
-    uploadFile = project.srcFile
-    gameVersions = [minecraftVersion]
-    loaders = ["forge"]
-    changelog = project.changelog
-}
+//apply plugin: "com.modrinth.minotaur"
+//
+//modrinth {
+//    token = System.getenv("MODRINTH_TOKEN")
+//    projectId = "forge-essentials"
+//    versionNumber = "$mod_base.$mod_major.$buildNumber"
+//    versionType = project.releaseType
+//    versionName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
+//    uploadFile = project.srcFile
+//    gameVersions = [minecraftVersion]
+//    loaders = ["forge"]
+//    changelog = project.changelog
+//}
 
 // Configure shared manifest
 ext.sharedManifest = manifest {
@@ -206,15 +214,15 @@ dependencies {
     shadowLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	shadowLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
 	implementation 'javax.persistence:javax.persistence-api:2.2'
-	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
-	annotationProcessor group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true
+	buildDep group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-	buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.7.10", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
-	buildDep files('lib/Baubles-1.7.10-1.0.1.10-deobf.jar')
-	buildDep files('lib/ServerUtilities-2.0.2.jar')
-	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
+    buildDep "com.sk89q.worldedit:worldedit-core:6.1.1-SNAPSHOT"
+    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.8.9:6.1.1:dev"
+	buildDep files('lib/Baubles-1.8.9-1.1.3.0.jar')
+	//buildDep files('lib/ServerUtilities-2.0.2.jar')
+	includeMod files("lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
 	shade (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true) {
@@ -244,19 +252,25 @@ dependencies {
  */
 
 sourceSets {
-	utils {
-		compileClasspath = files(configurations.compile, sourceSets.api.output)
-	}
-	main {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
-	}
-	client {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
-	}
-
-	test {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.main.output)
-	}
+    def deps = [
+            configurations.forgeGradleMcDeps,
+            configurations.forgeGradleMc,
+            configurations.provided
+    ]
+    utils {
+        compileClasspath = files(configurations.compile, sourceSets.api.output)
+        compileClasspath += files deps
+    }
+    main {
+        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+        compileClasspath += files deps
+        ext.refMap = "mixins.forgeessentials.refmap.json"
+    }
+    client {
+        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+        compileClasspath += files deps
+        ext.refMap = "mixins.forgeessentials.client.refmap.json"
+    }
 }
 
 // Configure utils tokens
@@ -338,19 +352,12 @@ def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + 
 
 shadowJar {
 
-
-    minimize {
-        exclude(dependency('org.hibernate:.*:.*'))
-        exclude(dependency('mysql:.*:.*'))
-        exclude(dependency('com.h2database:.*:.*'))
-        exclude(dependency('javax:.*:.*'))
-    }
 	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
 	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
 	relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
-	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
+	//relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
 	relocate  'javax.interceptor','com.forgeessentials.thirdparty.javax.interceptor'
 	relocate  'javax.inject','com.forgeessentials.thirdparty.javax.inject'
@@ -396,13 +403,12 @@ jar {
 		filter {
 			line -> line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate')
 		}
-		rename {
-			name -> "com.forgeessentials.thirdparty.$name"
-		}
+//		rename {
+//			name -> "com.forgeessentials.thirdparty.$name"
+//		}
 	}
 
-    from serverRefMap
-
+    jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	manifest {
 		from serverManifest
 	}
@@ -418,7 +424,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
-    from clientRefMap
+
 	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
@@ -456,7 +462,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 /************************************************************
  * Configure Mixin tweaks 
  */
-
+/*
 task sourceJar(type: Jar) {
 	classifier = "sources"
 	appendix = project.minecraftVersion
@@ -467,7 +473,7 @@ task sourceJar(type: Jar) {
 		from serverManifest
 	}
 }
-
+*/
 /************************************************************
  * Configure API javadoc
  */
@@ -491,19 +497,23 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
  * Configure reobfuscation
  */
 
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
+//def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
 //def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
-afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
-	//tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
-}
+//afterEvaluate {
+//	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
+//	//tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
+//}
 
 reobf {
+/*
 	addExtraSrgFile mixinSrg
 	//addExtraSrgFile mixinClientSrg
 	reobf (clientJar) { reobfSpec ->
 		reobfSpec.classpath = sourceSets.main.compileClasspath
-	}
+	}*/
+	clientJar {
+        classpath = sourceSets.main.compileClasspath
+    }
 }
 
 /************************************************************

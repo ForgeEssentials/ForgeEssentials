@@ -2,6 +2,7 @@ package com.forgeessentials.commands.server;
 
 import java.util.TimerTask;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -48,7 +49,7 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         long time = arguments.parseTimeReadable();
         final String execute = StringUtils.join(arguments.args.iterator(), " ");

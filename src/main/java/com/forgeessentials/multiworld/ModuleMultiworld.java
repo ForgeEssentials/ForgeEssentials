@@ -1,6 +1,7 @@
 package com.forgeessentials.multiworld;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -14,7 +15,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 
 /**
  * 

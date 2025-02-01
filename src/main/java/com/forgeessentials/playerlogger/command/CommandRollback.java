@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -71,7 +72,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs args)
+    public void parse(CommandParserArgs args) throws CommandException
     {
         if (args.isEmpty())
         {
@@ -113,7 +114,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @SuppressWarnings("deprecation")
-    private void startRollback(CommandParserArgs args)
+    private void startRollback(CommandParserArgs args) throws CommandException
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -169,7 +170,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void stepRollback(CommandParserArgs args, int sec)
+    private void stepRollback(CommandParserArgs args, int sec) throws CommandException
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -188,7 +189,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void confirmRollback(CommandParserArgs args)
+    private void confirmRollback(CommandParserArgs args) throws CommandException
     {
         args.checkPermission(PERM);
 
@@ -203,7 +204,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Successfully restored changes");
     }
 
-    private void cancelRollback(CommandParserArgs args)
+    private void cancelRollback(CommandParserArgs args) throws CommandException
     {
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
@@ -213,13 +214,13 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Cancelled active rollback");
     }
 
-    private void playRollback(CommandParserArgs args)
+    private void playRollback(CommandParserArgs args) throws CommandException
     {
         args.checkPermission(PERM_PREVIEW);
 
         int speed = 1;
         if (!args.isEmpty())
-            speed = parseInt(args.sender, args.remove());
+            speed = parseInt(args.remove());
         if (speed == 0)
             speed = 1;
         if (Math.abs(speed) > 10)
@@ -246,7 +247,7 @@ public class CommandRollback extends ParserCommandBase
         }
     }
 
-    private void stopRollback(CommandParserArgs args)
+    private void stopRollback(CommandParserArgs args) throws CommandException
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -264,7 +265,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
     }
 
-    private static void help(ICommandSender sender)
+    private static void help(ICommandSender sender) throws CommandException
     {
         ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
         ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");

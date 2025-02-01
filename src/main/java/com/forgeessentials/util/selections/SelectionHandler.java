@@ -4,6 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
@@ -19,9 +22,9 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+
+
 
 public class SelectionHandler extends ServerEventHandler
 {
@@ -68,13 +71,13 @@ public class SelectionHandler extends ServerEventHandler
                 return;
         }
 
-        WorldPoint point = new WorldPoint(player.dimension, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(player.dimension, event.pos);
 
         // left Click
         if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
         {
             SelectionHandler.setStart((EntityPlayerMP) event.entityPlayer, point);
-            String message = Translator.format("Pos1 set to %d, %d, %d", event.x, event.y, event.z);
+            String message = Translator.format("Pos1 set to %d, %d, %d", event.pos);
             ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
@@ -82,7 +85,7 @@ public class SelectionHandler extends ServerEventHandler
         else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
         {
             SelectionHandler.setEnd((EntityPlayerMP) event.entityPlayer, point);
-            String message = Translator.format("Pos2 set to %d, %d, %d", event.x, event.y, event.z);
+            String message = Translator.format("Pos2 set to %d, %d, %d", event.pos);
             ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }

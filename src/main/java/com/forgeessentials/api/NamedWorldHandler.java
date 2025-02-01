@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.WorldServer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public interface NamedWorldHandler
 {

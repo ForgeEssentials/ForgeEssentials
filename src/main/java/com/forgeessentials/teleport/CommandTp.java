@@ -3,10 +3,13 @@ package com.forgeessentials.teleport;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -20,8 +23,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandTp extends ForgeEssentialsCommandBase
 {
@@ -63,7 +64,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -102,9 +103,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
             if (args.length == 3)
             {
                 EntityPlayerMP player = sender;
-                double x = func_110666_a(sender, player.posX, args[0]);
+                double x = parseDouble(player.posX, args[0], true);
                 double y = ServerUtil.parseYLocation(sender, player.posY, args[1]);
-                double z = func_110666_a(sender, player.posZ, args[2]);
+                double z = parseDouble(player.posZ, args[2], true);
                 PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
@@ -114,9 +115,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    double x = func_110666_a(sender, player.posX, args[1]);
+                    double x = parseDouble(player.posX, args[1], true);
                     double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                    double z = func_110666_a(sender, player.posZ, args[3]);
+                    double z = parseDouble(player.posZ, args[3], true);
                     PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
@@ -132,7 +133,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 2)
         {
@@ -156,9 +157,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                double x = func_110666_a(sender, player.posX, args[1]);
+                double x = parseDouble(player.posX, args[1], true);
                 double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                double z = func_110666_a(sender, player.posZ, args[3]);
+                double z = parseDouble(player.posZ, args[3], true);
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
             }
             else
@@ -172,7 +173,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1 || args.length == 2)
         {

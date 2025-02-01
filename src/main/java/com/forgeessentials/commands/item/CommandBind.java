@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -19,7 +21,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 
 public class CommandBind extends ParserCommandBase
 {
@@ -70,8 +72,7 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -119,8 +120,8 @@ public class CommandBind extends ParserCommandBase
 
         if (arguments.isTabCompletion)
         {
-            arguments.tabCompletion = MinecraftServer.getServer().getPossibleCompletions(arguments.sender,
-                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString());
+            arguments.tabCompletion = MinecraftServer.getServer().getTabCompletions(arguments.sender,
+                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition());
             if ("none".startsWith(arguments.peek()))
                 arguments.tabCompletion.add(0, "none");
             return;
@@ -144,7 +145,7 @@ public class CommandBind extends ParserCommandBase
             {
                 if (lore.getStringTagAt(i).startsWith(loreStart))
                 {
-                    lore.func_150304_a(i, loreTag);
+                    lore.set(i, loreTag);
                     arguments.confirm("Bound command to item");
                     return;
                 }

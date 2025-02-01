@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +28,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -101,7 +103,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -140,8 +142,16 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
                     else if (!response)
                         return;
                     int cooldown = -1;
-                    if (!arguments.isEmpty())
-                        cooldown = arguments.parseInt();
+                    if (!arguments.isEmpty()) {
+                    	try
+                    	{
+                    		cooldown = arguments.parseInt();
+                    	}
+                    	catch (CommandException e)
+                    	{
+                    		arguments.error(e.getMessage());
+                    	}
+                    }
                     addKit(new Kit(arguments.senderPlayer, kitName, cooldown));
                     if (cooldown < 0)
                         arguments.confirm("Kit %s saved for one-time-use", kitName);

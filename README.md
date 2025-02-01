@@ -1,7 +1,7 @@
 ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
 ===================
 
-The code on this branch is for Minecraft 1.7.10.  
+The code on this branch is for Minecraft 1.8.9.  
 **We are looking for developers. Please contact us on IRC if you are interested in contributing!**
 
 ## We are few developers with not soo much time at hand - we will try to handle important bugs fast
@@ -50,6 +50,7 @@ Active
 - [luacs1998](https://github.com/luacs1998)
 - [spacebuilder2020](https://github.com/spacebuilder2020)
 - [Zethalion](https://github.com/Zethalion)
+- [Maximuslotro](https://github.com/maximuslotro)
 
 Inactive
 - [Techjar](https://github.com/Techjar)

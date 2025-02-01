@@ -34,6 +34,8 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FilenameUtils;
@@ -53,9 +55,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class)
 public class ModuleBackup extends ConfigLoaderBase
@@ -237,7 +236,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     for (WorldServer world : DimensionManager.getWorlds())
                         if (shouldBackup(world))
                         {
-                            backupDims.add(world.provider.dimensionId);
+                            backupDims.add(world.provider.getDimensionId());
                             backupWorlds.add(world);
                         }
                     ModuleBackup.notify(Translator.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
@@ -288,7 +287,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     protected static boolean shouldBackup(WorldServer world)
     {
-        Boolean shouldBackup = backupOverrides.get(world.provider.dimensionId);
+        Boolean shouldBackup = backupOverrides.get(world.provider.getDimensionId());
         if (shouldBackup == null)
             return backupDefault;
         else
@@ -298,12 +297,12 @@ public class ModuleBackup extends ConfigLoaderBase
     private static synchronized void backup(WorldServer world, boolean notify)
     {
         if (notify)
-            notify(String.format("Starting backup of dim %d...", world.provider.dimensionId));
+            notify(String.format("Starting backup of dim %d...", world.provider.getDimensionId()));
 
         // Save world
         if (!saveWorld(world))
         {
-            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.dimensionId));
+            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.getDimensionId()));
             return;
         }
 
@@ -314,7 +313,7 @@ public class ModuleBackup extends ConfigLoaderBase
         if (!backupDir.exists())
             if (!backupDir.mkdirs())
             {
-                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.dimensionId));
+                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.getDimensionId()));
                 return;
             }
 
@@ -322,7 +321,7 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.dimensionId));
+            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.getDimensionId()));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -341,10 +340,10 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (Exception ex)
         {
-            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.dimensionId));
+            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.getDimensionId()));
             ex.printStackTrace();
             if (notify)
-                notify(String.format("Error during backup of dim %d", world.provider.dimensionId));
+                notify(String.format("Error during backup of dim %d", world.provider.getDimensionId()));
         }
 
         if (notify)
@@ -366,7 +365,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
             // Exclude directories of other worlds
             for (WorldServer otherWorld : DimensionManager.getWorlds())
-                if (otherWorld.provider.dimensionId != world.provider.dimensionId && otherWorld.getChunkSaveLocation().equals(file))
+                if (otherWorld.provider.getDimensionId() != world.provider.getDimensionId() && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
             for (Pattern pattern : exludePatterns)
                 if (pattern.matcher(file.getName()).matches())
@@ -380,14 +379,14 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
                 world.getWorldInfo().getWorldName(), //
-                world.provider.dimensionId, //
+                world.provider.getDimensionId(), //
                 FILE_FORMAT.format(new Date())));
     }
 
     private static boolean saveWorld(WorldServer world)
     {
-        boolean oldLevelSaving = world.levelSaving;
-        world.levelSaving = false;
+        boolean oldLevelSaving = world.disableLevelSaving;
+        world.disableLevelSaving = false;
         try
         {
             world.saveAllChunks(true, (IProgressUpdate) null);
@@ -395,7 +394,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (MinecraftException e)
         {
-            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.dimensionId));
+            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.getDimensionId()));
             return false;
         }
         catch (Exception e)
@@ -405,7 +404,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         finally
         {
-            world.levelSaving = oldLevelSaving;
+            world.disableLevelSaving = oldLevelSaving;
         }
     }
 

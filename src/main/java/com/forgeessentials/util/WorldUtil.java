@@ -2,6 +2,7 @@ package com.forgeessentials.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -23,7 +24,7 @@ public abstract class WorldUtil
     {
         for (int i = 0; i < h; i++)
         {
-            Block block = world.getBlock(x, y + i, z);
+        	Block block = world.getBlockState(new BlockPos(x, y + i, z)).getBlock();
             if (block.getMaterial().isSolid() || block.getMaterial().isLiquid())
                 return false;
         }

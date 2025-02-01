@@ -10,10 +10,10 @@ import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CallableMap

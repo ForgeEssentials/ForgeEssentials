@@ -3,19 +3,18 @@ package com.forgeessentials.playerlogger.command;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.util.CommandParserArgs;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class CommandTestPlayerlogger extends ParserCommandBase
 {
@@ -26,7 +25,7 @@ public class CommandTestPlayerlogger extends ParserCommandBase
 
     public CommandTestPlayerlogger()
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -78,9 +77,9 @@ public class CommandTestPlayerlogger extends ParserCommandBase
             int z = 0;
             for (int i = 0; i < 300; i++)
                 if (place)
-                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.worldObj, x, y, z, Blocks.air, 0), ForgeDirection.DOWN);
+                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.worldObj, new BlockPos(x, y, z), Blocks.air.getDefaultState()), EnumFacing.DOWN);
                 else
-                    MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(x, y, z, player.worldObj, Blocks.dirt, 0, player));
+                    MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(player.worldObj, new BlockPos(x, y, z), Blocks.dirt.getDefaultState(), player));
             place = !place;
         }
     }

@@ -3,6 +3,7 @@ package com.forgeessentials.commands.server;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -10,6 +11,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,10 +24,6 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class CommandServerSettings extends ParserCommandBase
 {
@@ -81,7 +81,7 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             arguments.error("You can use this command only on dedicated servers");
@@ -145,7 +145,7 @@ public class CommandServerSettings extends ParserCommandBase
                 String motd = ScriptArguments.process(arguments.toString(), null);
                 if (arguments.isTabCompletion)
                     return;
-                server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
+                server.getServerStatusResponse().setServerDescription(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -179,14 +179,14 @@ public class CommandServerSettings extends ParserCommandBase
             break;
         case "difficulty":
             if (arguments.isEmpty())
-                arguments.confirm("Difficulty set to %s", server.func_147135_j());
+                arguments.confirm("Difficulty set to %s", server.getDifficulty().getDifficultyResourceKey());
             else
             {
                 int difficultyId = arguments.parseInt();
                 if (arguments.isTabCompletion)
                     return;
                 EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(difficultyId);
-                server.func_147139_a(difficulty);
+                server.setDifficultyForAllWorlds(difficulty);
                 setProperty("difficulty", difficulty.ordinal());
                 arguments.confirm("Set difficulty to %s", difficulty.name());
             }

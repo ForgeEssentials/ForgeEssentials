@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -36,7 +37,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     private static final String[] parseMainArgs = { "regen", "setkey", "kick", "start", "stop", "block", "qr" };
 
     @Override
-    public void processCommand(ICommandSender sender, String[] vargs)
+    public void processCommand(ICommandSender sender, String[] vargs) throws CommandException
     {
         CommandParserArgs args = new CommandParserArgs(this, vargs, sender);
         parse(args);
@@ -45,7 +46,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     /**
      * @param args
      */
-    public void parse(CommandParserArgs args)
+    public void parse(CommandParserArgs args) throws CommandException
     {
         if (args.isTabCompletion && args.size() == 1)
         {
@@ -204,7 +205,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] vargs)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] vargs, BlockPos pos)
     {
         try
         {

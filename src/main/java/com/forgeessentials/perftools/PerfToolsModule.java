@@ -1,6 +1,7 @@
 package com.forgeessentials.perftools;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -13,7 +14,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 
 @FEModule(name = "perftools", parentMod = ForgeEssentials.class, defaultModule = false)
 public class PerfToolsModule extends ConfigLoaderBase

@@ -21,7 +21,7 @@ public class Ticket
     public Ticket(ICommandSender sender, String category, String message)
     {
         id = ModuleTickets.getNextID();
-        creator = sender.getCommandSenderName();
+        creator = sender.getName();
         if (sender instanceof EntityPlayer)
         {
             point = new WarpPoint((EntityPlayer) sender);

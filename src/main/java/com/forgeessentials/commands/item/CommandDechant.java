@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -60,17 +61,16 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
         if (stack == null)
             throw new TranslatedCommandException("You are not holding a valid item");
-        @SuppressWarnings("unchecked")
         Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : Enchantment.enchantmentsList)
+        for (Enchantment enchantment : Enchantment.enchantmentsBookList)
             if (enchantment != null && enchantments.containsKey(enchantment.effectId))
             {
                 String name = StatCollector.translateToLocal(enchantment.getName()).replaceAll(" ", "");

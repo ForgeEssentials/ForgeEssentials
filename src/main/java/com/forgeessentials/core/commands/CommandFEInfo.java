@@ -1,5 +1,6 @@
 package com.forgeessentials.core.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -47,7 +48,7 @@ public class CommandFEInfo extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {

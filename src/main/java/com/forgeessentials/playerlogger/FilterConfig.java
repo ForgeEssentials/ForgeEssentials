@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandException;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -75,7 +76,14 @@ public class FilterConfig
         }
         actiontabs.add("reset");
 
-        globalConfig.parse(null);
+        try
+        {
+            globalConfig.parse(null);
+        }
+        catch (CommandException e)
+        {
+
+        }
     }
 
     public static FilterConfig getDefaultPlayerConfig(UserIdent ident)
@@ -98,7 +106,7 @@ public class FilterConfig
     {
         return new Date(System.currentTimeMillis() - before);
     }
-    public void parse(CommandParserArgs args)
+    public void parse(CommandParserArgs args) throws CommandException
     {
         if (args != null)
         {
@@ -178,7 +186,7 @@ public class FilterConfig
     {
     }
 
-    public void parseActions(CommandParserArgs args)
+    public void parseActions(CommandParserArgs args) throws CommandException
     {
         while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
@@ -203,7 +211,7 @@ public class FilterConfig
         }
     }
 
-    public void parseBlock(CommandParserArgs args)
+    public void parseBlock(CommandParserArgs args) throws CommandException
     {
         while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
@@ -221,7 +229,7 @@ public class FilterConfig
         }
     }
 
-    public void parseBefore(CommandParserArgs args)
+    public void parseBefore(CommandParserArgs args) throws CommandException
     {
         args.tabComplete("reset");
         if (!args.isEmpty())
@@ -240,7 +248,7 @@ public class FilterConfig
         else
             throw new TranslatedCommandException("A time must be specified here!");
     }
-    public void parseAfter(CommandParserArgs args)
+    public void parseAfter(CommandParserArgs args) throws CommandException
     {
         args.tabComplete("reset");
         if (!args.isEmpty())
@@ -260,7 +268,7 @@ public class FilterConfig
                 throw new TranslatedCommandException("A time must be specified here!");
     }
 
-    public void parseRange(CommandParserArgs args)
+    public void parseRange(CommandParserArgs args) throws CommandException
     {
         if (!args.isEmpty())
         {

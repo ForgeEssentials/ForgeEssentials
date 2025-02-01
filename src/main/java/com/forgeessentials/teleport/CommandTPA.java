@@ -1,5 +1,6 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -58,7 +59,7 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -82,10 +83,17 @@ public class CommandTPA extends ParserCommandBase
                     else if (response == false)
                         arguments.error("TPA declined");
                     else
-                        TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                    	try
+                    	{
+                    		TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                    	}
+                    	catch (CommandException e)
+                    	{
+                    		arguments.error(e.getMessage());
+                    	}
                 }
             };
-            Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getCommandSenderName()),
+            Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getName()),
                     callback, 20);
             return;
         }
@@ -98,7 +106,7 @@ public class CommandTPA extends ParserCommandBase
         {
             arguments.checkPermission(PERM_HERE);
             point = new WarpPoint(arguments.senderPlayer);
-            locationName = arguments.sender.getCommandSenderName();
+            locationName = arguments.sender.getName();
             arguments.remove();
         }
         else
@@ -121,7 +129,14 @@ public class CommandTPA extends ParserCommandBase
                 else if (response == false)
                     arguments.error("TPA declined");
                 else
-                    TeleportHelper.teleport(player.getPlayerMP(), point);
+                	try
+                	{
+                		TeleportHelper.teleport(player.getPlayerMP(), point);
+                	}
+                	catch (CommandException e)
+                	{
+                		arguments.error(e.getMessage());
+                	}
             }
         }, 20);
     }

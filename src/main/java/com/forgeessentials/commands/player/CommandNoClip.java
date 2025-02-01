@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.player;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,7 +55,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         if (!PlayerInfo.get(player).getHasFEClient())
         {

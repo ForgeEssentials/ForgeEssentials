@@ -1,8 +1,12 @@
 package net.minecraftforge.fe.event.world;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
-import cpw.mods.fml.common.eventhandler.Event;
+
+
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Forge PR 1459
@@ -11,17 +15,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 @Cancelable
 public class SignEditEvent extends Event
 {
-    public final int x, y, z;
-    public final String[] text;
+    public final BlockPos pos;
+    public final IChatComponent[] text;
     public final EntityPlayerMP editor;
 
-    public SignEditEvent(int x, int y, int z, String[] text, EntityPlayerMP editor)
+    public SignEditEvent(BlockPos pos, IChatComponent[] iChatComponents, EntityPlayerMP editor)
     {
         super();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.text = text;
+        this.pos = pos;
+        this.text = iChatComponents;
         this.editor = editor;
     }
 }

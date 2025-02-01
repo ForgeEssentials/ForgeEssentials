@@ -1,10 +1,9 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -28,9 +27,9 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
-        EntityPlayerMP player = sender;
+    	EntityPlayerMP player = sender;
         if (player.openContainer != player.inventoryContainer)
         {
             player.closeScreen();
@@ -38,10 +37,8 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
         player.getNextWindowId();
 
         InventoryEnderChest chest = player.getInventoryEnderChest();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
-        player.openContainer = new ContainerChest(player.inventory, chest);
-        player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+        chest.setChestTileEntity(null);
+        player.displayGUIChest(chest);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class CommandEffect extends ZoneEffect
             // Slightly preprocess command for backwards compatibility
             for (int i = 0; i < args.length; i++)
                 if (args[i].equals("@player"))
-                    args[i] = player.getCommandSenderName();
+                    args[i] = player.getName();
 
             ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmdName);
             if (mcCommand == null)

@@ -69,7 +69,7 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return session.getUserIdent() != null ? session.getUserIdent().getUsernameOrUuid() : "anonymous";
     }

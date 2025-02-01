@@ -6,10 +6,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -21,9 +22,6 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.handler.chat.QueryChatHandler.Request;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
-
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_CHAT)
 public class QueryChatHandler extends GenericRemoteHandler<Request>
@@ -59,8 +57,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        ChatComponentTranslation message = event.component;
-        onMessage(message);
+        onMessage(event.getComponent());
     }
 
     public static void onMessage(IChatComponent message)

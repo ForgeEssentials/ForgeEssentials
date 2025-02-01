@@ -41,7 +41,7 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
 
     public String getName()
     {
-        return that.getCommandSenderName();
+        return that.getName();
     }
 
     public JsEntityPlayer getPlayer()

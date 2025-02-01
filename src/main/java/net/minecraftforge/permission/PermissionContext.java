@@ -45,7 +45,7 @@ public class PermissionContext
             EntityPlayer player = (EntityPlayer) sender;
             this.player = player;
             this.dimension = player.dimension;
-            this.sourceLocationStart = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
+            this.sourceLocationStart = new Vec3(player.posX, player.posY, player.posZ);
         }
     }
 

@@ -2,6 +2,7 @@ package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.server.MinecraftServer;
@@ -61,7 +62,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
      * Expected structure: "/paidcommand <player> <amount> <command...>"
      */
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 3)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -70,7 +71,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
         if (!ident.hasPlayer())
             throw new PlayerNotFoundException();
 
-        int amount = parseIntWithMin(sender, args[1], 0);
+        int amount = parseInt(args[1], 0);
         Wallet wallet = APIRegistry.economy.getWallet(ident);
         if (!wallet.withdraw(amount))
         {

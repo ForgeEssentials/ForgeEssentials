@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.event.CommandEvent;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +33,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         {
             EntityPlayer player = ((EntityPlayer) event.sender);
             action.player = getPlayer(player);
-            action.world = getWorld(player.worldObj.provider.dimensionId);
+            action.world = getWorld(player.worldObj.provider.getDimensionId());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;
@@ -42,11 +42,11 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         {
             CommandBlockLogic block = ((CommandBlockLogic) event.sender);
             action.player = getPlayer(APIRegistry.IDENT_CMDBLOCK);
-            action.world = getWorld(block.getEntityWorld().provider.dimensionId);
-            ChunkCoordinates coords = block.getPlayerCoordinates();
-            action.x = coords.posX;
-            action.y = coords.posY;
-            action.z = coords.posZ;
+            action.world = getWorld(block.getEntityWorld().provider.getDimensionId());
+            BlockPos pos = block.getPosition();
+            action.x = pos.getX();
+            action.y = pos.getY();
+            action.z = pos.getZ();
         }
         em.persist(action);
     }

@@ -4,10 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityTrackerEntry;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
+import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -15,7 +17,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandVanish extends ParserCommandBase
@@ -70,7 +71,7 @@ public class CommandVanish extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         UserIdent player;
         if (arguments.isEmpty())
@@ -109,30 +110,27 @@ public class CommandVanish extends ParserCommandBase
 
     public static void vanish(UserIdent ident, boolean vanish)
     {
-        EntityPlayerMP player = ident.getPlayerMP();
+    	EntityPlayerMP player = ident.getPlayerMP();
         WorldServer world = (WorldServer) player.worldObj;
-        @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = world.playerEntities;
+        List<EntityPlayer> players = world.playerEntities;
         if (vanish)
         {
             vanishedPlayers.add(ident);
-            EntityTrackerEntry tracker = ((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
-
-            Set<EntityPlayerMP> tracked = new HashSet<EntityPlayerMP>(tracker.trackingPlayers);
-            world.getEntityTracker().removePlayerFromTrackers(player);
-            tracked.forEach(otherPlayer -> {
-                player.playerNetServerHandler.sendPacket(new S0CPacketSpawnPlayer(otherPlayer));
-            });
+            S19PacketEntityStatus packet = new S19PacketEntityStatus(player, (byte) 3);
+            for (EntityPlayer otherPlayer : players)
+                if (otherPlayer != player)
+                    ((EntityPlayerMP) otherPlayer).playerNetServerHandler.sendPacket(packet);
         }
         else
         {
             vanishedPlayers.remove(ident);
-            EntityTrackerEntry tracker = ((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
-            for (EntityPlayerMP otherPlayer : players)
+            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
+            // ((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
+            for (EntityPlayer otherPlayer : players)
                 if (otherPlayer != player)
                 {
                     tracker.trackingPlayers.remove(otherPlayer);
-                    tracker.tryStartWachingThis(otherPlayer);
+                    tracker.updatePlayerEntity((EntityPlayerMP) otherPlayer);
                 }
         }
     }

@@ -1,10 +1,10 @@
 package com.forgeessentials.client.auth;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class AuthAutoLogin
 
         try
         {
-            KEYSTORE_FILE = new File(KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getCommandSenderName() + ".dat");
+            KEYSTORE_FILE = new File(KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getName() + ".dat");
             if (!KEYSTORE_FILE.exists())
             {
                 KEYSTORE_FILE.createNewFile();
@@ -52,7 +52,7 @@ public class AuthAutoLogin
         KEYSTORE.setTag(serverIP, new NBTTagString(key));
         try
         {
-            KEYSTORE_FILE = new File (KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getCommandSenderName() + ".dat");
+            KEYSTORE_FILE = new File (KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getName() + ".dat");
             CompressedStreamTools.safeWrite(KEYSTORE, KEYSTORE_FILE);
         }
         catch (IOException e)

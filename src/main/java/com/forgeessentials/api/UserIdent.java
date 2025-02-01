@@ -15,17 +15,13 @@ import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
 
 import javax.annotation.Nullable;
 
@@ -111,7 +107,7 @@ public class UserIdent
     {
         this.player = new WeakReference<EntityPlayer>(player);
         this.uuid = player.getPersistentID();
-        this.username = player.getCommandSenderName();
+        this.username = player.getName();
         byUuid.put(uuid, this);
         byUsername.put(username.toLowerCase(), this);
     }
@@ -124,7 +120,7 @@ public class UserIdent
         if (identPlayer != null)
         {
             uuid = identPlayer.getPersistentID();
-            username = identPlayer.getCommandSenderName();
+            username = identPlayer.getName();
             byUuid.put(uuid, this);
             byUsername.put(username.toLowerCase(), this);
         }
@@ -228,13 +224,13 @@ public class UserIdent
             throw new IllegalArgumentException();
         
         if (!(player instanceof EntityPlayerMP) || player instanceof FakePlayer) {
-            return getNpc(player.getDisplayName(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getPersistentID());
+            return getNpc(player.getName(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getPersistentID());
         }
 
         UserIdent ident = byUuid.get(player.getPersistentID());
         if (ident == null)
         {
-            ident = byUsername.get(player.getCommandSenderName().toLowerCase());
+            ident = byUsername.get(player.getName().toLowerCase());
             if (ident != null)
             {
                 if (ident.uuid != player.getPersistentID())
@@ -251,7 +247,7 @@ public class UserIdent
         }
         else
         {
-            String name = player.getCommandSenderName();
+            String name = player.getName();
             if (name != null && !name.equals(ident.username))
             {
                 byUsername.remove(ident.username);
@@ -367,7 +363,7 @@ public class UserIdent
     public static synchronized void login(EntityPlayerMP player)
     {
         UserIdent ident = byUuid.get(player.getPersistentID());
-        UserIdent usernameIdent = byUsername.get(player.getCommandSenderName().toLowerCase());
+        UserIdent usernameIdent = byUsername.get(player.getName().toLowerCase());
 
         if (ident == null)
         {
@@ -380,7 +376,7 @@ public class UserIdent
             }
         }
         ident.player = new WeakReference<EntityPlayer>(player);
-        ident.username = player.getCommandSenderName();
+        ident.username = player.getName();
         ident.uuid = player.getPersistentID();
 
         if (usernameIdent != null && usernameIdent != ident)
@@ -389,7 +385,7 @@ public class UserIdent
 
             // Change data for already existing references to old UserIdent
             usernameIdent.player = new WeakReference<EntityPlayer>(player);
-            usernameIdent.username = player.getCommandSenderName();
+            usernameIdent.username = player.getName();
 
             // Replace entry in username map by the one from uuid map
             byUsername.remove(usernameIdent.username.toLowerCase());
@@ -528,10 +524,10 @@ public class UserIdent
         {
             if (!player.getGameProfile().isComplete())
             {
-                return new GameProfile(getOrGenerateUuid(), player.getCommandSenderName());
+                return new GameProfile(getOrGenerateUuid(), player.getName());
 
                 /*
-                 * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent = UserIdent.byUsername.get(player.getCommandSenderName()); if (playerIdent != this)
+                 * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent = UserIdent.byUsername.get(player.getName()); if (playerIdent != this)
                  * return playerIdent.getGameProfile();
                  */
             }
@@ -648,7 +644,7 @@ public class UserIdent
         if (mc == null)
             return null;
         ServerConfigurationManager configurationManager = mc.getConfigurationManager();
-        return configurationManager == null ? null : configurationManager.func_152612_a(username);
+        return configurationManager == null ? null : configurationManager.getPlayerByUsername(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
@@ -669,7 +665,7 @@ public class UserIdent
 
     public static GameProfile getGameProfileByUuid(UUID uuid)
     {
-        GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
+        GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
         return profile;
     }
 

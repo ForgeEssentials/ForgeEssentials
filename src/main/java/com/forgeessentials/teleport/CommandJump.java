@@ -1,13 +1,18 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -17,7 +22,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 
 public class CommandJump extends ForgeEssentialsCommandBase
 {
@@ -64,17 +69,17 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         jump(player);
     }
 
-    public static void jump(EntityPlayerMP player)
+    public static void jump(EntityPlayerMP player) throws CommandException
     {
         MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(player, 16 * 30);
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
-        TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.dimensionId, mo.blockX, mo.blockY + 1, mo.blockZ, player.rotationPitch,
+        TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.getDimensionId(), new BlockPos(mo.getBlockPos().getX(), mo.getBlockPos().getY() + 1, mo.getBlockPos().getZ()), player.rotationPitch,
                 player.rotationYaw));
     }
 
@@ -91,7 +96,16 @@ public class CommandJump extends ForgeEssentialsCommandBase
         if (!PermissionManager.checkPermission(event.entityPlayer, TeleportModule.PERM_JUMP_TOOL))
             return;
 
-        jump((EntityPlayerMP) event.entityPlayer);
+        try
+        {
+            jump((EntityPlayerMP) event.entityPlayer);
+        }
+        catch (CommandException ce)
+        {
+            ChatComponentTranslation msg = new ChatComponentTranslation(ce.getMessage(), ce.getErrorObjects());
+            msg.getChatStyle().setColor(EnumChatFormatting.RED);
+            event.entityPlayer.addChatMessage(msg);
+        }
     }
 
 }

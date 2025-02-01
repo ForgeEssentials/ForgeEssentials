@@ -21,7 +21,7 @@ public class MixinCommandHandler
      * @return {@code true} if the sender has permission
      */
     @Redirect(
-        method = "getPossibleCommands(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;",
+        method = "getTabCompletionOptions(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;Lnet/minecraft/util/BlockPos;)Ljava/util/List;",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/command/ICommand;canCommandSenderUseCommand(Lnet/minecraft/command/ICommandSender;)Z"
@@ -40,7 +40,7 @@ public class MixinCommandHandler
      * @return the command arguments with the first element dropped
      */
     @Redirect(
-        method = "getPossibleCommands(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;",
+        method = "getTabCompletionOptions(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;Lnet/minecraft/util/BlockPos;)Ljava/util/List;",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/command/CommandHandler;dropFirstString([Ljava/lang/String;)[Ljava/lang/String;"

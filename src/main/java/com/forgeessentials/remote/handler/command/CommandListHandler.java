@@ -29,7 +29,6 @@ public class CommandListHandler extends GenericRemoteHandler<String>
     {
         List<String> commands = new ArrayList<String>();
 
-        @SuppressWarnings("unchecked")
         Set<String> cmds = MinecraftServer.getServer().getCommandManager().getCommands().keySet();
 
         for (String cmd : cmds)

@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -50,7 +51,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         ItemStack stack = player.getCurrentEquippedItem();
         if (stack == null)
@@ -58,7 +59,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
 
         int stackSize = 0;
         if (args.length > 0)
-            stackSize = parseInt(player, args[0]);
+            stackSize = parseInt(args[0]);
 
         ItemStack newStack = stack.copy();
         if (stackSize > 0)

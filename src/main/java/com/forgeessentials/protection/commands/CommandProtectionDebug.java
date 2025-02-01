@@ -1,5 +1,6 @@
 package com.forgeessentials.protection.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
@@ -44,7 +45,7 @@ public class CommandProtectionDebug extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;

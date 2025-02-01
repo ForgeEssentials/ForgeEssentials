@@ -1,5 +1,7 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.command.CommandException;
+
 //Depreciated
 
 import net.minecraft.command.ICommandSender;
@@ -32,7 +34,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         int x, y, z;
 
@@ -99,11 +101,8 @@ public class CommandPos extends ForgeEssentialsCommandBase
         if (mop == null)
             throw new TranslatedCommandException("You must first look at the ground!");
 
-        x = mop.blockX;
-        y = mop.blockY;
-        z = mop.blockZ;
 
-        WorldPoint point = new WorldPoint(player.dimension, x, y, z);
+        WorldPoint point = new WorldPoint(player.dimension, mop.getBlockPos());
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
             throw new TranslatedCommandException("Insufficient permissions.");
 
@@ -116,7 +115,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             SelectionHandler.setEnd(player, point);
         }
 
-        ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
+        ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + mop.getBlockPos().toString());
         return;
     }
 

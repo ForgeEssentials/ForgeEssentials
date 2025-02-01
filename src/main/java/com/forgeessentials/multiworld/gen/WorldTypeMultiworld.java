@@ -63,7 +63,7 @@ public class WorldTypeMultiworld extends WorldType
         }
         else
         {
-            return new ChunkProviderGenerate(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled());
+            return new ChunkProviderGenerate(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled(), generatorOptions);
         }
     }
 
@@ -77,13 +77,13 @@ public class WorldTypeMultiworld extends WorldType
      * @return A GenLayer that will return ints representing the Biomes to be generated, see GenLayerBiome
      */
     @Override
-    public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer)
+    public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, String chunkProviderSettingsJson)
     {
         // TODO: Temporary solution to allow changing basic biomes - but a customized WorldChunkManager would remove the
         // need for that
         if (currentMultiworld == null)
         {
-            GenLayer ret = new GenLayerBiome(200L, parentLayer, this);
+            GenLayer ret = new GenLayerBiome(200L, parentLayer, this, chunkProviderSettingsJson);
             ret = GenLayerZoom.magnify(1000L, ret, 2);
             ret = new GenLayerBiomeEdge(1000L, ret);
             return ret;
@@ -110,12 +110,6 @@ public class WorldTypeMultiworld extends WorldType
     public double getHorizon(World world)
     {
         return this == FLAT ? 0.0D : 63.0D;
-    }
-
-    @Override
-    public boolean hasVoidParticles(boolean flag)
-    {
-        return this != FLAT && !flag;
     }
 
     @Override

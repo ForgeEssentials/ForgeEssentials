@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.player;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,7 +50,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         /*
          * if (!PlayerInfo.get(player).getHasFEClient()) { ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
@@ -76,7 +77,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
 
             float speed = 0.05F;
 
-            int multiplier = parseInt(player, args[0]);
+            int multiplier = parseInt(args[0]);
 
             if (multiplier >= 10)
             {

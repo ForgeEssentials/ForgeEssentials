@@ -17,14 +17,14 @@ public class TileEntitySkullGrave extends TileEntitySkull
     public TileEntitySkullGrave(GameProfile player)
     {
         if (player != null)
-            func_152106_a(player);
+        	setPlayerProfile(player);
     }
 
     @Override
     public void invalidate()
     {
         super.invalidate();
-        WorldPoint point = new WorldPoint(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+        WorldPoint point = new WorldPoint(this.worldObj, this.pos);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
@@ -35,7 +35,7 @@ public class TileEntitySkullGrave extends TileEntitySkull
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
-                worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.chest);
+                worldObj.setBlockState(point.getBlockPos(), Blocks.chest.getDefaultState());
             }
         }
         else

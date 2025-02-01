@@ -1,5 +1,6 @@
 package com.forgeessentials.permissions.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -46,7 +47,7 @@ public class CommandPermissions extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
     	try {
     		PermissionCommandParser.parseMain(arguments);

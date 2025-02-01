@@ -9,6 +9,10 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -25,11 +29,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 /**
  * Module to handle death-chest and respawn debuffs.
@@ -142,7 +141,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK)
             return;
 
-        WorldPoint point = new WorldPoint(event.entity.worldObj, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.entity.worldObj, event.pos);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
@@ -157,12 +156,12 @@ public class ModuleAfterlife extends ServerEventHandler
         if (event.world.isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(event.world, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.world, event.pos);
         Grave grave = Grave.graves.get(point);
         if (grave == null)
         {
             // Check for fence post
-            point.setY(event.y + 1);
+            point.setY(event.pos.getY() + 1);
             grave = Grave.graves.get(point);
             if (grave == null || !grave.hasFencePost)
                 return;

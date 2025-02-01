@@ -2,11 +2,14 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -16,7 +19,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+
 
 public class CommandSmite extends ForgeEssentialsCommandBase
 {
@@ -65,7 +68,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -107,14 +110,14 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             }
             else
             {
-                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
+                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ()));
                 ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
             }
         }
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -132,7 +135,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

@@ -3,6 +3,8 @@ package com.forgeessentials.playerlogger.event;
 import java.sql.Blob;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import com.forgeessentials.playerlogger.PlayerLogger;
@@ -10,9 +12,9 @@ import com.forgeessentials.playerlogger.PlayerLogger;
 public class CachedBlockData
 {
 
-    public final int x;
-    public final int y;
-    public final int z;
+    public final BlockPos pos;
+
+    public final IBlockState state;
 
     public final Block block;
 
@@ -20,14 +22,13 @@ public class CachedBlockData
 
     public final Blob tileEntityBlob;
 
-    public CachedBlockData(World world, int x, int z, int y)
+    public CachedBlockData(World world, BlockPos pos)
     {
-        this.x = x;
-        this.y = z;
-        this.z = y;
-        this.block = world.getBlock(x, z, y);
-        this.metadata = world.getBlockMetadata(x, z, y);
-        this.tileEntityBlob = PlayerLogger.tileEntityToBlob(world.getTileEntity(x, z, y));
+        this.pos = pos;
+        state = world.getBlockState(pos);
+        block = state.getBlock();
+        metadata = block.getMetaFromState(state);
+        tileEntityBlob = PlayerLogger.tileEntityToBlob(world.getTileEntity(pos));
     }
 
 }

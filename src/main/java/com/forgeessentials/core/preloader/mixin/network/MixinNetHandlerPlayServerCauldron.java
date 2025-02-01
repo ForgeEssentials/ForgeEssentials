@@ -3,7 +3,10 @@ package com.forgeessentials.core.preloader.mixin.network;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C12PacketUpdateSign;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,29 +28,31 @@ public class MixinNetHandlerPlayServerCauldron
      * @param packet the update sign packet
      * @param ci the callback info
      */
+    //TODO: Fix this event so it works on Cauldron
 //    @Inject(
 //            method = "processUpdateSign",
 //            at = @At(
 //                    value = "INVOKE",
-//                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
-//                    shift = At.Shift.BEFORE
+//                    target = "Lnet/minecraft/network/play/client/C12PacketUpdateSign;getLines()[Lnet/minecraft/util/IChatComponent;"
 //            ),
+//            require = 1,
+//            locals = LocalCapture.CAPTURE_FAILHARD,
 //            cancellable = true
 //    )
-    //TODO: Fix this event so it works on Cauldron
-    private void postSignEditEvent(C12PacketUpdateSign packet, CallbackInfo ci)
+    private void getLines(C12PacketUpdateSign packet, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, TileEntity entity, TileEntitySign tileentitysign)
     {
-        SignEditEvent event = new SignEditEvent(packet.func_149588_c(), packet.func_149586_d(), packet.func_149585_e(), packet.func_149589_f(), this.playerEntity);
-        if (MinecraftForge.EVENT_BUS.post(event))
+        SignEditEvent event = new SignEditEvent(packet.getPosition(), packet.getLines(), this.playerEntity);
+        if (!MinecraftForge.EVENT_BUS.post(event))
         {
-            // If the event was cancelled simply return.
-            // We don't need to mark the TE as dirty or mark the block for an update.
-            ci.cancel();
+            for (int i = 0; i < event.text.length; ++i)
+            {
+                tileentitysign.signText[i] = event.text[i];
+            }
         }
-        else
-        {
-            this.signLines = event.text;
-        }
+
+        tileentitysign.markDirty();
+        worldserver.markBlockForUpdate(blockpos);
+        ci.cancel();
     }
 
     /**

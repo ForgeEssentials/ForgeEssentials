@@ -1,7 +1,9 @@
 package com.forgeessentials.core.preloader.mixin.block;
 
 import net.minecraft.block.BlockPortal;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
@@ -17,12 +19,12 @@ public class MixinBlockPortal
     @Inject(method = "onEntityCollidedWithBlock",
             at = @At(value = "HEAD"),
             cancellable=true)
-    public void onEntityCollidedWithBlock(World world, int X, int Y, int Z, Entity entity, CallbackInfo ci)
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn, CallbackInfo ci)
     {
-    	if (entity.ridingEntity == null && entity.riddenByEntity == null && !world.isRemote)
+    	if (entityIn.ridingEntity == null && entityIn.riddenByEntity == null && !worldIn.isRemote)
         {
     		// TODO: get target coordinates somehow
-    		if (MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entity, world, X, Y, Z, entity.dimension == -1 ? 0 : -1, 0 , 0, 0))) {
+    		if (MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.dimension == -1 ? 0 : -1, BlockPos.ORIGIN))) {
     			ci.cancel();
     		}
     	}else

@@ -2,6 +2,7 @@ package com.forgeessentials.teleport.portal;
 
 import java.util.Map.Entry;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -56,7 +57,7 @@ public class CommandPortal extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -90,7 +91,7 @@ public class CommandPortal extends ParserCommandBase
         }
     }
 
-    private static void parseCreate(CommandParserArgs arguments, boolean recreate)
+    private static void parseCreate(CommandParserArgs arguments, boolean recreate) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -125,12 +126,12 @@ public class CommandPortal extends ParserCommandBase
         {
             if (arguments.size() < 3)
                 throw new TranslatedCommandException("Expected arguments [x y z]");
-            int x = parseInt(arguments.sender, arguments.remove());
-            int y = parseInt(arguments.sender, arguments.remove());
-            int z = parseInt(arguments.sender, arguments.remove());
+            int x = parseInt(arguments.remove());
+            int y = parseInt(arguments.remove());
+            int z = parseInt(arguments.remove());
             int dim = arguments.senderPlayer.dimension;
             if (!arguments.isEmpty())
-                dim = parseInt(arguments.sender, arguments.remove());
+                dim = parseInt(arguments.remove());
             target = new NamedWorldPoint(dim, x, y, z);
         }
 
@@ -150,7 +151,7 @@ public class CommandPortal extends ParserCommandBase
         arguments.confirm("Created new portal leading to %s", target.toString());
     }
 
-    private static void parseTarget(CommandParserArgs arguments)
+    private static void parseTarget(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -170,12 +171,12 @@ public class CommandPortal extends ParserCommandBase
         {
             if (arguments.size() < 3)
                 throw new TranslatedCommandException("Expected arguments [x y z]");
-            int x = parseInt(arguments.sender, arguments.remove());
-            int y = parseInt(arguments.sender, arguments.remove());
-            int z = parseInt(arguments.sender, arguments.remove());
+            int x = parseInt(arguments.remove());
+            int y = parseInt(arguments.remove());
+            int z = parseInt(arguments.remove());
             int dim = arguments.senderPlayer.dimension;
             if (!arguments.isEmpty())
-                dim = parseInt(arguments.sender, arguments.remove());
+                dim = parseInt(arguments.remove());
             target = new NamedWorldPoint(dim, x, y, z);
         }
 
@@ -186,7 +187,7 @@ public class CommandPortal extends ParserCommandBase
         arguments.confirm("Set target for portal %s to %s", name, target.toString());
     }
 
-    private static void parseDelete(CommandParserArgs arguments)
+    private static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {

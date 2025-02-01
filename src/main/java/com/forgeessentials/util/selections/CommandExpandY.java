@@ -1,5 +1,6 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +26,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
         Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)

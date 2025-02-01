@@ -7,6 +7,8 @@ import java.util.WeakHashMap;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -20,8 +22,8 @@ import com.forgeessentials.remote.handler.chat.PushChatHandler.Request;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+
 
 @FERemoteHandler(id = RemoteMessageID.PUSH_CHAT)
 public class PushChatHandler extends GenericRemoteHandler<Request>
@@ -58,7 +60,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        IChatComponent message = event.component;
+        IChatComponent message = event.getComponent();
         String username = event.username;
         pushMessage(message, username);
     }

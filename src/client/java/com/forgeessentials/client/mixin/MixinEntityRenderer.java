@@ -29,7 +29,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
     @Overwrite
     public void getMouseOver(float partialTime)
     {
-        if (this.mc.renderViewEntity != null)
+        if (this.mc.getRenderViewEntity() != null)
         {
             if (this.mc.theWorld != null)
             {
@@ -55,20 +55,20 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                 // d0 = 20;
                 // d1 = 20;
                 
-                Vec3 startPos = this.mc.renderViewEntity.getPosition(partialTime);
-                this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(maxReach, partialTime);
+                Vec3 startPos = this.mc.getRenderViewEntity().getPositionEyes(partialTime);
+                this.mc.objectMouseOver = this.mc.getRenderViewEntity().rayTrace(maxReach, partialTime);
                 if (this.mc.objectMouseOver != null)
                 {
                     blockDistance = this.mc.objectMouseOver.hitVec.distanceTo(startPos);
                 }
 
-                Vec3 vec31 = this.mc.renderViewEntity.getLook(partialTime);
+                Vec3 vec31 = this.mc.getRenderViewEntity().getLook(partialTime);
                 Vec3 vec32 = startPos.addVector(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach);
                 this.pointedEntity = null;
                 Vec3 vec33 = null;
                 float f1 = 1.0F;
-                List<?> list = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.renderViewEntity,
-                        this.mc.renderViewEntity.boundingBox.addCoord(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach).expand(f1, f1, f1));
+                List<?> list = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.getRenderViewEntity(),
+                        this.mc.getRenderViewEntity().getEntityBoundingBox().addCoord(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach).expand(f1, f1, f1));
                 double entityDistance = blockDistance;
 
                 for (int i = 0; i < list.size(); ++i)
@@ -78,7 +78,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                     if (entity.canBeCollidedWith())
                     {
                         float f2 = entity.getCollisionBorderSize();
-                        AxisAlignedBB axisalignedbb = entity.boundingBox.expand(f2, f2, f2);
+                        AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand(f2, f2, f2);
                         MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(startPos, vec32);
 
                         if (axisalignedbb.isVecInside(startPos))
@@ -96,7 +96,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
 
                             if (d3 < entityDistance || entityDistance == 0.0D)
                             {
-                                if (entity == this.mc.renderViewEntity.ridingEntity && !entity.canRiderInteract())
+                                if (entity == this.mc.getRenderViewEntity().ridingEntity && !entity.canRiderInteract())
                                 {
                                     if (entityDistance == 0.0D)
                                     {

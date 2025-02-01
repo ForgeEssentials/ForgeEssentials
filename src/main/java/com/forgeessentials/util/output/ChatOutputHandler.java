@@ -57,7 +57,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, IChatComponent message)
     {
         if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
-            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
         else
             recipient.addChatMessage(message);
     }
@@ -247,12 +247,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static final Pattern FORMAT_CODE_PATTERN;
 
+    public static final char FORMAT_CHARACTERS[] = new char[EnumChatFormatting.values().length];
+
     static
     {
-        String codes = "";
-        for (EnumChatFormatting code : EnumChatFormatting.values())
-            codes += code.getFormattingCode();
-        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + codes + "])");
+    	for (EnumChatFormatting code : EnumChatFormatting.values())
+            FORMAT_CHARACTERS[code.ordinal()] = code.toString().charAt(1);
+        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + new String(FORMAT_CHARACTERS) + "])");
     }
 
     /**
@@ -324,7 +325,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         {
             char formatChar = textFormats.charAt(i);
             for (EnumChatFormatting format : EnumChatFormatting.values())
-                if (format.getFormattingCode() == formatChar)
+                if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
                 {
                     result.add(format);
                     break;
@@ -366,32 +367,32 @@ public final class ChatOutputHandler extends ConfigLoaderBase
                 if (color != null)
                 {
                     sb.append(" mcf");
-                    sb.append(color.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[color.ordinal()]);
                 }
                 if (style.getBold())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.BOLD.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.BOLD.ordinal()]);
                 }
                 if (style.getItalic())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.ITALIC.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.ITALIC.ordinal()]);
                 }
                 if (style.getUnderlined())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.UNDERLINE.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.UNDERLINE.ordinal()]);
                 }
                 if (style.getObfuscated())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.OBFUSCATED.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.OBFUSCATED.ordinal()]);
                 }
                 if (style.getStrikethrough())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.STRIKETHROUGH.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[EnumChatFormatting.STRIKETHROUGH.ordinal()]);
                 }
                 sb.append("\">");
                 sb.append(formatHtml(msg.getUnformattedTextForChat()));
@@ -418,7 +419,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
             char formatChar = matcher.group(1).charAt(0);
             for (EnumChatFormatting format : EnumChatFormatting.values())
             {
-                if (format.getFormattingCode() == formatChar)
+                if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
                 {
                     sb.append("<span class=\"mcf");
                     sb.append(formatChar);

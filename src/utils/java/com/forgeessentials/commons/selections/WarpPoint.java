@@ -4,10 +4,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.google.gson.annotations.Expose;
 
@@ -44,7 +44,7 @@ public class WarpPoint
     public WarpPoint(WorldServer world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
-        this.dim = world.provider.dimensionId;
+        this.dim = world.provider.getDimensionId();
         this.xd = x;
         this.yd = y;
         this.zd = z;
@@ -52,9 +52,9 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(int dimension, ChunkCoordinates location, float pitch, float yaw)
+    public WarpPoint(int dimension, BlockPos location, float pitch, float yaw)
     {
-        this(dimension, location.posX + 0.5, location.posY, location.posZ + 0.5, pitch, yaw);
+        this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
     }
 
     public WarpPoint(Point point, int dimension, float pitch, float yaw)
@@ -104,6 +104,11 @@ public class WarpPoint
     {
         return zd;
     }
+    
+    public BlockPos getBlockPos()
+    {
+        return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
+    }
 
     public int getBlockX()
     {
@@ -147,8 +152,8 @@ public class WarpPoint
 
     public WorldServer getWorld()
     {
-        if (world == null || world.provider.dimensionId != dim)
-            world = DimensionManager.getWorld(dim);
+        if (world == null || world.provider.getDimensionId() != dim)
+            world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
         return world;
     }
 
@@ -211,7 +216,7 @@ public class WarpPoint
 
     public Vec3 toVec3()
     {
-        return Vec3.createVectorHelper(xd, yd, zd);
+        return new Vec3(xd, yd, zd);
     }
 
     public WorldPoint toWorldPoint()

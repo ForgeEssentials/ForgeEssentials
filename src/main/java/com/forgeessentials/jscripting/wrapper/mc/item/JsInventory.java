@@ -47,12 +47,12 @@ public class JsInventory<T extends IInventory> extends JsWrapper<T>
 
     public String getName()
     {
-        return that.getInventoryName();
+        return that.getName();
     }
 
     public boolean hasCustomName()
     {
-        return that.hasCustomInventoryName();
+        return that.hasCustomName();
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.SortedSet;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -23,8 +24,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+
 
 @FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleFactions extends ConfigLoaderBase
@@ -70,7 +71,6 @@ public class ModuleFactions extends ConfigLoaderBase
 
     public ModuleFactions()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.FE_EVENTBUS.register(this);
     }

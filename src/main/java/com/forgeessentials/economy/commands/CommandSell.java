@@ -1,5 +1,6 @@
 package com.forgeessentials.economy.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -55,7 +56,7 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         final boolean holdingItem;
         final ItemStack itemStack;
