@@ -1,5 +1,10 @@
 package com.forgeessentials.commands;
 
+import net.minecraft.command.CommandHandler;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.item.CommandBind;
 import com.forgeessentials.commands.item.CommandCraft;
@@ -38,6 +43,7 @@ import com.forgeessentials.commands.server.CommandModlist;
 import com.forgeessentials.commands.server.CommandPing;
 import com.forgeessentials.commands.server.CommandRules;
 import com.forgeessentials.commands.server.CommandServerSettings;
+import com.forgeessentials.commands.util.CommandFEScoreboard;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
@@ -54,9 +60,6 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
 public class ModuleCommands
@@ -123,6 +126,8 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandDuplicate());
         FECommandManager.registerCommand(new CommandDelayedAction());
+
+        ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(new CommandFEScoreboard());
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
     }

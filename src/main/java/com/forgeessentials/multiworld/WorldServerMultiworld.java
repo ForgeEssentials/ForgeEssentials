@@ -7,6 +7,7 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldInfo;
 
 import com.forgeessentials.core.misc.TeleportHelper.SimpleTeleporter;
@@ -20,8 +21,7 @@ public class WorldServerMultiworld extends WorldServer
             WorldServer worldServer, Profiler profiler, Multiworld world)
     {
         super(mcServer, saveHandler, info, dimensionId, profiler);
-        this.mapStorage = worldServer.getMapStorage();
-        this.worldScoreboard = worldServer.getScoreboard();
+        this.mapStorage = saveHandler instanceof MultiworldSaveHandler ? new MapStorage(saveHandler) : worldServer.getMapStorage();
         this.worldTeleporter = new SimpleTeleporter(this);
     }
 
@@ -35,6 +35,7 @@ public class WorldServerMultiworld extends WorldServer
     protected void saveLevel() throws MinecraftException
     {
         this.perWorldStorage.saveAllData();
+        this.mapStorage.saveAllData();
         this.saveHandler.saveWorldInfo(this.worldInfo);
     }
 

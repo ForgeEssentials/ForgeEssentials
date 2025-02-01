@@ -14,7 +14,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.network.play.server.S1FPacketSetExperience;
+import net.minecraft.network.play.server.S3BPacketScoreboardObjective;
+import net.minecraft.network.play.server.S3CPacketUpdateScore;
+import net.minecraft.network.play.server.S3DPacketDisplayScoreboard;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
@@ -320,6 +325,26 @@ public class TeleportHelper extends ServerEventHandler
             player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
         }
         player.sendPlayerAbilities();
+
+        for (int i = 0; i < 19; i++)
+        {
+            Scoreboard scoreboard = newWorld.getScoreboard();
+            ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(i);
+
+            if (objective != null)
+            {
+                player.playerNetServerHandler.sendPacket(new S3BPacketScoreboardObjective(objective, 0));
+                player.playerNetServerHandler.sendPacket(new S3CPacketUpdateScore(scoreboard.getValueFromObjective(player.getName(), objective)));
+            }
+            player.playerNetServerHandler.sendPacket(new S3DPacketDisplayScoreboard(i, objective));
+            //            if (objective != null)
+            //            {
+            //                scoreboard.setObjectiveInDisplaySlot(i, null);
+            //                scoreboard.setObjectiveInDisplaySlot(i, objective);
+            //            } else {
+            //                player.playerNetServerHandler.sendPacket(new S3DPacketDisplayScoreboard(i, null));
+            //            }
+        }
         player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
         FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
     }
