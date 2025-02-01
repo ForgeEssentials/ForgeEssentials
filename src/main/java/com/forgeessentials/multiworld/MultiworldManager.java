@@ -288,6 +288,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 worldServer.getWorldInfo().setGameType(mcServer.getGameType());
             mcServer.func_147139_a(mcServer.func_147135_j());
             world.updateWorldSettings();
+            worldServer.getWorldInfo().setSaveVersion(overworld.getWorldInfo().getSaveVersion());
             world.worldLoaded = true;
             world.error = false;
 
