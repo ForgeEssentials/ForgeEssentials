@@ -277,7 +277,17 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             
             WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
             settings.setWorldName(world.generatorOptions);
-            WorldInfo info = new WorldInfo(settings, world.name);
+            WorldInfo info = savehandler.loadWorldInfo();
+
+            if (info == null)
+            {
+                info = new WorldInfo(settings, world.name);
+            }
+            else
+            {
+                info.setWorldName(world.name);
+            }
+            info.setSaveVersion(overworld.getWorldInfo().getSaveVersion());
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, settings, overworld, mcServer.theProfiler, world);
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
