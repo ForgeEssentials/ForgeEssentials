@@ -26,6 +26,11 @@ jobs:
     if: needs.check.outputs.canContinue == 'true'
     steps:
       - uses: actions/checkout@v4
+      - name: Get Build Number from Release
+        if: ${{ github.event.release }}
+        run: |
+          FULL_VERSION=($(echo ${{ github.event.release.tag_name }} | tr "." "\n"))
+          echo "BUILD_NUMBER=${FULL_VERSION[2]}" >> $GITHUB_ENV
       - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:

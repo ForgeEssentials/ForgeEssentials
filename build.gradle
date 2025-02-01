@@ -94,6 +94,7 @@ curseforge {
         project {
             id = projectID
             changelog = project.changelog + "\n\nNote: Java 17+ requires another mod (lwjgl3ify) to bootstrap Forge."
+            changelogType = 'markdown'
             releaseType = project.releaseType
             addGameVersion minecraftVersion
             addGameVersion 'Forge'

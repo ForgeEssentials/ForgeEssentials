@@ -287,7 +287,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             {
                 info.setWorldName(world.name);
             }
-            info.setSaveVersion(overworld.getWorldInfo().getSaveVersion());
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, settings, overworld, mcServer.theProfiler, world);
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
@@ -298,6 +297,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
 
             world.updateWorldSettings();
+            worldServer.getWorldInfo().setSaveVersion(overworld.getWorldInfo().getSaveVersion());
             world.worldLoaded = true;
             world.error = false;
 
