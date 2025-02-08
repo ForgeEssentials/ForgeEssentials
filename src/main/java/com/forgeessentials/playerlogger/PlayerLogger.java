@@ -688,7 +688,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
+    public void playerInteractEvent(PlayerInteractEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
