@@ -39,6 +39,7 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -690,7 +691,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event instanceof LeftClickBlock && (
+                ((LeftClickBlock) event).getUseBlock() == Result.DENY && ((LeftClickBlock) event).getUseItem() == Result.DENY)))
             return;
         GameType gameType = ((EntityPlayerMP) event.getEntityPlayer()).interactionManager.getGameType();
         if (gameType != GameType.CREATIVE)
