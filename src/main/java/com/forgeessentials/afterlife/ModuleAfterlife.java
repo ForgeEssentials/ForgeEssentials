@@ -1,10 +1,19 @@
 package com.forgeessentials.afterlife;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.ThreadQuickExitException;
+import net.minecraft.network.play.client.C16PacketClientStatus;
+import net.minecraft.network.play.client.C16PacketClientStatus.EnumState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
@@ -17,11 +26,15 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
+import com.forgeessentials.core.misc.RespawnHandler;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -53,6 +66,11 @@ public class ModuleAfterlife extends ServerEventHandler
     public static final String PERM_DEATHCHEST_SAFETIME = PERM_DEATHCHEST + ".safetime";
     public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
 
+    public static final String PERM_RESPAWN = PERM + ".respawn";
+    public static final String PERM_RESPAWN_DELAY = PERM_RESPAWN + ".delay";
+    public static final String PERM_RESPAWN_SPECTATOR_TIME = PERM_RESPAWN + ".spectatortime";
+
+    private Map<PlayerInfo, GameType> playerInfoGameTypeHashMap = Collections.synchronizedMap(new HashMap<>());
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
@@ -77,6 +95,11 @@ public class ModuleAfterlife extends ServerEventHandler
                 "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300",
                 "Time in seconds a grave is protected. After this time anyone can take all stuff");
+
+        APIRegistry.perms.registerPermission(PERM_RESPAWN, PermissionLevel.TRUE, "Allows AutoRespawn feature");
+        APIRegistry.perms.registerPermissionProperty(PERM_RESPAWN_DELAY, "100", "Delay in MS before sending respawn packet!");
+        APIRegistry.perms.registerPermissionProperty(PERM_RESPAWN_SPECTATOR_TIME, "30",
+                "Time in seconds player spends in Spectator mode before respawning.  Set to -1 to leave player in spectator!");
 
         CommandFeSettings.addAlias("Afterlife", "respawn_hp", PERM_HP);
         CommandFeSettings.addAlias("Afterlife", "respawn_food", PERM_FOOD);
@@ -122,6 +145,49 @@ public class ModuleAfterlife extends ServerEventHandler
     }
 
     @SubscribeEvent
+    public void playerDeathEvent(LivingDeathEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            final int delay = Integer.parseInt(APIRegistry.perms.getPermissionProperty((EntityPlayerMP) event.entityLiving, PERM_RESPAWN_DELAY));
+            final int spectatorTime = Integer.parseInt(
+                    APIRegistry.perms.getPermissionProperty((EntityPlayerMP) event.entityLiving, PERM_RESPAWN_SPECTATOR_TIME));
+            new Thread(() -> {
+                try
+                {
+                    Thread.sleep(delay);
+                    NetHandlerPlayServer handler = ((EntityPlayerMP) event.entityLiving).playerNetServerHandler;
+
+                    try
+                    {
+                        handler.processClientStatus(new C16PacketClientStatus(EnumState.PERFORM_RESPAWN));
+                    }
+                    catch (ThreadQuickExitException ignored)
+                    {
+                    }
+
+                    if (spectatorTime != 0)
+                    {
+                        GameType prevGame = handler.playerEntity.theItemInWorldManager.getGameType();
+                        handler.playerEntity.setGameType(GameType.SPECTATOR);
+                        if (spectatorTime > 0)
+                        {
+                            PlayerInfo pi = PlayerInfo.get(handler.playerEntity);
+                            pi.startTimeout(PERM_RESPAWN_SPECTATOR_TIME, spectatorTime * 1000);
+                            playerInfoGameTypeHashMap.put(pi, prevGame);
+                        }
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+
+        }
+    }
+
+    @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         if (event.phase == Phase.END)
@@ -130,6 +196,29 @@ public class ModuleAfterlife extends ServerEventHandler
         {
             for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
                 grave.updateBlocks();
+        }
+
+        ArrayList<PlayerInfo> toRemove = new ArrayList<>();
+        for (PlayerInfo pi : playerInfoGameTypeHashMap.keySet())
+        {
+            if (pi.checkTimeout(PERM_RESPAWN_SPECTATOR_TIME))
+            {
+                toRemove.add(pi);
+                NetHandlerPlayServer handler = pi.ident.getPlayerMP().playerNetServerHandler;
+                WarpPoint spawn = RespawnHandler.getSpawn(handler.playerEntity, null);
+                if (spawn == null)
+                {
+                    spawn = new WarpPoint(handler.playerEntity.dimension, handler.playerEntity.worldObj.getSpawnPoint(), 0f, 0f);
+                }
+                TeleportHelper.doTeleport(handler.playerEntity, spawn);
+
+                handler.playerEntity.setGameType(playerInfoGameTypeHashMap.get(pi));
+            }
+        }
+
+        for (PlayerInfo pi : toRemove)
+        {
+            playerInfoGameTypeHashMap.remove(pi);
         }
     }
 
