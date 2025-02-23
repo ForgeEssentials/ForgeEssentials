@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -176,7 +176,7 @@ public class WarpPoint
         if (world != null && world.dimension().location().toString().equals(dim))
             return world.getLevel();
         world = ServerLifecycleHooks.getCurrentServer()
-                .getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+                .getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dim)));
         if (world == null)
         {
             System.out.println("argument.dimension.invalid" + dim);

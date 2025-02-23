@@ -109,7 +109,7 @@ public class NetworkUtils
     {
         if (!(player instanceof FakePlayer))
         {
-            INSTANCE.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+            INSTANCE.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         }
     }
 
