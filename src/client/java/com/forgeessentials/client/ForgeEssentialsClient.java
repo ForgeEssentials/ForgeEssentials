@@ -154,7 +154,7 @@ public class ForgeEssentialsClient
         	BuildInfo.startVersionChecks(MODID);
             if (BuildInfo.isOutdated())
             {
-                event.getEntity().sendSystemMessage(MutableComponent.create(new LiteralContents("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found"), event.getEntity().getUUID()));
+                event.getEntity().sendSystemMessage(MutableComponent.create(new LiteralContents("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found")));
             }
         }
     }

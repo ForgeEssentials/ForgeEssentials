@@ -21,7 +21,7 @@ public class Packet07RemoteQRRenderer
             {
                 Minecraft mc = Minecraft.getInstance();
                 mc.getTextureManager().bindForSetup(qrCode);
-                GuiComponent.blit(pEvent.getMatrixStack(), (mc.getWindow().getGuiScaledWidth() / 2) - 64, (mc.getWindow().getGuiScaledHeight() / 2) - 64, 0f, 0f,
+                GuiComponent.blit(pEvent.getPoseStack(), (mc.getWindow().getGuiScaledWidth() / 2) - 64, (mc.getWindow().getGuiScaledHeight() / 2) - 64, 0f, 0f,
                         128, 128, 128, 128);
                 mc.getTextureManager().bindForSetup(GuiComponent.GUI_ICONS_LOCATION);
             }
