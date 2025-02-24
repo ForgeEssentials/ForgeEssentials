@@ -14,7 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraftforge.network.NetworkEvent;
 
 import com.forgeessentials.commons.network.packets.Packet07Remote;
@@ -46,20 +47,20 @@ public class Packet07RemoteHandler extends Packet07Remote
             Packet07RemoteQRRenderer.qrCode = instance.getTextureManager()
                     .register("qr_code", qrCodeTexture);
 
-            TextComponent qrLink = new TextComponent("[QR code]");
+            MutableComponent qrLink = MutableComponent.create(new LiteralContents("[QR code]"));
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
             qrLink.withStyle((style) -> style.withClickEvent(click));
             qrLink.withStyle(ChatFormatting.RED);
             qrLink.withStyle(ChatFormatting.UNDERLINE);
-            TextComponent msg = new TextComponent("Click in-game with mouse to close qrCode");
+            MutableComponent msg = MutableComponent.create(new LiteralContents("Click in-game with mouse to close qrCode"));
             qrLink.append(msg);
-            instance.player.sendMessage(qrLink, instance.player.getGameProfile().getId());
+            instance.player.sendSystemMessage(qrLink);
         }
         catch (IOException e)
         {
-            TextComponent cmsg = new TextComponent("Could not load QR Code. " + e.getMessage());
+            MutableComponent cmsg = MutableComponent.create(new LiteralContents("Could not load QR Code. " + e.getMessage()));
             cmsg.withStyle(ChatFormatting.RED);
-            instance.player.sendMessage(cmsg, instance.player.getGameProfile().getId());
+            instance.player.sendSystemMessage(cmsg);
             e.printStackTrace();
         }
     }

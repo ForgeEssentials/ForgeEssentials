@@ -3,7 +3,7 @@ package com.forgeessentials.client.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 
@@ -13,9 +13,9 @@ public class Packet07RemoteQRRenderer
     public static ResourceLocation qrCode;
 
     @SubscribeEvent
-    public void onRenderGameOverlayEventPost(RenderGameOverlayEvent.Post pEvent)
+    public void onRenderGameOverlayEventPost(RenderGuiOverlayEvent.Post pEvent)
     {
-        if (pEvent.getType() == RenderGameOverlayEvent.ElementType.ALL)
+//        if (pEvent.getType() == RenderGameOverlayEvent.ElementType.ALL)
         {
             if (qrCode != null)
             {

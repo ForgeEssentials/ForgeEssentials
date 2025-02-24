@@ -13,12 +13,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.PostLayer;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.PreLayer;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent.Post;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent.Pre;
+import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -88,17 +87,17 @@ public class Packet03PlayerPermissionsOverlay extends GuiComponent
     }
 
     @SubscribeEvent
-    public void renderGameOverlayEvent(RenderGameOverlayEvent event)
+    public void renderGameOverlayEvent(RenderGuiOverlayEvent event)
     {
-        if (event.getType() == ElementType.LAYER)
+//        if (event.getType() == ElementType.LAYER)
         {
-            IIngameOverlay overlay = null;
-            if (event instanceof PreLayer) {
-                overlay = ((PreLayer) event).getOverlay();
-            } else if (event instanceof PostLayer) {
-                overlay = ((PostLayer) event).getOverlay();
+            NamedGuiOverlay overlay = null;
+            if (event instanceof Pre) {
+                overlay = event.getOverlay();
+            } else if (event instanceof Post) {
+                overlay = event.getOverlay();
             }
-            if (!event.isCancelable() && overlay == ForgeIngameGui.HOTBAR_ELEMENT)
+            if (!event.isCancelable() && overlay != null && overlay.id() == VanillaGuiOverlay.HOTBAR.id() && Minecraft.getInstance().player != null)
             {
                 Minecraft instance = Minecraft.getInstance();
                 instance.getTextureManager().bindForSetup(deniedBreakTexture);
@@ -122,7 +121,7 @@ public class Packet03PlayerPermissionsOverlay extends GuiComponent
                     drawTexturedRect(x + 8, y + 1, 8, 8);
                 }
             }
-            else if (event.isCancelable() && overlay == ForgeIngameGui.CROSSHAIR_ELEMENT)
+            else if (event.isCancelable() && overlay != null && overlay.id() == VanillaGuiOverlay.CROSSHAIR.id() && Minecraft.getInstance().player != null)
             {
                 Minecraft instance = Minecraft.getInstance();
                 float width = instance.getWindow().getGuiScaledWidth();
