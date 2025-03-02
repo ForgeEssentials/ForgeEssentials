@@ -51,11 +51,11 @@ public class QuestionerKeyHandler
             }
             if (yes.isDown())
             {
-                minecraft.player.connection.sendCommand("/feyes");
+                minecraft.player.chatSigned("/feyes", null);
             }
             else if (no.isDown())
             {
-                minecraft.player.connection.sendCommand("/feno");
+                minecraft.player.chatSigned("/feno", null);
             }
         }
     }
