@@ -41,7 +41,7 @@ jobs:
         run: |
          chmod +x gradlew
          ./gradlew build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: binaries-${{ env.BUILD_NUMBER }}
           path: ./build/libs/
