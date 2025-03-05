@@ -12,8 +12,9 @@ import java.util.Set;
 
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -358,7 +359,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
                 bot.sendIRC().message(channel, message);
     }
 
-    public void sendPlayerMessage(CommandSourceStack sender, BaseComponent message)
+    public void sendPlayerMessage(CommandSourceStack sender, MutableComponent message)
     {
         if (isConnected())
             ircSendMessage(String.format(mcHeader, sender.getTextName(),
@@ -369,17 +370,17 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
     {
         //String filteredMessage = ModuleChat.censor.filterIRC(message);
         String headerText = String.format(ircHeader, user.getNick());
-        BaseComponent header = ChatOutputHandler.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
+        MutableComponent header = ChatOutputHandler.clickChatComponent(headerText, Action.SUGGEST_COMMAND,
                 "/ircpm " + user.getNick() + " ");
-        BaseComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
+        Component messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
         //String filteredMessage = ModuleChat.censor.filterIRC(message);
-    	BaseComponent header =ChatOutputHandler.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-    	BaseComponent messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
+    	MutableComponent header = ChatOutputHandler.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+    	Component messageComponent = ChatOutputHandler.filterChatLinks(ChatOutputHandler.formatColors(message));
         ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
@@ -428,7 +429,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
 
         try
         {
-            server.getCommands().performCommand(sender, commandRaw);
+            server.getCommands().performPrefixedCommand(sender, commandRaw);
         }
         catch (CommandRuntimeException e)
         {
@@ -442,30 +443,30 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendPlayerMessage(event.getPlayer().createCommandSourceStack(), new TextComponent(ChatOutputHandler.stripFormatting(event.getMessage())));
+            sendPlayerMessage(event.getPlayer().createCommandSourceStack(), new TextComponent(ChatOutputHandler.stripFormatting(event.getMessage().getString())));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedInEvent event)
     {
         if (showGameEvents)
-            ircSendMessage(Translator.format("%s joined the game", event.getPlayer().getDisplayName().getString()));
+            ircSendMessage(Translator.format("%s joined the game", event.getEntity().getDisplayName().getString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedOutEvent event)
     {
         if (showGameEvents)
-            ircSendMessage(Translator.format("%s left the game", event.getPlayer().getDisplayName().getString()));
+            ircSendMessage(Translator.format("%s left the game", event.getEntity().getDisplayName().getString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathEvent(LivingDeathEvent event)
     {
-        if (!(event.getEntityLiving() instanceof Player))
+        if (!(event.getEntity() instanceof Player))
             return;
         if (showGameEvents)
-            ircSendMessage(Translator.format("%s died", event.getEntityLiving().getDisplayName().getString()));
+            ircSendMessage(Translator.format("%s died", event.getEntity().getDisplayName().getString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -488,7 +489,7 @@ public class ModuleIRCBridge extends ListenerAdapter implements ConfigSaver
     public void welcomeNewPlayers(NoPlayerInfoEvent e)
     {
         if (showGameEvents)
-            ircSendMessage(Translator.format("New player %s has joined the server!", e.getPlayer().getDisplayName().getString()));
+            ircSendMessage(Translator.format("New player %s has joined the server!", e.getEntity().getDisplayName().getString()));
     }
 
     /* ------------------------------------------------------------ */

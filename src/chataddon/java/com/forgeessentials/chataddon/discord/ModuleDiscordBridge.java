@@ -246,7 +246,7 @@ public class ModuleDiscordBridge implements ConfigSaver
     {
         if (sendMessages)
         {
-            sendMessage(ChatOutputHandler.stripFormatting(event.getMessage()));
+            sendMessage(ChatOutputHandler.stripFormatting(event.getMessage().getString()));
         }
     }
 
@@ -255,7 +255,7 @@ public class ModuleDiscordBridge implements ConfigSaver
     {
         if (showGameEvents)
         {
-            sendMessage(Translator.format("%s joined the game", event.getPlayer().getName()));
+            sendMessage(Translator.format("%s joined the game", event.getEntity().getName()));
         }
     }
 
@@ -264,20 +264,20 @@ public class ModuleDiscordBridge implements ConfigSaver
     {
         if (showGameEvents)
         {
-            sendMessage(Translator.format("%s left the game", event.getPlayer().getName()));
+            sendMessage(Translator.format("%s left the game", event.getEntity().getName()));
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathEvent(LivingDeathEvent event)
     {
-        if (!(event.getEntityLiving() instanceof Player))
+        if (!(event.getEntity() instanceof Player))
         {
             return;
         }
         if (showGameEvents)
         {
-            sendMessage(Translator.format("%s died", event.getEntityLiving().getName()));
+            sendMessage(Translator.format("%s died", event.getEntity().getName()));
         }
     }
 
@@ -319,7 +319,7 @@ public class ModuleDiscordBridge implements ConfigSaver
     {
         if (showGameEvents)
         {
-            sendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
+            sendMessage(Translator.format("New player %s has joined the server!", e.getEntity()));
         }
     }
 

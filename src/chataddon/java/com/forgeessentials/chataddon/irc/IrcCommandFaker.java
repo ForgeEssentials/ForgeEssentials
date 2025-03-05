@@ -1,7 +1,5 @@
 package com.forgeessentials.chataddon.irc;
 
-import java.util.UUID;
-
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -20,7 +18,7 @@ public class IrcCommandFaker implements CommandSource
 	private MessageEvent event;
 
 	@Override
-	public void sendMessage(Component p_80166_, UUID p_80167_) {
+	public void sendSystemMessage(Component p_80166_) {
 		if(p_80166_.getString().startsWith("/")) {
     		event.respond("!"+p_80166_.getString().substring(1));
     		return;
