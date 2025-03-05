@@ -82,27 +82,27 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getPlayer() instanceof ServerPlayer))
+        if (!(event.getEntity() instanceof ServerPlayer))
             return;
         if (!(event instanceof PlayerInteractEvent.RightClickItem)
                 && !(event instanceof PlayerInteractEvent.RightClickBlock))
             return;
-        ItemStack stack = event.getPlayer().getMainHandItem();
+        ItemStack stack = event.getEntity().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
             return;
-        if (!hasPermission(event.getPlayer().createCommandSourceStack(), TeleportModule.PERM_JUMP_TOOL))
+        if (!hasPermission(event.getEntity().createCommandSourceStack(), TeleportModule.PERM_JUMP_TOOL))
             return;
 
         try
         {
-            jump((ServerPlayer) event.getPlayer());
+            jump((ServerPlayer) event.getEntity());
         }
         catch (Exception e)
         {
             e.printStackTrace();
             TextComponent msg = new TextComponent(e.getCause() + e.getMessage());
             msg.withStyle(ChatFormatting.RED);
-            event.getPlayer().sendMessage(msg, event.getPlayer().getGameProfile().getId());
+            event.getEntity().sendSystemMessage(msg);
         }
     }
 

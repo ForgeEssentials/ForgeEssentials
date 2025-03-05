@@ -1,5 +1,8 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.util.WorldUtil;
@@ -7,9 +10,6 @@ import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.context.CommandContext;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.level.ServerPlayer;
 
 public class EffectKnockback extends WorldBorderEffect
 {
@@ -22,7 +22,7 @@ public class EffectKnockback extends WorldBorderEffect
     @Override
     public void playerMove(WorldBorder border, PlayerMoveEvent event)
     {
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         if (!event.before.getDimension().equals(event.after.getDimension()))
         {
             // Cancel event if player was teleported

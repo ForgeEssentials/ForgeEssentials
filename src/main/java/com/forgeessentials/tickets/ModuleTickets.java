@@ -106,11 +106,11 @@ public class ModuleTickets implements ConfigSaver
     @SubscribeEvent
     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (APIRegistry.perms.checkPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin"))
+        if (APIRegistry.perms.checkPermission(e.getEntity(), ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {
-                ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
+                ChatOutputHandler.sendMessage(e.getEntity().createCommandSourceStack(),
                         ChatFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
             }
         }

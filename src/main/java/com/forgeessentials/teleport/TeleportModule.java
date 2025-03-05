@@ -139,17 +139,17 @@ public class TeleportModule extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerSleepInBed(PlayerSleepInBedEvent e)
     {
-        if (e.getPlayer().level.isClientSide)
+        if (e.getEntity().level.isClientSide)
         {
             return;
         }
 
-        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingLocationCheck(e.getPlayer(), e.getPos())
-                || (e.getPlayer().isCrouching()))
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingLocationCheck(e.getEntity(), e.getPos())
+                || (e.getEntity().isCrouching()))
         {
-            ((ServerPlayer) e.getPlayer()).setRespawnPosition(e.getPlayer().level.dimension(), e.getPos(), 0,
+            ((ServerPlayer) e.getEntity()).setRespawnPosition(e.getEntity().level.dimension(), e.getPos(), 0,
                     false, false);
-            ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
+            ChatOutputHandler.chatConfirmation(e.getEntity().createCommandSourceStack(), "Bed Position Set!");
         }
     }
 

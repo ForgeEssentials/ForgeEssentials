@@ -45,23 +45,23 @@ public class NetworkDataManager extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedInEvent event) {
         if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
-            onlinePlayers.add(event.getPlayer().getGameProfile().getId());
+            onlinePlayers.add(event.getEntity().getGameProfile().getId());
             syncPlayerList();
         }
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
-            onlinePlayers.add(event.getPlayer().getGameProfile().getId());
-            sendClientEventToServer(event.getPlayer().getGameProfile().getId(), true);
+            onlinePlayers.add(event.getEntity().getGameProfile().getId());
+            sendClientEventToServer(event.getEntity().getGameProfile().getId(), true);
         }
     }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if(ModuleNetworking.getInstance().getServerType()==ServerType.ROOTSERVER) {
-            onlinePlayers.remove(event.getPlayer().getGameProfile().getId());
+            onlinePlayers.remove(event.getEntity().getGameProfile().getId());
             syncPlayerList();
         }
         if(ModuleNetworking.getInstance().getServerType()==ServerType.CLIENTSERVER) {
-            onlinePlayers.remove(event.getPlayer().getGameProfile().getId());
-            sendClientEventToServer(event.getPlayer().getGameProfile().getId(), false);
+            onlinePlayers.remove(event.getEntity().getGameProfile().getId());
+            sendClientEventToServer(event.getEntity().getGameProfile().getId(), false);
         }
     }
 

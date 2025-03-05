@@ -198,12 +198,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
 
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         WorldPoint point = new WorldPoint(event.getTarget());
 
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "."
                 + event.getTarget().getType().getDescriptionId();
-        ModuleProtection.debugPermission(event.getPlayer(), permission);
+        ModuleProtection.debugPermission(event.getEntity(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -248,14 +248,14 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.getPlayer());
-        BlockState blockState = event.getWorld().getBlockState(event.getPos());
+        BlockState blockState = event.getLevel().getBlockState(event.getPos());
         String permission = ModuleProtection.getBlockBreakPermission(blockState.getBlock());
         ModuleProtection.debugPermission(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
-            BlockEntity te = event.getWorld().getBlockEntity(event.getPos());
+            BlockEntity te = event.getLevel().getBlockEntity(event.getPos());
             if (te != null)
                 updateBrokenTileEntity((ServerPlayer) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
@@ -278,7 +278,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         {
             Player player = (Player) event.getEntity();
             UserIdent ident = UserIdent.get(player);
-            BlockState blockState = event.getWorld().getBlockState(event.getPos());
+            BlockState blockState = event.getLevel().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockPlacePermission(blockState);
             ModuleProtection.debugPermission(player, permission);
             WorldPoint point = new WorldPoint(player.level, event.getPos());
@@ -310,7 +310,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             UserIdent ident = UserIdent.get(player);
             for (BlockSnapshot b : event.getReplacedBlockSnapshots())
             {
-                BlockState blockState = event.getWorld().getBlockState(b.getPos());
+                BlockState blockState = event.getLevel().getBlockState(b.getPos());
                 String permission = ModuleProtection.getBlockPlacePermission(blockState);
                 ModuleProtection.debugPermission(player, permission);
                 WorldPoint point = new WorldPoint(player.level, b.getPos());
@@ -352,7 +352,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = player == null ? null : UserIdent.get(player);
         WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
 
-        String permission = ModuleProtection.getBlockTramplePermission(event.getWorld().getBlockState(event.getPos()));
+        String permission = ModuleProtection.getBlockTramplePermission(event.getLevel().getBlockState(event.getPos()));
         ModuleProtection.debugPermission(player, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
@@ -393,7 +393,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         int s = (int) Math.ceil(size);
 
-        if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.getWorld(), cx, cy, cz),
+        if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.getLevel(), cx, cy, cz),
                 ModuleProtection.PERM_EXPLOSION))
         {
             event.setCanceled(true);
@@ -403,7 +403,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             for (int iy = -1; iy != 1; iy = 1)
                 for (int iz = -1; iz != 1; iz = 1)
                 {
-                    WorldPoint point = new WorldPoint(event.getWorld(), cx + s * ix, cy + s * iy, cz + s * iz);
+                    WorldPoint point = new WorldPoint(event.getLevel(), cx + s * ix, cy + s * iy, cz + s * iz);
                     if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_EXPLOSION))
                     {
                         event.setCanceled(true);
@@ -438,7 +438,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
         {
             BlockPos pos = it.next();
-            WorldPoint point = new WorldPoint(event.getWorld(), pos);
+            WorldPoint point = new WorldPoint(event.getLevel(), pos);
             String permission = ModuleProtection.getBlockExplosionPermission(point.getWorld().getBlockState(pos));
             if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
                 it.remove();
@@ -453,30 +453,30 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         // TODO (upgrade): Check, verify and optimize this
 
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
 
         WorldPoint point;
         if (event instanceof RightClickItem)
         {
-            HitResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
+            HitResult mop = PlayerUtil.getPlayerLookingSpot(event.getEntity());
             if (mop.getType() == HitResult.Type.MISS && event.getPos().getX() == 0 && event.getPos().getY() == 0
                     && event.getPos().getZ() == 0)
-                point = new WorldPoint(event.getPlayer());
+                point = new WorldPoint(event.getEntity());
             else if (mop.getType() == HitResult.Type.MISS)
-                point = new WorldPoint(event.getPlayer().level, event.getPos());
+                point = new WorldPoint(event.getEntity().level, event.getPos());
             else
-                point = new WorldPoint(event.getPlayer().level,
+                point = new WorldPoint(event.getEntity().level,
                         new BlockPos(mop.getLocation().x, mop.getLocation().y, mop.getLocation().z));
         }
         else
-            point = new WorldPoint(event.getPlayer().level, event.getPos());
+            point = new WorldPoint(event.getEntity().level, event.getPos());
 
         // Check for block interaction
         if (event instanceof LeftClickBlock || event instanceof RightClickBlock)
         {
-            BlockState blockState = event.getWorld().getBlockState(event.getPos());
+            BlockState blockState = event.getLevel().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockInteractPermission(blockState);
-            ModuleProtection.debugPermission(event.getPlayer(), permission);
+            ModuleProtection.debugPermission(event.getEntity(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             if (!allow)
             {
@@ -492,11 +492,11 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         // Check item (and block) usage
-        ItemStack stack = event.getPlayer().getMainHandItem();
+        ItemStack stack = event.getEntity().getMainHandItem();
         if (stack != ItemStack.EMPTY && !(stack.getItem() instanceof BlockItem))
         {
             String permission = ModuleProtection.getItemUsePermission(stack);
-            ModuleProtection.debugPermission(event.getPlayer(), permission);
+            ModuleProtection.debugPermission(event.getEntity(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             if (!allow)
             {
@@ -524,14 +524,14 @@ public class ProtectionEventHandler extends ServerEventHandler
             }
         }
 
-        if (anyCreativeModeAtPoint(event.getPlayer(), point) && stringToGameType(APIRegistry.perms
+        if (anyCreativeModeAtPoint(event.getEntity(), point) && stringToGameType(APIRegistry.perms
                 .getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
             // If entity is in creative area, but player not, deny interaction
             System.out.println("THIS IS NOT IMPLEMENTED YET!!!!!!!!!!!!!!");
             // event.useBlock = DENY;
             if (!(event instanceof LeftClickBlock))
-                ChatOutputHandler.chatError(event.getPlayer(),
+                ChatOutputHandler.chatError(event.getEntity(),
                         Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
@@ -561,12 +561,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
 
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.setResult(BedSleepingProblem.NOT_POSSIBLE_HERE);
-            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.sendMessage(event.getEntity().createCommandSourceStack(),
                     Translator.translate("You are not allowed to sleep here"));
             return;
         }
@@ -613,9 +613,9 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        if (!(event.getEntityLiving() instanceof LivingEntity))
+        if (event.getEntity() == null)
             return;
-        LivingEntity entity = (LivingEntity) event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         WorldPoint point = new WorldPoint(entity);
         // TODO: Create a cache for spawn permissions
         if (!APIRegistry.perms.checkUserPermission(null, point,
@@ -636,9 +636,9 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        if (!(event.getEntityLiving() instanceof LivingEntity))
+        if (event.getEntity() == null)
             return;
-        LivingEntity entity = (LivingEntity) event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         WorldPoint point = new WorldPoint(entity);
         if (!APIRegistry.perms.checkUserPermission(null, point,
                 ModuleProtection.PERM_MOBSPAWN_FORCED + "." + entity.getType().getDescriptionId()))
@@ -661,7 +661,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         if (isItemBanned(ident, event.getItem().getItem()))
         {
             event.setCanceled(true);
@@ -752,15 +752,15 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
         // If it's the player's own inventory - ignore
-        if (event.getPlayer().containerMenu == event.getPlayer().inventoryMenu)
+        if (event.getEntity().containerMenu == event.getEntity().inventoryMenu)
             return;
-        checkPlayerInventory(event.getPlayer());
+        checkPlayerInventory(event.getEntity());
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void playerLoginEvent(PlayerLoggedInEvent event)
     {
-        checkPlayerInventory(event.getPlayer());
+        checkPlayerInventory(event.getEntity());
     }
 
     @SubscribeEvent
@@ -768,9 +768,9 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        if (!(event.getPlayer() instanceof ServerPlayer))
+        if (!(event.getEntity() instanceof ServerPlayer))
             return;
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         UserIdent ident = UserIdent.get(player);
 
         sendPermissionUpdate(ident, true);
@@ -849,7 +849,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerChangedZoneEventHigh(PlayerChangedZone event)
     {
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         List<ZoneEffect> effects = getZoneEffects(ident);
         effects.clear();
 
@@ -857,7 +857,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_KNOCKBACK)
                 .equals(Zone.PERMISSION_FALSE))
         {
-            sendZoneDeniedMessage(event.getPlayer());
+            sendZoneDeniedMessage(event.getEntity());
 
             Vec3 center = event.afterPoint.toVec3();
             if (event.afterZone instanceof AreaZone)
@@ -870,7 +870,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                     event.beforePoint.getY() - delta.y, event.beforePoint.getZ() - delta.z, event.afterPoint.getPitch(),
                     event.afterPoint.getYaw());
 
-            TeleportHelper.doTeleport((ServerPlayer) event.getPlayer(), target);
+            TeleportHelper.doTeleport((ServerPlayer) event.getEntity(), target);
             event.setCanceled(true);
             return;
         }
@@ -939,7 +939,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        zoneEffects.remove(event.getPlayer().getGameProfile().getId());
+        zoneEffects.remove(event.getEntity().getGameProfile().getId());
     }
 
     @SubscribeEvent

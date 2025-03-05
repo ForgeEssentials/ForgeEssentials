@@ -83,8 +83,8 @@ public class PortalManager extends ServerEventHandler
                 if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(e.getEntity(), after.getWorld(),
                         after.getBlockPos(), portal.target.getWorld(), portal.target.getBlockPos())))
                 {
-                    TeleportHelper.doTeleport((ServerPlayer) e.getPlayer(),
-                            portal.target.toWarpPoint(e.getPlayer().getXRot(), e.getPlayer().getYRot()));
+                    TeleportHelper.doTeleport((ServerPlayer) e.getEntity(),
+                            portal.target.toWarpPoint(e.getEntity().getXRot(), e.getEntity().getYRot()));
                 }
             }
         }

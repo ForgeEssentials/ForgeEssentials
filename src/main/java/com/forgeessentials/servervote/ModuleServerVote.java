@@ -163,10 +163,10 @@ public class ModuleServerVote extends ConfigLoaderBase
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (offlineList.containsKey(e.getPlayer().getDisplayName().getString()))
+        if (offlineList.containsKey(e.getEntity().getDisplayName().getString()))
         {
-            doPlayer((ServerPlayer) e.getPlayer(),
-                    offlineList.remove(e.getPlayer().getDisplayName().getString()));
+            doPlayer((ServerPlayer) e.getEntity(),
+                    offlineList.remove(e.getEntity().getDisplayName().getString()));
         }
     }
 

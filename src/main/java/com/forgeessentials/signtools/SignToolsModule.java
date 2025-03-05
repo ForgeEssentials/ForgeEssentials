@@ -94,7 +94,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        Level w = event.getWorld();
+        Level w = event.getLevel();
         if (w.isClientSide)
         {
             return;
@@ -103,12 +103,12 @@ public class SignToolsModule extends ConfigLoaderBase
         if (te instanceof SignBlockEntity)
         {
             SignBlockEntity sign = ((SignBlockEntity) te);
-            if (allowSignEdit && event.getPlayer().isCrouching() && event instanceof RightClickBlock)
+            if (allowSignEdit && event.getEntity().isCrouching() && event instanceof RightClickBlock)
             {
-                if (event.getPlayer().getMainHandItem() == ItemStack.EMPTY)
+                if (event.getEntity().getMainHandItem() == ItemStack.EMPTY)
                 {
-                    if (APIRegistry.perms.checkPermission(event.getPlayer(), EDIT_PERM)
-                            && APIRegistry.perms.checkPermission(event.getPlayer(), "fe.protection.use.minecraft.sign"))
+                    if (APIRegistry.perms.checkPermission(event.getEntity(), EDIT_PERM)
+                            && APIRegistry.perms.checkPermission(event.getEntity(), "fe.protection.use.minecraft.sign"))
                     {
                         // Convert Formatting back into FE format for easy use
                         Component[] imessage = ItemUtil.getText(sign);
@@ -122,8 +122,8 @@ public class SignToolsModule extends ConfigLoaderBase
                         sign.setChanged();
                         w.sendBlockUpdated(event.getPos(), w.getBlockState(event.getPos()), w.getBlockState(event.getPos()), 3);
 
-                        ((ServerPlayer) event.getPlayer()).connection.send(sign.getUpdatePacket());
-                        ((ServerPlayer) event.getPlayer()).openTextEdit(sign);
+                        ((ServerPlayer) event.getEntity()).connection.send(sign.getUpdatePacket());
+                        event.getEntity().openTextEdit(sign);
                         event.setCanceled(true);
                     }
                 }
@@ -132,8 +132,8 @@ public class SignToolsModule extends ConfigLoaderBase
             Component[] imessage = ItemUtil.getText(sign);
             String[] signText = getFormatted(imessage);
 
-            if (APIRegistry.scripts != null && APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
-                    new SignInfo(event.getPlayer().level.dimension().toString(), event.getPos(), signText, event)))
+            if (APIRegistry.scripts != null && APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntity().createCommandSourceStack(),
+                    new SignInfo(event.getEntity().level.dimension().toString(), event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }
@@ -146,7 +146,7 @@ public class SignToolsModule extends ConfigLoaderBase
                     if (send != null && ServerLifecycleHooks.getCurrentServer().getCommands() != null)
                     {
                         ServerLifecycleHooks.getCurrentServer().getCommands()
-                                .performCommand(event.getPlayer().createCommandSourceStack(), send);
+                                .performCommand(event.getEntity().createCommandSourceStack(), send);
                         event.setCanceled(true);
                     }
                 }
