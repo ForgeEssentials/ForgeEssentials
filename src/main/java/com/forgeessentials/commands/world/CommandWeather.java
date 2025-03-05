@@ -216,11 +216,11 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     }
 
     @SubscribeEvent
-    public void doWorldTick(TickEvent.WorldTickEvent event)
+    public void doWorldTick(TickEvent.LevelTickEvent event)
     {
         if (event.phase == Phase.START)
             return;
-        ServerLevel world = (ServerLevel) event.world;
+        ServerLevel world = (ServerLevel) event.level;
         if (world.getGameTime() % 60 == 0)
             updateWorld(world);
     }

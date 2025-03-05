@@ -2,7 +2,7 @@ package com.forgeessentials.util.events.world;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 public class FireEvent extends BlockEvent

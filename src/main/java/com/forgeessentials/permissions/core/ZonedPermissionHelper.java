@@ -31,7 +31,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -564,7 +564,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @SubscribeEvent
-    public void worldLoad(WorldEvent.Load e)
+    public void worldLoad(LevelEvent.Load e)
     {
         getServerZone().getWorldZone(e.getWorld());
     }

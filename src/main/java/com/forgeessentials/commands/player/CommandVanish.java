@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddMobPacket;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
@@ -177,7 +177,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
             }
         }
 
-        if (flag && !(ipacket instanceof ClientboundAddMobPacket))
+        if (flag && !(ipacket instanceof ClientboundAddEntityPacket))
         {
             p_219452_1_.accept(new ClientboundSetEntityMotionPacket(player.getId(), player.getDeltaMovement()));
         }

@@ -2,14 +2,14 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
+import net.minecraftforge.event.level.LevelEvent;
+
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 
-import net.minecraftforge.event.world.WorldEvent;
-
-public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
+public class LogEventWorldLoad extends PlayerLoggerEvent<LevelEvent.Load>
 {
 
-    public LogEventWorldLoad(WorldEvent.Load event)
+    public LogEventWorldLoad(LevelEvent.Load event)
     {
         super(event);
     }

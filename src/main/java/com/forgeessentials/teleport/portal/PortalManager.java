@@ -4,6 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
@@ -12,17 +23,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.entity.EntityPortalEvent;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PortalManager extends ServerEventHandler
 {

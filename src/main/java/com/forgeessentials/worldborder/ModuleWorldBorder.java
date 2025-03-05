@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -70,20 +70,20 @@ public class ModuleWorldBorder extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void worldLoadEvent(WorldEvent.Load event)
+    public void worldLoadEvent(LevelEvent.Load event)
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        borders.put((ServerLevel) event.getWorld(), WorldBorder.load((Level) event.getWorld()));
-        getBorder((Level) event.getWorld());
+        borders.put((ServerLevel) event.getLevel(), WorldBorder.load((Level) event.getLevel()));
+        getBorder((Level) event.getLevel());
     }
 
     @SubscribeEvent
-    public void worldUnLoadEvent(WorldEvent.Unload event)
+    public void worldUnLoadEvent(LevelEvent.Unload event)
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        borders.remove(event.getWorld());
+        borders.remove(event.getLevel());
     }
 
     @SubscribeEvent

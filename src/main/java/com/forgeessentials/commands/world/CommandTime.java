@@ -4,10 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.forgeessentials.api.permissions.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.core.commands.registration.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -15,19 +29,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
-import com.forgeessentials.api.permissions.DefaultPermissionLevel;
-import org.jetbrains.annotations.NotNull;
 
 public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
@@ -267,11 +268,11 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void doWorldTick(TickEvent.WorldTickEvent event)
+    public void doWorldTick(TickEvent.LevelTickEvent event)
     {
         if (event.phase == Phase.START)
             return;
-        ServerLevel world = (ServerLevel) event.world;
+        ServerLevel world = (ServerLevel) event.level;
         if (world.getGameTime() % 10 == 0)
             updateWorld(world);
     }

@@ -34,7 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
@@ -49,12 +49,12 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.event.world.BlockEvent.EntityMultiPlaceEvent;
-import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
-import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
+import net.minecraftforge.event.level.BlockEvent.EntityMultiPlaceEvent;
+import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.event.level.BlockEvent.FarmlandTrampleEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -676,7 +676,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void entityJoinWorldEvent(EntityJoinWorldEvent event)
+    public void entityJoinWorldEvent(EntityJoinLevelEvent event)
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
@@ -684,7 +684,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getEntity() instanceof ItemEntity)
         {
             // 1) Do nothing if the whole world is creative!
-            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld());
+            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getLevel());
             if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT,
                     ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
             {
@@ -708,7 +708,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
 
         // 1) Do nothing if the whole world is creative!
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld());
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getLevel());
         if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT,
                 ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
