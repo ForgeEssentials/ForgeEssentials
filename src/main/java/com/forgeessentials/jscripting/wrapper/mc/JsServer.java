@@ -92,7 +92,7 @@ public class JsServer
 
         try
         {
-            server.getCommands().performCommand(sender.getThat(), cmd);
+            server.getCommands().performPrefixedCommand(sender.getThat(), cmd);
         }
         catch (CommandRuntimeException e)
         {

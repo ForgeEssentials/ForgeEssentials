@@ -54,7 +54,7 @@ public class EffectCommand extends WorldBorderEffect
     {
         String cmd = ScriptArguments.processSafe(command, player.createCommandSourceStack());
         ServerLifecycleHooks.getCurrentServer().getCommands()
-                .performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), cmd);
+                .performPrefixedCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), cmd);
     }
 
     public String toString()

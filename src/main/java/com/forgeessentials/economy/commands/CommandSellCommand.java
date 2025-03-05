@@ -104,7 +104,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
                 APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         ServerLifecycleHooks.getCurrentServer().getCommands()
-                .performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack())
+                .performPrefixedCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack())
                         .createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
 
         for (int slot = 0; slot < player.getInventory().items.size(); slot++)

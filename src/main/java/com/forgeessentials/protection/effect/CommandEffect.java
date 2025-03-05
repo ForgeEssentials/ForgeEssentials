@@ -48,7 +48,7 @@ public class CommandEffect extends ZoneEffect
                     break;
                 }
             }
-            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(),
+            ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(),
                     String.join(" ", args));
             if (!cmdExists)
             {
@@ -56,7 +56,7 @@ public class CommandEffect extends ZoneEffect
                 return;
             }
             ServerLifecycleHooks.getCurrentServer().getCommands()
-                    .performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack())
+                    .performPrefixedCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack())
                             .createCommandSourceStack(), String.join(" ", args));
         }
         catch (CommandRuntimeException e)

@@ -182,7 +182,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             return;
 
         ServerLifecycleHooks.getCurrentServer().getCommands()
-                .performCommand(event.getEntity().createCommandSourceStack(), command);
+                .performPrefixedCommand(event.getEntity().createCommandSourceStack(), command);
         event.setCanceled(true);
     }
 }

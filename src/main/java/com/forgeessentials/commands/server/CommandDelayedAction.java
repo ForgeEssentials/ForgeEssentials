@@ -71,7 +71,7 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
             @Override
             public void run()
             {
-                ctx.getSource().getServer().getCommands().performCommand(ctx.getSource(), execute);
+                ctx.getSource().getServer().getCommands().performPrefixedCommand(ctx.getSource(), execute);
             }
         }, time);
         ChatOutputHandler.chatNotification(ctx.getSource(),

@@ -84,7 +84,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
             ServerLifecycleHooks.getCurrentServer().getCommands()
-                    .performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack())
+                    .performPrefixedCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack())
                             .createCommandSourceStack(), message);
             return Command.SINGLE_SUCCESS;
         }
@@ -95,7 +95,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatWarning(player,
                     Translator.format("Player %s is attempting to issue a command as you.",
                             ctx.getSource().getDisplayName().getString()));
-            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(),
+            ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(),
                     message);
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     Translator.format("Successfully issued command as %s", playerS));

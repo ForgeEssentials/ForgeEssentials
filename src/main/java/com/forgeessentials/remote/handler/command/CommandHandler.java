@@ -56,7 +56,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                         sender = session.getUserIdent().getPlayer().createCommandSourceStack();
                     else
                         sender = RemoteCommandSender.get(session).createCommandSourceStack();
-                    server.getCommands().performCommand(sender, commandName);
+                    server.getCommands().performPrefixedCommand(sender, commandName);
                     session.trySendMessage(RemoteResponse.success(request));
                 }
                 catch (CommandRuntimeException e)

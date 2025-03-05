@@ -87,7 +87,7 @@ public class CommandGod extends ForgeEssentialsCommandBuilder
         APIRegistry.perms.setPlayerPermission(UserIdent.get(player), "fe.protection.damageby.*", enabled ? false : true);
         if (enabled)
         {
-        	ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), "feheal " + player.getDisplayName().getString());
+        	ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), "feheal " + player.getDisplayName().getString());
         }
         ChatOutputHandler.chatConfirmation(player, "God Mode " + (enabled ? "En" : "Dis") + "abled");
     }

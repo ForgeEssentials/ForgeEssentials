@@ -146,7 +146,7 @@ public class SignToolsModule extends ConfigLoaderBase
                     if (send != null && ServerLifecycleHooks.getCurrentServer().getCommands() != null)
                     {
                         ServerLifecycleHooks.getCurrentServer().getCommands()
-                                .performCommand(event.getEntity().createCommandSourceStack(), send);
+                                .performPrefixedCommand(event.getEntity().createCommandSourceStack(), send);
                         event.setCanceled(true);
                     }
                 }

@@ -86,7 +86,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(
                 new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP().createCommandSourceStack())
                         .createCommandSourceStack(),
                 StringArgumentType.getString(ctx, "command"));

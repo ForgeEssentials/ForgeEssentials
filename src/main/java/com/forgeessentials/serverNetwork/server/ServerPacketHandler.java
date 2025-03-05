@@ -146,7 +146,7 @@ public class ServerPacketHandler implements PacketHandler
             return;
         }
         if(data1.getPermissionLevel()>=2) {
-            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
+            ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(
                     new NetworkClientSendingOnParentCommandSender(data1.getRemoteClientId()).createCommandSourceStack(), 
                     commandPacket.getCommandToSend());
         }

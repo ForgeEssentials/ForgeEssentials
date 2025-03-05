@@ -90,7 +90,7 @@ public class ClientPacketHandler implements PacketHandler
     @Override
     public void handle(Packet10SharedCommandSending commandPacket)
     {
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(
+        ServerLifecycleHooks.getCurrentServer().getCommands().performPrefixedCommand(
                 new NetworkParentSendingOnClientCommandSender(ModuleNetworking.getLocalClient().getRemoteServerId()).createCommandSourceStack(), 
                 commandPacket.getCommandToSend());
     }
