@@ -543,7 +543,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public void playerLogin(PlayerLoggedInEvent e)
     {
         // Make sure each player has at least one permission
-        UserIdent ident = UserIdent.get(e.getPlayer());
+        UserIdent ident = UserIdent.get(e.getEntity());
         if (getServerZone().getPlayerPermissions(ident) == null
                 || getServerZone().getPlayerPermissions(ident).size() == 0)
             getServerZone().setPlayerPermission(ident, FEPermissions.PLAYER_KNOWN, true);
@@ -551,22 +551,22 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             getServerZone().clearPlayerPermission(ident, FEPermissions.PLAYER_KNOWN);
 
         // Fire first zone-changed event
-        WarpPoint point = new WarpPoint(e.getPlayer());
+        WarpPoint point = new WarpPoint(e.getEntity());
         Zone zone = APIRegistry.perms.getServerZone().getZonesAt(point.toWorldPoint()).get(0);
-        PlayerChangedZone event = new PlayerChangedZone(e.getPlayer(), zone, zone, point, point);
+        PlayerChangedZone event = new PlayerChangedZone(e.getEntity(), zone, zone, point, point);
         MinecraftForge.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerLoggedOutEvent e)
     {
-        permissionDebugUsers.remove(e.getPlayer());
+        permissionDebugUsers.remove(e.getEntity());
     }
 
     @SubscribeEvent
     public void worldLoad(LevelEvent.Load e)
     {
-        getServerZone().getWorldZone(e.getWorld());
+        getServerZone().getWorldZone(e.getLevel());
     }
 
     @SubscribeEvent
@@ -576,7 +576,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
         if (!before.equals(after))
         {
-            PlayerChangedZone event = new PlayerChangedZone(e.getPlayer(), before, after, e.before, e.after);
+            PlayerChangedZone event = new PlayerChangedZone(e.getEntity(), before, after, e.before, e.after);
             e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
         }
     }
@@ -584,19 +584,19 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerChangedZoneEvent(PlayerChangedZone event)
     {
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone,
                 FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.sendMessage(event.getEntity().createCommandSourceStack(),
                     ChatOutputHandler.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone,
                 FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.sendMessage(event.getEntity().createCommandSourceStack(),
                     ChatOutputHandler.formatColors(entryMsg));
         }
     }

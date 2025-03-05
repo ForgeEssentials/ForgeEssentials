@@ -14,6 +14,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -380,9 +381,9 @@ public final class ChatOutputHandler
      * 
      * @return {@Link TextComponent}
      */
-    public static Component clickChatComponent(String text, Action action, String uri)
+    public static MutableComponent clickChatComponent(String text, Action action, String uri)
     {
-        Component component = new TextComponent(ChatOutputHandler.formatColors(text));
+        MutableComponent component = new TextComponent(ChatOutputHandler.formatColors(text));
         ClickEvent click = new ClickEvent(action, uri);
         component.getStyle().withClickEvent(click);
         return component;

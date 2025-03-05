@@ -2,18 +2,18 @@ package com.forgeessentials.playerlogger;
 
 import java.util.TimerTask;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.util.events.ServerEventHandler;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.util.events.ServerEventHandler;
 
 public class PlayerLoggerEventHandler extends ServerEventHandler
 {
@@ -25,7 +25,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         ItemStack stack = event.getItemStack();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.CLOCK)
             return;
-        if (!APIRegistry.perms.checkPermission(event.getPlayer(), ModulePlayerLogger.PERM_WAND))
+        if (!APIRegistry.perms.checkPermission(event.getEntity(), ModulePlayerLogger.PERM_WAND))
             return;
         if (disabled)
             return;
@@ -40,15 +40,15 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         }, 500L);
         WorldPoint point;
         if (event instanceof RightClickBlock)
-            point = new WorldPoint(event.getPlayer().level, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
+            point = new WorldPoint(event.getLevel(), event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         else
-            point = new WorldPoint(event.getPlayer().level, event.getPos());
+            point = new WorldPoint(event.getLevel(), event.getPos());
 
         PlayerLoggerChecker.instance.CheckBlock(point,
-                FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())) != null
-                        ? FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer()))
+                FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getEntity())) != null
+                        ? FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getEntity()))
                         : FilterConfig.globalConfig,
-                event.getPlayer().createCommandSourceStack(), 4, false, event);
+                event.getEntity().createCommandSourceStack(), 4, false, event);
     }
 
 }

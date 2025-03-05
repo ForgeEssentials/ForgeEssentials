@@ -154,9 +154,9 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
                 String acmd = cmdlspl[0];
                 String csuffix = commandline.replaceAll(acmd, "");
 
-                Component tc = new TextComponent("");
+                TextComponent tc = new TextComponent("");
 
-                Component tc0 = new TextComponent(acmd);
+                TextComponent tc0 = new TextComponent(acmd);
                 tc0.withStyle(commandcolour);
                 tc.append(tc0);
 

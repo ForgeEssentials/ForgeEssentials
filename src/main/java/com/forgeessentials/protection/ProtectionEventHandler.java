@@ -113,7 +113,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getTarget() == null)
             return;
 
-        Player source = event.getPlayer();
+        Player source = event.getEntity();
         UserIdent sourceIdent = UserIdent.get(source);
         if (event.getTarget() instanceof Player)
         {
@@ -152,13 +152,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
 
-        if (event.getEntityLiving() == null)
+        if (event.getEntity() == null)
             return;
 
-        if (event.getEntityLiving() instanceof Player)
+        if (event.getEntity() instanceof Player)
         {
             // living -> player (fall-damage, mob, dispenser, lava)
-            Player target = (Player) event.getEntityLiving();
+            Player target = (Player) event.getEntity();
             {
                 String permission = event.getSource().isExplosion() ? ModuleProtection.PERM_DAMAGE_BY + ".explosion"
                         : ModuleProtection.PERM_DAMAGE_BY + "." + event.getSource().getMsgId();

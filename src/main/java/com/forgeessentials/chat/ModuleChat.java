@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -211,8 +212,8 @@ public class ModuleChat implements ConfigSaver
 
         if (CommandPm.getTarget(event.getPlayer()) != null)
         {
-            Component message = new TextComponent("");
-            message.append(event.getComponent());
+            TextComponent message = new TextComponent("");
+            message.append(event.getMessage());
             tell(event.getPlayer().createCommandSourceStack(), message,
                     CommandPm.getTarget(event.getPlayer()).createCommandSourceStack());
             event.setCanceled(true);
@@ -220,15 +221,15 @@ public class ModuleChat implements ConfigSaver
         }
 
         // Log chat message
-        logChatMessage(event.getPlayer().getDisplayName().getString(), event.getMessage());
+        logChatMessage(event.getPlayer().getDisplayName().getString(), event.getMessage().getString());
 
         // Initialize parameters
         String message = processChatReplacements(event.getPlayer().createCommandSourceStack(),
-                censor.filter(event.getMessage(), event.getPlayer()), false);
-        Component header = getChatHeader(ident);
+                censor.filter(event.getMessage().getString(), event.getPlayer()), false);
+        MutableComponent header = getChatHeader(ident);
 
         // Apply colors
-        if (event.getMessage().contains("&") && ident.checkPermission(PERM_COLOR))
+        if (event.getMessage().getString().contains("&") && ident.checkPermission(PERM_COLOR))
         {
             message = ChatOutputHandler.formatColors(message);
         }
@@ -250,7 +251,7 @@ public class ModuleChat implements ConfigSaver
         }
 
         // Finish complete message
-        event.setComponent(header.append(messageComponent));
+        event.setMessage(header.append(messageComponent));
 
         // Handle chat range
         Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
@@ -260,13 +261,13 @@ public class ModuleChat implements ConfigSaver
             for (ServerPlayer player : ServerUtil.getPlayerList())
             {
                 if (player.level == source.getWorld() && source.distance(new WorldPoint(player)) <= range)
-                    ChatOutputHandler.sendMessageI(player.createCommandSourceStack(), event.getComponent());
+                    ChatOutputHandler.sendMessageI(player.createCommandSourceStack(), event.getMessage());
             }
             event.setCanceled(true);
         }
     }
 
-    public static Component getChatHeader(UserIdent ident)
+    public static MutableComponent getChatHeader(UserIdent ident)
     {
         String playerName = ident.hasPlayer() ? getPlayerNickname(ident.getPlayer()) : ident.getUsernameOrUuid();
 
@@ -335,7 +336,7 @@ public class ModuleChat implements ConfigSaver
         return fix;
     }
 
-    public static Component appendGroupPrefixSuffix(Component header, UserIdent ident, boolean isSuffix)
+    public static Component appendGroupPrefixSuffix(MutableComponent header, UserIdent ident, boolean isSuffix)
     {
         WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer())
                 : new WorldPoint("minecraft:overworld", 0, 0, 0);
@@ -346,7 +347,7 @@ public class ModuleChat implements ConfigSaver
                     isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
-                Component component = ChatOutputHandler.clickChatComponent(text, Action.SUGGEST_COMMAND,
+                MutableComponent component = ChatOutputHandler.clickChatComponent(text, Action.SUGGEST_COMMAND,
                         "/gmsg " + group.getGroup() + " ");
                 if (header == null)
                     header = component;
@@ -498,7 +499,7 @@ public class ModuleChat implements ConfigSaver
         if (groupName == null)
             groupName = group;
 
-        Component msg;
+        MutableComponent msg;
         Player player = sender.getEntity() instanceof Player ? (Player) sender.getEntity() : null;
         msg = player != null ? getChatHeader(UserIdent.get((Player) sender.getEntity()))
                 : new TextComponent("SERVER ");

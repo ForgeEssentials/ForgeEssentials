@@ -237,7 +237,7 @@ public class ModuleProtection
                 "Allow damaging entities");
         APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow getting hurt by entities");
-        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITY_TYPES.getEntries())
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + e.getValue().getRegistryName().getPath(),
                     DefaultPermissionLevel.ALL, "");
@@ -259,7 +259,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITY_TYPES.getEntries())
         {
             APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getValue().getRegistryName().getPath(),
                     DefaultPermissionLevel.ALL, "");

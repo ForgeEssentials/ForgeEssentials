@@ -105,7 +105,7 @@ public class TimedMessages implements Runnable
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            Component formatted = new TextComponent("");
+            TextComponent formatted = new TextComponent("");
             formatted.append(Component.Serializer.fromJson(message));
             return formatted;
         }

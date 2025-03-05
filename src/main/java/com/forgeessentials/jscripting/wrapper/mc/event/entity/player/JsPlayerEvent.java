@@ -1,10 +1,10 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
 
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
-import com.forgeessentials.jscripting.wrapper.mc.event.entity.JsLivingEvent;
-
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+
+import com.forgeessentials.jscripting.wrapper.mc.entity.JsPlayerEntity;
+import com.forgeessentials.jscripting.wrapper.mc.event.entity.JsLivingEvent;
 
 public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent<T>
 {
@@ -12,7 +12,7 @@ public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent
     @Override
     public JsPlayerEntity getPlayer()
     {
-        return JsPlayerEntity.get(_event.getPlayer());
+        return JsPlayerEntity.get(_event.getEntity());
     }
 
     /**
@@ -21,7 +21,7 @@ public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent
     @Override
     public CommandSourceStack _getSender()
     {
-        return _event.getPlayer().createCommandSourceStack();
+        return _event.getEntity().createCommandSourceStack();
     }
 
 }

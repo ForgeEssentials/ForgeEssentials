@@ -4,13 +4,13 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.Action01Block;
-import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
-
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+
+import com.forgeessentials.playerlogger.PlayerLoggerEvent;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
 {
@@ -29,8 +29,8 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
             return;
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.getPlayer());
-        action.world = event.getPlayer().level.dimension().location().toString();
+        action.player = getPlayer(event.getEntity());
+        action.world = event.getEntity().level.dimension().location().toString();
         action.type = (event instanceof RightClickBlock) ? ActionBlockType.USE_RIGHT : ActionBlockType.USE_LEFT;
         action.x = event.getPos().getX();
         action.y = event.getPos().getY();

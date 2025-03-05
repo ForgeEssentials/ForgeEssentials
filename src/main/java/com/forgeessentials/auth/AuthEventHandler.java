@@ -159,13 +159,13 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getEntity()))
             return;
-        if (!ModuleAuth.isAuthenticated(event.getEntity()))
+        if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                     "Login required9. Try /auth help.");
             // add the item back to the inventory
-            ItemStack stack = event.getEntityItem().getItem();
-            event.getEntity().getInventory().add(stack);
+            ItemStack stack = event.getEntity().getItem();
+            event.getPlayer().getInventory().add(stack);
             event.setCanceled(true);
         }
     }
@@ -236,8 +236,8 @@ public class AuthEventHandler extends ServerEventHandler
 
         if (!APIRegistry.perms.checkPermission(event.getEntity(), "fe.auth.isVIP"))
         {
-            int onlinePlayers = ServerLifecycleHooks.getCurrentServer().getEntityList().getEntityCount();
-            int availableSlots = ServerLifecycleHooks.getCurrentServer().getEntityList().getMaxPlayers() - vipSlots
+            int onlinePlayers = ServerLifecycleHooks.getCurrentServer().getPlayerCount();
+            int availableSlots = ServerLifecycleHooks.getCurrentServer().getPlayerCount() - vipSlots
                     - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {

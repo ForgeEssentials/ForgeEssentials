@@ -3,7 +3,6 @@ package com.forgeessentials.util.questioner;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 
@@ -44,19 +43,19 @@ public class QuestionData
 
     public void sendYesNoMessage()
     {
-        Component yesMessage = new TextComponent("/feyes");
+        TextComponent yesMessage = new TextComponent("/feyes");
         ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feyes");
         yesMessage.withStyle((style) -> style.withClickEvent(click));
         yesMessage.withStyle(ChatFormatting.RED);
         yesMessage.withStyle(ChatFormatting.UNDERLINE);
 
-        Component noMessage = new TextComponent("/feno");
+        TextComponent noMessage = new TextComponent("/feno");
         ClickEvent click1 = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feno");
         noMessage.withStyle((style) -> style.withClickEvent(click1));
         noMessage.withStyle(ChatFormatting.RED);
         noMessage.withStyle(ChatFormatting.UNDERLINE);
 
-        Component yesNoMessage = new TextComponent("Type ");
+        TextComponent yesNoMessage = new TextComponent("Type ");
         yesNoMessage.append(yesMessage);
         yesNoMessage.append(new TextComponent(" or "));
         yesNoMessage.append(noMessage);

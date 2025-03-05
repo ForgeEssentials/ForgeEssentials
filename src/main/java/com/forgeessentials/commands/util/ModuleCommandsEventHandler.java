@@ -159,7 +159,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     public void chatEvent(ServerChatEvent event)
     {
         playerActive(event.getPlayer());
-        String msg = event.getComponent().getContents().toLowerCase();
+        String msg = event.getMessage().getString().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
                 ChatOutputHandler

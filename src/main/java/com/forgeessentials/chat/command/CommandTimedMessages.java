@@ -2,7 +2,6 @@ package com.forgeessentials.chat.command;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import org.jetbrains.annotations.NotNull;
@@ -136,7 +135,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of messages:");
         for (int i = 0; i < ModuleChat.timedMessages.getMessages().size(); i++)
         {
-            Component message = new TextComponent(String.format("%d: ", i));
+            TextComponent message = new TextComponent(String.format("%d: ", i));
             message.append(ModuleChat.timedMessages.formatMessage(ModuleChat.timedMessages.getMessages().get(i)));
             ChatOutputHandler.sendMessage(ctx.getSource(), message);
         }
