@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -83,7 +82,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
                     format = ChatFormat.PLAINTEXT;
                 if (messages[format.ordinal()] == null)
                 {
-                    BaseComponent mes = new TextComponent("");
+                    Component mes = new TextComponent("");
                     format.format(mes);
                     messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT,
                             new ChatResponse(username, format.format(mes)));

@@ -26,21 +26,21 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.fewrapper.fe.command.JsCommandNodeWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
-
-import net.minecraft.commands.CommandRuntimeException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.BaseComponent;
 
 public class ScriptInstance
 {
@@ -563,7 +563,7 @@ public class ScriptInstance
 
     public void chatError(CommandSourceStack sender, String message)
     {
-        BaseComponent msg = ChatOutputHandler.error(message);
+        Component msg = ChatOutputHandler.error(message);
         if (sender == null)
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else

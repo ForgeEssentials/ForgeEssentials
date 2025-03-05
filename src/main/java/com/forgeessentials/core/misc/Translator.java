@@ -11,12 +11,12 @@ import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Charsets;
-
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.BaseComponent;
 
 public final class Translator
 {
@@ -45,7 +45,7 @@ public final class Translator
         return text;
     }
 
-    public static BaseComponent translateITC(String text)
+    public static Component translateITC(String text)
     {
         String translated = translations.get(text);
         if (translated != null)
@@ -55,7 +55,7 @@ public final class Translator
         return new TextComponent(text);
     }
 
-    public static BaseComponent translateITC(String text, Object[] args)
+    public static Component translateITC(String text, Object[] args)
     {
         String translated = translations.get(text);
         if (translated != null)

@@ -3,6 +3,18 @@ package com.forgeessentials.commands.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.player.CommandAFK;
@@ -15,18 +27,6 @@ import com.forgeessentials.util.events.player.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class ModuleCommandsEventHandler extends ServerEventHandler implements Runnable
 {
@@ -119,7 +119,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         clearAfk(pi.ident);
     }
 
-    public static void checkAfkMessage(CommandSourceStack target, BaseComponent message) throws CommandSyntaxException
+    public static void checkAfkMessage(CommandSourceStack target, Component message) throws CommandSyntaxException
     {
         if (!(target.getEntity() instanceof ServerPlayer))
             return;

@@ -3,7 +3,17 @@ package com.forgeessentials.tickets;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.DefaultPermissionLevel;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
@@ -17,15 +27,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.ChatFormatting;
-import com.forgeessentials.api.permissions.DefaultPermissionLevel;
-import org.jetbrains.annotations.NotNull;
 
 public class CommandTicket extends ForgeEssentialsCommandBuilder
 {
@@ -151,7 +152,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                     c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            BaseComponent messageComponent = ChatOutputHandler.notification(
+            Component messageComponent = ChatOutputHandler.notification(
                     Translator.format("Player %s has filed a ticket.", ctx.getSource().getDisplayName().getString()));
             if (!ctx.getSource().getServer().isStopped())
                 for (ServerPlayer player : ServerUtil.getPlayerList())

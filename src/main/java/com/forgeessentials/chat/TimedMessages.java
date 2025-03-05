@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.forgeessentials.core.config.ConfigBase;
@@ -11,12 +16,6 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.JsonParseException;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
 public class TimedMessages implements Runnable
 {
@@ -101,12 +100,12 @@ public class TimedMessages implements Runnable
             TaskRegistry.scheduleRepeated(this, interval * 1000L);
     }
 
-    public BaseComponent formatMessage(String message)
+    public Component formatMessage(String message)
     {
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            BaseComponent formatted = new TextComponent("");
+            Component formatted = new TextComponent("");
             formatted.append(Component.Serializer.fromJson(message));
             return formatted;
         }

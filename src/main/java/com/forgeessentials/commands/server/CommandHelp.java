@@ -9,7 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import org.jetbrains.annotations.NotNull;
@@ -154,13 +154,13 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
                 String acmd = cmdlspl[0];
                 String csuffix = commandline.replaceAll(acmd, "");
 
-                BaseComponent tc = new TextComponent("");
+                Component tc = new TextComponent("");
 
-                BaseComponent tc0 = new TextComponent(acmd);
+                Component tc0 = new TextComponent(acmd);
                 tc0.withStyle(commandcolour);
                 tc.append(tc0);
 
-                BaseComponent tc1 = new TextComponent(csuffix);
+                Component tc1 = new TextComponent(csuffix);
                 tc1.withStyle(subcommandcolour);
                 tc.append(tc1);
 

@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 
@@ -92,7 +92,7 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(ctx.getSource(), "You can't be the recipient");
             return Command.SINGLE_SUCCESS;
         }
-        BaseComponent message = new TextComponent(StringArgumentType.getString(ctx, "message"));
+        Component message = new TextComponent(StringArgumentType.getString(ctx, "message"));
         ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
         return Command.SINGLE_SUCCESS;
     }

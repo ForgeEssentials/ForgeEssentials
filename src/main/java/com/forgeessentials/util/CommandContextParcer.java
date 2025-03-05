@@ -1,7 +1,7 @@
 package com.forgeessentials.util;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -43,7 +43,7 @@ public class CommandContextParcer {
     	ChatOutputHandler.sendMessage(sender, message);
     }
 
-    public void sendMessage(BaseComponent message)
+    public void sendMessage(Component message)
     {
     	ChatOutputHandler.sendMessage(sender, message);
     }

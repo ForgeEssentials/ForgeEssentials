@@ -20,7 +20,6 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -428,10 +427,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        BaseComponent msg1 = new TextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
+        Component msg1 = new TextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
         msg1.withStyle(Zone.PERMISSION_FALSE.equals(value) ? ChatFormatting.RED : ChatFormatting.DARK_GREEN);
 
-        BaseComponent msg2;
+        Component msg2;
         if (zone == null)
         {
             msg2 = new TextComponent("  permission not set");
@@ -439,10 +438,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
         else
         {
-            BaseComponent msgZone = new TextComponent(zone.getName());
+            Component msgZone = new TextComponent(zone.getName());
             msgZone.withStyle(ChatFormatting.LIGHT_PURPLE);
 
-            BaseComponent msgUser = new TextComponent(
+            Component msgUser = new TextComponent(
                     ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
             msgUser.withStyle(ChatFormatting.GOLD);
 
@@ -452,7 +451,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 // FEPermissions.GROUP_NAME);
                 // if (groupName == null)
                 // groupName = group;
-                BaseComponent msgGroup = new TextComponent(group);
+                Component msgGroup = new TextComponent(group);
                 msgGroup.withStyle(ChatFormatting.LIGHT_PURPLE);
 
                 msg2 = new TranslatableComponent("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);

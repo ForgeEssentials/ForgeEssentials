@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -212,7 +211,7 @@ public class ModuleChat implements ConfigSaver
 
         if (CommandPm.getTarget(event.getPlayer()) != null)
         {
-            BaseComponent message = new TextComponent("");
+            Component message = new TextComponent("");
             message.append(event.getComponent());
             tell(event.getPlayer().createCommandSourceStack(), message,
                     CommandPm.getTarget(event.getPlayer()).createCommandSourceStack());
@@ -226,7 +225,7 @@ public class ModuleChat implements ConfigSaver
         // Initialize parameters
         String message = processChatReplacements(event.getPlayer().createCommandSourceStack(),
                 censor.filter(event.getMessage(), event.getPlayer()), false);
-        BaseComponent header = getChatHeader(ident);
+        Component header = getChatHeader(ident);
 
         // Apply colors
         if (event.getMessage().contains("&") && ident.checkPermission(PERM_COLOR))
@@ -240,7 +239,7 @@ public class ModuleChat implements ConfigSaver
             message = ChatOutputHandler.formatColors(textFormats) + message;
 
         // Build message part with links
-        BaseComponent messageComponent;
+        Component messageComponent;
         if (ident.checkPermission(PERM_URL))
         {
             messageComponent = ChatOutputHandler.filterChatLinks(message);
@@ -267,7 +266,7 @@ public class ModuleChat implements ConfigSaver
         }
     }
 
-    public static BaseComponent getChatHeader(UserIdent ident)
+    public static Component getChatHeader(UserIdent ident)
     {
         String playerName = ident.hasPlayer() ? getPlayerNickname(ident.getPlayer()) : ident.getUsernameOrUuid();
 
@@ -278,13 +277,13 @@ public class ModuleChat implements ConfigSaver
 
         // Initialize header
         String playerCmd = "/msg " + ident.getUsernameOrUuid() + " ";
-        BaseComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        BaseComponent playerPrefix = ChatOutputHandler.clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND,
+        Component groupPrefix = appendGroupPrefixSuffix(null, ident, false);
+        Component playerPrefix = ChatOutputHandler.clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND,
                 playerCmd);
-        BaseComponent playerText = ChatOutputHandler.clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        BaseComponent playerSuffix = ChatOutputHandler.clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND,
+        Component playerText = ChatOutputHandler.clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        Component playerSuffix = ChatOutputHandler.clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND,
                 playerCmd);
-        BaseComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
+        Component groupSuffix = appendGroupPrefixSuffix(null, ident, true);
         return new TranslatableComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
@@ -336,7 +335,7 @@ public class ModuleChat implements ConfigSaver
         return fix;
     }
 
-    public static BaseComponent appendGroupPrefixSuffix(BaseComponent header, UserIdent ident, boolean isSuffix)
+    public static Component appendGroupPrefixSuffix(Component header, UserIdent ident, boolean isSuffix)
     {
         WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer())
                 : new WorldPoint("minecraft:overworld", 0, 0, 0);
@@ -347,7 +346,7 @@ public class ModuleChat implements ConfigSaver
                     isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
-                BaseComponent component = ChatOutputHandler.clickChatComponent(text, Action.SUGGEST_COMMAND,
+                Component component = ChatOutputHandler.clickChatComponent(text, Action.SUGGEST_COMMAND,
                         "/gmsg " + group.getGroup() + " ");
                 if (header == null)
                     header = component;
@@ -499,18 +498,18 @@ public class ModuleChat implements ConfigSaver
         if (groupName == null)
             groupName = group;
 
-        BaseComponent msg;
+        Component msg;
         Player player = sender.getEntity() instanceof Player ? (Player) sender.getEntity() : null;
         msg = player != null ? getChatHeader(UserIdent.get((Player) sender.getEntity()))
                 : new TextComponent("SERVER ");
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
-        BaseComponent msgGroup = new TextComponent("@" + groupName + "@ ");
+        Component msgGroup = new TextComponent("@" + groupName + "@ ");
         msgGroup.withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC);
         msg.append(msgGroup);
 
-        BaseComponent msgBody = new TextComponent(formatted);
+        Component msgBody = new TextComponent(formatted);
         msgBody.withStyle(ChatFormatting.GRAY);
         msg.append(msgBody);
 

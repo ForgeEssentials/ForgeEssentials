@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +32,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
 
     public static final String PERM = PERM_REMOTE + ".chat.query";
 
-    private static Map<Long, BaseComponent> chatLog = new TreeMap<>();
+    private static Map<Long, Component> chatLog = new TreeMap<>();
 
     public QueryChatHandler()
     {
@@ -47,7 +46,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     {
         ChatFormat format = request.data == null ? ChatFormat.PLAINTEXT : ChatFormat.fromString(request.data.format);
         Map<Long, Object> messages = new HashMap<>();
-        for (Entry<Long, BaseComponent> message : chatLog.entrySet())
+        for (Entry<Long, Component> message : chatLog.entrySet())
         {
             if (request.data != null && message.getKey() < request.data.timestamp)
                 continue;
@@ -67,7 +66,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
         Long key = System.currentTimeMillis();
         while (chatLog.containsKey(key))
             key++;
-        BaseComponent me = new TextComponent("");
+        Component me = new TextComponent("");
         me.append(message);
         chatLog.put(key, me);
         while (chatLog.size() > BUFFER_SIZE)

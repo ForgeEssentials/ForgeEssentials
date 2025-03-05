@@ -1,5 +1,13 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.forgeessentials.api.permissions.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -12,13 +20,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.BaseComponent;
-import com.forgeessentials.api.permissions.DefaultPermissionLevel;
-import org.jetbrains.annotations.NotNull;
 
 public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
 {
@@ -135,7 +136,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of messages:");
         for (int i = 0; i < ModuleChat.timedMessages.getMessages().size(); i++)
         {
-            BaseComponent message = new TextComponent(String.format("%d: ", i));
+            Component message = new TextComponent(String.format("%d: ", i));
             message.append(ModuleChat.timedMessages.formatMessage(ModuleChat.timedMessages.getMessages().get(i)));
             ChatOutputHandler.sendMessage(ctx.getSource(), message);
         }

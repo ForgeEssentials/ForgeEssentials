@@ -9,8 +9,18 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TimeZone;
+
+import net.minecraft.network.chat.Component;
 
 import org.apache.commons.io.FileUtils;
 
@@ -34,8 +44,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-
-import net.minecraft.network.chat.BaseComponent;
 
 public class DataManager
 {
@@ -69,7 +77,7 @@ public class DataManager
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
         addDataType(new BlockType());
-        addDataType(BaseComponent.class, new BaseComponent.Serializer());
+        addDataType(Component.class, new Component.Serializer());
     }
 
     public DataManager(File basePath)
