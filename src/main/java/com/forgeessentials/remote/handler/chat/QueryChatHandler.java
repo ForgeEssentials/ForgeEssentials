@@ -58,7 +58,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        onMessage(event.getComponent());
+        onMessage(event.getMessage());
     }
 
     public static void onMessage(Component message)

@@ -58,7 +58,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        Component message = event.getComponent();
+        Component message = event.getMessage();
         String username = event.getUsername();
         pushMessage(message, username);
     }
