@@ -58,14 +58,15 @@ public class SelectionHandler extends ServerEventHandler
             return;
 
         // Check if wand should activate
-        if (player.getMainHandItem() == null)
+        if (player.getMainHandItem() == ItemStack.EMPTY)
         {
             if (!info.getWandID().equals("hands"))
                 return;
         }
         else
         {
-            if (!(player.getMainHandItem().getItem().getRegistryName().getPath().equals(info.getWandID())))
+            ResourceLocation key = ForgeRegistries.ITEMS.getKey(player.getMainHandItem().getItem());
+            if (!(key != null && key.getPath().equals(info.getWandID())))
                 return;
         }
 
