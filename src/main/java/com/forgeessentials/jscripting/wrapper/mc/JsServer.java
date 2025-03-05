@@ -9,7 +9,6 @@ import javax.script.ScriptException;
 
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -228,7 +227,7 @@ public class JsServer
 
             for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             {
-                server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getGameProfile().getId());
+                server.getPlayerList().broadcastSystemMessage(component, false);
             }
         }
         catch (JsonParseException jsonparseexception)

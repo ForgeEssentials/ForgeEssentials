@@ -70,7 +70,7 @@ public class DoAsCommandSender extends FakePlayer
     }
 
     @Override
-    public void sendMessage(Component message, UUID p_145747_2_)
+    public void sendSystemMessage(Component message)
     {
         if (!hideChatMessages)
             ChatOutputHandler.sendMessageI(sender, message);

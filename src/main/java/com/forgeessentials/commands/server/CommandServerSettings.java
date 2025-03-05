@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.MinecraftServer.ServerResourcePackInfo;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerSettings;
@@ -535,33 +536,34 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 
             case "resource-packV":
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        Translator.format("resource-pack is set to: %s", server.getResourcePack()));
+                        Translator.format("resource-pack is set to: %s", Dserver.getServerResourcePack().map(ServerResourcePackInfo::url).orElse("null")));
                 return Command.SINGLE_SUCCESS;
             case "resource-packC":
+                //TODO: Figure out setResourcePack alternative
                 saveSettings("resource-pack", "resourcePack", "");
-                server.setResourcePack("", server.getResourcePackHash());
+                //server.setResourcePack("", server.getResourcePackHash());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set resource-pack to %s", ""));
                 return Command.SINGLE_SUCCESS;
             case "resource-packT":
                 saveSettings("resource-pack", "resourcePack", StringArgumentType.getString(ctx, "PackName"));
-                server.setResourcePack(StringArgumentType.getString(ctx, "PackName"), server.getResourcePackHash());
+                //server.setResourcePack(StringArgumentType.getString(ctx, "PackName"), server.getResourcePackHash());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
                         Translator.format("Set resource-pack to %s", StringArgumentType.getString(ctx, "PackName")));
                 return Command.SINGLE_SUCCESS;
 
             case "resource-pack-sha1V":
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        Translator.format("resource-pack-sha1 is set to: %s", server.getResourcePackHash()));
+                        Translator.format("resource-pack-sha1 is set to: %s", server.getServerResourcePack().map(ServerResourcePackInfo::hash).orElse("null")));
                 return Command.SINGLE_SUCCESS;
             case "resource-pack-sha1C":
                 saveSettings("resource-pack-sha1", "resourcePackSha1", "");
-                server.setResourcePack(server.getResourcePack(), "");
+                //server.setResourcePack(server.getResourcePack(), "");
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
                         Translator.format("Set resource-pack-sha1 to %s", ""));
                 return Command.SINGLE_SUCCESS;
             case "resource-pack-sha1T":
                 saveSettings("resource-pack-sha1", "resourcePackSha1", StringArgumentType.getString(ctx, "sha1"));
-                server.setResourcePack(server.getResourcePack(), StringArgumentType.getString(ctx, "sha1"));
+//                server.setResourcePack(server.getResourcePack(), StringArgumentType.getString(ctx, "sha1"));
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
                         Translator.format("Set resource-pack-sha1 to %s", StringArgumentType.getString(ctx, "sha1")));
                 return Command.SINGLE_SUCCESS;

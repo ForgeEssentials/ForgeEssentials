@@ -1,11 +1,13 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,7 +60,7 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder.then(Commands.argument("pos", Vec3Argument.vec3())
                 .then(Commands.argument("count", IntegerArgumentType.integer(0, 64))
-                        .then(Commands.argument("item", ItemArgument.item())
+                        .then(Commands.argument("item", ItemArgument.item(new CommandBuildContext(RegistryAccess.builtinCopy())))
                                 .executes(CommandContext -> execute(CommandContext, "blank")))));
     }
 

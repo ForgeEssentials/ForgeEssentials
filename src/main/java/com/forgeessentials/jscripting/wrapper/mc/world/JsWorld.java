@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -245,7 +246,7 @@ public class JsWorld<T extends Level> extends JsWrapper<T>
      */
     public float getLightBrightness(int x, int y, int z)
     {
-        return that.getBrightness(new BlockPos(x, y, z));
+        return that.getBrightness(LightLayer.BLOCK,new BlockPos(x, y, z));
     }
 
     /**

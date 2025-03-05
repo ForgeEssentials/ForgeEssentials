@@ -6,16 +6,15 @@ import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.List;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.logger.LoggingHandler;
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockModListFile
 {
@@ -81,13 +80,13 @@ public class BlockModListFile
                         + calen.get(Calendar.YEAR) + " (Server time)");
                 out.println();
 
-                for (Item i : ForgeRegistries.ITEMS)
+                for (ResourceLocation i : ForgeRegistries.ITEMS.getKeys())
                 {
-                    out.println(i.getRegistryName());
+                    out.println(i.getPath());
                 }
-                for (Block b : ForgeRegistries.BLOCKS)
+                for (ResourceLocation b : ForgeRegistries.BLOCKS.getKeys())
                 {
-                    out.println(b.getRegistryName());
+                    out.println(b.getPath());
                 }
             }
         }

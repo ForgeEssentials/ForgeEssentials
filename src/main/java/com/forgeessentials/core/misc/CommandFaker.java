@@ -1,7 +1,5 @@
 package com.forgeessentials.core.misc;
 
-import java.util.UUID;
-
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -13,8 +11,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.authlib.GameProfile;
@@ -23,7 +19,7 @@ public class CommandFaker implements CommandSource
 {
 
     @Override
-    public void sendMessage(Component p_145747_1_, @NotNull UUID p_145747_2_)
+    public void sendSystemMessage(Component p_145747_1_)
     {
         LoggingHandler.felog.info("CommandFaker: " + p_145747_1_.getString());
     }

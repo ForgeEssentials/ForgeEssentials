@@ -3,7 +3,6 @@ package com.forgeessentials.remote;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -79,7 +78,7 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public void sendMessage(Component chatComponent, UUID uuid)
+    public void sendSystemMessage(Component chatComponent)
     {
         // TODO: Instead of directly sending the messages to the client, cache them and
         // send them all after the running

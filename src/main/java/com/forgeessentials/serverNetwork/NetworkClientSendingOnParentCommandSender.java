@@ -26,7 +26,7 @@ public class NetworkClientSendingOnParentCommandSender implements CommandSource
     }
 
     @Override
-    public void sendMessage(Component chatComponent, UUID senderUUID)
+    public void sendSystemMessage(Component chatComponent)
     {
         if (ModuleNetworking.getClients().containsKey(connectedId))
             if(ModuleNetworking.getClients().get(connectedId).getCurrentChannel().isOpen()) {

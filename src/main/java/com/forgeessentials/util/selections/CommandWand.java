@@ -5,6 +5,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +63,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         {
             wandName = player.getMainHandItem().getDisplayName().getString();
             wandItem = player.getMainHandItem().getItem();
-            wandId = wandItem.getRegistryName().getPath();
+            wandId = ForgeRegistries.ITEMS.getKey(wandItem).getPath();
         }
         else
         {

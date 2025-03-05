@@ -7,16 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.world.level.block.Block;
+
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.commands.CommandRuntimeException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 
 public class FilterConfig
 {
@@ -207,7 +207,7 @@ public class FilterConfig
             {
                 blocks.add(BlockStateArgument.getBlock(ctx, "block").getState().getBlock());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Block: "
-                        + BlockStateArgument.getBlock(ctx, "block").getState().getBlock().getRegistryName());
+                        + BlockStateArgument.getBlock(ctx, "block").getState().getBlock().getName().getString());
             }
         }
     }

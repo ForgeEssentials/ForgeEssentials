@@ -238,9 +238,9 @@ public class ModuleProtection
                 "Allow getting hurt by entities");
         for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITY_TYPES.getEntries())
         {
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + e.getValue().getRegistryName().getPath(),
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + e.getKey().registry().getPath(),
                     DefaultPermissionLevel.ALL, "");
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + e.getValue().getRegistryName().getPath(),
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + e.getKey().registry().getPath(),
                     DefaultPermissionLevel.ALL, "");
         }
         for (DamageSource dmgType : damageByTypes)
@@ -260,9 +260,9 @@ public class ModuleProtection
 
         for (Entry<ResourceKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITY_TYPES.getEntries())
         {
-            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getValue().getRegistryName().getPath(),
+            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey().registry().getPath(),
                     DefaultPermissionLevel.ALL, "");
-            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getValue().getRegistryName().getPath(),
+            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey().registry().getPath(),
                     DefaultPermissionLevel.ALL, "");
         }
         for (MobType mobType : MobType.values())
@@ -290,11 +290,11 @@ public class ModuleProtection
                 String itemName;
                 try
                 {
-                    itemName = item.getDescriptionId().toString();
+                    itemName = item.getDescriptionId();
                 }
                 catch (Exception | NoClassDefFoundError e)
                 {
-                    itemName = item.getRegistryName().toString();
+                    itemName = ForgeRegistries.ITEMS.getKey(item).getPath();
                 }
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, DefaultPermissionLevel.ALL,
                         "USE " + itemName);
@@ -324,11 +324,11 @@ public class ModuleProtection
             String blockName;
             try
             {
-                blockName = block.getName().toString();
+                blockName = block.getName().getString();
             }
             catch (Throwable e)
             {
-                blockName = block.getRegistryName().toString();
+                blockName = ForgeRegistries.BLOCKS.getKey(block).getPath();
             }
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, DefaultPermissionLevel.ALL,
                     "BREAK " + blockName);

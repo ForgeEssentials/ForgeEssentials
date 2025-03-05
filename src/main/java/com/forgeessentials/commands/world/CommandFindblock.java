@@ -1,8 +1,10 @@
 package com.forgeessentials.commands.world;
 
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +56,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
-        return baseBuilder.then(Commands.argument("block", BlockStateArgument.block())
+        return baseBuilder.then(Commands.argument("block", BlockStateArgument.block(new CommandBuildContext(RegistryAccess.builtinCopy())))
                 .executes(CommandContext -> execute(CommandContext, "blank")));
     }
 

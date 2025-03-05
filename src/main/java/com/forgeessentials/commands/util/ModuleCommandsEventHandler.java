@@ -130,7 +130,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
                     .notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
             return;
         }
-        String msg = message.getContents().toLowerCase();
+        String msg = message.getString().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
                 ChatOutputHandler

@@ -18,10 +18,12 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -89,7 +91,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder.then(Commands.literal("save").executes(CommandContext -> execute(CommandContext, "save")))
                 .then(Commands.literal("set")
-                        .then(Commands.argument("item", ItemArgument.item())
+                        .then(Commands.argument("item", ItemArgument.item(new CommandBuildContext(RegistryAccess.builtinCopy())))
                                 .then(Commands.argument("price", DoubleArgumentType.doubleArg())
                                         .executes(CommandContext -> execute(CommandContext, "set")))))
                 .then(Commands.literal("generate").executes(CommandContext -> execute(CommandContext, "generate")))

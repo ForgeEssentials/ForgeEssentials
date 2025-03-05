@@ -8,12 +8,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
@@ -89,7 +91,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                                 .then(Commands.literal("blockid")
                                         .then(Commands.literal("reset").executes(
                                                 CommandContext -> execute(CommandContext, "filter-blockid-reset")))
-                                        .then(Commands.argument("block", BlockStateArgument.block()).executes(
+                                        .then(Commands.argument("block", BlockStateArgument.block(new CommandBuildContext(RegistryAccess.builtinCopy()))).executes(
                                                 CommandContext -> execute(CommandContext, "filter-blockid-block"))))
                                 .then(Commands.literal("before")
                                         .then(Commands.literal("reset").executes(

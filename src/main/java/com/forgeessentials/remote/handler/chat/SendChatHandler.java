@@ -42,7 +42,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
             ServerPlayer player = ident.getPlayerMP();
             TranslatableComponent message = new TranslatableComponent("chat.type.text",
                     new Object[] { player.getDisplayName().getString(), ForgeHooks.newChatWithLinks(request.data) });
-            ServerChatEvent event = new ServerChatEvent(player, request.data, message);
+            ServerChatEvent event = new ServerChatEvent.Preview(player, request.data, message);
             if (MinecraftForge.EVENT_BUS.post(event))
                 return null;
             if (event.getMessage() != null)

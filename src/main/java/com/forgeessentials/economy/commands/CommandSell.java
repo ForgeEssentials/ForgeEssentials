@@ -1,8 +1,10 @@
 package com.forgeessentials.economy.commands;
 
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -61,7 +63,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSourceStack> setExecution()
     {
         return baseBuilder
-                .then(Commands.argument("item", ItemArgument.item())
+                .then(Commands.argument("item", ItemArgument.item(new CommandBuildContext(RegistryAccess.builtinCopy())))
                         .then(Commands.argument("amount", IntegerArgumentType.integer())
                                 .executes(CommandContext -> execute(CommandContext, "sellamount"))))
                 .executes(CommandContext -> execute(CommandContext, "sell"));
