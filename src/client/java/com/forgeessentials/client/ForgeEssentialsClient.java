@@ -12,9 +12,8 @@ import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -347,7 +346,7 @@ public class ForgeEssentialsClient
             mc.level.disconnect();
         }
         if (mc.isLocalServer()) {
-            mc.clearLevel(new GenericDirtMessageScreen(MutableComponent.create(new TranslatableContents("menu.savingLevel",null, new Object[0]))));
+            mc.clearLevel(new GenericDirtMessageScreen(new TranslatableComponent("menu.savingLevel",null, new Object[0])));
         } else {
             mc.clearLevel();
         }

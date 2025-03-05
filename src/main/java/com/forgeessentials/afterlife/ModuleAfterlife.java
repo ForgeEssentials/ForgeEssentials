@@ -1,21 +1,26 @@
 package com.forgeessentials.afterlife;
 
+import static com.forgeessentials.core.ForgeEssentials.MODID;
+
 import java.util.ArrayList;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
@@ -56,13 +61,11 @@ public class ModuleAfterlife extends ServerEventHandler
     public static final String PERM_DEATHCHEST_SAFETIME = PERM_DEATHCHEST + ".safetime";
     public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
 
-    @SubscribeEvent
-    public static void registerTE(RegistryEvent.Register<BlockEntityType<?>> evt)
-    {
-        BlockEntityType<?> type = BlockEntityType.Builder.of(TileEntitySkullGrave::new, Blocks.SKELETON_SKULL)
-                .build(null);
-        type.setRegistryName("ForgeEssentials", "FESkull");
-        evt.getRegistry().register(type);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+    public static final RegistryObject<BlockEntityType> FESkull = BLOCK_ENTITY_TYPES.register("FESkull", () ->  BlockEntityType.Builder.of(TileEntitySkullGrave::new, Blocks.SKELETON_SKULL)
+            .build(null));
+    public ModuleAfterlife() {
+        BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     @SubscribeEvent
@@ -107,23 +110,23 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
-        if (e.getPlayer().level.isClientSide)
+        if (e.getEntity().level.isClientSide)
             return;
 
-        String potionEffects = APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()),
+        String potionEffects = APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getEntity()),
                 ModuleAfterlife.PERM_DEBUFFS);
         if (potionEffects != null)
-            PlayerUtil.applyPotionEffects(e.getPlayer(), potionEffects);
+            PlayerUtil.applyPotionEffects(e.getEntity(), potionEffects);
 
         Integer respawnHP = ServerUtil.tryParseInt(
-                APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()), ModuleAfterlife.PERM_HP));
+                APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getEntity()), ModuleAfterlife.PERM_HP));
         if (respawnHP != null)
-            e.getPlayer().setHealth(respawnHP);
+            e.getEntity().setHealth(respawnHP);
 
         Integer respawnFood = ServerUtil.tryParseInt(
-                APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()), ModuleAfterlife.PERM_FOOD));
+                APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getEntity()), ModuleAfterlife.PERM_FOOD));
         if (respawnFood != null)
-            e.getPlayer().getFoodData().eat(-1 * (20 - respawnFood), 0);
+            e.getEntity().getFoodData().eat(-1 * (20 - respawnFood), 0);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -167,19 +170,19 @@ public class ModuleAfterlife extends ServerEventHandler
         if (event.getEntity().level.isClientSide)
             return;
 
-        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getLevel(), event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
 
-        grave.interact((ServerPlayer) event.getPlayer());
+        grave.interact((ServerPlayer) event.getEntity());
         event.setCanceled(true);
     }
 
     @SubscribeEvent
     public void blockBreakEvent(BreakEvent event)
     {
-        if (event.getWorld().isClientSide())
+        if (event.getLevel().isClientSide())
             return;
 
         WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());

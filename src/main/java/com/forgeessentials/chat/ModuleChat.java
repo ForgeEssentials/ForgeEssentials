@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -461,7 +462,7 @@ public class ModuleChat implements ConfigSaver
     }
     /* ------------------------------------------------------------ */
 
-    public static void tell(CommandSourceStack sender, BaseComponent message, CommandSourceStack target)
+    public static void tell(CommandSourceStack sender, Component message, CommandSourceStack target)
     {
         TranslatableComponent sentMsg = new TranslatableComponent("commands.message.display.incoming",
                 new Object[] { sender.getDisplayName().getString(), message.copy() });

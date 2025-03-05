@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 
@@ -131,7 +131,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            BaseComponent message = new TextComponent(StringArgumentType.getString(ctx, "message-or-target"));
+            Component message = new TextComponent(StringArgumentType.getString(ctx, "message-or-target"));
             ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
         }
         return Command.SINGLE_SUCCESS;

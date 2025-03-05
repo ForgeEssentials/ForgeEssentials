@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -73,12 +71,12 @@ public final class ChatOutputHandler
      * @param recipient
      * @param message
      */
-    public static void sendMessage(CommandSourceStack recipient, BaseComponent message)
+    public static void sendMessage(CommandSourceStack recipient, Component message)
     {
         sendMessageI(recipient, message);
     }
 
-    public static void sendMessage(Player recipient, BaseComponent message)
+    public static void sendMessage(Player recipient, Component message)
     {
         sendMessageI(recipient.createCommandSourceStack(), message);
     }
@@ -118,8 +116,8 @@ public final class ChatOutputHandler
         message = formatColors(message);
         if (recipient.getEntity() instanceof Player)
         {
-            BaseComponent component = new TextComponent(message);
-            component.withStyle(color);
+            Component component = new TextComponent(message);
+            component.getStyle().withColor(color);
             sendMessage(recipient, component);
         }
         else
@@ -128,7 +126,7 @@ public final class ChatOutputHandler
 
     public static void sendMessage(Player recipient, String message, ChatFormatting color)
     {
-        BaseComponent component = new TextComponent(message);
+        Component component = new TextComponent(message);
         component.withStyle(color);
         sendMessage(recipient, component);
     }
@@ -154,29 +152,6 @@ public final class ChatOutputHandler
      *
      * @param message
      *            The message to send
-     * @param sendToDiscord
-     *            Broadcast Message to discord
-     */
-    public static void broadcast(BaseComponent message, boolean sendToDiscord)
-    {
-        // TODO: merge ITexcComponent and TextComponent methods to avoid duplication
-        for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
-        {
-            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT,
-                    p.getGameProfile().getId());
-        }
-
-        if (sendToDiscord && ModuleLauncher.getModuleList().contains("DiscordBridge"))
-        {
-            discordMessageHandler.sendMessage(message.getString());
-        }
-    }
-
-    /**
-     * Sends a message to all clients
-     *
-     * @param message
-     *            The message to send
      */
     public static void broadcast(Component message)
     {
@@ -195,8 +170,7 @@ public final class ChatOutputHandler
     {
         for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
-            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT,
-                    p.getGameProfile().getId());
+            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(message, false);
         }
 
         if (sendToDiscord && ModuleLauncher.getModuleList().contains("DiscordBridge"))
@@ -207,22 +181,22 @@ public final class ChatOutputHandler
 
     /* ------------------------------------------------------------ */
 
-    public static BaseComponent confirmation(String message)
+    public static Component confirmation(String message)
     {
         return setChatColor(new TextComponent(formatColors(message)), chatConfirmationColor);
     }
 
-    public static BaseComponent notification(String message)
+    public static Component notification(String message)
     {
         return setChatColor(new TextComponent(formatColors(message)), chatNotificationColor);
     }
 
-    public static BaseComponent warning(String message)
+    public static Component warning(String message)
     {
         return setChatColor(new TextComponent(formatColors(message)), chatWarningColor);
     }
 
-    public static BaseComponent error(String message)
+    public static Component error(String message)
     {
         return setChatColor(new TextComponent(formatColors(message)), chatErrorColor);
     }
@@ -234,9 +208,9 @@ public final class ChatOutputHandler
      * @param color
      * @return message
      */
-    public static BaseComponent setChatColor(BaseComponent message, ChatFormatting color)
+    public static Component setChatColor(Component message, ChatFormatting color)
     {
-        message.withStyle(color);
+        message.getStyle().withColor(color);
         return message;
     }
 
@@ -406,11 +380,11 @@ public final class ChatOutputHandler
      * 
      * @return {@Link TextComponent}
      */
-    public static BaseComponent clickChatComponent(String text, Action action, String uri)
+    public static Component clickChatComponent(String text, Action action, String uri)
     {
-        BaseComponent component = new TextComponent(ChatOutputHandler.formatColors(text));
+        Component component = new TextComponent(ChatOutputHandler.formatColors(text));
         ClickEvent click = new ClickEvent(action, uri);
-        component.withStyle((style) -> style.withClickEvent(click));
+        component.getStyle().withClickEvent(click);
         return component;
     }
 
@@ -443,13 +417,13 @@ public final class ChatOutputHandler
             chatStyle.withItalic(true);
             break;
         case OBFUSCATED:
-            chatStyle.setObfuscated(true);
+            chatStyle.withObfuscated(true);
             break;
         case STRIKETHROUGH:
-            chatStyle.setStrikethrough(true);
+            chatStyle.withStrikethrough(true);
             break;
         case UNDERLINE:
-            chatStyle.setUnderlined(true);
+            chatStyle.withUnderlined(true);
             break;
         case RESET:
             break;
@@ -483,12 +457,12 @@ public final class ChatOutputHandler
 
     /* ------------------------------------------------------------ */
 
-    public static String getUnformattedMessage(BaseComponent message)
+    public static String getUnformattedMessage(Component message)
     {
         return message.plainCopy().toString();
     }
 
-    public static String getFormattedMessage(BaseComponent message)
+    public static String getFormattedMessage(Component message)
     {
         return message.copy().toString();
     }
@@ -531,7 +505,7 @@ public final class ChatOutputHandler
 
         PLAINTEXT/* , HTML */, MINECRAFT, DETAIL;
 
-        public Object format(BaseComponent message)
+        public Object format(Component message)
         {
             switch (this)
             {
@@ -620,12 +594,12 @@ public final class ChatOutputHandler
      *            in milliseconds
      * @return Time in string format
      */
-    public static BaseComponent filterChatLinks(String text)
+    public static Component filterChatLinks(String text)
     {
         // Includes ipv4 and domain pattern
         // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
         // without a protocol or path.
-        BaseComponent ichat = new TextComponent("");
+        TextComponent ichat = new TextComponent("");
         Matcher matcher = URL_PATTERN.matcher(text);
         int lastEnd = 0;
 
@@ -639,8 +613,8 @@ public final class ChatOutputHandler
             ichat.append(text.substring(lastEnd, start));
             lastEnd = end;
             String url = text.substring(start, end);
-            BaseComponent link = new TextComponent(url);
-            link.withStyle(ChatFormatting.UNDERLINE);
+            Component link = new TextComponent(url);
+            link.getStyle().withColor(ChatFormatting.UNDERLINE);
 
             try
             {
@@ -659,7 +633,7 @@ public final class ChatOutputHandler
 
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.withStyle((style) -> style.withClickEvent(click));
+            link.getStyle().withClickEvent(click);
             ichat.append(link);
         }
         // Append the rest of the message.
