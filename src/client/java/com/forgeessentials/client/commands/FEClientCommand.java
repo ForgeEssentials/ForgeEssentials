@@ -3,8 +3,7 @@ package com.forgeessentials.client.commands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.Entity;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
@@ -58,34 +57,34 @@ public class FEClientCommand extends BaseCommand
         {
             if (num == 0)
             {
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("/feclient info: Get FE client info")));
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("/feclient reinit: Redo server handshake")));
+                instance.gui.getChat().addMessage(new TextComponent("/feclient info: Get FE client info"));
+                instance.gui.getChat().addMessage(new TextComponent("/feclient reinit: Redo server handshake"));
                 instance.gui.getChat()
-                        .addMessage(MutableComponent.create(new LiteralContents("/feclient reinit force: Force send server handshake")));
+                        .addMessage(new TextComponent("/feclient reinit force: Force send server handshake"));
             }
             if (num == 1)
             {
                 ForgeEssentialsClient.resendHandshake();
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("Resent handshake packet to server.")));
+                instance.gui.getChat().addMessage(new TextComponent("Resent handshake packet to server."));
             }
             if (num == 2)
             {
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents(String.format("Running ForgeEssentials client %s (%s)-%s",
-                		BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()))));
+                instance.gui.getChat().addMessage(new TextComponent(String.format("Running ForgeEssentials client %s (%s)-%s", 
+                		BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType())));
                 if (BuildInfo.isOutdated()) {
-                	instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion()))));
+                	instance.gui.getChat().addMessage(new TextComponent(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion())));
                 }
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents(
-                        "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.")));
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("Injected patches:")));
+                instance.gui.getChat().addMessage(new TextComponent(
+                        "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
+                instance.gui.getChat().addMessage(new TextComponent("Injected patches:"));
                 for (String patch : FEClientMixinConfig.getInjectedPatches())
-                    instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("- " + patch)));
+                    instance.gui.getChat().addMessage(new TextComponent("- " + patch));
             }
             if (num == 3)
             {
                 ForgeEssentialsClient.sentHandshake();
                 NetworkUtils.sendToServer(new Packet00Handshake());
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("Force Sent handshake packet to server.")));
+                instance.gui.getChat().addMessage(new TextComponent("Force Sent handshake packet to server."));
             }
         }
         return Command.SINGLE_SUCCESS;

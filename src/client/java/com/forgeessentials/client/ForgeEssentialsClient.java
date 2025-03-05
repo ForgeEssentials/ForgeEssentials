@@ -13,7 +13,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -154,7 +154,7 @@ public class ForgeEssentialsClient
         	BuildInfo.startVersionChecks(MODID);
             if (BuildInfo.isOutdated())
             {
-                event.getEntity().sendSystemMessage(MutableComponent.create(new LiteralContents("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found")));
+                event.getEntity().sendSystemMessage(new TextComponent("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found"));
             }
         }
     }
@@ -264,33 +264,33 @@ public class ForgeEssentialsClient
         if (event.getOriginalMessage().equals("feclient"))
         {
             Minecraft instance = Minecraft.getInstance();
-            instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("/feclient info: Get FE client info")));
-            instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("/feclient reinit: Redo server handshake")));
+            instance.gui.getChat().addMessage(new TextComponent("/feclient info: Get FE client info"));
+            instance.gui.getChat().addMessage(new TextComponent("/feclient reinit: Redo server handshake"));
             instance.gui.getChat()
-                    .addMessage(MutableComponent.create(new LiteralContents("/feclient reinit force: Force send server handshake")));
+                    .addMessage(new TextComponent("/feclient reinit force: Force send server handshake"));
             event.setCanceled(true);
         }
         if (event.getOriginalMessage().equals("feclient reinit"))
         {
             Minecraft instance = Minecraft.getInstance();
             ForgeEssentialsClient.resendHandshake();
-            instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("Resent handshake packet to server.")));
+            instance.gui.getChat().addMessage(new TextComponent("Resent handshake packet to server."));
             event.setCanceled(true);
         }
         if (event.getOriginalMessage().equals("feclient info"))
         {
             Minecraft instance = Minecraft.getInstance();
             instance.gui.getChat()
-                    .addMessage(MutableComponent.create(new LiteralContents(String.format("Running ForgeEssentials client %s (%s)-%s",
-                            BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()))));
+                    .addMessage(new TextComponent(String.format("Running ForgeEssentials client %s (%s)-%s",
+                            BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType())));
             if (BuildInfo.isOutdated()) {
-            	instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion()))));
+            	instance.gui.getChat().addMessage(new TextComponent(String.format("Outdated! Latest build is #%s", BuildInfo.getLatestVersion())));
             }
-            instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents(
-                    "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.")));
-            instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("Injected patches:")));
+            instance.gui.getChat().addMessage(new TextComponent(
+                    "\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
+            instance.gui.getChat().addMessage(new TextComponent("Injected patches:"));
             for (String patch : FEClientMixinConfig.getInjectedPatches())
-                instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("- " + patch)));
+                instance.gui.getChat().addMessage(new TextComponent("- " + patch));
             event.setCanceled(true);
         }
         if (event.getOriginalMessage().equals("feclient reinit force"))
@@ -298,7 +298,7 @@ public class ForgeEssentialsClient
             Minecraft instance = Minecraft.getInstance();
             sentHandshake = true;
             NetworkUtils.sendToServer(new Packet00Handshake());
-            instance.gui.getChat().addMessage(MutableComponent.create(new LiteralContents("Force Sent handshake packet to server.")));
+            instance.gui.getChat().addMessage(new TextComponent("Force Sent handshake packet to server."));
             event.setCanceled(true);
         }
     }
