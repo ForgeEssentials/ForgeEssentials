@@ -1,16 +1,17 @@
 package com.forgeessentials.util.events.player;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.model.b3d.B3DModel.Face;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
  * NB: Forge PlayerInteractEvent should be re-implemented to include Post stage
  */
+//TODO: Is this used anymore or needed?
 public class PlayerPostInteractEvent extends PlayerEvent
 {
 
@@ -22,12 +23,12 @@ public class PlayerPostInteractEvent extends PlayerEvent
 
     public final BlockPos pos;
 
-    public final Face side;
+    public final Direction side;
 
     public final float hitX, hitY, hitZ;
 
     protected PlayerPostInteractEvent(Player player, Level world, BlockState block, ItemStack stack, BlockPos pos,
-            Face side, float hitX, float hitY, float hitZ)
+            Direction side, float hitX, float hitY, float hitZ)
     {
         super(player);
         this.world = world;
@@ -40,13 +41,13 @@ public class PlayerPostInteractEvent extends PlayerEvent
         this.hitZ = hitZ;
     }
 
-    public PlayerPostInteractEvent(Player player, Level world, ItemStack stack, BlockPos pos, Face side,
+    public PlayerPostInteractEvent(Player player, Level world, ItemStack stack, BlockPos pos, Direction side,
             float hitX, float hitY, float hitZ)
     {
         this(player, world, null, stack, pos, side, hitX, hitY, hitZ);
     }
 
-    public PlayerPostInteractEvent(Player player, Level world, BlockState block, BlockPos pos, Face side,
+    public PlayerPostInteractEvent(Player player, Level world, BlockState block, BlockPos pos, Direction side,
             float hitX, float hitY, float hitZ)
     {
         this(player, world, block, null, pos, side, hitX, hitY, hitZ);

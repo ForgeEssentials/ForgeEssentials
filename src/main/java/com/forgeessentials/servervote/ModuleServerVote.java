@@ -7,9 +7,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -179,10 +177,9 @@ public class ModuleServerVote extends ConfigLoaderBase
         if (!ConfigServerVote.msgAll.equals(""))
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList()
-                    .broadcastAll(new ClientboundChatPacket(
-                            new TextComponent(ChatOutputHandler.formatColors(ConfigServerVote.msgAll
+                    .broadcastSystemMessage(new TextComponent(ChatOutputHandler.formatColors(ConfigServerVote.msgAll
                                     .replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))),
-                            ChatType.CHAT, player.getGameProfile().getId()));
+                            false);
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
