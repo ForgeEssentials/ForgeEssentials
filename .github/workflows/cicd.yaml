@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.check.outputs.canContinue == 'true'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Get Build Number from Release
         if: ${{ github.event.release }}
         run: |
@@ -45,7 +45,7 @@ jobs:
         with:
           name: binaries-${{ env.BUILD_NUMBER }}
           path: ./build/libs/
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ts-files-${{ github.sha }}
           path: jscripting/*.d.ts
