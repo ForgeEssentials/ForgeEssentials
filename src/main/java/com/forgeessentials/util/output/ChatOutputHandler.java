@@ -127,7 +127,7 @@ public final class ChatOutputHandler
 
     public static void sendMessage(Player recipient, String message, ChatFormatting color)
     {
-        Component component = new TextComponent(message);
+        TextComponent component = new TextComponent(message);
         component.withStyle(color);
         sendMessage(recipient, component);
     }

@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -399,7 +398,7 @@ public class ModuleProtection
         if (cmdBase == null)
             return;
 
-        Component msg = new TextComponent(permission);
+        TextComponent msg = new TextComponent(permission);
         ClickEvent click = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission);
         msg.withStyle((style) -> style.withClickEvent(click));
         msg.withStyle(ChatFormatting.UNDERLINE);

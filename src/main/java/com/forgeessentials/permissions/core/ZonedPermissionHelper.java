@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -427,10 +428,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        Component msg1 = new TextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
+        TextComponent msg1 = new TextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
         msg1.withStyle(Zone.PERMISSION_FALSE.equals(value) ? ChatFormatting.RED : ChatFormatting.DARK_GREEN);
 
-        Component msg2;
+        MutableComponent msg2;
         if (zone == null)
         {
             msg2 = new TextComponent("  permission not set");
@@ -438,10 +439,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
         else
         {
-            Component msgZone = new TextComponent(zone.getName());
+            TextComponent msgZone = new TextComponent(zone.getName());
             msgZone.withStyle(ChatFormatting.LIGHT_PURPLE);
 
-            Component msgUser = new TextComponent(
+            TextComponent msgUser = new TextComponent(
                     ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
             msgUser.withStyle(ChatFormatting.GOLD);
 
@@ -451,7 +452,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 // FEPermissions.GROUP_NAME);
                 // if (groupName == null)
                 // groupName = group;
-                Component msgGroup = new TextComponent(group);
+                TextComponent msgGroup = new TextComponent(group);
                 msgGroup.withStyle(ChatFormatting.LIGHT_PURPLE);
 
                 msg2 = new TranslatableComponent("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);

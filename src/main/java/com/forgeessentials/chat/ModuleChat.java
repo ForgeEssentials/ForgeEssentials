@@ -506,11 +506,11 @@ public class ModuleChat implements ConfigSaver
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
-        Component msgGroup = new TextComponent("@" + groupName + "@ ");
+        TextComponent msgGroup = new TextComponent("@" + groupName + "@ ");
         msgGroup.withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC);
         msg.append(msgGroup);
 
-        Component msgBody = new TextComponent(formatted);
+        TextComponent msgBody = new TextComponent(formatted);
         msgBody.withStyle(ChatFormatting.GRAY);
         msg.append(msgBody);
 

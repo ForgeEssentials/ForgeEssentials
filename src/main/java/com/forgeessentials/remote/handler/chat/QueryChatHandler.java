@@ -66,7 +66,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
         Long key = System.currentTimeMillis();
         while (chatLog.containsKey(key))
             key++;
-        Component me = new TextComponent("");
+        TextComponent me = new TextComponent("");
         me.append(message);
         chatLog.put(key, me);
         while (chatLog.size() > BUFFER_SIZE)

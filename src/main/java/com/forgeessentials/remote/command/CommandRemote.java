@@ -5,7 +5,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -225,7 +224,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString)
                 .replaceAll("\\|", "%7C");
 
-        Component qrLink = new TextComponent("[QR code]");
+        TextComponent qrLink = new TextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
         {
             ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr");
@@ -238,7 +237,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         qrLink.withStyle(ChatFormatting.RED);
         qrLink.withStyle(ChatFormatting.UNDERLINE);
-        Component msg = new TextComponent("Remote passkey = " + passkey + " ");
+        TextComponent msg = new TextComponent("Remote passkey = " + passkey + " ");
         msg.append(qrLink);
 
         ChatOutputHandler.sendMessage(source, msg);

@@ -9,7 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
 import org.jetbrains.annotations.NotNull;
@@ -160,7 +159,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
                 tc0.withStyle(commandcolour);
                 tc.append(tc0);
 
-                Component tc1 = new TextComponent(csuffix);
+                TextComponent tc1 = new TextComponent(csuffix);
                 tc1.withStyle(subcommandcolour);
                 tc.append(tc1);
 
