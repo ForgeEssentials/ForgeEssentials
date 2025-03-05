@@ -510,7 +510,7 @@ shadowJar {
  */
 
 jar {
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	dependsOn clientJar
 	dependsOn shadowJar
     // dependsOn "tsd"
@@ -562,7 +562,7 @@ task chataddonJar(dependsOn: ["classes", "chataddonshadowJar"], type: Jar) {
 	archiveAppendix = project.minecraftVersion
 
 	from sourceSets.chataddon.output
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 	from (zipTree(chataddonshadowJar.archiveFile)) {
 		exclude 'META-INF','META-INF/**'
