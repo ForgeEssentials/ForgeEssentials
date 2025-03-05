@@ -118,11 +118,11 @@ public class Environment
         @SubscribeEvent
         public void playerLogIn(PlayerLoggedInEvent e)
         {
-            if (ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(e.getPlayer().getGameProfile()))
+            if (ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(e.getEntity().getGameProfile()))
             {
-                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(),
+                ChatOutputHandler.chatWarning(e.getEntity().createCommandSourceStack(),
                         "FTB Utilities is installed. Forge Essentials may not work as expected.");
-                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(),
+                ChatOutputHandler.chatWarning(e.getEntity().createCommandSourceStack(),
                         "Please uninstall FTB Utilities to regain full FE functionality.");
             }
         }

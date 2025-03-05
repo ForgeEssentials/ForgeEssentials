@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.command.CommandMail;
 import com.forgeessentials.core.commands.registration.FECommandManager;
@@ -16,10 +20,6 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class Mailer extends ServerEventHandler
 {
@@ -78,7 +78,7 @@ public class Mailer extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
-        UserIdent user = UserIdent.get(event.getPlayer());
+        UserIdent user = UserIdent.get(event.getEntity());
         Mails mailBag = getMailBag(user);
         if (mailBag.mails.isEmpty())
             return;
@@ -87,7 +87,7 @@ public class Mailer extends ServerEventHandler
             senders.add(mail.sender);
         String message = Translator.format("You have unread mails from %s. Use /mail to read.",
                 UserIdent.join(senders, ", ", " and "));
-        ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
+        ChatOutputHandler.chatConfirmation(event.getEntity().createCommandSourceStack(), message);
     }
 
     public static void loadAllMails()

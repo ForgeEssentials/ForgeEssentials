@@ -1,5 +1,17 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet01SelectionUpdate;
 import com.forgeessentials.commons.selections.AreaBase;
@@ -14,15 +26,6 @@ import com.forgeessentials.util.events.player.FEPlayerEvent.ClientHandshakeEstab
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.ChatFormatting;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-
 public class SelectionHandler extends ServerEventHandler
 {
 
@@ -35,7 +38,7 @@ public class SelectionHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                sendUpdate((ServerPlayer) e.getPlayer());
+                sendUpdate((ServerPlayer) e.getEntity());
             }
         });
     }
@@ -48,7 +51,7 @@ public class SelectionHandler extends ServerEventHandler
             return;
 
         // get info now rather than later
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled())
@@ -68,12 +71,12 @@ public class SelectionHandler extends ServerEventHandler
 
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setStart((ServerPlayer) event.getPlayer(), point);
-        SelectionHandler.setDimension((ServerPlayer) event.getPlayer(), point.getDimension());
+        SelectionHandler.setStart((ServerPlayer) event.getEntity(), point);
+        SelectionHandler.setDimension((ServerPlayer) event.getEntity(), point.getDimension());
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(),
                 event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, ChatFormatting.DARK_PURPLE);
-        SelectionHandler.sendUpdate((ServerPlayer) event.getPlayer());
+        SelectionHandler.sendUpdate((ServerPlayer) event.getEntity());
         event.setCanceled(true);
     }
 
@@ -85,7 +88,7 @@ public class SelectionHandler extends ServerEventHandler
             return;
 
         // get info now rather than later
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled() || event.getHand() == InteractionHand.OFF_HAND)
@@ -101,18 +104,19 @@ public class SelectionHandler extends ServerEventHandler
         }
         else
         {
-            if (!(player.getMainHandItem().getItem().getRegistryName().getPath().equals(info.getWandID())))
+            ResourceLocation key = ForgeRegistries.ITEMS.getKey(player.getMainHandItem().getItem());
+            if (!(key != null && key.getPath().equals(info.getWandID())))
                 return;
         }
 
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setEnd((ServerPlayer) event.getPlayer(), point);
-        SelectionHandler.setDimension((ServerPlayer) event.getPlayer(), point.getDimension());
+        SelectionHandler.setEnd((ServerPlayer) event.getEntity(), point);
+        SelectionHandler.setDimension((ServerPlayer) event.getEntity(), point.getDimension());
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(),
                 event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, ChatFormatting.DARK_PURPLE);
-        SelectionHandler.sendUpdate((ServerPlayer) event.getPlayer());
+        SelectionHandler.sendUpdate((ServerPlayer) event.getEntity());
         event.setCanceled(true);
 
     }

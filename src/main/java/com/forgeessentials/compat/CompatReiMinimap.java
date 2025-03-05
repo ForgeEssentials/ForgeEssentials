@@ -40,8 +40,8 @@ public class CompatReiMinimap
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
-                new TextComponent(getPermissionCodes(e.getPlayer()) + "Weird stuff be afoot"));
+        ChatOutputHandler.sendMessage(e.getEntity().createCommandSourceStack(),
+                new TextComponent(getPermissionCodes(e.getEntity()) + "Weird stuff be afoot"));
     }
 
     public static String getPermissionCodes(Player user)

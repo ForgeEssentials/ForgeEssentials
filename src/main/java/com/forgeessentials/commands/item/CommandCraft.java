@@ -53,7 +53,7 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
     @SubscribeEvent
     public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (!event.getContainer().stillValid(event.getPlayer()) && lastPlayer.get() == event.getPlayer())
+        if (!event.getContainer().stillValid(event.getEntity()) && lastPlayer.get() == event.getEntity())
         {
             event.setResult(Result.ALLOW);
         }

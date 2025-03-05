@@ -3,10 +3,6 @@ package com.forgeessentials.compat.worldedit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.util.CommandUtils;
-import com.forgeessentials.util.CommandUtils.CommandInfo;
-import com.forgeessentials.util.selections.SelectionHandler;
-
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -15,6 +11,10 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
+import com.forgeessentials.util.selections.SelectionHandler;
 
 /**
  * This class checks for player interactions which could modify the WorldEdit selection and sends a selection update to the client if it might be necessary.
@@ -62,8 +62,8 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.getPlayer() instanceof ServerPlayer)
-            updatedSelectionPlayers.add((ServerPlayer) event.getPlayer());
+        if (event.getEntity() instanceof ServerPlayer)
+            updatedSelectionPlayers.add((ServerPlayer) event.getEntity());
     }
 
 }

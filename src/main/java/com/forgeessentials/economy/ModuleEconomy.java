@@ -226,7 +226,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         PlayerWallet wallet = getWallet(ident);
         if (wallet != null)
             saveWallet(ident.getOrGenerateUuid(), wallet);
@@ -237,7 +237,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         if (e.getEntity() instanceof ServerPlayer)
         {
-            UserIdent ident = UserIdent.get(e.getPlayer().getGameProfile().getId());
+            UserIdent ident = UserIdent.get(e.getEntity().getGameProfile().getId());
             double xpMultiplier = ServerUtil
                     .parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
             if (xpMultiplier <= 0)

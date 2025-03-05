@@ -431,7 +431,7 @@ public class ForgeEssentials
     {
         if (event.getEntity() instanceof Player)
         {
-            ServerPlayer player = (ServerPlayer) event.getPlayer();
+            ServerPlayer player = (ServerPlayer) event.getEntity();
             UserIdent.login(player);
             PlayerInfo.login(player.getGameProfile().getId());
             try
@@ -453,7 +453,7 @@ public class ForgeEssentials
                 if (matcher.find())
                 {
                     String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!",
-                            event.getPlayer().getDisplayName().getString());
+                            event.getEntity().getDisplayName().getString());
                     Entity entity = event.getEntity();
                     if (!(entity instanceof ServerPlayer))
                     {
@@ -478,8 +478,8 @@ public class ForgeEssentials
     {
         if (event.getEntity() instanceof Player)
         {
-            PlayerInfo.logout(event.getPlayer().getGameProfile().getId());
-            UserIdent.logout((Player) event.getPlayer());
+            PlayerInfo.logout(event.getEntity().getGameProfile().getId());
+            UserIdent.logout((Player) event.getEntity());
         }
     }
 
@@ -488,7 +488,7 @@ public class ForgeEssentials
     {
         if (event.getEntity() instanceof Player)
         {
-            UserIdent.get((Player) event.getPlayer());
+            UserIdent.get((Player) event.getEntity());
         }
     }
 

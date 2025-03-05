@@ -3,16 +3,16 @@ package com.forgeessentials.util.events.player;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.events.ServerEventHandler;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.events.ServerEventHandler;
 
 public class PlayerPositionEventFactory extends ServerEventHandler
 {
@@ -46,7 +46,7 @@ public class PlayerPositionEventFactory extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        lastPlayerPosition.remove(e.getPlayer().getGameProfile().getId());
+        lastPlayerPosition.remove(e.getEntity().getGameProfile().getId());
     }
 
 }

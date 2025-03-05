@@ -166,7 +166,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     {
         if (!(event.getEntity() instanceof ServerPlayer))
             return;
-        ItemStack stack = event.getPlayer().getMainHandItem();
+        ItemStack stack = event.getEntity().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getTag() == null || !stack.getTag().contains(TAG_NAME))
             return;
         CompoundTag nbt = stack.getTag().getCompound(TAG_NAME);
@@ -182,7 +182,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             return;
 
         ServerLifecycleHooks.getCurrentServer().getCommands()
-                .performCommand(event.getPlayer().createCommandSourceStack(), command);
+                .performCommand(event.getEntity().createCommandSourceStack(), command);
         event.setCanceled(true);
     }
 }

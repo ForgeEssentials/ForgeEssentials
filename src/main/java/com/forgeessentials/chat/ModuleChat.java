@@ -364,7 +364,7 @@ public class ModuleChat implements ConfigSaver
     {
         if (!ChatConfig.welcomeMessage.isEmpty())
         {
-            String message = processChatReplacements(event.getPlayer().createCommandSourceStack(),
+            String message = processChatReplacements(event.getEntity().createCommandSourceStack(),
                     ChatConfig.welcomeMessage);
             ChatOutputHandler.broadcast(ChatOutputHandler.filterChatLinks(message));
         }
@@ -373,8 +373,8 @@ public class ModuleChat implements ConfigSaver
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent e)
     {
-        if (e.getPlayer() instanceof ServerPlayer)
-            sendMotd(e.getPlayer().createCommandSourceStack());
+        if (e.getEntity() instanceof ServerPlayer)
+            sendMotd(e.getEntity().createCommandSourceStack());
     }
 
     public static void sendMotd(CommandSourceStack sender)

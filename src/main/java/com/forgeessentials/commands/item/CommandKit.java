@@ -214,7 +214,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     {
         Kit kit = kits.get(kitForNewPlayers);
         if (kit != null)
-            kit.giveKit(event.getPlayer());
+            kit.giveKit(event.getEntity());
     }
 
     @Override

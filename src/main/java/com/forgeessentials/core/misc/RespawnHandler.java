@@ -87,9 +87,9 @@ public class RespawnHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerDeath(LivingDeathEvent e)
     {
-        if (e.getEntityLiving() instanceof ServerPlayer)
+        if (e.getEntity() instanceof ServerPlayer)
         {
-            ServerPlayer player = (ServerPlayer) e.getEntityLiving();
+            ServerPlayer player = (ServerPlayer) e.getEntity();
             PlayerInfo pi = PlayerInfo.get(player.getGameProfile().getId());
             pi.setLastDeathLocation(new WarpPoint(player));
             pi.setLastTeleportOrigin(pi.getLastDeathLocation());
@@ -113,7 +113,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void playerLoadFromFile(PlayerEvent.LoadFromFile event)
     {
-        ServerPlayer player = (ServerPlayer) event.getEntityLiving();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         File f = new File(event.getPlayerDirectory(), event.getPlayerUUID() + ".dat");
         if (!f.exists())
         {
@@ -131,7 +131,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void doRespawn(PlayerRespawnEvent event)
     {
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         player.connection.player = player;
 
         WarpPoint lastDeathLocation = PlayerInfo.get(player.getGameProfile().getId()).getLastDeathLocation();

@@ -147,7 +147,7 @@ public class ShopManager extends ServerEventHandler
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
                     Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
-            BlockEntity te = event.getWorld().getBlockEntity(event.getPos());
+            BlockEntity te = event.getLevel().getBlockEntity(event.getPos());
             if (te != null)
                 ProtectionEventHandler.updateBrokenTileEntity((ServerPlayer) event.getPlayer(), te);
             return;
@@ -177,10 +177,10 @@ public class ShopManager extends ServerEventHandler
         final ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
             return;
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getPlayer()), new WorldPoint(event.getTarget()),
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getEntity()), new WorldPoint(event.getTarget()),
                 PERM_DESTROY))
         {
-            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                     Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             return;
@@ -193,7 +193,7 @@ public class ShopManager extends ServerEventHandler
                 if (!shop.isValid)
                 {
                     removeShop(shop);
-                    ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(),
+                    ChatOutputHandler.chatNotification(event.getEntity().createCommandSourceStack(),
                             Translator.translate("Shop destroyed"));
                 }
             }
@@ -208,10 +208,10 @@ public class ShopManager extends ServerEventHandler
         ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
             return;
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getPlayer()), new WorldPoint(event.getTarget()),
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getEntity()), new WorldPoint(event.getTarget()),
                 PERM_CREATE))
         {
-            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                     Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             return;
@@ -224,9 +224,9 @@ public class ShopManager extends ServerEventHandler
         if (event instanceof LeftClickBlock || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
             return;
         if(ModuleLauncher.getModuleList().contains("Commands")) {
-        	ModuleCommands.eventHandler.playerActive((ServerPlayer) event.getPlayer());
+        	ModuleCommands.eventHandler.playerActive((ServerPlayer) event.getEntity());
         }
-        ItemStack equippedStack = event.getPlayer().getMainHandItem();
+        ItemStack equippedStack = event.getEntity().getMainHandItem();
         Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 
         WorldPoint point;
@@ -234,20 +234,20 @@ public class ShopManager extends ServerEventHandler
         {
             if (!(equippedItem instanceof BlockItem))
                 return;
-            HitResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
+            HitResult mop = PlayerUtil.getPlayerLookingSpot(event.getEntity());
             if (mop.getType() == HitResult.Type.MISS)
                 return;
-            point = new WorldPoint(event.getWorld(), new BlockPos(mop.getLocation()));
+            point = new WorldPoint(event.getLevel(), new BlockPos(mop.getLocation()));
         }
         else
-            point = new WorldPoint(event.getWorld(), event.getPos());
+            point = new WorldPoint(event.getLevel(), event.getPos());
 
-        UserIdent ident = UserIdent.get(event.getPlayer());
+        UserIdent ident = UserIdent.get(event.getEntity());
         ShopData shop = shopSignMap.get(point);
         boolean newShop = (shop == null);
         if (newShop)
         {
-            Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
+            Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
             if (!ItemUtil.isSign(block))
                 return;
             Component[] text = ItemUtil.getSignText(point);
@@ -255,20 +255,20 @@ public class ShopManager extends ServerEventHandler
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {
-                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+                ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                         Translator.translate("You are not allowed to create shops!"));
                 return;
             }
             ItemFrame frame = ShopData.findFrame(point);
             if (frame == null)
             {
-                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+                ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                         Translator.translate("No item frame found"));
                 return;
             }
             if (shopFrameMap.containsKey(frame.getUUID()))
             {
-                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+                ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                         Translator.translate("Item frame already used for another shop!"));
                 return;
             }
@@ -278,7 +278,7 @@ public class ShopManager extends ServerEventHandler
         shop.update();
         if (!shop.isValid)
         {
-            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                     Translator.format("Shop invalid: %s", shop.getError()));
             if (!newShop)
                 removeShop(shop);
@@ -286,7 +286,7 @@ public class ShopManager extends ServerEventHandler
         }
         if (newShop)
         {
-            ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.chatConfirmation(event.getEntity().createCommandSourceStack(),
                     Translator.translate("Created shop!"));
             addShop(shop);
             return;
@@ -296,7 +296,7 @@ public class ShopManager extends ServerEventHandler
 
         if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_USE))
         {
-            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(),
+            ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(),
                     Translator.translate("You are not allowed to use shops!"));
             return;
         }
@@ -306,15 +306,15 @@ public class ShopManager extends ServerEventHandler
         transactionStack.setCount(shop.amount);
         Component itemName = transactionStack.getDisplayName();
 
-        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayer) event.getPlayer()));
+        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayer) event.getEntity()));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {
-            if (ModuleEconomy.countInventoryItems(event.getPlayer(), transactionStack) < transactionStack.getCount())
+            if (ModuleEconomy.countInventoryItems(event.getEntity(), transactionStack) < transactionStack.getCount())
             {
                 TranslatableComponent msg = new TranslatableComponent("You do not have enough %s", itemName);
                 msg.withStyle(ChatOutputHandler.chatConfirmationColor);
-                ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
+                ChatOutputHandler.sendMessage(event.getEntity().createCommandSourceStack(), msg);
                 return;
             }
             int removedAmount = 0;
@@ -323,10 +323,10 @@ public class ShopManager extends ServerEventHandler
                 removedAmount = Math.min(equippedStack.getCount(), transactionStack.getCount());
                 equippedStack.setCount(equippedStack.getCount() - removedAmount);
                 if (equippedStack.getCount() <= 0)
-                    event.getPlayer().getInventory().items.set(event.getPlayer().getInventory().selected, ItemStack.EMPTY);
+                    event.getEntity().getInventory().items.set(event.getEntity().getInventory().selected, ItemStack.EMPTY);
             }
             if (removedAmount < transactionStack.getCount())
-                removedAmount += ModuleEconomy.tryRemoveItems(event.getPlayer(), transactionStack,
+                removedAmount += ModuleEconomy.tryRemoveItems(event.getEntity(), transactionStack,
                         transactionStack.getCount() - removedAmount);
             wallet.add(shop.sellPrice);
             shop.setStock(shop.getStock() + 1);
@@ -335,30 +335,30 @@ public class ShopManager extends ServerEventHandler
             TranslatableComponent msg = new TranslatableComponent("Sold %s x %s for %s (wallet: %s)", shop.amount,
                     itemName, price, wallet.toString());
             msg.withStyle(ChatOutputHandler.chatConfirmationColor);
-            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
+            ChatOutputHandler.sendMessage(event.getEntity().createCommandSourceStack(), msg);
         }
         else
         {
             if (useStock && shop.getStock() <= 0)
             {
-                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Shop stock is empty");
+                ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(), "Shop stock is empty");
                 return;
             }
             if (!wallet.withdraw(shop.buyPrice))
             {
                 String errorMsg = Translator.format("You do not have enough %s in your wallet",
                         APIRegistry.economy.currency(2));
-                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), errorMsg);
+                ChatOutputHandler.chatError(event.getEntity().createCommandSourceStack(), errorMsg);
                 return;
             }
             if (useStock)
                 shop.setStock(shop.getStock() - 1);
-            PlayerUtil.give(event.getPlayer(), transactionStack);
+            PlayerUtil.give(event.getEntity(), transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
             TranslatableComponent msg = new TranslatableComponent("Bought %s x %s for %s (wallet: %s)",
                     shop.amount, itemName, price, wallet.toString());
             msg.withStyle(ChatOutputHandler.chatConfirmationColor);
-            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
+            ChatOutputHandler.sendMessage(event.getEntity().createCommandSourceStack(), msg);
         }
     }
 

@@ -144,7 +144,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        playerActive((ServerPlayer) event.getPlayer());
+        playerActive((ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -152,7 +152,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        playerActive((ServerPlayer) event.getPlayer());
+        playerActive((ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -177,9 +177,9 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLogin(PlayerLoggedInEvent event)
     {
-        afkPlayers.remove(UserIdent.get(event.getPlayer()));
+        afkPlayers.remove(UserIdent.get(event.getEntity()));
 
-        PlayerInfo pi = PlayerInfo.get(event.getPlayer());
+        PlayerInfo pi = PlayerInfo.get(event.getEntity());
         if (!pi.checkTimeout("tempban"))
         {
             pi.ident.getPlayerMP().connection.disconnect(new TextComponent(Translator.format(

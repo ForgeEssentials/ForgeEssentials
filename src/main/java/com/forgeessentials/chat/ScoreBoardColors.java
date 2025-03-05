@@ -36,7 +36,7 @@ public class ScoreBoardColors
     @SubscribeEvent()
     public void updatePlayerColor(TabListNameFormat e)
     {
-        UserIdent userIdent = UserIdent.get(e.getPlayer());
+        UserIdent userIdent = UserIdent.get(e.getEntity());
         String userColor = APIRegistry.perms.getUserPermissionProperty(userIdent, PERM_SCOREBOARD_COLOR);
         String groupColor = APIRegistry.perms.getGroupPermissionProperty(
                 APIRegistry.perms.getPrimaryGroup(userIdent), PERM_SCOREBOARD_COLOR);
@@ -46,7 +46,7 @@ public class ScoreBoardColors
         {
             // User has permissions set individually
             e.setDisplayName(
-                    new TextComponent(e.getPlayer().getName().getString()).
+                    new TextComponent(e.getEntity().getName().getString()).
                             withStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(userColor, 16))))
             );
         }
@@ -56,7 +56,7 @@ public class ScoreBoardColors
         {
             // User has permissions set as part of group
             e.setDisplayName(
-                    new TextComponent(e.getPlayer().getName().getString()).
+                    new TextComponent(e.getEntity().getName().getString()).
                             withStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt(groupColor, 16))))
             );
         }
@@ -64,7 +64,7 @@ public class ScoreBoardColors
         {
             // User has default permissions
             e.setDisplayName(
-                    new TextComponent(e.getPlayer().getName().getString()).
+                    new TextComponent(e.getEntity().getName().getString()).
                             withStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
             );
 
