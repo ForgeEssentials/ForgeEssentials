@@ -1,9 +1,8 @@
 package com.forgeessentials.core.mixin.block;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,8 +30,7 @@ public class MixinFireBlock
      */
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"),
             cancellable = true)
-    public void handleBlockDestroyOnTick(BlockState p_225534_1_, ServerLevel world, BlockPos pos, Random random,
-            CallbackInfo ci)
+    public void handleBlockDestroyOnTick(BlockState p_221160_, ServerLevel world, BlockPos pos, RandomSource p_221163_, CallbackInfo ci)
     {
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
         {

@@ -9,13 +9,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
-import com.mojang.brigadier.StringReader;
 
 @Mixin(Commands.class)
 public class MixinCommandsG<S>
 {
-    @Redirect(method = "performCommand", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;parse(Lcom/mojang/brigadier/StringReader;Ljava/lang/Object;)Lcom/mojang/brigadier/ParseResults;", remap = false))
-    public ParseResults<S> performCommand(CommandDispatcher<S> instance, StringReader command, S source)
+    @Redirect(method = "performPrefixedCommand", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;parse(Ljava/lang/String;Ljava/lang/Object;)Lcom/mojang/brigadier/ParseResults;", remap = false))
+    public ParseResults<S> performPrefixedCommand(CommandDispatcher instance, String command, S source)
     {
         if (source instanceof CommandSourceStack && ((CommandSourceStack) source).getEntity() != null)
         {
