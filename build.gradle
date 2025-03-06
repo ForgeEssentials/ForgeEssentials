@@ -262,12 +262,12 @@ sourceSets {
         compileClasspath += files deps
     }
     main {
-        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+        compileClasspath += files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
         compileClasspath += files deps
         ext.refMap = "mixins.forgeessentials.refmap.json"
     }
     client {
-        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+        compileClasspath += files(sourceSets.main.compileClasspath)
         compileClasspath += files deps
         ext.refMap = "mixins.forgeessentials.client.refmap.json"
     }
@@ -343,7 +343,6 @@ task serverLibArchive(type: Zip) {
 
 jar.doLast {
 	delete (serverLibArchive.archivePath)
-	delete (shadowJar.archivePath)
 	delete (processSource.outputs)
 }
 
@@ -370,21 +369,26 @@ shadowJar {
 	relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
 	configurations = [project.configurations.shadowLib]
 	classifier = "shadow"
+    appendix = project.minecraftVersion
 
 	from sourceSets.main.output
 	from sourceSets.utils.output
 	exclude('com/forgeessentials/client/**')
+    exclude 'META-INF/versions/**', 'module-info.class'
+    finalizedBy 'reobfShadowJar'
 }
-// Configure server jar (default)
 jar {
+    classifier = "slim"
+    appendix = project.minecraftVersion
+}
+
+assemble.dependsOn 'serverJar'
+// Configure server jar (default)
+task serverJar(type: Jar) {
 	dependsOn "serverLibArchive"
 	dependsOn shadowJar
 	classifier = "server"
 	appendix = project.minecraftVersion
-
-	from sourceSets.main.output
-	from sourceSets.utils.output
-    exclude('com/forgeessentials/client/**')
     from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact)) {
@@ -407,8 +411,12 @@ jar {
 //			name -> "com.forgeessentials.thirdparty.$name"
 //		}
 	}
+    from(zipTree(shadowJar.archivePath)) {
+        include 'META-INF/persistence.xml'
+        include 'META-INF/*_at.cfg'
+    }
 
-    jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    jar.duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	manifest {
 		from serverManifest
 	}
@@ -511,6 +519,9 @@ reobf {
 	reobf (clientJar) { reobfSpec ->
 		reobfSpec.classpath = sourceSets.main.compileClasspath
 	}*/
+    shadowJar {
+        classpath = sourceSets.main.compileClasspath
+    }
 	clientJar {
         classpath = sourceSets.main.compileClasspath
     }
