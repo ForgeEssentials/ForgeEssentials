@@ -32,4 +32,9 @@ public class CommandFEScoreboard extends CommandScoreboard
         currentWorld = sender.getEntityWorld();
         super.processCommand(sender, args);
     }
+
+    protected void addObjective(ICommandSender sender, String[] args, int index) throws CommandException
+    {
+        super.addObjective(sender, args, index);
+    }
 }

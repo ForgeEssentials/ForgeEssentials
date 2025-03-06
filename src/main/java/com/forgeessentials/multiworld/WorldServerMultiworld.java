@@ -58,4 +58,17 @@ public class WorldServerMultiworld extends WorldServer
         ((MultiworldScoreboard) this.worldScoreboard).func_96547_a(scoreboardsavedata);
         return this;
     }
+
+    int counter = 0;
+
+    @Override public void tick()
+    {
+        super.tick();
+        counter++;
+        if (counter >= 20)
+        {
+            counter = 0;
+            ((MultiworldScoreboard) worldScoreboard).incrementFrameAndUpdate();
+        }
+    }
 }
