@@ -3,7 +3,6 @@ package com.forgeessentials.commands.item;
 import java.lang.ref.WeakReference;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.api.permissions.DefaultPermissionLevel;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

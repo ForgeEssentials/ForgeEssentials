@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -94,6 +93,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.registration.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;

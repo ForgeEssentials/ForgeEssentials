@@ -1,12 +1,12 @@
 package com.forgeessentials.jscripting.wrapper.mc.item;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
 
 public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 {

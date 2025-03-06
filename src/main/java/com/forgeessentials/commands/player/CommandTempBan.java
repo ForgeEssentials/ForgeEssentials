@@ -2,13 +2,13 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.DefaultPermissionLevel;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;

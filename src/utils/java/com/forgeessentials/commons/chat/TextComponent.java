@@ -1,5 +1,7 @@
-package net.minecraft.network.chat;
+package com.forgeessentials.commons.chat;
 
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.LiteralContents;
 
 import com.google.common.collect.Lists;

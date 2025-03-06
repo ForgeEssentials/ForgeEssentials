@@ -5,7 +5,6 @@ import java.util.UUID;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec2;
@@ -13,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.serverNetwork.packetbase.packets.Packet11SharedCommandResponse;
 import com.mojang.authlib.GameProfile;
 public class NetworkParentSendingOnClientCommandSender implements CommandSource

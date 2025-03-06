@@ -3,7 +3,6 @@ package com.forgeessentials.chataddon.irc;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -12,6 +11,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import org.pircbotx.hooks.events.MessageEvent;
+
+import com.forgeessentials.commons.chat.TextComponent;
 
 public class IrcCommandFaker implements CommandSource
 {

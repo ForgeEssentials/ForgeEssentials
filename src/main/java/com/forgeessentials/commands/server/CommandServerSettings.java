@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.MinecraftServer.ServerResourcePackInfo;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
@@ -22,6 +21,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.api.permissions.DefaultPermissionLevel;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.ScriptArguments;

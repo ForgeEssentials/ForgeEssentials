@@ -1,13 +1,13 @@
 package com.forgeessentials.afterlife;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.selections.WorldPoint;
-
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.chat.TextComponent;
+import com.forgeessentials.commons.selections.WorldPoint;
 
 public class InventoryGrave extends SimpleContainer
 {

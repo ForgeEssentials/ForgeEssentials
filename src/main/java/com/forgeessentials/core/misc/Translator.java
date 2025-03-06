@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Charsets;

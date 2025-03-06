@@ -2,7 +2,6 @@ package com.forgeessentials.auth;
 
 import java.util.UUID;
 
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet06AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet09AuthRequest;

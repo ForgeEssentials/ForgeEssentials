@@ -1,5 +1,9 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.commands.registration.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
@@ -9,10 +13,6 @@ import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.TextComponent;
 
 /**
  * Expected syntax: <interval> (in seconds)

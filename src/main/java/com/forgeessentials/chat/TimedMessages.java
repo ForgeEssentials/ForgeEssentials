@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.output.ChatOutputHandler;

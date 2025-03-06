@@ -3,7 +3,6 @@ package com.forgeessentials.core.mixin.network;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.util.events.world.SignEditEvent;
 
 @Mixin(ServerGamePacketListenerImpl.class)

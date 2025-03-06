@@ -3,12 +3,12 @@ package com.forgeessentials.client.commands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.Entity;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet00Handshake;
 import com.mojang.brigadier.Command;

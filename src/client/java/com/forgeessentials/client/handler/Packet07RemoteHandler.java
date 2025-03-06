@@ -14,9 +14,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.network.NetworkEvent;
 
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.commons.network.packets.Packet07Remote;
 import com.mojang.blaze3d.platform.NativeImage;
 

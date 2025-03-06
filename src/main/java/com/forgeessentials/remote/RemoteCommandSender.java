@@ -7,13 +7,13 @@ import java.util.WeakHashMap;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;

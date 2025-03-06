@@ -1,6 +1,5 @@
 package com.forgeessentials.remote.handler.chat;
 
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +13,7 @@ import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.commons.chat.TranslatableComponent;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.util.output.ChatOutputHandler;
 

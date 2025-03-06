@@ -2,28 +2,28 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import java.util.Objects;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
+
 import com.forgeessentials.commands.item.CommandVirtualchest;
+import com.forgeessentials.commons.chat.TextComponent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsWorldPoint;
 import com.forgeessentials.jscripting.wrapper.mc.JsCommandSource;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsPlayerInventory;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
+import com.forgeessentials.jscripting.wrapper.mc.item.JsPlayerInventory;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.level.GameType;
 
 public class JsPlayerEntity extends JsLivingEntityBase<Player>
 {
