@@ -39,6 +39,10 @@ public class AnimatedScoreObjective extends ScoreObjective
         return alwaysAnimate || len > size;
     }
 
+    public void toggleAnimate()
+    {
+        this.alwaysAnimate = !alwaysAnimate;
+    }
     public void incrementFrame()
     {
         frame++;
@@ -46,6 +50,16 @@ public class AnimatedScoreObjective extends ScoreObjective
         {
             frame = 0;
         }
+    }
+
+    public void resetFrame()
+    {
+        frame = 0;
+    }
+
+    public String _GetDisplayName()
+    {
+        return super.getDisplayName();
     }
 
     public String getDisplayName()
