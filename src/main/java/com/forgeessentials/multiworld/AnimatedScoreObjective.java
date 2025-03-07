@@ -43,6 +43,11 @@ public class AnimatedScoreObjective extends ScoreObjective
     {
         this.alwaysAnimate = !alwaysAnimate;
     }
+
+    public void setAlwaysAnimate(boolean alwaysAnimate)
+    {
+        this.alwaysAnimate = alwaysAnimate;
+    }
     public void incrementFrame()
     {
         frame++;

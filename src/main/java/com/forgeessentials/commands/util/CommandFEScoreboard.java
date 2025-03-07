@@ -42,7 +42,7 @@ public class CommandFEScoreboard extends CommandScoreboard
                 && args[0].equalsIgnoreCase("objectives")
                 && args[1].equalsIgnoreCase("edit"))
         {
-            if (args.length < 5)
+            if (args.length < 4)
             {
                 throw new WrongUsageException("commands.scoreboard.objectives.edit.usage", new Object[0]);
             }
@@ -58,15 +58,23 @@ public class CommandFEScoreboard extends CommandScoreboard
     {
         String option = args[index++].toLowerCase();
         String name = args[index++];
-        String value = args[index++];
+        String value = args.length > 4 ? args[index++] : null;
         Scoreboard scoreboard = getScoreboard();
         ScoreObjective objective = scoreboard.getObjective(name);
         switch (option)
         {
         case "displayname":
+            if (value == null)
+            {
+                throw new WrongUsageException("commands.scoreboard.objectives.edit.usage", new Object[0]);
+            }
             objective.setDisplayName(value);
             break;
         case "criteria":
+            if (value == null)
+            {
+                throw new WrongUsageException("commands.scoreboard.objectives.edit.usage", new Object[0]);
+            }
             IScoreObjectiveCriteria iscoreobjectivecriteria = (IScoreObjectiveCriteria) IScoreObjectiveCriteria.INSTANCES.get(value);
             String displayName = objective.getDisplayName();
             if (objective instanceof AnimatedScoreObjective)
@@ -84,7 +92,14 @@ public class CommandFEScoreboard extends CommandScoreboard
         case "animate":
             if (objective instanceof AnimatedScoreObjective)
             {
-                ((AnimatedScoreObjective) objective).toggleAnimate();
+                if (value == null)
+                {
+                    ((AnimatedScoreObjective) objective).toggleAnimate();
+                }
+                else
+                {
+                    ((AnimatedScoreObjective) objective).setAlwaysAnimate(Boolean.parseBoolean(value));
+                }
             }
             else
             {
@@ -105,9 +120,20 @@ public class CommandFEScoreboard extends CommandScoreboard
             {
                 return getListOfStringsMatchingLastWord(args, new String[] { "list", "add", "edit", "remove", "setdisplay" });
             }
-            else if (args.length == 3 && args[1].equalsIgnoreCase("edit"))
+            else if (args[1].equalsIgnoreCase("edit"))
             {
-                return getListOfStringsMatchingLastWord(args, new String[] { "displayname", "criteria", "animate" });
+                if (args.length == 3)
+                {
+                    return getListOfStringsMatchingLastWord(args, new String[] { "displayname", "criteria", "animate" });
+                }
+                else if (args.length == 4)
+                {
+                    return getListOfStringsMatchingLastWord(args, getScoreboard().getObjectiveNames());
+                }
+                else if (args.length == 5 && args[3].equalsIgnoreCase("criteria"))
+                {
+                    return getListOfStringsMatchingLastWord(args, IScoreObjectiveCriteria.INSTANCES.keySet());
+                }
             }
         }
         return addTabCompletionOptions(sender, args, pos);
