@@ -63,7 +63,7 @@ public class CommandFEScoreboard extends CommandScoreboard
         ScoreObjective objective = scoreboard.getObjective(name);
         switch (option)
         {
-        case "displayName":
+        case "displayname":
             objective.setDisplayName(value);
             break;
         case "criteria":
@@ -107,7 +107,7 @@ public class CommandFEScoreboard extends CommandScoreboard
             }
             else if (args.length == 3 && args[1].equalsIgnoreCase("edit"))
             {
-                return getListOfStringsMatchingLastWord(args, new String[] { "displayName", "criteria", "animate" });
+                return getListOfStringsMatchingLastWord(args, new String[] { "displayname", "criteria", "animate" });
             }
         }
         return addTabCompletionOptions(sender, args, pos);
