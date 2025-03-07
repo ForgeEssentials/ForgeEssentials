@@ -1,6 +1,7 @@
 package com.forgeessentials.commands.util;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -128,7 +129,8 @@ public class CommandFEScoreboard extends CommandScoreboard
                 }
                 else if (args.length == 4)
                 {
-                    return getListOfStringsMatchingLastWord(args, getScoreboard().getObjectiveNames());
+                    return getListOfStringsMatchingLastWord(args,
+                            getScoreboard().getScoreObjectives().stream().map(ScoreObjective::getName).collect(Collectors.toList()));
                 }
                 else if (args.length == 5 && args[3].equalsIgnoreCase("criteria"))
                 {

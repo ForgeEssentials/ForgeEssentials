@@ -1,5 +1,8 @@
 package com.forgeessentials.multiworld;
 
+import java.lang.reflect.Field;
+
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.scoreboard.ScoreboardSaveData;
 import net.minecraft.server.MinecraftServer;
@@ -46,17 +49,38 @@ public class WorldServerMultiworld extends WorldServer
     {
         super.init();
         this.worldScoreboard = new MultiworldScoreboard(MinecraftServer.getServer(), this.multiworld);
-        ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData) this.mapStorage.loadData(ScoreboardSaveData.class, "scoreboard");
+        ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData) this.mapStorage.loadData(AnimatedScoreboardSaveData.class, "scoreboard");
 
         if (scoreboardsavedata == null)
         {
-            scoreboardsavedata = new ScoreboardSaveData();
+            scoreboardsavedata = new AnimatedScoreboardSaveData();
             this.mapStorage.setData("scoreboard", scoreboardsavedata);
         }
 
+        if (!(scoreboardsavedata instanceof AnimatedScoreboardSaveData))
+        {
+            NBTTagCompound tag = (NBTTagCompound) getField(ScoreboardSaveData.class, "field_96506_b", scoreboardsavedata);
+            scoreboardsavedata = new AnimatedScoreboardSaveData();
+            scoreboardsavedata.readFromNBT(tag);
+            this.mapStorage.setData("scoreboard", scoreboardsavedata);
+        }
         scoreboardsavedata.setScoreboard(this.worldScoreboard);
         ((MultiworldScoreboard) this.worldScoreboard).func_96547_a(scoreboardsavedata);
         return this;
+    }
+
+    private Object getField(Class clazz, String field, Object obj)
+    {
+        try
+        {
+            Field _field = clazz.getDeclaredField(field);
+            _field.setAccessible(true);
+            return _field.get(obj);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     int counter = 0;

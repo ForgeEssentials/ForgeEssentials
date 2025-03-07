@@ -73,7 +73,7 @@ public class AnimatedScoreObjective extends ScoreObjective
 
         if (canAnimate())
         {
-            int fs = frame + size;
+            int fs = frame + Math.min(len, size);
             return displayName.substring(frame, Math.min(fs, len)) + (fs > len ? displayName.substring(0, fs - len) : "");
         }
         else
