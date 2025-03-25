@@ -406,6 +406,14 @@ public interface IPermissionsHelper extends IPermissionHandler
     void addPlayerToGroup(UserIdent ident, String group);
 
     /**
+     * Set player's group (removes all others)
+     *
+     * @param ident
+     * @param group
+     */
+    void setPrimaryGroup(UserIdent ident, String group);
+
+    /**
      * Remove a player from a group
      * 
      * @param ident

@@ -412,6 +412,15 @@ public abstract class Zone
         return true;
     }
 
+    public boolean setPrimaryGroup(UserIdent ident, String group)
+    {
+        if (APIRegistry.getFEEventBus()
+                .post(new PermissionEvent.User.ModifyGroups(getServerZone(), ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            return false;
+        setPlayerPermissionProperty(ident, FEPermissions.PLAYER_GROUPS, group);
+        return true;
+    }
+
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         if (APIRegistry.getFEEventBus().post(

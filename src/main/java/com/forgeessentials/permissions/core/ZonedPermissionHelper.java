@@ -886,6 +886,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
+    public void setPrimaryGroup(UserIdent ident, String group) {
+        getServerZone().setPrimaryGroup(ident, group);
+    }
+
+    @Override
     public void removePlayerFromGroup(UserIdent ident, String group)
     {
         getServerZone().removePlayerFromGroup(ident, group);

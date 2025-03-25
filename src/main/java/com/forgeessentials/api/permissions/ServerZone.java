@@ -266,6 +266,26 @@ public class ServerZone extends Zone implements Loadable
     }
 
     @Override
+    public boolean setPrimaryGroup(UserIdent ident, String group)
+    {
+        registerPlayer(ident);
+        Set<String> groupSet = playerGroups.get(ident);
+        if (groupSet == null)
+        {
+            groupSet = new HashSet<>();
+            playerGroups.remove(ident);
+            playerGroups.put(ident, groupSet);
+        }
+        if (!groupSet.contains(group))
+        {
+            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+                return false;
+            groupSet.add(group);
+        }
+        return true;
+    }
+
+    @Override
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
