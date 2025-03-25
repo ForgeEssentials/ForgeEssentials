@@ -6,6 +6,7 @@ declare type long = number;
 declare type float = number;
 declare type double = number;
 
+declare function require(path: string): any;
 declare function getNbt(entity: mc.entity.Entity | mc.item.ItemStack): any;
 declare function setNbt(entity: mc.entity.Entity | mc.item.ItemStack, data: any);
 
@@ -411,14 +412,39 @@ declare namespace mc.event.entity.player {
 	
 	class AnvilRepairEvent extends PlayerEvent {
 		constructor();
+		/**
+		 * Get the output result from the anvil
+		 */
+		getItemResult(): mc.item.ItemStack;
+		/**
+		 * Get the first item input into the anvil
+		 */
+		getItemInput(): mc.item.ItemStack;
+		/**
+		 * Get the second item input into the anvil
+		 */
+		getIngredientInput(): mc.item.ItemStack;
+		getBreakChance(): float;
+		setBreakChance(breakChance: float): void;
 	}
 	
 	class ArrowLooseEvent extends PlayerEvent {
 		constructor();
+		getBow(): mc.item.ItemStack;
+		getWorld(): mc.world.World;
+		hasAmmo(): boolean;
+		getCharge(): int;
+		setCharge(charge: int): void;
 	}
 	
 	class ArrowNockEvent extends PlayerEvent {
 		constructor();
+		getBow(): mc.item.ItemStack;
+		getWorld(): mc.world.World;
+		getHand(): int;
+		hasAmmo(): boolean;
+		getAction(): net.minecraft.util.ActionResult;
+		setAction(action: net.minecraft.util.ActionResult): void;
 	}
 	
 	class AttackEntityEvent extends PlayerEvent {
@@ -448,6 +474,17 @@ declare namespace mc.event.entity.player {
 	
 	class PlayerInteractEvent extends PlayerEvent {
 		constructor();
+		getHand(): int;
+		getItemStack(): mc.item.ItemStack;
+		/**
+		 * If the interaction was on an entity, will be a BlockPos centered on the entity.
+		 * If the interaction was on a block, will be the position of that block.
+		 * Otherwise, will be a BlockPos centered on the player.
+		 * Will never be null.
+		 */
+		getPos(): fe.Point;
+		getFace(): int;
+		getWorld(): mc.world.World;
 	}
 	
 	class PlayerWakeUpEvent extends PlayerEvent {
@@ -484,6 +521,8 @@ declare namespace mc.item {
 		getCurrentItem(): ItemStack;
 		getCurrentItemIndex(): int;
 		setCurrentItemIndex(index: int): void;
+		addItemStackToInventory(itemStackIn: ItemStack): boolean;
+		add(index: int, itemStack: ItemStack): boolean;
 	}
 	
 	class Item extends Wrapper {
@@ -697,12 +736,12 @@ declare class LocalStorage {
 	/**
 	 * When passed a key name, will return that key's value.
 	 */
-	static getItem(key: string): string;
+	static getItem(key: string): any;
 	/**
 	 * When passed a key name and value, will add that key to the storage, or update that key's value if it already exists.
 	 * Returns the previous value for the passed key.
 	 */
-	static setItem(key: string, value: any): string;
+	static setItem(key: string, value: any): any;
 	/**
 	 * When passed a key name, will remove that key from the storage.
 	 * Returns the previous value for the passed key.

@@ -16,7 +16,9 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.apache.commons.io.FileUtils;
@@ -124,6 +126,18 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
         ScriptCompiler.registerExtension(new ScriptExtensionRoot());
         ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void save(WorldEvent.Save event) {
+        //TODO: Refactor localstorage to only save on world save instead of on every update
+        if (event.getWorld() == FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld())
+        {
+            for (ScriptInstance instance : scripts.values())
+            {
+                instance.saveConfig();
+            }
+        }
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException

@@ -130,6 +130,7 @@ public class CommandSell extends ParserCommandBase
                 }
 
                 int removedAmount = 0;
+                String displayName = itemStack.getDisplayName();
                 if (holdingItem)
                 {
                     ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
@@ -146,7 +147,7 @@ public class CommandSell extends ParserCommandBase
 
                 wallet.add(removedAmount * price);
                 arguments.confirm(Translator.format("You have sold %d %s to the server for %s", //
-                        removedAmount, itemStack.getDisplayName(), APIRegistry.economy.toString(removedAmount * price)));
+                        removedAmount, displayName, APIRegistry.economy.toString(removedAmount * price)));
                 ModuleEconomy.confirmNewWalletAmount(arguments.ident, wallet);
             }
         };

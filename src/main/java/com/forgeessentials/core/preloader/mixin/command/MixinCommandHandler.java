@@ -85,7 +85,12 @@ public class MixinCommandHandler
                     return true;
                 }
             } else {
-                return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
+                if (((DoAsCommandSender) sender).getIdent().hasPlayer())
+                {
+                    return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
+                } else {
+                    return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getGameProfile(), node,  null);
+                }
             }
         }
 

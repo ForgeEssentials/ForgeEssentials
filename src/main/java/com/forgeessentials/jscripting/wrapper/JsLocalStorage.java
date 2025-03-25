@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.forgeessentials.data.v2.DataManager;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -59,21 +60,45 @@ public class JsLocalStorage
     /**
      * When passed a key name, will return that key's value.
      */
-    public static String getItem(String key)
+    public static Object getItem(String key)
     {
-        return data.get(key);
+        return parseValue(data.get(key));
     }
 
+    private static Object parseValue(String value) {
+        try {
+            return DataManager.fromJson(value, Map.class);
+        } catch (JsonSyntaxException ignored) {}
+
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException ignored) {}
+
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException ignored) {}
+
+        try
+        {
+            return Boolean.parseBoolean(value);
+        } catch (NumberFormatException ignored) {}
+
+        return value;
+    }
     /**
      * When passed a key name and value, will add that key to the storage, or update that key's value if it already exists.<br>
      * Returns the previous value for the passed key.
      */
-    public static String setItem(String key, Object value)
+    public static Object setItem(String key, Object value)
     {
         String valueStr = value instanceof String ? (String) value : DataManager.toJson(value);
         String oldData = data.put(key, valueStr);
         save(); // TODO: Always save?
-        return oldData;
+        return parseValue(oldData);
     }
 
     /**
@@ -84,7 +109,7 @@ public class JsLocalStorage
     {
         String oldData = data.remove(key);
         save(); // TODO: Always save?
-        return oldData;
+        return parseValue(oldData);
     }
 
     /**

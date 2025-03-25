@@ -1,3 +1,4 @@
+declare var config : any;
 
 declare namespace fe {
 
@@ -106,6 +107,9 @@ declare namespace fe {
 		getTimePlayed(playerId: java.util.UUID): long;
 		getLastLogout(playerId: java.util.UUID): java.util.Date;
 		getLastLogin(playerId: java.util.UUID): java.util.Date;
+		getUserIdent(playerId: java.util.UUID): UserIdent;
+		getUserIdent(playerName: string): UserIdent;
+		getPlayerInfo(playerId: java.util.UUID): PlayerInfo;
 		/**
 		 * Adds a CoRoutine callback
 		 */
@@ -171,9 +175,9 @@ declare namespace fe {
 		static addPlayerToGroup(ident: UserIdent, group: string): void;
 		static removePlayerFromGroup(ident: UserIdent, group: string): void;
 		static getPrimaryGroup(ident: UserIdent): string;
+		static getZoneAt(worldPoint: WorldPoint): Zone;
+		static getZonesAt(worldPoint: WorldPoint): java.util.List;
 		constructor();
-		getZoneAt(worldPoint: WorldPoint): Zone;
-		getZonesAt(worldPoint: WorldPoint): java.util.List;
 	}
 	
 	class PlayerInfo extends Wrapper {

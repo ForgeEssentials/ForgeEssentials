@@ -160,7 +160,7 @@ public class CommandSellprice extends ParserCommandBase
                     {
                         if (ingredient != null)
                         {
-                            ItemStack stack = null;
+                            ItemStack stack = ItemStack.EMPTY;
                             ItemStack[] stacks = ingredient.getMatchingStacks();
                             if (stacks != null && stacks.length > 0)
                             {
@@ -223,7 +223,7 @@ public class CommandSellprice extends ParserCommandBase
                                 for (Ingredient ingredient : getRecipeItems(recipe))
                                     if (ingredient != null)
                                     {
-                                        ItemStack stack = null;
+                                        ItemStack stack = ItemStack.EMPTY;
                                         ItemStack[] stacks = ingredient.getMatchingStacks();
                                         if (stacks != null && stacks.length > 0)
                                         {
@@ -293,7 +293,7 @@ public class CommandSellprice extends ParserCommandBase
         }
         else
         {
-            arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
+            arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into the ItemPrice category in Economy.cfg");
             arguments.confirm("You can also use [/calcpricelist save] to directly save the calculated prices");
         }
     }
