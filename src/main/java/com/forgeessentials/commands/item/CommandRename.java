@@ -10,6 +10,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandRename extends ForgeEssentialsCommandBase
 {
@@ -59,7 +60,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
         {
             sb.append(arg + " ");
         }
-        is.setStackDisplayName(sb.toString().trim());
+        is.setStackDisplayName(ChatOutputHandler.formatColors(sb.toString().trim()));
     }
 
 }

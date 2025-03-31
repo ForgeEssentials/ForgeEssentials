@@ -7,6 +7,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandCraft extends ForgeEssentialsCommandBase
@@ -70,7 +73,12 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         lastPlayer = new WeakReference<>(player);
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
+        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()) {
+            @Override public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+            {
+                return new ContainerCheatyWorkbench(playerInventory, player.world);
+            }
+        });
     }
 
 }
