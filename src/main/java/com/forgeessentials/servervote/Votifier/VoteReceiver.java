@@ -19,11 +19,8 @@
 package com.forgeessentials.servervote.Votifier;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -36,7 +33,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -55,7 +51,6 @@ import net.minecraftforge.fml.common.FMLLog;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
-import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;

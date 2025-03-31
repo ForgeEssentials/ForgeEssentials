@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.IllegalFormatException;
 import java.util.Set;
 
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;

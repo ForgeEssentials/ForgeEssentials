@@ -8,8 +8,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketChat;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;

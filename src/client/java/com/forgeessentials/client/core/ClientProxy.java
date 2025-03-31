@@ -2,9 +2,12 @@ package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -87,6 +90,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void load(FMLInitializationEvent event)
     {
+        BuildInfo.startVersionChecks(ForgeEssentialsClient.MODID);
         super.load(event);
         ClientCommandHandler.instance.registerCommand(new FEClientCommand());
     }
@@ -146,7 +150,6 @@ public class ClientProxy extends CommonProxy
             MinecraftForge.EVENT_BUS.register(permissionOverlay);
         if (allowQuestionerShortcuts)
             new QuestionerKeyHandler();
-        BuildInfo.startVersionChecks();
 
         config.save();
     }
@@ -164,7 +167,20 @@ public class ClientProxy extends CommonProxy
         clientTimeTicked = 0;
         sentHandshake = false;
     }
-
+   
+    @SubscribeEvent
+    public void login(EntityJoinWorldEvent event)
+    {
+        if (event.getEntity() instanceof AbstractClientPlayer)
+        {
+        	BuildInfo.startVersionChecks(ForgeEssentialsClient.MODID);
+            if (BuildInfo.isOutdated())
+            {
+                event.getEntity().sendMessage(new TextComponentString("\u00A72[ForgeEssentials client]:\u00A7r A new version (\u00A73" + BuildInfo.getLatestVersion() + "\u00A7r) was found"));
+            }
+        }
+    }
+    
     @SubscribeEvent
     public void clientTickEvent(TickEvent.ClientTickEvent event)
     {

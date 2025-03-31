@@ -2,21 +2,15 @@ package com.forgeessentials.chat;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.PermissionEvent.Group;
-import com.forgeessentials.api.permissions.PermissionEvent.User;
-import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 

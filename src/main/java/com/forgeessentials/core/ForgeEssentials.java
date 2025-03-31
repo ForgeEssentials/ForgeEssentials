@@ -45,7 +45,6 @@ import org.apache.logging.log4j.core.Logger;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.Packet0Handshake;
@@ -63,9 +62,6 @@ import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.Environment;
-import com.forgeessentials.core.mcstats.ConstantPlotter;
-import com.forgeessentials.core.mcstats.Metrics;
-import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.PermissionManager;
@@ -100,7 +96,8 @@ import com.forgeessentials.util.selections.SelectionHandler;
  */
 
 @Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", acceptableRemoteVersions = "*",
-        dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
+        dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib", version = BuildInfo.BUILT_VERSION,
+        updateJSON = "https://raw.githubusercontent.com/ForgeEssentials/UpdateChecker/main/ServerVersions.json")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -136,10 +133,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected static FECommandManager commandManager;
 
-    protected static Metrics mcStats;
-
-    protected static Graph mcStatsGeneralGraph;
-
     /* ------------------------------------------------------------ */
 
     protected static File configDirectory;
@@ -173,17 +166,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
+    	LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)-%s", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
         if (safeMode)
         {
             LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
         }
 
         registerNetworkMessages();
-
-        // Init McStats
-        mcStats = new Metrics(MODID + "New", BuildInfo.BASE_VERSION);
-        mcStatsGeneralGraph = mcStats.createGraph("general");
 
         // Set up logger level
         if (debugMode)
@@ -209,31 +198,9 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         registerCommands();
 
-        // Init McStats
-        mcStats.createGraph("build_type").addPlotter(new ConstantPlotter(BuildInfo.getBuildType(), 1));
-        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(e.getSide() == Side.SERVER ? "server" : "client", 1));
-        Graph gModules = mcStats.createGraph("modules");
-        for (String module : ModuleLauncher.getModuleList())
-            gModules.addPlotter(new ConstantPlotter(module, 1));
-
-        LoggingHandler.felog
-                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
-
         isCubicChunksInstalled = Loader.isModLoaded("cubicchunks");
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
-    }
-    
-    @SubscribeEvent
-    public void newVersion(NewVersionEvent e)
-    {
-        LoggingHandler.felog
-                .warn("-------------------------------------------------------------------------------------");
-        LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s",
-                BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
-        LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
-        LoggingHandler.felog
-                .warn("-------------------------------------------------------------------------------------");
     }
 
     @EventHandler
@@ -306,6 +273,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
+        BuildInfo.startVersionChecks(MODID);
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
@@ -315,7 +283,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStarting(FMLServerStartingEvent e)
     {
-        mcStats.start();
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
@@ -325,6 +292,12 @@ public class ForgeEssentials extends ConfigLoaderBase
         registerPermissions();
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerInitEvent(e));
+        if(BuildInfo.isOutdated()) {
+        	LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+        	LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s",BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
+        	LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
+        	LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+        }
     }
 
     @EventHandler
@@ -363,7 +336,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         try
         {
-            mcStats.stop();
             APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
             FECommandManager.clearRegisteredCommands();
             Translator.save();
@@ -489,7 +461,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         HelpFixer.hideWorldEditCommands = config
                 .get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true, "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
         logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
-        BuildInfo.startVersionChecks();
     }
 
     /* ------------------------------------------------------------ */
@@ -497,16 +468,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static ConfigManager getConfigManager()
     {
         return configManager;
-    }
-
-    public static Metrics getMcStats()
-    {
-        return mcStats;
-    }
-
-    public static Graph getMcStatsGeneralGraph()
-    {
-        return mcStatsGeneralGraph;
     }
 
     public static File getFEDirectory()
