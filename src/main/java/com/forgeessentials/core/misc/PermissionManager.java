@@ -46,7 +46,7 @@ public class PermissionManager
      */
     public static void registerCommandPermission(ICommand command)
     {
-        PermissionAPI.registerNode(getCommandPermission(command), getCommandLevel(command), "");
+        registerCommandPermission(command, getCommandPermission(command), getCommandLevel(command));
     }
 
     /**
