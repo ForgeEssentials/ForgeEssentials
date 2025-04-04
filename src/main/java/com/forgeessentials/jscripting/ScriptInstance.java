@@ -2,18 +2,20 @@ package com.forgeessentials.jscripting;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimerTask;
@@ -36,9 +38,11 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Charsets;
 
 public class ScriptInstance
@@ -129,9 +133,11 @@ public class ScriptInstance
     private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
 
     private SimpleBindings getPropertyBindings = new SimpleBindings();
-
     /* ************************************************************ */
 
+    public Bindings getExports() {
+        return exports;
+    }
     public ScriptInstance(File file) throws IOException, ScriptException
     {
         if (!file.exists())
@@ -156,18 +162,42 @@ public class ScriptInstance
         eventHandlers.clear();
     }
 
+    public void saveConfig()
+    {
+        String configPath = file.getPath().replace(".js", ".json");
+        Object cfg = script.getEngine().get("config");
+
+        if (cfg != null) {
+            if (cfg instanceof Bindings) {
+                cfg = ((Bindings) cfg).entrySet().stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+            }
+            DataManager.save(cfg, new File(configPath));
+        }
+    }
     protected void compileScript() throws IOException, ScriptException
     {
         illegalFunctions.clear();
         script = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
+        String configPath = file.getPath().replace(".js", ".json");
+        Map config = null;
+        if (Files.exists(Paths.get(configPath)))
         {
+            config = DataManager.load(HashMap.class, new File(configPath));
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), Charsets.UTF_8)))
+        {
+            LoggingHandler.felog.warn(config);
             // Load and compile script
             script = ModuleJScripting.getCompilable().compile(reader);
 
             // Initialization of environment and script
             invocable = (Invocable) script.getEngine();
             ScriptCompiler.initEngine(script.getEngine(), this);
+            if (config != null)
+            {
+                script.getEngine().put("config", config);
+            }
             script.eval();
 
             // Get exports

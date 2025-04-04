@@ -33,4 +33,12 @@ public class JsInventoryPlayer<T extends InventoryPlayer> extends JsInventory<T>
         that.currentItem = index;
     }
 
+    public boolean addItemStackToInventory(JsItemStack itemStackIn) {
+        return that.addItemStackToInventory(itemStackIn.getThat());
+    }
+
+    public boolean add(int index, final JsItemStack itemStack) {
+        return that.add(index, itemStack.getThat());
+    }
+
 }

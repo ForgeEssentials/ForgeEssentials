@@ -1,3 +1,4 @@
+declare var config : any;
 
 declare namespace fe {
 

@@ -436,36 +436,66 @@ public class ScriptUpgrader
                 out.append(StringUtils.join(args, " + ' ' + "));
                 out.append(");\n\treturn;");
                 break;
+            case "permset":
+                String cmd = args.remove(0);
+                switch (cmd) {
+                case "'user'":
+                    out.append("fe.Permissions.setPlayerPermissionProperty(");
+                    break;
+                case "'group'":
+                    out.append("fe.Permissions.setGroupPermissionProperty(");
+                    break;
+                }
+                out.append("FEServer.getUserIdent(");
+                out.append(args.remove(0));
+                out.append("), ");
+                cmd = args.remove(0);
+                out.append(args.remove(0));
+                out.append(", ");
+                switch (cmd) {
+                case "'clear'":
+                    out.append("null");
+                    break;
+                case "'deny'":
+                    out.append("false");
+                    break;
+                case "'allow'":
+                    out.append("true");
+                    break;
+                case "'value'":
+                    out.append(args.remove(0));
+                    break;
+                }
+                out.append(");");
+                break;
             case "permcheck":
                 out.append("if (!fe.Permissions.checkPermission(");
-                args.remove(0);
-                out.append(", ");
-                args.remove(0);
+                out.append("sender.getPlayer(), ");
+                out.append(args.remove(0));
                 out.append(")) return sender.chatError(");
-                out.append(args.isEmpty() ? "You don't have permission to use this command" : StringUtils.join(args, " + ' ' + "));
+                out.append(args.isEmpty() ? "\"You don't have permission to use this command\"" : StringUtils.join(args, " + ' ' + "));
                 out.append(");");
                 break;
             case "permchecksilent":
                 out.append("if (!fe.Permissions.checkPermission(");
-                args.remove(0);
-                out.append(", ");
-                args.remove(0);
+                out.append("sender.getPlayer(), ");
+                out.append(args.remove(0));
                 out.append(")) return;");
                 break;
             case "!permcheck":
                 out.append("if (fe.Permissions.checkPermission(");
-                args.remove(0);
-                out.append(", ");
-                args.remove(0);
+                out.append("sender.getPlayer(), ");
+                out.append(args.remove(0));
                 out.append(")) return sender.chatError(");
-                out.append(args.isEmpty() ? "You don't have permission to use this command" : StringUtils.join(args, " + ' ' + "));
+                out.append(args.isEmpty() ? "\"You don't have permission to use this command\"" : StringUtils.join(args, " + ' ' + "));
                 out.append(");");
                 break;
             case "!permchecksilent":
                 out.append("if (fe.Permissions.checkPermission(");
-                args.remove(0);
+                out.append("sender.getPlayer(), ");
+                out.append(args.remove(0));
                 out.append(", ");
-                args.remove(0);
+                out.append(args.isEmpty() ? false : args.remove(0));
                 out.append(")) return;");
                 break;
             case "timeout":

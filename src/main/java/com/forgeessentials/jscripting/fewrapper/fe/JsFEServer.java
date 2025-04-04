@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.BasicInteraction;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
@@ -116,6 +117,17 @@ public class JsFEServer
         return pi == null ? null : pi.getLastLogin();
     }
 
+    public JsUserIdent getUserIdent(UUID playerId) {
+        return new JsUserIdent(UserIdent.get(playerId));
+    }
+
+    public JsUserIdent getUserIdent(String playerName) {
+        return new JsUserIdent(UserIdent.get(playerName));
+    }
+
+    public JsPlayerInfo getPlayerInfo(UUID playerId) {
+        return new JsPlayerInfo(PlayerInfo.get(playerId));
+    }
     /**
      * Adds a CoRoutine callback
      *
@@ -148,7 +160,7 @@ public class JsFEServer
                     if ((c.lastCount - c.tickCount) == c.tickStep)
                     {
                         c.lastCount = c.tickCount;
-                        script.tryCallGlobal(c.method, c.sender);
+                        script.tryCallGlobal(c.method, c.sender, c.extraData);
                     }
                     c.tickCount--;
                     if (c.tickCount < 0)
@@ -208,19 +220,6 @@ public class JsFEServer
         return JsInventory.get(inventoryBasic);
     }
 
-    private abstract class BasicInteraction extends InventoryBasic implements IInteractionObject
-    {
-
-        public BasicInteraction(String p_i1561_1_, boolean p_i1561_2_, IInventory source)
-        {
-            super(p_i1561_1_, p_i1561_2_, ((source.getSizeInventory() - 1) / 9 + 1) * 9);
-            for (int i = 0; i < source.getSizeInventory(); i++)
-            {
-                this.setInventorySlotContents(i, source.getStackInSlot(i));
-            }
-        }
-    }
-
     /**
      * Gets a Special Interaction Object that is designed to be used as a menu
      * WARNING: Do not close the screen during the callback. This causes a desync!
@@ -266,6 +265,21 @@ public class JsFEServer
                         }
 
                         return stack.getThat();
+                    }
+
+                    @Override public void onContainerClosed(EntityPlayer playerIn)
+                    {
+                        try
+                        {
+                            script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(playerIn) , -1, -1, "CLOSE",
+                                    JsInventory.get(inventory.getThat()), ItemStack.EMPTY);
+
+                        } catch (ScriptException e) {
+                            e.printStackTrace();
+                        } finally
+                        {
+                            super.onContainerClosed(playerIn);
+                        }
                     }
 
                     @Override public ItemStack transferStackInSlot(EntityPlayer p_transferStackInSlot_1_, int p_transferStackInSlot_2_)

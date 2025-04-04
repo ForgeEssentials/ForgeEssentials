@@ -6,6 +6,7 @@ declare type long = number;
 declare type float = number;
 declare type double = number;
 
+declare function require(path: string): any;
 declare function getNbt(entity: mc.entity.Entity | mc.item.ItemStack): any;
 declare function setNbt(entity: mc.entity.Entity | mc.item.ItemStack, data: any);
 
