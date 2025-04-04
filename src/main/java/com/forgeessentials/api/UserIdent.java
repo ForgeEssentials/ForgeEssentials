@@ -536,7 +536,7 @@ public class UserIdent
 
     public EntityPlayerMP getPlayerMP()
     {
-        return player == null ? null : (EntityPlayerMP) player.get();
+        return player == null ? null : player.get() instanceof  EntityPlayerMP ? (EntityPlayerMP) player.get() : null;
     }
 
     public EntityPlayerMP getFakePlayer()

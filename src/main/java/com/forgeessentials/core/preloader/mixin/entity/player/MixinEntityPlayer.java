@@ -30,11 +30,11 @@ public abstract class MixinEntityPlayer extends Entity
     @Overwrite
     public boolean canUseCommandBlock()
     {
-        return this.capabilities.isCreativeMode && PermissionAPI.hasPermission((EntityPlayer)(Object)this, "mc.commandblock");
+        return this.capabilities.isCreativeMode && ( this.world.isRemote || PermissionAPI.hasPermission((EntityPlayer)(Object)this, "mc.commandblock") );
     }
     
     @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSpectator()Z"))
     public boolean onUpdate_NoClip(EntityPlayer _this) {
-        return isSpectator() || PlayerInfo.get(_this).isNoClip();
+        return isSpectator() || (!_this.world.isRemote && PlayerInfo.get(_this).isNoClip());
     }
 }

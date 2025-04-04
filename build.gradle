@@ -518,11 +518,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	manifest { from sharedManifest }
 }
 
-//reobf {
-//    clientJar {
-//        classpath = sourceSets.main.compileClasspath
-//    }
-//}
+reobf {
+    jar {}
+    clientJar {}
+}
 
 /************************************************************
  * Configure Annotations for IDEs Jar
