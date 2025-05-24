@@ -27,6 +27,9 @@ import com.forgeessentials.util.output.LoggingHandler;
 public class ModulePlayerMarket extends ServerEventHandler
 {
     public static final String PERM = "fe.playermarket";
+    public static final String PERM_LIMIT = PERM + ".limit";
+    public static final String PERM_TIMEOUT = PERM + ".timeout";
+    public static final String PERM_TIMEOUT_MAX = PERM_TIMEOUT + ".max";
     public static final String PERM_CMD = PERM + ".command";
     public static final String PERM_CMD_SELL_BASE = PERM_CMD + ".sell";
     public static final String PERM_CMD_BUY_BASE = PERM_CMD + ".buy";
@@ -61,6 +64,9 @@ public class ModulePlayerMarket extends ServerEventHandler
                     "Allows selling a specific item! ex: fe.playermarket.sell.minecraft.iron_block");
             APIRegistry.perms.registerPermission(PERM_CMD_BUY_BASE + ".*", DefaultPermissionLevel.ALL,
                     "Allows buying a specific item! ex: fe.playermarket.buy.minecraft.iron_block");
+
+            APIRegistry.perms.registerPermissionProperty(PERM_TIMEOUT_MAX, null, "Max / Default timeout for selling items");
+            APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, null, "Per player limit for selling items");
         }
         else
         {

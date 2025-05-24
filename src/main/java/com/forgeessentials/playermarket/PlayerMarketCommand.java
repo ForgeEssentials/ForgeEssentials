@@ -194,6 +194,20 @@ public class PlayerMarketCommand extends ParserCommandBase
                 newStack.sellerName = args.senderPlayer.getName();
                 args.senderPlayer.inventory.removeStackFromSlot(args.senderPlayer.inventory.currentItem);
 
+                try
+                {
+                    long limit = Long.parseLong(APIRegistry.perms.getPermissionProperty(args.senderPlayer, ModulePlayerMarket.PERM_LIMIT));
+                    long count = ModulePlayerMarket.instance().data.itemsListed.stream().filter(it -> it.sellerId.equals(newStack.sellerId)).count();
+
+                    if (count == limit)
+                    {
+                        args.error("Unable to list item, player limit (%s) reached", limit);
+                        break;
+                    }
+                }
+                catch (NumberFormatException ignored)
+                {
+                }
             }
 
             newStack.stack = newStack.stack.copy();
