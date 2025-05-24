@@ -199,7 +199,7 @@ public class PlayerMarketCommand extends ParserCommandBase
                     long limit = Long.parseLong(APIRegistry.perms.getPermissionProperty(args.senderPlayer, ModulePlayerMarket.PERM_LIMIT));
                     long count = ModulePlayerMarket.instance().data.itemsListed.stream().filter(it -> it.sellerId.equals(newStack.sellerId)).count();
 
-                    if (count == limit)
+                    if (count >= limit)
                     {
                         args.error("Unable to list item, player limit (%s) reached", limit);
                         break;
