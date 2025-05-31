@@ -9,6 +9,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -137,5 +139,28 @@ public class ModulePlayerMarket extends ServerEventHandler
             }
             writeTrade(msg);
         }).start();
+    }
+
+    long ticks = 0;
+
+    @SubscribeEvent
+    public void tick(ServerTickEvent e)
+    {
+        if (e.phase != Phase.START)
+        {
+            return;
+        }
+
+        ticks++;
+        if (ticks % 20 == 0)
+        {
+            for (AuctionStack stack : data.itemsListed)
+            {
+                if (stack.hasTimeout && stack.timeout > 0)
+                {
+                    stack.timeout--;
+                }
+            }
+        }
     }
 }

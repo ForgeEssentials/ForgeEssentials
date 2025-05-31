@@ -16,6 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -43,7 +47,7 @@ public class PlayerMarketContainer extends ContainerChest
         this.remove = remove;
         this._itemsListed = _itemsListed;
         this.args = args;
-
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static void initItems(IInventory source, int offset, int amount, List<AuctionStack> _itemsListed, CommandParserArgs args)
@@ -74,9 +78,26 @@ public class PlayerMarketContainer extends ContainerChest
             NBTTagList lore = display.getTagList("Lore", 8);
 
             String prefix = ChatOutputHandler.COLOR_FORMAT_CHARACTER + "6";
-            lore.appendTag(new NBTTagString(prefix + "Click to " + (args.senderPlayer.getUniqueID().equals(auctionStack.sellerId) ? "remove" : "buy")));
-            lore.appendTag(new NBTTagString(prefix + "Price: " + APIRegistry.economy.toString(auctionStack.price)));
-            lore.appendTag(new NBTTagString(prefix + "Seller: " + auctionStack.sellerName));
+            if (auctionStack.hasTimeout && auctionStack.timeout <= 0)
+            {
+                lore.appendTag(
+                        new NBTTagString(prefix + (args.senderPlayer.getUniqueID().equals(auctionStack.sellerId) ? "Click to remove" : "Listing Expired")));
+            }
+            else
+            {
+                lore.appendTag(new NBTTagString(prefix + "Click to " + (args.senderPlayer.getUniqueID().equals(auctionStack.sellerId) ? "remove" : "buy")));
+                lore.appendTag(new NBTTagString(prefix + "Price: " + APIRegistry.economy.toString(auctionStack.price)));
+                lore.appendTag(new NBTTagString(prefix + "Seller: " + auctionStack.sellerName));
+                if (auctionStack.hasTimeout)
+                {
+                    int minute = auctionStack.timeout / 60;
+                    int second = auctionStack.timeout % 60;
+                    int hour = minute / 60;
+                    minute = minute % 60;
+
+                    lore.appendTag(new NBTTagString(String.format("%sTime Left: %02d:%02d:%02d", prefix, hour, minute, second)));
+                }
+            }
             display.setTag("Lore", lore);
             tag.setTag("display", display);
             stack.setTagCompound(tag);
@@ -114,6 +135,22 @@ public class PlayerMarketContainer extends ContainerChest
         }
     }
 
+    long ticks = 0;
+
+    @SubscribeEvent
+    public void tick(ServerTickEvent e)
+    {
+        if (e.phase != Phase.END)
+        {
+            return;
+        }
+
+        ticks++;
+        if (ticks % 20 == 0)
+        {
+            initItems(getLowerChestInventory(), multiPage ? currentPage * 45 : 0, multiPage ? 45 : 54, _itemsListed, args);
+        }
+    }
     public synchronized void slotPickup(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
 
@@ -149,6 +186,13 @@ public class PlayerMarketContainer extends ContainerChest
             if (!ModulePlayerMarket.instance().data.itemsListed.contains(stack))
             {
                 args.error("%s already sold!", stack.stack);
+                initItems();
+                return;
+            }
+
+            if (stack.hasTimeout && stack.timeout <= 0)
+            {
+                args.error("%s has expired!", stack.stack);
                 initItems();
                 return;
             }

@@ -18,6 +18,7 @@ public class PlayerMarketData
         public String sellerName;
         public UUID sellerId;
         public int timeout;
+        public boolean hasTimeout;
 
         public AuctionStack copy()
         {
