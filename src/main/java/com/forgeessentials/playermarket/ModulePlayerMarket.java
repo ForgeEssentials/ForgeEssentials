@@ -3,7 +3,10 @@ package com.forgeessentials.playermarket;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -25,6 +28,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
+
 @FEModule(name = "PlayerMarket", parentMod = ForgeEssentials.class)
 public class ModulePlayerMarket extends ServerEventHandler
 {
@@ -45,6 +49,7 @@ public class ModulePlayerMarket extends ServerEventHandler
     static File moduleDir;
 
     public PlayerMarketData data = new PlayerMarketData();
+    public List<WeakReference<AuctionStack>> timeoutStacks = new ArrayList<>();
 
     public static ModulePlayerMarket instance()
     {
@@ -83,6 +88,14 @@ public class ModulePlayerMarket extends ServerEventHandler
         if (data != null)
         {
             this.data = data;
+
+            for (AuctionStack stack : data.itemsListed)
+            {
+                if (stack.hasTimeout && stack.timeout > 0)
+                {
+                    timeoutStacks.add(new WeakReference<>(stack));
+                }
+            }
         }
     }
 
@@ -154,13 +167,25 @@ public class ModulePlayerMarket extends ServerEventHandler
         ticks++;
         if (ticks % 20 == 0)
         {
-            for (AuctionStack stack : data.itemsListed)
+            List<WeakReference<AuctionStack>> removalQueue = new ArrayList<>();
+
+            for (WeakReference<AuctionStack> weakStack : timeoutStacks)
             {
-                if (stack.hasTimeout && stack.timeout > 0)
+                AuctionStack stack = weakStack.get();
+                if (stack != null && stack.hasTimeout)
                 {
-                    stack.timeout--;
+                    if (stack.timeout > 0)
+                    {
+                        stack.timeout--;
+                    }
+                    else
+                    {
+                        removalQueue.add(weakStack);
+                    }
                 }
             }
+
+            timeoutStacks.removeAll(removalQueue);
         }
     }
 }

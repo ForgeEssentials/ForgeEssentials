@@ -531,6 +531,67 @@ public class CommandParserArgs
         return result;
     }
 
+    public int parseTimeSeconds() throws CommandException
+    {
+        checkTabCompletion();
+        String value = remove();
+        Matcher m = timeFormatPattern.matcher(value);
+        if (!m.find())
+        {
+            throw new TranslatedCommandException("Invalid time format: %s", value);
+        }
+
+        int result = 0;
+
+        do
+        {
+            int resultPart = Integer.parseInt(m.group(1));
+
+            String unit = m.group(2);
+            if (unit != null)
+            {
+                switch (unit)
+                {
+                case "s":
+                case "second":
+                case "seconds":
+                    break;
+                case "m":
+                case "minute":
+                case "minutes":
+                    resultPart *= 60;
+                    break;
+                case "h":
+                case "hour":
+                case "hours":
+                    resultPart *= 60 * 60;
+                    break;
+                case "d":
+                case "day":
+                case "days":
+                    resultPart *= 60 * 60 * 24;
+                    break;
+                case "w":
+                case "week":
+                case "weeks":
+                    resultPart *= 60 * 60 * 24 * 7;
+                    break;
+                case "month":
+                case "months":
+                    resultPart *= 60 * 60 * 24 * 30;
+                    break;
+                default:
+                    throw new TranslatedCommandException("Invalid time format: %s", value);
+                }
+            }
+
+            result += resultPart;
+        }
+        while (m.find());
+
+        return result;
+    }
+
     public void checkTabCompletion() throws CommandException
     {
         if (isTabCompletion && size() == 1)

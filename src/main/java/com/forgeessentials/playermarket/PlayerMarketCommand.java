@@ -7,6 +7,7 @@ import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_SERVE
 import static com.forgeessentials.playermarket.PlayerMarketContainer.initItems;
 import static com.forgeessentials.util.ServerUtil.getItemPermission;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -209,10 +210,43 @@ public class PlayerMarketCommand extends ParserCommandBase
                 {
                 }
             }
+            Integer maxTimeout = null;
+            try
+            {
+                maxTimeout = Integer.parseInt(APIRegistry.perms.getPermissionProperty(args.senderPlayer, ModulePlayerMarket.PERM_TIMEOUT_MAX));
+            }
+            catch (NumberFormatException ignored)
+            {
+            }
+
+            if (!args.isEmpty())
+            {
+                newStack.timeout = args.parseTimeSeconds();
+                if (maxTimeout != null && newStack.timeout > maxTimeout)
+                {
+                    newStack.timeout = maxTimeout;
+                }
+                newStack.hasTimeout = true;
+            }
+            else if (maxTimeout != null)
+            {
+                newStack.timeout = maxTimeout;
+                newStack.hasTimeout = true;
+            }
 
             newStack.stack = newStack.stack.copy();
             ModulePlayerMarket.instance().data.itemsListed.add(newStack);
             args.confirm("%s sold for %s", newStack.stack, APIRegistry.economy.toString(newStack.price));
+            if (newStack.hasTimeout)
+            {
+                int minute = newStack.timeout / 60;
+                int second = newStack.timeout % 60;
+                int hour = minute / 60;
+                minute = minute % 60;
+
+                args.confirm("Timeout set to %02d:%02d:%02d", hour, minute, second);
+                ModulePlayerMarket.instance().timeoutStacks.add(new WeakReference<>(newStack));
+            }
             ModulePlayerMarket.logTrade("SELL", args.senderPlayer.getName(), newStack);
             break;
         }
