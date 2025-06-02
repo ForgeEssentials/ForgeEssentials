@@ -190,7 +190,7 @@ public class PlayerMarketContainer extends ContainerChest
                 return;
             }
 
-            if (stack.hasTimeout && stack.timeout <= 0)
+            if (!remove && !stack.sellerId.equals(player.getUniqueID()) && stack.hasTimeout && stack.timeout <= 0)
             {
                 args.error("%s has expired!", stack.stack);
                 initItems();

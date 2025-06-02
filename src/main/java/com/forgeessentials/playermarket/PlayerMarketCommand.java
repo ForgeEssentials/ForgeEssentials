@@ -193,7 +193,6 @@ public class PlayerMarketCommand extends ParserCommandBase
             {
                 newStack.sellerId = args.senderPlayer.getUniqueID();
                 newStack.sellerName = args.senderPlayer.getName();
-                args.senderPlayer.inventory.removeStackFromSlot(args.senderPlayer.inventory.currentItem);
 
                 try
                 {
@@ -209,6 +208,8 @@ public class PlayerMarketCommand extends ParserCommandBase
                 catch (NumberFormatException ignored)
                 {
                 }
+
+                args.senderPlayer.inventory.removeStackFromSlot(args.senderPlayer.inventory.currentItem);
             }
             Integer maxTimeout = null;
             try
