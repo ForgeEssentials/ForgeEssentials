@@ -214,7 +214,21 @@ public class PlayerMarketContainer extends ContainerChest
                 }
 
                 purchaseWallet.withdraw(stack.price);
-                sellerWallet.add(stack.price);
+                long price = stack.price;
+                try
+                {
+                    double tax = Double.parseDouble(APIRegistry.perms.getPermissionProperty(args.senderPlayer, ModulePlayerMarket.PERM_TAX));
+                    if (tax >= 0 && tax <= 100)
+                    {
+                        double ratio = (100d - tax) / 100;
+                        price = (long) (((double) price) * ratio);
+                    }
+                }
+                catch (NumberFormatException ignored)
+                {
+                }
+
+                sellerWallet.add(price);
 
                 args.confirm("%s purchased for %s", stack.stack, APIRegistry.economy.toString(stack.price));
             }

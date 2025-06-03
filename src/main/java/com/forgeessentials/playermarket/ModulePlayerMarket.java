@@ -34,6 +34,8 @@ public class ModulePlayerMarket extends ServerEventHandler
 {
     public static final String PERM = "fe.playermarket";
     public static final String PERM_LIMIT = PERM + ".limit";
+    public static final String PERM_FEE = PERM + ".fee";
+    public static final String PERM_TAX = PERM + ".tax";
     public static final String PERM_TIMEOUT = PERM + ".timeout";
     public static final String PERM_TIMEOUT_MAX = PERM_TIMEOUT + ".max";
     public static final String PERM_CMD = PERM + ".command";
@@ -74,6 +76,8 @@ public class ModulePlayerMarket extends ServerEventHandler
 
             APIRegistry.perms.registerPermissionProperty(PERM_TIMEOUT_MAX, null, "Max / Default timeout for selling items");
             APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, null, "Per player limit for selling items");
+            APIRegistry.perms.registerPermissionProperty(PERM_FEE, "0", "Listing Fee in credits for selling items");
+            APIRegistry.perms.registerPermissionProperty(PERM_TAX, "0", "Percent Tax taken from total when an item is sold");
         }
         else
         {

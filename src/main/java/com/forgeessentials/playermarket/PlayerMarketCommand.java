@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.core.BasicInteraction;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -189,6 +190,8 @@ public class PlayerMarketCommand extends ParserCommandBase
                     break;
                 }
             }
+            Wallet sellerWallet = APIRegistry.economy.getWallet(UserIdent.get(args.senderPlayer));
+            long fee = 0;
             if (arg.equals("sell"))
             {
                 newStack.sellerId = args.senderPlayer.getUniqueID();
@@ -202,6 +205,19 @@ public class PlayerMarketCommand extends ParserCommandBase
                     if (count >= limit)
                     {
                         args.error("Unable to list item, player limit (%s) reached", limit);
+                        break;
+                    }
+                }
+                catch (NumberFormatException ignored)
+                {
+                }
+
+                try
+                {
+                    fee = Long.parseLong(APIRegistry.perms.getPermissionProperty(args.senderPlayer, ModulePlayerMarket.PERM_FEE));
+                    if (fee > 0 && !sellerWallet.covers(fee))
+                    {
+                        args.error("Unable to list item, not enough %s! (requires %s)", APIRegistry.economy.currency(2), APIRegistry.economy.toString(fee));
                         break;
                     }
                 }
@@ -238,6 +254,13 @@ public class PlayerMarketCommand extends ParserCommandBase
             newStack.stack = newStack.stack.copy();
             ModulePlayerMarket.instance().data.itemsListed.add(newStack);
             args.confirm("%s sold for %s", newStack.stack, APIRegistry.economy.toString(newStack.price));
+
+            if (fee > 0)
+            {
+                sellerWallet.withdraw(fee);
+                args.confirm("Listing fee of %s charged", APIRegistry.economy.toString(fee));
+            }
+
             if (newStack.hasTimeout)
             {
                 int minute = newStack.timeout / 60;
