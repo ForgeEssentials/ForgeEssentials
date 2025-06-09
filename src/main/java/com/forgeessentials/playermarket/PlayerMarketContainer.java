@@ -5,6 +5,7 @@ import static com.forgeessentials.util.ServerUtil.getItemPermission;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,15 +39,32 @@ public class PlayerMarketContainer extends ContainerChest
     int currentPage;
     ArrayList<AuctionStack> _itemsListed;
     CommandParserArgs args;
+    BiFunction<AuctionStack, CommandParserArgs, Boolean> filterCriteria;
+    public static BiFunction<AuctionStack, CommandParserArgs, Boolean> defaultCriteria = new BiFunction<AuctionStack, CommandParserArgs, Boolean>()
+    {
+        @Override public Boolean apply(AuctionStack stack, CommandParserArgs args)
+        {
+            return stack.sellerId.equals(args.senderPlayer.getUniqueID()) || !stack.hasTimeout || stack.timeout > 0;
+        }
+    };
 
     public PlayerMarketContainer(IInventory playerInventory, IInventory chestInventory,
             EntityPlayer player, boolean multiPage, boolean remove, ArrayList<AuctionStack> _itemsListed, CommandParserArgs args)
+    {
+        //Filter out all expired items unless the owner is current player
+        this(playerInventory, chestInventory, player, multiPage, remove, _itemsListed, args, defaultCriteria);
+    }
+
+    public PlayerMarketContainer(IInventory playerInventory, IInventory chestInventory,
+            EntityPlayer player, boolean multiPage, boolean remove, ArrayList<AuctionStack> _itemsListed, CommandParserArgs args,
+            BiFunction<AuctionStack, CommandParserArgs, Boolean> filterCriteria)
     {
         super(playerInventory, chestInventory, player);
         this.multiPage = multiPage;
         this.remove = remove;
         this._itemsListed = _itemsListed;
         this.args = args;
+        this.filterCriteria = filterCriteria;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -110,7 +128,16 @@ public class PlayerMarketContainer extends ContainerChest
     public void initItems()
     {
         _itemsListed.clear();
-        _itemsListed.addAll(ModulePlayerMarket.instance().data.itemsListed);
+
+        //Filter out items based on a provided criteria
+        for (AuctionStack stack : ModulePlayerMarket.instance().data.itemsListed)
+        {
+            if (filterCriteria.apply(stack, args))
+            {
+                _itemsListed.add(stack);
+            }
+        }
+
         initItems(getLowerChestInventory(), multiPage ? currentPage * 45 : 0, multiPage ? 45 : 54, _itemsListed, args);
     }
 

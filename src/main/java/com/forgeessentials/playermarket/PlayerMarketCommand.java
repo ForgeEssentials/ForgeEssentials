@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -66,7 +67,7 @@ public class PlayerMarketCommand extends ParserCommandBase
         return Arrays.asList("pshop", "playershop", "auctionhouse", "ah");
     }
 
-    protected void ShowPlayerMarket(CommandParserArgs args, boolean remove)
+    protected void ShowPlayerMarket(CommandParserArgs args, boolean remove, boolean list)
     {
         if (args.isTabCompletion)
         {
@@ -74,9 +75,19 @@ public class PlayerMarketCommand extends ParserCommandBase
         }
         EntityPlayerMP player = args.senderPlayer;
         //Take a local copy of itemsListed for basic concurrency.
-        ArrayList<AuctionStack> _itemsListed = new ArrayList<>(ModulePlayerMarket.instance().data.itemsListed);
+        ArrayList<AuctionStack> _itemsListed = new ArrayList<>();
+        BiFunction<AuctionStack, CommandParserArgs, Boolean> filterCriteria = list ?
+                (stack, args1) -> stack.sellerId.equals(args1.senderPlayer.getUniqueID()) : PlayerMarketContainer.defaultCriteria;
+
+        for (AuctionStack stack : ModulePlayerMarket.instance().data.itemsListed)
+        {
+            if (filterCriteria.apply(stack, args))
+            {
+                _itemsListed.add(stack);
+            }
+        }
+
         final boolean multiPage = _itemsListed.size() > 54;
-        final int[] currentPage = new int[1];
         InventoryBasic source = new InventoryBasic("Chest", false, multiPage ? 54 : _itemsListed.size());
 
         if (multiPage)
@@ -95,7 +106,7 @@ public class PlayerMarketCommand extends ParserCommandBase
 
             @Override public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
             {
-                return new PlayerMarketContainer(playerInventory, this, playerIn, multiPage, remove, _itemsListed, args);
+                return new PlayerMarketContainer(playerInventory, this, playerIn, multiPage, remove, _itemsListed, args, filterCriteria);
             }
 
             @Override public String getGuiID()
@@ -116,7 +127,7 @@ public class PlayerMarketCommand extends ParserCommandBase
         }
         if (args.isEmpty())
         {
-            ShowPlayerMarket(args, false);
+            ShowPlayerMarket(args, false, false);
             return;
         }
 
@@ -126,7 +137,10 @@ public class PlayerMarketCommand extends ParserCommandBase
         switch (arg)
         {
         case "buy":
-            ShowPlayerMarket(args, false);
+            ShowPlayerMarket(args, false, false);
+            break;
+        case "list":
+            ShowPlayerMarket(args, false, true);
             break;
         case "remove":
             if (!args.hasPermission(PERM_CMD_REMOVE))
@@ -134,7 +148,7 @@ public class PlayerMarketCommand extends ParserCommandBase
                 args.error("Not allowed to use subcommand!");
                 break;
             }
-            ShowPlayerMarket(args, true);
+            ShowPlayerMarket(args, true, false);
             break;
         case "server":
             if (!args.hasPermission(PERM_CMD_SERVER))
