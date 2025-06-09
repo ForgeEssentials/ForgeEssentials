@@ -224,8 +224,10 @@ public class PlayerMarketCommand extends ParserCommandBase
                 catch (NumberFormatException ignored)
                 {
                 }
-
-                args.senderPlayer.inventory.removeStackFromSlot(args.senderPlayer.inventory.currentItem);
+                if (!args.isTabCompletion)
+                {
+                    args.senderPlayer.inventory.removeStackFromSlot(args.senderPlayer.inventory.currentItem);
+                }
             }
             Integer maxTimeout = null;
             try
@@ -251,27 +253,30 @@ public class PlayerMarketCommand extends ParserCommandBase
                 newStack.hasTimeout = true;
             }
 
-            newStack.stack = newStack.stack.copy();
-            ModulePlayerMarket.instance().data.itemsListed.add(newStack);
-            args.confirm("%s sold for %s", newStack.stack, APIRegistry.economy.toString(newStack.price));
-
-            if (fee > 0)
+            if (!args.isTabCompletion)
             {
-                sellerWallet.withdraw(fee);
-                args.confirm("Listing fee of %s charged", APIRegistry.economy.toString(fee));
-            }
+                newStack.stack = newStack.stack.copy();
+                ModulePlayerMarket.instance().data.itemsListed.add(newStack);
+                args.confirm("%s sold for %s", newStack.stack, APIRegistry.economy.toString(newStack.price));
 
-            if (newStack.hasTimeout)
-            {
-                int minute = newStack.timeout / 60;
-                int second = newStack.timeout % 60;
-                int hour = minute / 60;
-                minute = minute % 60;
+                if (fee > 0)
+                {
+                    sellerWallet.withdraw(fee);
+                    args.confirm("Listing fee of %s charged", APIRegistry.economy.toString(fee));
+                }
 
-                args.confirm("Timeout set to %02d:%02d:%02d", hour, minute, second);
-                ModulePlayerMarket.instance().timeoutStacks.add(new WeakReference<>(newStack));
+                if (newStack.hasTimeout)
+                {
+                    int minute = newStack.timeout / 60;
+                    int second = newStack.timeout % 60;
+                    int hour = minute / 60;
+                    minute = minute % 60;
+
+                    args.confirm("Timeout set to %02d:%02d:%02d", hour, minute, second);
+                    ModulePlayerMarket.instance().timeoutStacks.add(new WeakReference<>(newStack));
+                }
+                ModulePlayerMarket.logTrade("SELL", args.senderPlayer.getName(), newStack);
             }
-            ModulePlayerMarket.logTrade("SELL", args.senderPlayer.getName(), newStack);
             break;
         }
     }
