@@ -43,6 +43,7 @@ public class ModulePlayerMarket extends ServerEventHandler
     public static final String PERM_CMD_BUY_BASE = PERM_CMD + ".buy";
     public static final String PERM_CMD_SERVER = PERM_CMD + ".server";
     public static final String PERM_CMD_REMOVE = PERM_CMD + ".remove";
+    public static final String PERM_CMD_LIST = PERM_CMD + ".list";
 
     @FEModule.Instance
     protected static ModulePlayerMarket instance;
@@ -69,6 +70,9 @@ public class ModulePlayerMarket extends ServerEventHandler
             APIRegistry.perms.registerPermission(PERM_CMD_SERVER + ".*", DefaultPermissionLevel.OP, "Allows Listing an item as the server!");
             APIRegistry.perms.registerPermission(PERM_CMD_REMOVE + ".*", DefaultPermissionLevel.OP, "Allows removing any item!");
 
+            APIRegistry.perms.registerPermission(PERM_CMD_LIST, DefaultPermissionLevel.ALL, "Allows running the list subcommand");
+            APIRegistry.perms.registerPermission(PERM_CMD_SELL_BASE, DefaultPermissionLevel.ALL, "Allows running the sell subcommand");
+            APIRegistry.perms.registerPermission(PERM_CMD_BUY_BASE, DefaultPermissionLevel.ALL, "Allows running the buy subcommand");
             APIRegistry.perms.registerPermission(PERM_CMD_SELL_BASE + ".*", DefaultPermissionLevel.ALL,
                     "Allows selling a specific item! ex: fe.playermarket.sell.minecraft.iron_block");
             APIRegistry.perms.registerPermission(PERM_CMD_BUY_BASE + ".*", DefaultPermissionLevel.ALL,
@@ -93,13 +97,23 @@ public class ModulePlayerMarket extends ServerEventHandler
         {
             this.data = data;
 
+            ArrayList<AuctionStack> removalQueue = new ArrayList<>();
             for (AuctionStack stack : data.itemsListed)
             {
-                if (stack.hasTimeout && stack.timeout > 0)
+                if (stack.hasTimeout)
                 {
-                    timeoutStacks.add(new WeakReference<>(stack));
+                    if (stack.timeout > 0)
+                    {
+                        timeoutStacks.add(new WeakReference<>(stack));
+                    }
+                    else if (APIRegistry.IDENT_SERVER.getUuid().equals(stack.sellerId))
+                    {
+                        //Cleanup all stacks owned by server on start
+                        removalQueue.add(stack);
+                    }
                 }
             }
+            data.itemsListed.removeAll(removalQueue);
         }
     }
 

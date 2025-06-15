@@ -1,6 +1,8 @@
 package com.forgeessentials.playermarket;
 
 import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD;
+import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_BUY_BASE;
+import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_LIST;
 import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_REMOVE;
 import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_SELL_BASE;
 import static com.forgeessentials.playermarket.ModulePlayerMarket.PERM_CMD_SERVER;
@@ -101,7 +103,7 @@ public class PlayerMarketCommand extends ParserCommandBase
         {
             initItems(source, 0, 54, _itemsListed, args);
         }
-        BasicInteraction menuChest = new BasicInteraction("Player Market", true, source)
+        BasicInteraction menuChest = new BasicInteraction(list ? "Your Items" : "Player Market", true, source)
         {
 
             @Override public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
@@ -131,15 +133,25 @@ public class PlayerMarketCommand extends ParserCommandBase
             return;
         }
 
-        args.tabComplete("buy", "remove", "server", "sell");
+        args.tabComplete("buy", "list", "remove", "server", "sell");
         String arg = args.remove();
         AuctionStack newStack = new AuctionStack();
         switch (arg)
         {
         case "buy":
+            if (!args.hasPermission(PERM_CMD_BUY_BASE))
+            {
+                args.error("Not allowed to use subcommand!");
+                break;
+            }
             ShowPlayerMarket(args, false, false);
             break;
         case "list":
+            if (!args.hasPermission(PERM_CMD_LIST))
+            {
+                args.error("Not allowed to use subcommand!");
+                break;
+            }
             ShowPlayerMarket(args, false, true);
             break;
         case "remove":
@@ -159,6 +171,12 @@ public class PlayerMarketCommand extends ParserCommandBase
             newStack.sellerId = APIRegistry.IDENT_SERVER.getUuid();
             newStack.sellerName = APIRegistry.IDENT_SERVER.getUsername();
         case "sell":
+            if (!args.hasPermission(PERM_CMD_SELL_BASE))
+            {
+                args.error("Not allowed to use subcommand!");
+                break;
+            }
+
             if (ModulePlayerMarket.instance().data.marketSize >= 0
                     && ModulePlayerMarket.instance().data.itemsListed.size() >= ModulePlayerMarket.instance().data.marketSize)
             {
@@ -291,6 +309,9 @@ public class PlayerMarketCommand extends ParserCommandBase
                 }
                 ModulePlayerMarket.logTrade("SELL", args.senderPlayer.getName(), newStack);
             }
+            break;
+        default:
+            args.error("Invalid SubCommand!");
             break;
         }
     }
