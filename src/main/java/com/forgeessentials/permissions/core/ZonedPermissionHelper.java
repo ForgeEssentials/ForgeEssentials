@@ -834,7 +834,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public Set<PermissionNode<?>> getRegisteredNodes()
     {
         var permList = getRegisteredPermissions();
-        return permList.entrySet().stream().filter(key -> !key.getKey().contains("*")).map(key -> new PermissionNode<>(new ResourceLocation(key.getKey()), PermissionTypes.STRING,
+        return permList.entrySet().stream().filter(key -> !(key.getKey().contains("*") || key.getKey().contains("$"))).map(key -> new PermissionNode<>(new ResourceLocation(key.getKey()), PermissionTypes.STRING,
                 (serverPlayer, uuid, permissionDynamicContexts) -> key.getValue())).collect(Collectors.toSet());
     }
 
