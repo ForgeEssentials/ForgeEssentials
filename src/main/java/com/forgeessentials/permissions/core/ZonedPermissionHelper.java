@@ -3,6 +3,8 @@ package com.forgeessentials.permissions.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,7 +39,10 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.nodes.PermissionDynamicContext;
+import net.minecraftforge.server.permission.nodes.PermissionDynamicContextKey;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
+import net.minecraftforge.server.permission.nodes.PermissionNode.PermissionResolver;
+import net.minecraftforge.server.permission.nodes.PermissionType;
 import net.minecraftforge.server.permission.nodes.PermissionTypes;
 
 import com.forgeessentials.api.APIRegistry;
@@ -834,8 +839,26 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public Set<PermissionNode<?>> getRegisteredNodes()
     {
         var permList = getRegisteredPermissions();
-        return permList.entrySet().stream().filter(key -> !(key.getKey().contains("*") || key.getKey().contains("$"))).map(key -> new PermissionNode<>(new ResourceLocation(key.getKey()), PermissionTypes.STRING,
-                (serverPlayer, uuid, permissionDynamicContexts) -> key.getValue())).collect(Collectors.toSet());
+        final Constructor<PermissionNode> constructor;
+        try {
+            constructor = PermissionNode.class.getDeclaredConstructor(String.class, PermissionType.class, PermissionResolver.class, PermissionDynamicContextKey[].class);
+            constructor.setAccessible(true);
+        }
+        catch (NoSuchMethodException e)
+        {
+            throw new RuntimeException(e);
+        }
+        return permList.entrySet().stream().filter(key -> !key.getKey().contains("*")).map(key ->
+        {
+            try
+            {
+                return (PermissionNode<?>) constructor.newInstance(key.getKey(), PermissionTypes.STRING,(PermissionResolver<String>) (serverPlayer, uuid, permissionDynamicContexts) -> key.getValue(), new PermissionDynamicContextKey[0]);
+            }
+            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toSet());
     }
 
     @Override public <T> T getOfflinePermission(UUID uuid, PermissionNode<T> permissionNode, PermissionDynamicContext<?>... permissionDynamicContexts)
