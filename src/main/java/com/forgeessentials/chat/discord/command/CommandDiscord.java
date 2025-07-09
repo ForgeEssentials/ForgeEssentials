@@ -22,7 +22,12 @@ public class CommandDiscord extends ForgeEssentialsCommandBase
     }
     @Override public String getCommandName()
     {
-        return "discord";
+        return "fediscord";
+    }
+
+    @Override public String[] getDefaultAliases()
+    {
+        return new String[] {"discord"};
     }
 
     @Override public String getCommandUsage(ICommandSender sender)
