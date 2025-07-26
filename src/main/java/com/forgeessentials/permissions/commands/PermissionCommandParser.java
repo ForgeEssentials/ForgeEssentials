@@ -1211,7 +1211,7 @@ public class PermissionCommandParser
 
     public static void listUserPermissions(ICommandSender sender, UserIdent ident, boolean showGroupPerms) throws CommandException
     {
-        if (ident.isPlayer() && !PermissionAPI.hasPermission(ident.getPlayer(), PERM_LIST_PERMS))
+        if (!PermissionAPI.hasPermission(UserIdent.get(sender).getGameProfile(), PERM_LIST_PERMS, null))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");

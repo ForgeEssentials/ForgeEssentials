@@ -94,7 +94,6 @@ public class UserIdentUtils
                                 if (jr.peek() == JsonToken.STRING && id.equals(name))
                                 {
                                     value = jr.nextString();
-                                    break;
                                 }
                                 else
                                 {
