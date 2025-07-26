@@ -822,7 +822,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (event.afterZone instanceof AreaZone)
             {
                 center = ((AreaZone) event.afterZone).getArea().getCenter().toVec3();
-                center = new Vec3d(center.x, event.beforePoint.getY(), center.y);
+                center = new Vec3d(center.x, event.beforePoint.getY(), center.z);
             }
             Vec3d delta = event.beforePoint.toVec3().subtract(center).normalize();
             WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.x, event.beforePoint.getY() - delta.y,

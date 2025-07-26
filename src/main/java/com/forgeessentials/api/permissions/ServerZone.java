@@ -14,6 +14,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -321,8 +322,9 @@ public class ServerZone extends Zone implements Loadable
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
+            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
             // Include special groups
-            if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(ident.getGameProfile()))
+            if (server != null && server.getPlayerList().canSendCommands(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
