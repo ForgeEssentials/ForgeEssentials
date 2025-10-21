@@ -8,7 +8,7 @@ buildscript {
 		maven {
 			// GTNH ForgeGradle
 			name = "GTNH Maven"
-			url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
+			url = "https://nexus.gtnewhorizons.com/repository/public/"
 		}
 		maven {
 			name = "sonatype"
