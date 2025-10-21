@@ -85,7 +85,7 @@ public class SignToolsModule extends ConfigLoaderBase
             return;
         }
 
-        if (!allowSignCommands || !e.action.equals(Action.RIGHT_CLICK_BLOCK))
+        if (!e.action.equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
@@ -108,7 +108,7 @@ public class SignToolsModule extends ConfigLoaderBase
             }
 
             String[] signText = ((TileEntitySign) te).signText;
-            if (!signText[0].equals("[command]"))
+            if (!allowSignCommands || !signText[0].equals("[command]"))
             {
                 return;
             }
