@@ -27,7 +27,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:1.2.13"
+		classpath "net.minecraftforge.gradle:ForgeGradle:1.2.11.dirty"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
 		classpath("com.modrinth.minotaur:Minotaur:2.8.3")
 	}
