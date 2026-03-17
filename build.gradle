@@ -1,6 +1,9 @@
 // Build repositories
 buildscript {
-	repositories {
+	repositories {		
+		maven {
+      		url = uri("https://plugins.gradle.org/m2/")
+    	}
 		maven {
 			name = "forge"
 			url = "https://files.minecraftforge.net/maven"
@@ -20,9 +23,6 @@ buildscript {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/snapshots/"
 		}
-		maven {
-      		url = uri("https://plugins.gradle.org/m2/")
-    	}
 		jcenter()
 
 	}
