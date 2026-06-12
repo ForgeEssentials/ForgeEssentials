@@ -16,7 +16,7 @@ public abstract class BuildInfo
 
     public static final Logger febuildinfo = LogManager.getLogger("FEUpdateChecker");
 
-    private static String BUILD_TYPE = "@_RELEASETYPE_@";
+    private static String BUILD_TYPE = "Release";
 
     private static String buildHash = "N/A";
 
@@ -26,8 +26,6 @@ public abstract class BuildInfo
 
     protected static boolean outdated = false;
     protected static String versionLatest = "N/A";
-
-    private static Thread checkVersionThread;
 
     /* ------------------------------------------------------------ */
 

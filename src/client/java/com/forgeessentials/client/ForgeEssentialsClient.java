@@ -183,8 +183,7 @@ public class ForgeEssentialsClient
                 }
             }
             BuildInfo.getBuildInfo(jarLocation);
-            feclientlog.info(String.format("Running ForgeEssentials client %s (%s)-%s", BuildInfo.getCurrentVersion(),
-                    BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
+            feclientlog.info(String.format("Running ForgeEssentials client %s (%s)-%s", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
 
             // Initialize with configuration options
             ClientConfig c = new ClientConfig();

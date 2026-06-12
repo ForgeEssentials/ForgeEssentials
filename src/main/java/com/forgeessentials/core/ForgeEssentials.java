@@ -200,8 +200,7 @@ public class ForgeEssentials
     public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info("ForgeEssentials CommonSetup");
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)-%s", BuildInfo.getCurrentVersion(),
-                BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)-%s", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
     	// Handle submodules parents, must be called after mod loading
         moduleLauncher.handleModuleParents();
         if (safeMode) {
