@@ -108,6 +108,11 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     for (int i = 0; i < tagList.tagCount(); i++)
                         jsonArray.add(new JsonPrimitive(tagList.getDoubleAt(i)));
                     break;
+                case NBT.TAG_INT:
+                    typeId = "i";
+                    for (int i = 0; i < tagList.tagCount(); i++)
+                        jsonArray.add(new JsonPrimitive(tagList.getIntAt(i)));
+                    break;
                 case NBT.TAG_STRING:
                     typeId = "S";
                     for (int i = 0; i < tagList.tagCount(); i++)
