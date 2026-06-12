@@ -219,8 +219,8 @@ public class ModuleProtection
         for (Entry<ResourceLocation, EntityEntry> e : ForgeRegistries.ENTITIES.getEntries())
             if (EntityLiving.class.isAssignableFrom(e.getValue().getEntityClass()))
             {
-                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
-                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
+                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getValue().getName(), DefaultPermissionLevel.ALL, "");
+                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getValue().getName(), DefaultPermissionLevel.ALL, "");
             }
         for (MobType mobType : MobType.values())
         {
