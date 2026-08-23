@@ -127,9 +127,30 @@ class FixCurseVersions
             throw Throwables.propagate(t)
         }
     }
+
+    static int[] resolveGameVersion(final Iterable<Object> objects) {
+        TIntSet set = new TIntHashSet()
+        objects.each { obj ->
+            final String version = obj.toString()
+            int id = gameVersions.get(version)
+            if (id == 0) {
+                throw new IllegalArgumentException("$version is not a valid game version. Valid versions are: ${gameVersions.keySet()}")
+            }
+            set.add(id)
+        }
+
+        return set.toArray()
+    }
 }
 
-Class.forName("com.matthewprenger.cursegradle.CurseVersions").mixin(FixCurseVersions.class)
+def curseVersions = Class.forName("com.matthewprenger.cursegradle.CurseVersions");
+curseVersions.metaClass.'static'.initialize = { String apiKey ->
+    FixCurseVersions.initialize(apiKey)
+}
+
+curseVersions.metaClass.'static'.resolveGameVersion = { final Iterable<Object> objects ->
+    FixCurseVersions.resolveGameVersion(objects)
+}
 
 apply plugin: "com.matthewprenger.cursegradle"
 curseforge {
