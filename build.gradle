@@ -93,6 +93,7 @@ curseforge {
             addGameVersion 'Forge'
             addGameVersion 'Java 17'
             addGameVersion 'Java 8'
+            addGameVersion 'Server'
 
             mainArtifact(project.srcFile) {
                 displayName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
@@ -108,6 +109,7 @@ curseforge {
             addGameVersion minecraftVersion
             addGameVersion 'Forge'
             addGameVersion 'Java 8'
+            addGameVersion 'Client'
 
             mainArtifact(project.clientSrcFile) {
                 displayName = "$archivesBaseName-$minecraftVersion-$mod_base.$mod_major.$buildNumber"
