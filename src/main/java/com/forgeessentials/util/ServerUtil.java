@@ -26,6 +26,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
@@ -364,6 +366,35 @@ public abstract class ServerUtil
     {
         ResourceLocation loc = (ResourceLocation) Item.REGISTRY.getNameForObject(item);
         return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+    }
+
+    public static String getItemPermission(ItemStack stack, boolean checkMeta)
+    {
+        try
+        {
+            int dmg = stack.getItemDamage();
+            if (!checkMeta || dmg == 0 || dmg == 32767)
+                return getItemPermission(stack.getItem());
+            else
+                return getItemPermission(stack.getItem()) + "." + dmg;
+        }
+        catch (Exception e)
+        {
+            String msg;
+            if (stack == ItemStack.EMPTY)
+                msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
+            else
+                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
+            if (!ForgeEssentials.isSafeMode())
+                throw new RuntimeException(msg, e);
+            LoggingHandler.felog.error(msg);
+            return "fe.error";
+        }
+    }
+
+    public static String getItemPermission(ItemStack stack)
+    {
+        return getItemPermission(stack, true);
     }
 
     public static String getBlockName(Block block)

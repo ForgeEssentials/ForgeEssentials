@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
@@ -75,14 +77,48 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, String message, TextFormatting color)
     {
         message = formatColors(message);
+        Pattern itemStack = Pattern.compile("\\{itemStack@([0123456789abcdef]+)}");
+        Matcher matcher = itemStack.matcher(message);
+        TextComponentString component;
+        if (matcher.find())
+        {
+            String[] parts = itemStack.split(message);
+            component = new TextComponentString(parts[0]);
+
+            for (int i = 0; i < parts.length; i++)
+            {
+                ItemStack stack = Translator.stacks.get(matcher.group(1)).get();
+                if (stack != null)
+                {
+                    component.appendSibling(stack.getTextComponent());
+                }
+                else
+                {
+                    component.appendText(matcher.group());
+                }
+                if (i + 1 < parts.length)
+                {
+                    component.appendText(parts[i + 1]);
+                }
+                if (!matcher.find())
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            component = new TextComponentString(message);
+        }
+        component.getStyle().setColor(color);
         if (recipient instanceof EntityPlayer)
         {
-            TextComponentString component = new TextComponentString(message);
-            component.getStyle().setColor(color);
             sendMessage(recipient, component);
         }
         else
-            sendMessage(recipient, stripFormatting(message));
+        {
+            sendMessage(recipient, component.getUnformattedText());
+        }
     }
 
     /**

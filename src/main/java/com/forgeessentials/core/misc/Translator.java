@@ -8,8 +8,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.ref.WeakReference;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.WeakHashMap;
+
+import net.minecraft.item.ItemStack;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -26,8 +30,18 @@ public final class Translator
 
     public static final TreeMap<String, String> translations = new TreeMap<String, String>();
 
+    public static final WeakHashMap<String, WeakReference<ItemStack>> stacks = new WeakHashMap<>();
     public static String format(String text, Object... args)
     {
+        for (int i = 0; i < args.length; i++)
+        {
+            if (args[i] instanceof ItemStack)
+            {
+                String hex = Integer.toHexString(args[i].hashCode());
+                stacks.put(hex, new WeakReference<>((ItemStack) args[i]));
+                args[i] = "{itemStack@" + hex + "}";
+            }
+        }
         return String.format(translate(text), args);
     }
 

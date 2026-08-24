@@ -203,6 +203,7 @@ curseforge {
         project {
             id = projectID
             changelog = project.changelog
+            changelogType = 'markdown'
             releaseType = project.releaseType
             addGameVersion minecraftVersion
             addGameVersion 'Forge'

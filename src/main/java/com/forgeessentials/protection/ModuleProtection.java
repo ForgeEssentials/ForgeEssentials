@@ -1,5 +1,7 @@
 package com.forgeessentials.protection;
 
+import static com.forgeessentials.util.ServerUtil.getItemPermission;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,7 +66,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -242,7 +243,7 @@ public class ModuleProtection
         for (Item item : ForgeRegistries.ITEMS.getValues())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
+                String itemPerm = "." + getItemPermission(item) + Zone.ALL_PERMS;
                 String itemName = getItemName(item);
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, DefaultPermissionLevel.ALL, "USE " + itemName);
                 APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, DefaultPermissionLevel.ALL, "CRAFT " + itemName);
@@ -403,34 +404,34 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemPermission(ItemStack stack, boolean checkMeta)
-    {
-        try
-        {
-            int dmg = stack.getItemDamage();
-            if (!checkMeta || dmg == 0 || dmg == 32767)
-                return ServerUtil.getItemPermission(stack.getItem());
-            else
-                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
-        }
-        catch (Exception e)
-        {
-            String msg;
-            if (stack == ItemStack.EMPTY)
-                msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
-            else
-                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
-            if (!ForgeEssentials.isSafeMode())
-                throw new RuntimeException(msg, e);
-            LoggingHandler.felog.error(msg);
-            return "fe.error";
-        }
-    }
-
-    public static String getItemPermission(ItemStack stack)
-    {
-        return getItemPermission(stack, true);
-    }
+//    public static String getItemPermission(ItemStack stack, boolean checkMeta)
+//    {
+//        try
+//        {
+//            int dmg = stack.getItemDamage();
+//            if (!checkMeta || dmg == 0 || dmg == 32767)
+//                return ServerUtil.getItemPermission(stack.getItem());
+//            else
+//                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
+//        }
+//        catch (Exception e)
+//        {
+//            String msg;
+//            if (stack == ItemStack.EMPTY)
+//                msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
+//            else
+//                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
+//            if (!ForgeEssentials.isSafeMode())
+//                throw new RuntimeException(msg, e);
+//            LoggingHandler.felog.error(msg);
+//            return "fe.error";
+//        }
+//    }
+//
+//    public static String getItemPermission(ItemStack stack)
+//    {
+//        return getItemPermission(stack, true);
+//    }
 
     public static String getItemUsePermission(ItemStack stack)
     {

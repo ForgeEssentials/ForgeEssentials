@@ -1,5 +1,7 @@
 package com.forgeessentials.protection.commands;
 
+import static com.forgeessentials.util.ServerUtil.getItemPermission;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class CommandItemPermission extends ParserCommandBase
         {
             if (stack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("No item equipped!");
-            arguments.notify(ModuleProtection.getItemPermission(stack));
+            arguments.notify(getItemPermission(stack));
             return;
         }
 
@@ -101,11 +103,11 @@ public class CommandItemPermission extends ParserCommandBase
             String arg = arguments.remove();
             if (!arg.equalsIgnoreCase("all") && !arg.equalsIgnoreCase("*"))
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
-            permEnd = '.' + ModuleProtection.getItemPermission(stack, false) + ".*";
+            permEnd = '.' + getItemPermission(stack, false) + ".*";
         }
         else
         {
-            permEnd = '.' + ModuleProtection.getItemPermission(stack, true);
+            permEnd = '.' + getItemPermission(stack, true);
         }
 
         if (arguments.isTabCompletion)
@@ -116,6 +118,6 @@ public class CommandItemPermission extends ParserCommandBase
         else
             APIRegistry.perms.getServerZone().setGroupPermission(Zone.GROUP_DEFAULT, permStart + type + permEnd, value);
         arguments.confirm(value == null ? "Cleared [%s] for item %s" : //
-                (value ? "Allowed [%s] for item %s" : "Denied [%s] for item %s"), type, ModuleProtection.getItemPermission(stack, false));
+                (value ? "Allowed [%s] for item %s" : "Denied [%s] for item %s"), type, getItemPermission(stack, false));
     }
 }
