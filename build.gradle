@@ -29,7 +29,7 @@ buildscript {
 	dependencies {
 		classpath "net.minecraftforge.gradle:ForgeGradle:1.2.11.dirty"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-		classpath("com.modrinth.minotaur:Minotaur:2.8.3")
+		classpath("com.modrinth.minotaur:Minotaur:2.8.4")
         classpath("com.matthewprenger.cursegradle:com.matthewprenger.cursegradle.gradle.plugin:1.4.0")
 	}
 
