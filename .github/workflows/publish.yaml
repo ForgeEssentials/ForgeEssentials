@@ -14,7 +14,7 @@ jobs:
   publish:
 
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[Skip Discord]') }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && ( !contains(github.event.workflow_run.head_commit.message, '[Skip Discord]') || github.event.workflow_run.event == 'release' ) }}
     steps:
       - uses: actions/checkout@v4
         with:
