@@ -139,8 +139,8 @@ jobs:
           result-encoding: string
       - env:
           CF_APIKEY: ${{ secrets.CF_APIKEY }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGE_LOG: ${{ steps.download-artifact.outputs.result }}
+        continue-on-error: true
         run: |
           mkdir -p build/libs
           mkdir -p jscripting
@@ -149,7 +149,13 @@ jobs:
           mkdir ./tmp
           cp ./build/libs/*.jar ./tmp
           chmod +x gradlew
-          ./gradlew curseforge modrinth
+          ./gradlew curseforge
+      - env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGE_LOG: ${{ steps.download-artifact.outputs.result }}
+        continue-on-error: true
+        run: |
+          ./gradlew modrinth
       - uses: softprops/action-gh-release@v0.1.15
         with:
           files: |
