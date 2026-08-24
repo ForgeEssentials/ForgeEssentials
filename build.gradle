@@ -206,6 +206,7 @@ curseforge {
             releaseType = project.releaseType
             addGameVersion minecraftVersion
             addGameVersion 'Forge'
+            addGameVersion 'Server'
             addGameVersion 'Java 8'
 
             mainArtifact(project.srcFile) {
@@ -221,6 +222,7 @@ curseforge {
             releaseType = project.releaseType
             addGameVersion minecraftVersion
             addGameVersion 'Forge'
+            addGameVersion 'Client'
             addGameVersion 'Java 8'
 
             mainArtifact(project.clientSrcFile) {
