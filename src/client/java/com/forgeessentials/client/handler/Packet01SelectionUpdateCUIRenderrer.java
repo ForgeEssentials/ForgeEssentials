@@ -28,8 +28,7 @@ public class Packet01SelectionUpdateCUIRenderrer
         if (player == null)
             return;
 
-        if (selection == null
-                || !selection.getDimension().equals(instance.player.clientLevel.dimension().location().toString()))
+        if (selection == null)
             return;
 
 	    final Tessellator tessellator = Tessellator.getInstance();

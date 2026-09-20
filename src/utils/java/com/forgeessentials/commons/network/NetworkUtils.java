@@ -21,9 +21,9 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class NetworkUtils
 {
     /**
-     * FE SimpleChannel protocol version.
+     * FE SimpleChannel protocol version. inc when changing packet data
      */
-    private static final String PROTOCOL_VERSION = "FE1";
+    private static final String PROTOCOL_VERSION = "FE2";
 
     /**
      * FE Networking logger

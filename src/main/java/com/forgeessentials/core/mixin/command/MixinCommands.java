@@ -96,7 +96,6 @@ public class MixinCommands
     {
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(source1), "command." + commandNode))
         {
-            //System.out.println("Restricted perm: " + commandNode);
             return false;
         }
         return true;

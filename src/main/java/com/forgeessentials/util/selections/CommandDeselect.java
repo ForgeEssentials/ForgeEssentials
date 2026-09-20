@@ -44,6 +44,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBuilder
         PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getGameProfile().getId());
         info.setSel1(null);
         info.setSel2(null);
+        info.setSelDim(null);
         SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection cleared.");
         return Command.SINGLE_SUCCESS;
